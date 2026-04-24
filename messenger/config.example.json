@@ -1,0 +1,41 @@
+{
+  "app": {
+    "name": "Balloo Messenger",
+    "version": "1.0.0",
+    "description": "Безопасный мессенджер с шифрованием",
+    "url": "http://localhost:3000"
+  },
+  "auth": {
+    "jwtSecret": "ИЗМЕНИТЬ_В_ПРОДАКШЕНЕ",
+    "jwtExpiresIn": "7d",
+    "bcryptRounds": 10
+  },
+  "push": {
+    "vapidPublicKey": "СГЕНЕРИРОВАТЬ_npx_web-push_generate-vapid-keys",
+    "vapidPrivateKey": "СГЕНЕРИРОВАТЬ_npx_web-push_generate-vapid-keys",
+    "vapidSubject": "mailto:admin@ваш-домен.ru"
+  },
+  "yandexDisk": {
+    "clientId": "",
+    "clientSecret": "",
+    "redirectUri": "http://localhost:3000/api/disk/callback"
+  },
+  "database": {
+    "name": "balloo",
+    "password": "",
+    "multiInstance": true,
+    "ignoreDuplicate": true
+  },
+  "features": {
+    "maxPinnedChats": 15,
+    "maxPushTokensPerUser": 5,
+    "pushTokenExpiresDays": 30,
+    "invitationDefaultMaxUses": 10,
+    "invitationDefaultExpiresDays": 7
+  },
+  "admin": {
+    "superAdminEmail": "admin@ваш-домен.ru",
+    "defaultAdminPassword": "Admin123!"
+  },
+  "testUsers": []
+}

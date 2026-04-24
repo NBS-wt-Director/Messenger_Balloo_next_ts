@@ -1,0 +1,14 @@
+/* Стили для переключателя тем */
+.header-lang-btn,
+.header-theme-select-btn {
+  padding: 10px 14px;
+}
+
+.header-lang-menu,
+.header-theme-menu {
+  min-width: 160px;
+}
+
+.rotate-0 {
+  transform: rotate(0deg);
+}

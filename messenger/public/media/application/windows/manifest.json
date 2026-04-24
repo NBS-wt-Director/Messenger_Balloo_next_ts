@@ -1,0 +1,17 @@
+{
+  "name": "Balloo Windows",
+  "version": "1.0.0",
+  "buildNumber": "1001",
+  "releaseDate": "2024-02-01",
+  "minimumWindows": "10",
+  "size": "78MB",
+  "changelog": [
+    "Первый релиз Windows приложения",
+    "Сквозное шифрование сообщений",
+    "Десктоп уведомления Windows",
+    "Системный трей",
+    "Автозапуск с Windows"
+  ],
+  "downloadUrl": "/media/application/windows/exe",
+  "supportedLanguages": ["ru", "en", "hi", "zh", "tt", "be", "ba", "cv", "sah", "udm", "ce", "os"]
+}

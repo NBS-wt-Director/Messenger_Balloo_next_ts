@@ -1,0 +1,252 @@
+.account-switcher {
+  position: relative;
+  width: 100%;
+}
+
+.account-switcher-current {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.account-switcher-current:hover {
+  border-color: var(--primary);
+}
+
+.account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account-avatar.small {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+}
+
+.account-avatar.add {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.account-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.account-name {
+  font-weight: 500;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.account-email {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.account-chevron {
+  color: var(--muted-foreground);
+  transition: transform 0.2s ease;
+}
+
+.account-chevron.open {
+  transform: rotate(90deg);
+}
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  overflow: hidden;
+  z-index: 100;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  color: var(--foreground);
+  text-align: left;
+}
+
+.account-item:hover {
+  background: var(--muted);
+}
+
+.account-item.add-account {
+  color: var(--primary);
+}
+
+.account-item.logout {
+  color: var(--destructive);
+}
+
+.account-item.logout-all {
+  color: var(--destructive);
+}
+
+.account-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.account-settings {
+  padding: 12px;
+  background: var(--background);
+}
+
+.account-setting-group {
+  margin-bottom: 16px;
+}
+
+.account-setting-group:last-child {
+  margin-bottom: 0;
+}
+
+.account-setting-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-bottom: 8px;
+}
+
+.account-setting-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.account-setting-theme {
+  display: flex;
+  gap: 8px;
+}
+
+.account-setting-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn-icon:hover {
+  border-color: var(--primary);
+}
+
+.theme-btn-icon.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.theme-btn:hover {
+  border-color: var(--primary);
+}
+
+.theme-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}

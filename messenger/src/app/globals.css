@@ -1,0 +1,401 @@
+:root {
+  /* Тёмная тема (по умолчанию) */
+  --background: #000000;
+  --background-plain: #000000;
+  --foreground: #ffffff;
+  --card: #1c1c1c;
+  --card-solid: #1c1c1c;
+  --card-foreground: #ffffff;
+  --popover: #1c1c1c;
+  --popover-solid: #1c1c1c;
+  --popover-foreground: #ffffff;
+  --primary: #3b82f6;
+  --primary-plain: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #2c2c2c;
+  --secondary-solid: #2c2c2c;
+  --secondary-foreground: #ffffff;
+  --muted: #2c2c2c;
+  --muted-solid: #2c2c2c;
+  --muted-foreground: #b0b0b0;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #404040;
+  --border-solid: #404040;
+  --border-plain: #404040;
+  --input: #2c2c2c;
+  --input-solid: #2c2c2c;
+  --ring: #3b82f6;
+  --radius: 0;
+  --scrollbar-thumb: #555555;
+  --scrollbar-thumb-hover: #777777;
+}
+
+[data-theme="light"] {
+  --background: #ffffff;
+  --background-plain: #ffffff;
+  --foreground: #000000;
+  --card: #f5f5f5;
+  --card-solid: #f5f5f5;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-solid: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #2563eb;
+  --primary-plain: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e5e5;
+  --secondary-solid: #e5e5e5;
+  --secondary-foreground: #000000;
+  --muted: #e5e5e5;
+  --muted-solid: #e5e5e5;
+  --muted-foreground: #525252;
+  --accent: #e5e5e5;
+  --accent-foreground: #000000;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #d4d4d4;
+  --border-solid: #d4d4d4;
+  --border-plain: #d4d4d4;
+  --input: #e5e5e5;
+  --input-solid: #e5e5e5;
+  --ring: #2563eb;
+  --scrollbar-thumb: #999999;
+  --scrollbar-thumb-hover: #777777;
+}
+
+[data-theme="russia"] {
+  --background: transparent;
+  --background-plain: transparent;
+  --foreground: #000000;
+  --card: linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%);
+  --card-solid: #d3d3d3;
+  --card-foreground: #000000;
+  --popover: linear-gradient(135deg, #95a5a6 0%, #bdc3c7 50%, #95a5a6 100%);
+  --popover-solid: #7f8c8d;
+  --popover-foreground: #000000;
+  --primary: #0039a6;
+  --primary-plain: #0039a6;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(0, 57, 166, 0.15);
+  --secondary-solid: rgba(0, 57, 166, 0.15);
+  --secondary-foreground: #000000;
+  --muted: rgba(213, 43, 30, 0.1);
+  --muted-solid: rgba(213, 43, 30, 0.1);
+  --muted-foreground: #000000;
+  --accent: #0039a6;
+  --accent-foreground: #ffffff;
+  --destructive: #d52b1e;
+  --destructive-foreground: #ffffff;
+  --border: linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #71797E 100%);
+  --border-solid: #d4af37;
+  --border-plain: #0039a6;
+  --input: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);
+  --input-solid: #c0c0c0;
+  --ring: linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%);
+  --scrollbar-thumb: linear-gradient(135deg, #95a5a6 0%, #bdc3c7 100%);
+  --scrollbar-thumb-hover: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+}
+
+/* Российская тема - фон с флагом РФ под 45 градусов */
+[data-theme="russia"] body {
+  background: linear-gradient(45deg, 
+    #ffffff 0%, 
+    #ffffff 30%, 
+    #0039a6 30%, 
+    #0039a6 60%, 
+    #d52b1e 60%,
+    #d52b1e 100%
+  ) fixed;
+  background-attachment: fixed;
+  background-size: 200% 200%;
+}
+
+[data-theme="russia"] .header,
+[data-theme="russia"] .footer,
+[data-theme="russia"] .card,
+[data-theme="russia"] .settings-card,
+[data-theme="russia"] .pwa-install-card,
+[data-theme="russia"] .pwa-notification-card,
+[data-theme="russia"] .header-dropdown-menu,
+[data-theme="russia"] .header-full-menu {
+  background: linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%) !important;
+  backdrop-filter: blur(10px);
+  border: 2px solid #0039a6;
+}
+
+[data-theme="russia"] .header-logo,
+[data-theme="russia"] .header-page-title,
+[data-theme="russia"] .header-action,
+[data-theme="russia"] .header-link,
+[data-theme="russia"] .footer-link,
+[data-theme="russia"] .footer-company-name,
+[data-theme="russia"] .footer-company-slogan,
+[data-theme="russia"] .header-dropdown-item,
+[data-theme="russia"] .header-full-menu-item,
+[data-theme="russia"] .header-menu-section-title,
+[data-theme="russia"] a {
+  color: #000000 !important;
+}
+
+[data-theme="russia"] .header-logo svg {
+  color: #000000;
+}
+
+[data-theme="russia"] input,
+[data-theme="russia"] select,
+[data-theme="russia"] textarea {
+  background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%) !important;
+  color: #000000 !important;
+  border: 2px solid #0039a6;
+}
+
+[data-theme="russia"] input::placeholder,
+[data-theme="russia"] textarea::placeholder {
+  color: #555555;
+  opacity: 0.8;
+}
+
+[data-theme="russia"] .btn-primary,
+[data-theme="russia"] .header-register-btn {
+  background: #0039a6 !important;
+  color: white !important;
+  border: 2px solid #0039a6;
+}
+
+[data-theme="russia"] .btn-primary:hover,
+[data-theme="russia"] .header-register-btn:hover {
+  background: linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%) !important;
+  border-color: #0039a6;
+}
+
+[data-theme="russia"] .header-theme-option {
+  color: #000000;
+}
+
+[data-theme="russia"] .header-theme-option.active {
+  color: white !important;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-attachment: fixed;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+  outline: none;
+}
+
+input:focus, button:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Сброс стилей только для кнопок без классов */
+button:not([class]) {
+  border: none;
+  background: none;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.7;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+.animate-slide-in { animation: slideIn 0.2s ease-out; }
+.animate-slide-down { animation: slideDown 0.2s ease-out; }
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+.animate-pulse { animation: pulse 2s infinite; }
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border: 2px solid var(--border);
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.input-field:focus {
+  border-color: var(--primary);
+  background: var(--muted);
+}
+
+.input-field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  padding: 1.5rem;
+}
+
+/* Modal styles */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  background: var(--card);
+  border: 2px solid var(--border);
+  padding: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--foreground);
+  transition: all 0.15s;
+}
+
+.modal-close:hover {
+  background: var(--muted);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.modal-description {
+  color: var(--muted-foreground);
+  margin-bottom: 1rem;
+}
+
+.page-container {
+  min-height: 100vh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top { padding-top: env(safe-area-inset-top); }
+.safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }

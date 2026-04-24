@@ -1,0 +1,18 @@
+{
+  "name": "Balloo Android",
+  "version": "1.0.0",
+  "buildNumber": "1001",
+  "releaseDate": "2024-01-15",
+  "minimumSdk": "21",
+  "targetSdk": "34",
+  "size": "45MB",
+  "changelog": [
+    "Первый релиз Android приложения",
+    "Сквозное шифрование сообщений",
+    "Уведомления в реальном времени",
+    "Голосовые сообщения",
+    "Интеграция с Google Play"
+  ],
+  "downloadUrl": "/media/application/android/apk",
+  "supportedLanguages": ["ru", "en", "hi", "zh", "tt", "be", "ba", "cv", "sah", "udm", "ce", "os"]
+}

@@ -1,0 +1,74 @@
+{
+  "platforms": [
+    {
+      "name": "Android",
+      "code": "android",
+      "version": "1.0.0",
+      "releaseDate": "2024-01-15",
+      "downloadUrl": "/media/application/android/apk",
+      "manifestUrl": "/media/application/android/manifest.json",
+      "status": "available",
+      "features": ["Сквозное шифрование", "Уведомления", "Голосовые сообщения"]
+    },
+    {
+      "name": "iOS",
+      "code": "ios",
+      "version": "1.0.0",
+      "releaseDate": "2024-01-20",
+      "downloadUrl": "/media/application/ios/ipa",
+      "manifestUrl": "/media/application/ios/manifest.json",
+      "status": "available",
+      "features": ["Сквозное шифрование", "Уведомления", "FaceTime интеграция"]
+    },
+    {
+      "name": "Windows",
+      "code": "windows",
+      "version": "1.0.0",
+      "releaseDate": "2024-02-01",
+      "downloadUrl": "/media/application/windows/exe",
+      "manifestUrl": "/media/application/windows/manifest.json",
+      "status": "available",
+      "features": ["Сквозное шифрование", "Десктоп уведомления", "Системный трей"]
+    },
+    {
+      "name": "Linux (Deb/Arch)",
+      "code": "linux",
+      "version": "1.0.0",
+      "releaseDate": "2024-02-05",
+      "downloadUrl": "/media/application/linux/deb",
+      "manifestUrl": "/media/application/linux/manifest.json",
+      "status": "available",
+      "features": ["Сквозное шифрование", "AppImage", "DEB/RPM пакеты"]
+    },
+    {
+      "name": "macOS",
+      "code": "macos",
+      "version": "1.0.0",
+      "releaseDate": "2024-02-10",
+      "downloadUrl": "/media/application/macos/dmg",
+      "manifestUrl": "/media/application/macos/manifest.json",
+      "status": "available",
+      "features": ["Сквозное шифрование", "Уведомления", "Menu Bar"]
+    },
+    {
+      "name": "Web",
+      "code": "web",
+      "version": "1.0.0",
+      "releaseDate": "2024-01-01",
+      "downloadUrl": "/",
+      "manifestUrl": "/manifest.json",
+      "status": "available",
+      "features": ["Сквозное шифрование", PWA", "Кроссплатформенность"]
+    },
+    {
+      "name": "Git Repository",
+      "code": "git",
+      "version": "1.0.0",
+      "releaseDate": "2024-01-01",
+      "downloadUrl": "https://github.com/balloo/messenger",
+      "manifestUrl": null,
+      "status": "available",
+      "features": ["Исходный код", "Сборка вручную", "Вклад в развитие"]
+    }
+  ]
+}

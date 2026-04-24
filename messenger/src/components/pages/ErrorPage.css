@@ -1,0 +1,143 @@
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+}
+
+.error-main {
+  flex: 1;
+  padding: 4rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-content {
+  text-align: center;
+  max-width: 28rem;
+}
+
+.error-icon {
+  width: 6rem;
+  height: 6rem;
+  margin: 0 auto 1.5rem;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-icon-warning {
+  background: var(--destructive);
+  opacity: 0.2;
+}
+
+.error-icon-search {
+  background: var(--card);
+}
+
+.error-icon-lock {
+  background: var(--card);
+}
+
+.error-icon-wrench {
+  background: var(--card);
+  animation: pulse 2s infinite;
+}
+
+.error-code {
+  font-size: 3.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+
+.error-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.error-desc {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+  color: var(--muted-foreground);
+}
+
+.error-message {
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  border-radius: 0;
+  margin-bottom: 1.5rem;
+  background: var(--card);
+  color: var(--muted-foreground);
+}
+
+.error-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 0;
+  background: var(--card);
+}
+
+.error-timer-icon {
+  color: var(--primary);
+}
+
+.error-timer-value {
+  font-size: 1.25rem;
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.error-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .error-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.error-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.error-button-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.error-button-primary:hover {
+  opacity: 0.9;
+}
+
+.error-button-secondary {
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.error-button-secondary:hover {
+  background: var(--muted);
+}

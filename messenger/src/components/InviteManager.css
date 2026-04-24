@@ -1,0 +1,148 @@
+.invite-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.invite-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.invite-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-radius: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.invite-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.invite-code {
+  font-family: monospace;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.invite-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.invite-expires {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.invite-points {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #fbbf24;
+}
+
+.invite-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.invite-action {
+  padding: 0.5rem;
+  border-radius: 0;
+  color: var(--muted-foreground);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.invite-action:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.invite-action-delete:hover {
+  background: var(--destructive);
+  color: white;
+}
+
+.invite-create {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.invite-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.invite-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.invite-submit {
+  padding: 0.75rem;
+  border-radius: 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.invite-option.active {
+  border-color: var(--primary);
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.invite-submit {
+  padding: 0.75rem;
+  border-radius: 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.invite-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.invite-empty {
+  text-align: center;
+  padding: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}

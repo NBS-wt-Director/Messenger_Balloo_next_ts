@@ -1,0 +1,363 @@
+.invite-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+}
+
+.invite-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.invite-container {
+  width: 100%;
+  max-width: 500px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 0;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Loading state */
+.invite-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+}
+
+.invite-loading .spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.invite-loading p {
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+
+/* Error state */
+.invite-error,
+.invite-invalid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.invite-error-icon,
+.invite-invalid-icon {
+  color: var(--destructive);
+  opacity: 0.8;
+}
+
+.invite-error h1,
+.invite-invalid h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.invite-error p,
+.invite-invalid p {
+  color: var(--muted-foreground);
+  margin-bottom: 2rem;
+}
+
+/* Invite header */
+.invite-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.invite-avatar {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 1rem;
+  background: linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border);
+  color: white;
+  font-size: 32px;
+}
+
+.invite-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.invite-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.invite-type {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+/* Invite message */
+.invite-message {
+  background: var(--background);
+  border: 2px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.invite-message-content {
+  margin-bottom: 1rem;
+}
+
+.invite-message-content p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.invite-message-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.inviter-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.inviter-avatar {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.inviter-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.inviter-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--foreground);
+}
+
+.inviter-email {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* Invite info */
+.invite-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.invite-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+}
+
+.invite-info-item svg {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.invite-info-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.invite-info-label {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.invite-info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* Registration form */
+.invite-register {
+  background: var(--background);
+  border: 2px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.invite-register h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 1rem;
+}
+
+.invite-register .form-group {
+  margin-bottom: 1rem;
+}
+
+.invite-register label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.invite-register input {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--card);
+  border: 2px solid var(--border);
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.invite-register input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Actions */
+.invite-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.btn-full {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+  color: var(--foreground);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--muted);
+  border-color: var(--border);
+}
+
+/* Footer */
+.invite-footer {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 2px solid var(--border);
+}
+
+.invite-cancel {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.invite-cancel:hover {
+  color: var(--foreground);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .invite-container {
+    padding: 1.5rem;
+  }
+
+  .invite-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .invite-title {
+    font-size: 20px;
+  }
+
+  .invite-message {
+    padding: 1rem;
+  }
+
+  .invite-info-item {
+    padding: 0.5rem;
+  }
+
+  .invite-info-item svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .invite-register {
+    padding: 1rem;
+  }
+
+  .btn-full {
+    padding: 0.75rem 1rem;
+  }
+}

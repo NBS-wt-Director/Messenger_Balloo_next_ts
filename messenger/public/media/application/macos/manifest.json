@@ -1,0 +1,17 @@
+{
+  "name": "Balloo macOS",
+  "version": "1.0.0",
+  "buildNumber": "1001",
+  "releaseDate": "2024-02-10",
+  "minimumMacos": "11.0",
+  "size": "85MB",
+  "changelog": [
+    "Первый релиз macOS приложения",
+    "Сквозное шифрование сообщений",
+    "Уведомления через UserNotifications",
+    "Menu Bar интеграция",
+    "Optimized для Apple Silicon"
+  ],
+  "downloadUrl": "/media/application/macos/dmg",
+  "supportedLanguages": ["ru", "en", "hi", "zh", "tt", "be", "ba", "cv", "sah", "udm", "ce", "os"]
+}

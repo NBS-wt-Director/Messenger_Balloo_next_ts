@@ -1,0 +1,65 @@
+/* Меню выбора тем */
+.header-theme-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  min-width: 200px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  z-index: 200;
+  padding: 8px 0;
+}
+
+.header-theme-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  transition: all 0.15s;
+  border: 2px solid transparent;
+}
+
+.header-theme-option:hover {
+  background: var(--muted);
+  border-color: var(--border);
+}
+
+.header-theme-option.active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.header-theme-preview {
+  width: 32px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.dark-theme-preview {
+  background: linear-gradient(135deg, #000000 0%, #1c1c1c 100%);
+  border: 2px solid #404040;
+}
+
+.light-theme-preview {
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+  border: 2px solid #d4d4d4;
+}
+
+.russia-theme-preview {
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 33%, #0039a6 33%, #0039a6 66%, #d52b1e 66%, #d52b1e 100%);
+  border: 2px solid #d4af37;
+}
+
+.rotate-0 {
+  transform: rotate(0deg);
+}

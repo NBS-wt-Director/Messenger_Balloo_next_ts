@@ -1,0 +1,16 @@
+{
+  "name": "Balloo Linux",
+  "version": "1.0.0",
+  "buildNumber": "1001",
+  "releaseDate": "2024-02-05",
+  "size": "65MB",
+  "changelog": [
+    "Первый релиз Linux приложения",
+    "Сквозное шифрование сообщений",
+    "AppImage формат",
+    "DEB и RPM пакеты",
+    "Поддержка Arch Linux (AUR)"
+  ],
+  "downloadUrl": "/media/application/linux/deb",
+  "supportedLanguages": ["ru", "en", "hi", "zh", "tt", "be", "ba", "cv", "sah", "udm", "ce", "os"]
+}

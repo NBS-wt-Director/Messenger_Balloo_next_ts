@@ -1,0 +1,389 @@
+.invitations-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+}
+
+/* Header */
+.invitations-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border);
+  background: var(--card);
+}
+
+.invitations-back {
+  padding: 0.5rem;
+  background: var(--muted);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.invitations-back:hover {
+  background: var(--primary);
+}
+
+.invitations-header h1 {
+  flex: 1;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.invitations-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: 2px solid var(--primary);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.invitations-create-btn:hover {
+  background: transparent;
+  color: var(--primary);
+}
+
+/* Content */
+.invitations-content {
+  flex: 1;
+  padding: 1rem;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.invitations-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.invitations-empty svg {
+  color: var(--muted-foreground);
+  opacity: 0.5;
+}
+
+.invitations-empty h2 {
+  font-size: 1.25rem;
+  color: var(--foreground);
+}
+
+.invitations-empty p {
+  color: var(--muted-foreground);
+}
+
+.invitations-empty button {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.invitations-empty button:hover {
+  background: var(--primary-dark);
+}
+
+/* List */
+.invitations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Invitation Card */
+.invitation-card {
+  border: 2px solid var(--border);
+  background: var(--card);
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.invitation-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.invitation-card.expired,
+.invitation-card.used {
+  opacity: 0.6;
+}
+
+.invitation-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+}
+
+.invitation-chat-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.invitation-chat-name {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.invitation-chat-type {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+.invitation-status {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.invitation-status.active {
+  background: #10b981;
+  color: white;
+}
+
+.invitation-status.used {
+  background: #f59e0b;
+  color: white;
+}
+
+.invitation-status.expired {
+  background: #ef4444;
+  color: white;
+}
+
+.invitation-card-body {
+  padding: 1rem;
+}
+
+.invitation-link-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--muted);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.invitation-link-preview span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.invitation-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.invitation-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.invitation-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--background);
+}
+
+.btn-copy {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-copy:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.btn-copy:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-copy.success {
+  background: #10b981;
+}
+
+.btn-delete {
+  padding: 0.5rem;
+  background: transparent;
+  color: #ef4444;
+  border: 2px solid #ef4444;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Create Form */
+.create-invitation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.form-select,
+.form-input {
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 1rem;
+}
+
+.form-select:focus,
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  background: var(--muted);
+  color: var(--foreground);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: 2px solid var(--primary);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* Theme-specific adjustments */
+[data-theme="russia"] .invitation-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="russia"] .invitation-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .invitation-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .invitation-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .invitations-header h1 {
+    font-size: 1rem;
+  }
+
+  .invitations-create-btn span {
+    display: none;
+  }
+
+  .invitation-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .invitation-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Balloo iOS",
+  "version": "1.0.0",
+  "buildNumber": "1001",
+  "releaseDate": "2024-01-20",
+  "minimumIos": "13.0",
+  "size": "52MB",
+  "changelog": [
+    "Первый релиз iOS приложения",
+    "Сквозное шифрование сообщений",
+    "Push-уведомления через APNS",
+    "FaceTime интеграция",
+    "Интеграция с App Store"
+  ],
+  "downloadUrl": "/media/application/ios/ipa",
+  "supportedLanguages": ["ru", "en", "hi", "zh", "tt", "be", "ba", "cv", "sah", "udm", "ce", "os"]
+}
