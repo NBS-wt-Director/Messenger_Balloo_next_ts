@@ -1,0 +1,63 @@
+# Node
+node_modules/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Config (SECRETS!)
+config.json
+
+# Build outputs
+.next/
+dist/
+build/
+out/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Electron
+dist-electron/
+
+# Android
+*.keystore
+*.jks
+android/.gradle/
+android/build/
+
+# iOS
+ios/build/
+*.xcuserstate
+
+# Mobile
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/android/.gradle/
+
+# Desktop
+desktop/node_modules/
+desktop/dist/
+desktop/release/
+
+# Android Service
+android-service/node_modules/
+android-service/dist/
+android-service/android/.gradle/
+
+# Shared
+shared/node_modules/
+shared/dist/

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/migrate-sqlite.js && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
@@ -12,9 +12,17 @@
     "create-admin": "npx ts-node --project tsconfig.json -r tsconfig-paths/register scripts/create-admin.ts",
     "generate-vapid": "npx web-push generate-vapid-keys",
     "create-image-placeholders": "node scripts/create-image-placeholders.js",
-    "setup": "npm install && npm run create-image-placeholders"
+    "setup": "npm install && npm run create-image-placeholders && node scripts/migrate-sqlite.js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:deploy": "node scripts/migrate-sqlite.js",
+    "db:seed": "prisma db seed",
+    "db:setup": "node scripts/migrate-sqlite.js"
   },
   "dependencies": {
+    "@prisma/client": "^6.11.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -50,6 +58,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.0",
+    "prisma": "^6.11.0",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.7.0"
   }

@@ -1,0 +1,77 @@
+# Dependencies
+node_modules/
+
+# Production
+.next/
+out/
+build/
+dist/
+
+# Environment
+.env.local
+.env.production.local
+.env*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+
+# Misc
+*.log
+*.tmp
+*.cache
+
+# Config (SECRETS!)
+config.json
+
+# Database
+prisma/*.db
+*.sqlite
+*.sqlite3
+
+# Mobile
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/android/.gradle/
+mobile/android/.idea/
+mobile/ios/.xcode.env.local
+mobile/*.keystore
+mobile/*.jks
+
+# Desktop
+desktop/node_modules/
+desktop/dist/
+desktop/release/
+desktop/.electron/
+
+# Android Service
+android-service/node_modules/
+android-service/dist/
+android-service/android/.gradle/
+android-service/android/.idea/
+android-service/android/*.keystore
+
+# Shared
+shared/node_modules/
+shared/dist/
+
+# Logs
+*.log
+logs/

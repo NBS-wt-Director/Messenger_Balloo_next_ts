@@ -1,4 +1,5 @@
-'use client';
+ 
+ 'use client';
 
 import { useState, useEffect } from 'react';
 import { useSettingsStore } from '@/stores/settings-store';
@@ -84,7 +85,7 @@ export default function SupportPage() {
   const sbpPhone = sbpSection?.data?.phone || '8 (912) 202-30-35';
   const sbpBank = sbpSection?.data?.bank || 'Сбербанк';
   const sbpRecipient = sbpSection?.data?.recipient || 'Иван Оберюхтин';
-  const qrCodeUrl = qrSection?.data?.qrCodeUrl || null;
+  const qrCodeUrl = qrSection?.data?.qrCodeUrl || '/qr_helpus.jpg';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>

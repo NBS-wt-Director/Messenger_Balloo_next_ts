@@ -1,0 +1,335 @@
+ // Prisma Schema for Balloo Messenger
+// Database: SQLite (встроенная в проект)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ===== USER MODEL =====
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  avatar       String?
+  fullName     String?
+  birthDate    Int?
+  isAdmin      Boolean  @default(false)
+  isSuperAdmin Boolean  @default(false)
+  adminRoles   Json
+  adminSince   Int?
+  publicKey    String?
+  createdAt    DateTime @default(now())
+  lastSeen     DateTime?
+  isOnline     Boolean  @default(false)
+  status       String?
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  familyRelations    FamilyRelation[]
+  sentInvitations    Invitation[]          @relation("sentInvitations")
+  usedInvitations    InvitationUse[]
+  chats              ChatMember[]
+  messages           Message[]
+  contacts           Contact[]
+  notifications      Notification[]
+  reportCreated      Report[]              @relation("reportedBy")
+  reportReviewed     Report[]              @relation("reviewedBy")
+  favoriteChats      ChatFavorite[]
+  pinnedChats        ChatPinned[]
+  featureVotes       FeatureVote[]
+  featureCreated     Feature[]             @relation("createdBy")
+  pageCreated        Page[]                @relation("createdBy")
+  relatedUsers       FamilyRelation[]      @relation("FamilyRelations")
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+// ===== FAMILY RELATION MODEL =====
+model FamilyRelation {
+  id             String   @id @default(cuid())
+  userId         String
+  relatedUserId  String
+  type           String // parent, child, sibling, spouse, other
+  createdAt      DateTime @default(now())
+
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  relatedUser    User   @relation("FamilyRelations", fields: [relatedUserId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, relatedUserId, type])
+  @@index([userId])
+}
+
+// ===== CHAT MODEL =====
+model Chat {
+  id             String   @id @default(cuid())
+  type           String   // private, group
+  name           String?
+  avatar         String?
+  description    String?
+  createdBy      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  isSystemChat   Boolean  @default(false)
+
+  // Relations
+  members      ChatMember[]
+  messages     Message[]
+  invites      Invitation[]
+  favorites    ChatFavorite[]
+  pinned       ChatPinned[]
+  reports      Report[]
+  onChat       Contact[]      @relation("ContactChat")
+
+  @@index([type])
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+// ===== CHAT MEMBER MODEL =====
+model ChatMember {
+  id                String   @id @default(cuid())
+  chatId            String
+  userId            String
+  role              String   // owner, admin, member
+  joinedAt          DateTime @default(now())
+  lastReadMessageId String?
+
+  chat     Chat  @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user     User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([chatId])
+  @@index([userId])
+}
+
+// ===== MESSAGE MODEL =====
+model Message {
+  id           String   @id @default(cuid())
+  chatId       String
+  senderId     String
+  type         String   // text, image, video, file, audio
+  content      String
+  mediaUrl     String?
+  thumbnailUrl String?
+  fileName     String?
+  fileSize     Int?
+  mimeType     String?
+  replyToId    String?
+  readBy       Json
+  status       String   // sending, sent, delivered, read
+  edited       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  chat          Chat             @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender        User             @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo       Message?         @relation("MessageReplies", fields: [replyToId], references: [id])
+  replyMessages Message[]        @relation("MessageReplies")
+  reactions     MessageReaction[]
+
+  @@index([chatId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+// ===== MESSAGE REACTION MODEL =====
+model MessageReaction {
+  id        String   @id @default(cuid())
+  messageId String
+  emoji     String
+  userId    String
+  createdAt DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, emoji, userId])
+  @@index([messageId])
+}
+
+// ===== INVITATION MODEL =====
+model Invitation {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  chatId       String?
+  createdBy    String
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+  isPermanent  Boolean  @default(false)
+  maxUses      Int?
+  usedCount    Int      @default(0)
+  pointsReward Int      @default(0)
+
+  chat       Chat?             @relation(fields: [chatId], references: [id])
+  creator    User              @relation("sentInvitations", fields: [createdBy], references: [id])
+  uses       InvitationUse[]
+
+  @@index([code])
+  @@index([createdBy])
+  @@index([expiresAt])
+}
+
+// ===== INVITATION USE MODEL =====
+model InvitationUse {
+  id           String   @id @default(cuid())
+  invitationId String
+  userId       String
+  usedAt       DateTime @default(now())
+
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([invitationId, userId])
+  @@index([invitationId])
+}
+
+// ===== CONTACT MODEL =====
+model Contact {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  phone     String?
+  email     String?
+  avatar    String?
+  chatId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat  Chat? @relation("ContactChat", fields: [chatId], references: [id])
+
+  @@index([userId])
+  @@index([phone])
+  @@index([email])
+}
+
+// ===== NOTIFICATION MODEL =====
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  icon      String?
+  badge     String?
+  data      Json?
+  timestamp DateTime @default(now())
+  isRead    Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([timestamp])
+  @@index([isRead])
+}
+
+// ===== REPORT MODEL =====
+model Report {
+  id          String   @id @default(cuid())
+  targetType  String   // user, chat, message, contact
+  targetId    String
+  reportedBy  String
+  reason      String   // spam, harassment, inappropriate, fake, other
+  description String?
+  status      String   // pending, reviewed, resolved, rejected
+  createdAt   DateTime @default(now())
+  reviewedAt  DateTime?
+  reviewedBy  String?
+
+  reporter  User  @relation("reportedBy", fields: [reportedBy], references: [id])
+  reviewer  User? @relation("reviewedBy", fields: [reviewedBy], references: [id])
+  chat      Chat? @relation(fields: [targetId], references: [id])
+
+  @@index([targetType])
+  @@index([targetId])
+  @@index([reportedBy])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ===== FAVORITE CHAT MODEL =====
+model ChatFavorite {
+  id        String   @id @default(cuid())
+  chatId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([userId])
+}
+
+// ===== PINNED CHAT MODEL =====
+model ChatPinned {
+  id        String   @id @default(cuid())
+  chatId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([userId])
+}
+
+// ===== FEATURE MODEL =====
+model Feature {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String   // general, ui, security, performance
+  status      String   // pending, planned, in-progress, completed, rejected
+  votes       Int      @default(0)
+  adminNote   String?
+  plannedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
+
+  creator User         @relation("createdBy", fields: [createdBy], references: [id])
+  featureVotes FeatureVote[]
+
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+}
+
+// ===== FEATURE VOTE MODEL =====
+model FeatureVote {
+  id        String   @id @default(cuid())
+  featureId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  feature Feature @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([featureId, userId])
+  @@index([featureId])
+}
+
+// ===== PAGE MODEL =====
+model Page {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  sections  Json?
+  metadata  Json?
+  isActive  Boolean  @default(true)
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creator User @relation("createdBy", fields: [createdBy], references: [id])
+
+  @@index([isActive])
+}

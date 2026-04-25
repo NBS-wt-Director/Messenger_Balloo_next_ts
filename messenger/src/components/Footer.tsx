@@ -19,10 +19,10 @@ export function Footer() {
         <div className="footer-brand">
           <Link href="/" className="footer-logo-link">
             <Logo 
-              src="/logo.png" 
+              src="/logo.jpg" 
               alt="Balloo Messenger" 
               size="sm"
-              showText={true}
+              showText={false}
             />
           </Link>
           <div className="footer-company">

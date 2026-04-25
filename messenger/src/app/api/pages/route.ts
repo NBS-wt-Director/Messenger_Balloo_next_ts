@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
 import { logger } from '@/lib/logger';
+import { prisma } from '@/lib/prisma';
 
 /**
  * GET /api/pages - Получить контент страницы
@@ -18,10 +18,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const pagesCollection = db.pages;
-
-    const page = await pagesCollection.findOne(slug).exec();
+    const page = await prisma.page.findUnique({
+      where: { id: slug }
+    });
 
     if (!page) {
       // Возвращаем дефолтный контент если страница не найдена
@@ -34,7 +33,17 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      page: page.toJSON(),
+      page: {
+        id: page.id,
+        title: page.title,
+        content: page.content,
+        sections: page.sections,
+        metadata: page.metadata,
+        isActive: page.isActive,
+        createdBy: page.createdBy,
+        createdAt: page.createdAt,
+        updatedAt: page.updatedAt
+      },
       isDefault: false
     });
   } catch (error: any) {
@@ -67,29 +76,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const pagesCollection = db.pages;
-
-    const existingPage = await pagesCollection.findOne(slug).exec();
     const now = Date.now();
 
-    if (existingPage) {
-      // Обновление существующей
-      await existingPage.patch({
-        title,
-        content: content || existingPage.content,
-        sections: sections || existingPage.sections,
-        metadata: metadata || existingPage.metadata,
-        updatedAt: now
-      });
-
-      return NextResponse.json({
-        success: true,
-        message: 'Страница обновлена'
-      });
-    } else {
-      // Создание новой
-      await pagesCollection.insert({
+    const updatedPage = await prisma.page.upsert({
+      where: { id: slug },
+      create: {
         id: slug,
         title,
         content: content || '',
@@ -97,15 +88,23 @@ export async function POST(request: NextRequest) {
         metadata: metadata || {},
         isActive: true,
         createdBy: 'admin',
-        createdAt: now,
-        updatedAt: now
-      });
+        createdAt: new Date(now),
+        updatedAt: new Date(now)
+      },
+      update: {
+        title,
+        content: content || undefined,
+        sections: sections || undefined,
+        metadata: metadata || undefined,
+        updatedAt: new Date(now)
+      }
+    });
 
-      return NextResponse.json({
-        success: true,
-        message: 'Страница создана'
-      });
-    }
+    return NextResponse.json({
+      success: true,
+      page: updatedPage,
+      message: 'Страница сохранена'
+    });
   } catch (error: any) {
     logger.error('[API] Error saving page:', error);
     return NextResponse.json(

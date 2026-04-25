@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { User, MapPin, Dumbbell, Code, Heart, Coffee, Shield, Zap } from 'lucide-react';
+import { User, MapPin, Dumbbell, Code, Heart, Coffee, Shield, Zap, MessageCircle, Image, FileText, Monitor, Video, Moon, MessageSquare } from 'lucide-react';
 
 interface PageSection {
   id: string;
@@ -282,6 +283,114 @@ export default function AboutCompanyPage() {
                 </h3>
                 <p style={{ color: 'var(--muted-foreground)' }}>
                   Прозрачная разработка и обратная связь с пользователями
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Features Section */}
+          <div style={{ 
+            padding: '40px', 
+            border: '2px solid var(--border)', 
+            background: 'var(--card)',
+            borderRadius: '16px',
+            marginBottom: '30px'
+          }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '25px', color: 'var(--foreground)' }}>
+              Функции Balloo
+            </h2>
+            <p style={{ marginBottom: '25px', color: 'var(--muted-foreground)' }}>
+              Полный набор возможностей для комфортного общения
+            </p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <MessageCircle size={32} style={{ marginBottom: '15px', color: '#3b82f6' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Личные чаты
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Общайтесь один на один с шифрованием
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <MessageSquare size={32} style={{ marginBottom: '15px', color: '#8b5cf6' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Группы
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Создавайте группы до 1000 участников
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <Image size={32} style={{ marginBottom: '15px', color: '#10b981' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Медиа
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Отправляйте фото, видео и файлы
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <Shield size={32} style={{ marginBottom: '15px', color: '#f59e0b' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Сквозное шифрование
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Все сообщения шифруются на устройстве отправителя
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <Zap size={32} style={{ marginBottom: '15px', color: '#ec4899' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Аудиосообщения
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Отправляйте голосовые сообщения с регулировкой скорости
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <FileText size={32} style={{ marginBottom: '15px', color: '#06b6d4' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Обмен файлами
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Отправляйте файлы до 2 ГБ с облачным хранением
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <Monitor size={32} style={{ marginBottom: '15px', color: '#6366f1' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Мультиустройство
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Используйте Balloo на нескольких устройствах
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <Video size={32} style={{ marginBottom: '15px', color: '#ef4444' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Видеозвонки
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Качественные видеозвонки до 10 участников
+                </p>
+              </div>
+
+              <div style={{ padding: '25px', background: 'var(--background-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <Moon size={32} style={{ marginBottom: '15px', color: '#7c3aed' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  Тёмная тема
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--muted-foreground)' }}>
+                  Удобная тёмная тема для вечернего использования
                 </p>
               </div>
             </div>

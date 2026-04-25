@@ -6,7 +6,7 @@ import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { MessageCircle, Shield, Zap, Users, Download, ArrowRight, Heart, Globe } from 'lucide-react';
+import { MessageCircle, Shield, Zap, Users, Download, ArrowRight, Heart, Globe, Image, FileText, Monitor, Video, Moon } from 'lucide-react';
 
 export default function Home() {
   const { isAuthenticated } = useAuthStore();
@@ -17,7 +17,7 @@ export default function Home() {
     {
       icon: Shield,
       title: translations.security || 'Безопасность',
-      description: translations.securityDesc || 'Сквозное шифрование защищает ваши сообщения',
+      description: translations.securityDesc || 'Ваши данные защищены сквозным шифрованием',
       color: '#3b82f6'
     },
     {
@@ -29,14 +29,26 @@ export default function Home() {
     {
       icon: Users,
       title: translations.community || 'Сообщество',
-      description: translations.communityDesc || 'Миллионы пользователей доверяют Balloo',
+      description: translations.communityDesc || 'Миллионы пользователей по всему миру',
       color: '#10b981'
     },
     {
-      icon: Globe,
-      title: translations.global || 'Глобально',
-      description: translations.globalDesc || 'Доступно на 12 языках мира',
+      icon: MessageCircle,
+      title: translations.privateChats || 'Личные чаты',
+      description: translations.privateChatsDesc || 'Общайтесь один на один с шифрованием',
       color: '#f59e0b'
+    },
+    {
+      icon: MessageCircle,
+      title: translations.groups || 'Группы',
+      description: translations.groupsDesc || 'Создавайте группы до 1000 участников',
+      color: '#ec4899'
+    },
+    {
+      icon: Image,
+      title: translations.media || 'Медиа',
+      description: translations.mediaDesc || 'Отправляйте фото, видео и файлы',
+      color: '#06b6d4'
     }
   ];
 
@@ -155,7 +167,8 @@ export default function Home() {
                   padding: '32px',
                   background: 'var(--card)',
                   border: '2px solid var(--border)',
-                  transition: 'all 0.15s'
+                  transition: 'all 0.15s',
+                  borderRadius: '16px'
                 }}>
                   <div style={{
                     width: '64px',
@@ -165,7 +178,7 @@ export default function Home() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginBottom: '20px',
-                    border: '3px solid var(--primary-foreground)'
+                    borderRadius: '12px'
                   }}>
                     <feature.icon size={32} color="white" />
                   </div>
@@ -185,6 +198,127 @@ export default function Home() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Extended Features Section */}
+        <section style={{ padding: '80px 24px', background: 'var(--background-secondary)', borderTop: '2px solid var(--border)', borderBottom: '2px solid var(--border)' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <h2 style={{
+              fontSize: '36px',
+              fontWeight: '800',
+              textAlign: 'center',
+              marginBottom: '20px',
+              color: 'var(--foreground)'
+            }}>
+              {translations.features || 'Функции'}
+            </h2>
+            <p style={{
+              fontSize: '18px',
+              textAlign: 'center',
+              color: 'var(--muted-foreground)',
+              marginBottom: '60px',
+              maxWidth: '700px',
+              margin: '0 auto 60px'
+            }}>
+              {translations.ballooDescription || 'Полный набор возможностей для комфортного общения'}
+            </p>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '30px'
+            }}>
+              <div style={{
+                padding: '30px',
+                background: 'var(--card)',
+                border: '2px solid var(--border)',
+                borderRadius: '16px'
+              }}>
+                <Shield size={40} style={{ marginBottom: '15px', color: '#3b82f6' }} />
+                <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  {translations.endToEndEncryption || 'Сквозное шифрование'}
+                </h3>
+                <p style={{ color: 'var(--muted-foreground)' }}>
+                  {translations.endToEndEncryptionDesc || 'Все сообщения шифруются на устройстве отправителя'}
+                </p>
+              </div>
+
+              <div style={{
+                padding: '30px',
+                background: 'var(--card)',
+                border: '2px solid var(--border)',
+                borderRadius: '16px'
+              }}>
+                <Zap size={40} style={{ marginBottom: '15px', color: '#eab308' }} />
+                <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  {translations.voiceMessages || 'Аудиосообщения'}
+                </h3>
+                <p style={{ color: 'var(--muted-foreground)' }}>
+                  {translations.voiceMessagesDesc || 'Отправляйте голосовые сообщения с регулировкой скорости'}
+                </p>
+              </div>
+
+              <div style={{
+                padding: '30px',
+                background: 'var(--card)',
+                border: '2px solid var(--border)',
+                borderRadius: '16px'
+              }}>
+                <FileText size={40} style={{ marginBottom: '15px', color: '#10b981' }} />
+                <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  {translations.fileSharing || 'Обмен файлами'}
+                </h3>
+                <p style={{ color: 'var(--muted-foreground)' }}>
+                  {translations.fileSharingDesc || 'Отправляйте файлы до 2 ГБ с облачным хранением'}
+                </p>
+              </div>
+
+              <div style={{
+                padding: '30px',
+                background: 'var(--card)',
+                border: '2px solid var(--border)',
+                borderRadius: '16px'
+              }}>
+                <Monitor size={40} style={{ marginBottom: '15px', color: '#8b5cf6' }} />
+                <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  {translations.multiDevice || 'Мультиустройство'}
+                </h3>
+                <p style={{ color: 'var(--muted-foreground)' }}>
+                  {translations.multiDeviceDesc || 'Используйте Balloo на нескольких устройствах'}
+                </p>
+              </div>
+
+              <div style={{
+                padding: '30px',
+                background: 'var(--card)',
+                border: '2px solid var(--border)',
+                borderRadius: '16px'
+              }}>
+                <Video size={40} style={{ marginBottom: '15px', color: '#ec4899' }} />
+                <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  {translations.videoCalls || 'Видеозвонки'}
+                </h3>
+                <p style={{ color: 'var(--muted-foreground)' }}>
+                  {translations.videoCallsDesc || 'Качественные видеозвонки до 10 участников'}
+                </p>
+              </div>
+
+              <div style={{
+                padding: '30px',
+                background: 'var(--card)',
+                border: '2px solid var(--border)',
+                borderRadius: '16px'
+              }}>
+                <Moon size={40} style={{ marginBottom: '15px', color: '#6366f1' }} />
+                <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: 'var(--foreground)' }}>
+                  {translations.darkMode || 'Тёмная тема'}
+                </h3>
+                <p style={{ color: 'var(--muted-foreground)' }}>
+                  {translations.darkModeDesc || 'Удобная тёмная тема для вечернего использования'}
+                </p>
+              </div>
             </div>
           </div>
         </section>

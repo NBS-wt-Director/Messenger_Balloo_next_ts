@@ -6,7 +6,7 @@
     "url": "http://localhost:3000"
   },
   "auth": {
-    "jwtSecret": "balloo-super-secret-jwt-key-change-in-production-2024",
+    "jwtSecret": "RnTytYjfV1Np5dEi4J8vroMHG2uPFKUCZx9DQ3eqbLOX0hSI6zWkgscmAlBa7w",
     "jwtExpiresIn": "7d",
     "bcryptRounds": 10
   },
@@ -35,7 +35,7 @@
   },
   "admin": {
     "superAdminEmail": "admin@balloo.ru",
-    "defaultAdminPassword": "Admin123!"
+    "defaultAdminPassword": "BallooAdmin2024!SecurePass#XyZ"
   },
   "testUsers": [
     {

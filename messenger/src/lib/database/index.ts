@@ -1,4 +1,5 @@
-/**
+ 
+ /**
  * RxDB Database Setup
  * РЕАЛЬНАЯ инициализация базы данных с IndexedDB
  * Главный файл для работы с БД
@@ -6,6 +7,8 @@
 
 import { RxDatabase, RxCollection, createRxDatabase } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { addRxPlugin } from 'rxdb';
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
 // ===== СХЕМЫ =====
@@ -348,6 +351,23 @@ export async function getDatabase(): Promise<RxDatabase<BallooCollections>> {
         console.log('[DB] Инициализация базы данных...');
       }
       
+      // Добавляем плагин dev-mode для отладки (только в development)
+      if (process.env.NODE_ENV === 'development') {
+        addRxPlugin(RxDBDevModePlugin);
+      }
+      
+      // Удаляем старую базу данных если есть (для миграции)
+      try {
+        const existingDbs = await indexedDB.databases();
+        if (existingDbs.some(db => db.name === 'balloo')) {
+          console.log('[DB] Обнаружена старая база, очистка...');
+          await indexedDB.deleteDatabase('balloo');
+        }
+      } catch (e) {
+        // indexedDB.databases() может не поддерживаться в некоторых браузерах
+        console.log('[DB] Проверка старых баз не доступна');
+      }
+      
       // Создаём базу данных с Dexie.js storage (IndexedDB)
       const database = await createRxDatabase<BallooCollections>({
         name: 'balloo',
@@ -355,8 +375,7 @@ export async function getDatabase(): Promise<RxDatabase<BallooCollections>> {
           storage: getRxStorageDexie()
         }),
         multiInstance: true,
-        ignoreDuplicate: true,
-        eventReduce: true
+        ignoreDuplicate: true
       });
 
       // Создаём все коллекции

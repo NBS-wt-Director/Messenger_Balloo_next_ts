@@ -1,6 +1,7 @@
+
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
 import { logger } from '@/lib/logger';
+import { prisma } from '@/lib/prisma';
 
 /**
  * GET /api/features - Получить список функций
@@ -11,20 +12,33 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || 'all';
 
-    const db = await getDatabase();
-    const featuresCollection = db.features;
-
-    let query = featuresCollection.find();
-
+    const where: any = {};
     if (status !== 'all') {
-      query = query.where('status').eq(status);
+      where.status = status;
     }
 
-    const features = await query.exec();
+    const features = await prisma.feature.findMany({
+      where,
+      include: { featureVotes: true },
+      orderBy: { createdAt: 'desc' }
+    });
 
     return NextResponse.json({
       success: true,
-      features: features.map(f => f.toJSON())
+      features: features.map(f => ({
+        id: f.id,
+        title: f.title,
+        description: f.description,
+        category: f.category,
+        status: f.status,
+        votes: f.featureVotes.length,
+        adminNote: f.adminNote,
+        plannedAt: f.plannedAt,
+        completedAt: f.completedAt,
+        createdAt: f.createdAt,
+        updatedAt: f.updatedAt,
+        createdBy: f.createdBy
+      }))
     });
   } catch (error: any) {
     logger.error('[API] Error fetching features:', error);
@@ -56,32 +70,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const featuresCollection = db.features;
+    const now = new Date();
 
-    const featureId = `feat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const now = Date.now();
-
-    const newFeature = await featuresCollection.insert({
-      id: featureId,
-      title,
-      description,
-      category: category || 'general',
-      status: 'pending', // pending, planned, in-progress, completed, rejected
-      votes: 0,
-      votedBy: [],
-      createdBy: userId,
-      createdByName: userName || 'Аноним',
-      adminNote: '',
-      plannedAt: null,
-      completedAt: null,
-      createdAt: now,
-      updatedAt: now
+    const newFeature = await prisma.feature.create({
+      data: {
+        id: `feat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        title,
+        description,
+        category: category || 'general',
+        status: 'pending',
+        votes: 0,
+        adminNote: '',
+        plannedAt: null,
+        completedAt: null,
+        createdBy: userId,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      include: { featureVotes: false }
     });
 
     return NextResponse.json({
       success: true,
-      feature: newFeature.toJSON(),
+      feature: {
+        id: newFeature.id,
+        title: newFeature.title,
+        description: newFeature.description,
+        category: newFeature.category,
+        status: newFeature.status,
+        votes: newFeature.votes,
+        createdBy: newFeature.createdBy,
+        createdAt: newFeature.createdAt,
+        updatedAt: newFeature.updatedAt
+      },
       message: 'Функция предложена! Спасибо за ваш вклад.'
     });
   } catch (error: any) {
@@ -108,25 +129,18 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const featuresCollection = db.features;
-
-    const feature = await featuresCollection.findOne(featureId).exec();
-
-    if (!feature) {
-      return NextResponse.json(
-        { error: 'Функция не найдена' },
-        { status: 404 }
-      );
-    }
-
-    await feature.patch({
-      ...updates,
-      updatedAt: Date.now()
+    const updatedFeature = await prisma.feature.update({
+      where: { id: featureId },
+      data: {
+        ...updates,
+        updatedAt: new Date()
+      },
+      include: { featureVotes: false }
     });
 
     return NextResponse.json({
       success: true,
+      feature: updatedFeature,
       message: 'Функция обновлена'
     });
   } catch (error: any) {
@@ -153,19 +167,9 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const featuresCollection = db.features;
-
-    const feature = await featuresCollection.findOne(featureId).exec();
-
-    if (!feature) {
-      return NextResponse.json(
-        { error: 'Функция не найдена' },
-        { status: 404 }
-      );
-    }
-
-    await feature.remove();
+    await prisma.feature.delete({
+      where: { id: featureId }
+    });
 
     return NextResponse.json({
       success: true,

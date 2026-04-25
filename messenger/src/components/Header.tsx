@@ -155,7 +155,7 @@ export function Header() {
                 setUserMenuOpen(false);
               }}>
                 <Logo 
-                  src="/logo.png" 
+                  src="/logo.jpg" 
                   alt="Balloo Messenger" 
                   size="md"
                   showText={true}
