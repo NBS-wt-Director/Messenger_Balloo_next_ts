@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Mail, AlertCircle, CheckCircle, Key } from 'lucide-react';
+import { Mail, AlertCircle, CheckCircle, Key, ArrowLeft } from 'lucide-react';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n/translations';
+import './forgot-password.css';
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -45,148 +46,80 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'var(--background)' }}>
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div style={{ maxWidth: '420px', width: '100%' }}>
+    <div className="auth-page">
+      <main className="auth-main">
+        <div className="auth-container">
+          {/* Кнопка назад */}
+          <button 
+            className="back-button"
+            onClick={() => router.push('/login')}
+          >
+            <ArrowLeft size={20} />
+            <span>Назад</span>
+          </button>
+
           {/* Логотип */}
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <div style={{ 
-              width: '60px', 
-              height: '60px', 
-              margin: '0 auto 16px', 
-              borderRadius: '12px', 
-              background: 'var(--primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Key size={30} color="white" />
+          <div className="auth-logo">
+            <div className="auth-logo-icon">
+              <Key size={40} />
             </div>
-            <h1 style={{ color: 'var(--foreground)', marginBottom: '8px' }}>Забыли пароль?</h1>
-            <p style={{ color: 'var(--muted-foreground)' }}>
-              Введите ваш email для восстановления доступа
+            <h1 className="auth-logo-title">
+              {t.forgotPassword || 'Забыли пароль?'}
+            </h1>
+            <p className="auth-logo-subtitle">
+              {t.resetPasswordDesc || 'Введите ваш email для восстановления доступа'}
             </p>
           </div>
 
           {/* Форма */}
-          <div style={{ 
-            background: 'var(--card)', 
-            borderRadius: '16px', 
-            padding: '24px',
-            border: '1px solid var(--border)'
-          }}>
+          <form onSubmit={handleSubmit} className="auth-form">
             {success && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '12px',
-                backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                borderRadius: '8px',
-                marginBottom: '16px',
-                color: '#27ae60'
-              }}>
+              <div className="auth-success">
                 <CheckCircle size={20} />
                 <span>Инструкция отправлена на email!</span>
               </div>
             )}
 
             {error && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '12px',
-                backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderRadius: '8px',
-                marginBottom: '16px',
-                color: '#e74c3c'
-              }}>
+              <div className="auth-error">
                 <AlertCircle size={20} />
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ 
-                  fontSize: '14px', 
-                  fontWeight: '500', 
-                  color: 'var(--muted-foreground)' 
-                }}>
-                  Email
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <Mail 
-                    size={18} 
-                    style={{ 
-                      position: 'absolute', 
-                      left: '12px', 
-                      top: '50%', 
-                      transform: 'translateY(-50%)',
-                      color: 'var(--muted-foreground)'
-                    }} 
-                  />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '12px 12px 12px 40px',
-                      borderRadius: '8px',
-                      border: '1px solid var(--border)',
-                      background: 'var(--background)',
-                      color: 'var(--foreground)',
-                      fontSize: '14px',
-                      outline: 'none'
-                    }}
-                    placeholder="example@email.com"
-                    required
-                  />
-                </div>
+            <div className="auth-form-group">
+              <label className="auth-label">{t.email}</label>
+              <div className="auth-input-wrapper">
+                <Mail 
+                  size={18} 
+                  className="auth-input-icon-left"
+                />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="auth-input"
+                  placeholder="example@email.com"
+                  required
+                />
               </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                style={{
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: !isLoading ? 'var(--primary)' : 'var(--border)',
-                  color: 'white',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  cursor: !isLoading ? 'pointer' : 'not-allowed',
-                  marginTop: '8px'
-                }}
-              >
-                {isLoading ? 'Отправка...' : 'Восстановить пароль'}
-              </button>
-            </form>
-
-            <div style={{ 
-              marginTop: '16px', 
-              textAlign: 'center',
-              paddingTop: '16px',
-              borderTop: '1px solid var(--border)'
-            }}>
-              <button
-                onClick={() => router.push('/login')}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--primary)',
-                  fontSize: '14px',
-                  cursor: 'pointer',
-                  textDecoration: 'underline'
-                }}
-              >
-                Вернуться на вход
-              </button>
             </div>
-          </div>
+
+            <button type="submit" disabled={isLoading} className="auth-submit">
+              {isLoading ? t.loading : (t.resetPassword || 'Восстановить пароль')}
+            </button>
+          </form>
+
+          {/* Ссылка на вход */}
+          <p className="auth-footer">
+            <span>{t.rememberPassword || 'Вспомнили пароль?'}</span>{' '}
+            <button
+              onClick={() => router.push('/login')}
+              className="auth-footer-link"
+            >
+              {t.login || 'Войти'}
+            </button>
+          </p>
         </div>
       </main>
     </div>
