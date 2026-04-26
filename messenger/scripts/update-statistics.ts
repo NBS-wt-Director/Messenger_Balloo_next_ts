@@ -258,4 +258,4 @@ function main() {
   console.log('\n✅ Готово!');
 }
 
-main().catch(console.error);
+main();

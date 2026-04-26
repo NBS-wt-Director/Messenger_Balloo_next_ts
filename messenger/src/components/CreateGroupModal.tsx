@@ -61,7 +61,7 @@ export function CreateGroupModal({ isOpen, onClose }: CreateGroupModalProps) {
     setError('');
 
     try {
-      const response = await fetch('/api/chats/group', {
+      const response = await fetch('/api/chats/group/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

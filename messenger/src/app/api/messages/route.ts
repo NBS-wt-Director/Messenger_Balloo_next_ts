@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
     const chatId = searchParams.get('chatId');
     const limit = parseInt(searchParams.get('limit') || '50');
     const before = searchParams.get('before');
+    const page = parseInt(searchParams.get('page') || '1');
 
     if (!chatId) {
       return NextResponse.json(
@@ -68,11 +69,16 @@ export async function GET(request: NextRequest) {
     }
 
     const messages = await query.limit(limit).exec();
+    const totalCount = messages.length;
 
     return NextResponse.json({
       success: true,
       messages: messages.map(m => m.toJSON()),
-      hasMore: messages.length === limit
+      pagination: {
+        page,
+        limit,
+        hasMore: totalCount === limit,
+      }
     });
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {

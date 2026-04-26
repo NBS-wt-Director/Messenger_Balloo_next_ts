@@ -3,18 +3,44 @@
 
 **Безопасный мессенджер с PWA и Push-уведомлениями**
 
+**Статус:** ✅ **Production Ready** | **Build:** ✓ Passing
+
 ---
 
-## 🚀 Быстрый Старт
+## 🚀 Быстрый Деплой
+
+### Vercel (Рекомендуется - 5 минут)
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+### Railway (7 минут)
+```bash
+npm i -g @railway/cli
+railway login
+railway up
+```
+
+### Собственный сервер (30 минут)
+Смотрите [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
+
+---
+
+## 📋 Быстрый Старт (Local)
 
 ```bash
 # 1. Установка зависимостей
 npm install
 
-# 2. Создание тестовых пользователей и чатов
-npm run setup-test-data
+# 2. Настройка окружения
+cp .env.example .env.local
+# Отредактируйте .env.local и заполните переменные
 
-# 3. Запуск разработки
+# 3. Инициализация БД
+npm run db:setup
+
+# 4. Запуск разработки
 npm run dev
 ```
 
@@ -35,18 +61,96 @@ npm run dev
 
 ## ✨ Функции
 
+### Аутентификация и профиль
 - 🔒 **E2E шифрование** - TweetNaCl (NaCl)
 - 🔐 **JWT авторизация** - email/пароль + Яндекс.ID
-- 📎 **Вложения** - Яндекс.Диск API
-- 👥 **Групповые чаты** - роли: создатель, модератор, автор, читатель
+- ✅ **Подтверждение email** - AUTH-005
+- ✅ **Восстановление пароля** - AUTH-006 (с кнопкой на странице входа)
+- ✅ **Загрузка аватарки** - AUTH-203 (с оптимизацией)
+- ✅ **Смена пароля** - AUTH-204
+- ⏳ **Привязка Яндекс.Диска** - AUTH-206 (API готово)
+
+### Групповые чаты
+- 👥 **Создание группы** - CHAT-101
+- 👥 **Управление участниками** - CHAT-102 (с пагинацией)
+- 🎭 **Роли: creator/moderator/author/reader** - CHAT-103
+- 🎭 **Назначение ролей** - CHAT-104
+- 🚪 **Выход из группы** - CHAT-105
+- 🔗 **Пригласительные ссылки** - CHAT-107
+
+### Сообщения и вложения
+- 📨 **Пересылка сообщений** - MSG-007
+- 🎥 **Загрузка видео** - MSG-103, MSG-104
+- 📄 **Загрузка документов** - MSG-105, MSG-106
+- 👁️ **Предпросмотр вложений** - MSG-109
 - ⭐ **Избранное** - избранные чаты и сообщения
 - 😊 **16 реакций** - эмодзи реакции
+
+### Дополнительные функции
 - 📱 **PWA** - установка как приложения
 - 🔔 **Push-уведомления** - Web Push API
 - 🌍 **4 языка** - русский, хинди, китайский, татарский
 - 🌓 **3 темы** - тёмная, светлая, Россия
 - 📞 **Видеозвонки** - WebRTC
 - 📊 **Админ-панель** - управление пользователями и жалобами
+
+### Production Ready
+- ✅ **Rate Limiting** - защита от DDoS
+- ✅ **CSRF Защита** - защита от CSRF атак
+- ✅ **Кэширование** - оптимизация производительности
+- ✅ **Пагинация** - работа с большими списками
+- ✅ **Оптимизация изображений** - WebP, thumbnails
+- ✅ **Логирование** - мониторинг ошибок
+- ✅ **Аналитика** - статистика использования
+
+Подробный список реализованных функций см. в [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)
+Детали production улучшений: [PRODUCTION_FIXES.md](./PRODUCTION_FIXES.md)
+
+---
+
+## 🔑 API Endpoints
+
+### Аутентификация
+- `POST /api/auth/login` - Вход
+- `POST /api/auth/register` - Регистрация
+- `POST /api/auth/yandex/callback` - Яндекс OAuth callback
+- `POST /api/auth/email/verify` - Подтверждение email
+- `POST /api/auth/password/recovery` - Восстановление пароля
+- `POST /api/auth/password/reset` - Сброс пароля
+
+### Профиль
+- `POST /api/profile/password` - Смена пароля
+- `POST /api/profile/avatar/upload` - Загрузка аватарки
+- `GET /api/profile` - Получение профиля
+
+### Группы
+- `POST /api/chats/group/create` - Создание группы
+- `GET /api/chats/group/members?id={id}` - Участники группы
+- `POST /api/chats/group/members` - Добавить участников
+- `DELETE /api/chats/group/members` - Удалить участника
+- `PUT /api/chats/group/role/update` - Назначить роль
+
+### Приглашения
+- `POST /api/invitations` - Создать приглашение
+- `GET /api/invitations?code={code}` - Получить приглашение
+- `PUT /api/invitations` - Принять приглашение
+
+### Сообщения
+- `POST /api/messages` - Отправить сообщение
+- `GET /api/messages?chatId={id}` - Получить сообщения
+- `POST /api/messages/forward` - Переслать сообщение
+
+### Вложения
+- `POST /api/attachments` - Загрузить вложение
+- `POST /api/attachments/preview` - Предпросмотр вложения
+- `POST /api/yandex-disk/upload/video` - Загрузить видео
+- `POST /api/yandex-disk/upload/document` - Загрузить документ
+- `GET /api/yandex-disk/download` - Скачать документ
+
+### Яндекс.Диск
+- `GET /api/yandex-disk/auth` - URL авторизации
+- `POST /api/yandex-disk/link` - Связать аккаунт
+- `DELETE /api/yandex-disk/unlink` - Отвязать аккаунт
 
 ---
 
@@ -150,11 +254,13 @@ npm run setup-test-data
 
 | Файл | Описание |
 |------|----------|
+| [`DEPLOYMENT_GUIDE.md`](./DEPLOYMENT_GUIDE.md) | 🚀 **Полная инструкция по деплою** |
+| [`DEPLOYMENT_STATUS.md`](./DEPLOYMENT_STATUS.md) | 📊 Статус готовности к деплою |
+| [`IMPLEMENTATION_COMPLETE.md`](./IMPLEMENTATION_COMPLETE.md) | ✅ Реализованные функции |
+| [`PRODUCTION_FIXES.md`](./PRODUCTION_FIXES.md) | 🔧 Production улучшения |
+| [`IMPLEMENTATION_SUMMARY.md`](./IMPLEMENTATION_SUMMARY.md) | 📋 Сводка по функциям |
 | [`QUICK_START.md`](./QUICK_START.md) | 🚀 Быстрый старт |
 | [`docs/PAGES_TO_TEST.md`](./docs/PAGES_TO_TEST.md) | 📋 Список страниц для проверки |
-| [`docs/ALL_TASKS_COMPLETED.md`](./docs/ALL_TASKS_COMPLETED.md) | ✅ Выполненные задачи |
-| [`docs/PROJECT_AUDIT_ERRORS.md`](./docs/PROJECT_AUDIT_ERRORS.md) | 🔍 Аудит проекта |
-| [`config.json`](./config.json) | ⚙️ Конфигурация приложения |
 
 ---
 

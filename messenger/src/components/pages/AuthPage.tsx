@@ -8,7 +8,7 @@ import { useAccountsStore } from '@/stores/accounts-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { useAlert } from '@/hooks/useAlert';
-import { Eye, EyeOff, MessageCircle, Check, X } from 'lucide-react';
+import { Eye, EyeOff, MessageCircle, Check, X, KeyRound } from 'lucide-react';
 import './AuthPage.css';
 
 interface AuthPageProps {
@@ -190,6 +190,15 @@ export function AuthPage({ mode }: AuthPageProps) {
             )}
 
             {error && <p className="auth-error">{error}</p>}
+
+            {mode === 'login' && (
+              <div className="forgot-password-link">
+                <Link href="/forgot-password" className="auth-footer-link">
+                  <KeyRound size={14} style={{ marginRight: '4px' }} />
+                  Забыли пароль?
+                </Link>
+              </div>
+            )}
 
             <button type="submit" disabled={isLoading} className="auth-submit">
               {isLoading ? translations.loading : (mode === 'login' ? translations.login : translations.createAccount)}

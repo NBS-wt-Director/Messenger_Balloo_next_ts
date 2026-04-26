@@ -113,6 +113,23 @@
   color: var(--destructive);
 }
 
+.forgot-password-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.5rem;
+}
+
+.forgot-password-link .auth-footer-link {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--primary);
+}
+
+.forgot-password-link .auth-footer-link:hover {
+  text-decoration: underline;
+}
+
 .auth-submit {
   width: 100%;
   padding: 0.75rem 1rem;

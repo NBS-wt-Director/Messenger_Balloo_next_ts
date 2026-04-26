@@ -14,6 +14,9 @@ datasource db {
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
+  emailVerified Boolean  @default(false)
+  emailVerificationCode String?
+  emailVerificationExpiry Int?
   passwordHash String
   displayName  String
   avatar       String?
@@ -24,6 +27,13 @@ model User {
   adminRoles   Json
   adminSince   Int?
   publicKey    String?
+  // Password recovery
+  passwordResetToken String?
+  passwordResetExpiry Int?
+  // Yandex Disk integration
+  yandexDiskConnected Boolean @default(false)
+  yandexDiskAccessToken String?
+  yandexDiskRefreshToken String?
   createdAt    DateTime @default(now())
   lastSeen     DateTime?
   isOnline     Boolean  @default(false)
@@ -97,7 +107,7 @@ model ChatMember {
   id                String   @id @default(cuid())
   chatId            String
   userId            String
-  role              String   // owner, admin, member
+  role              String   // creator, moderator, author, reader
   joinedAt          DateTime @default(now())
   lastReadMessageId String?
 
@@ -122,6 +132,8 @@ model Message {
   fileSize     Int?
   mimeType     String?
   replyToId    String?
+  forwardFromId String?
+  forwardFromChatId String?
   readBy       Json
   status       String   // sending, sent, delivered, read
   edited       Boolean  @default(false)
