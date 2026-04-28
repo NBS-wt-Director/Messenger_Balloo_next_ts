@@ -2,9 +2,6 @@
   "name": "balloo-monorepo",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "messenger"
-  ],
   "scripts": {
     "dev:web": "cd messenger && npm run dev",
     "build:web": "cd messenger && npm run build",
