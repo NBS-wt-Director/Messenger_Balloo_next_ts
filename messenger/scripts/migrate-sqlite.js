@@ -26,18 +26,17 @@ if (!fs.existsSync(packagePath)) {
   process.exit(1);
 }
 
-// Проверяем .env.local
-const envPath = path.join(__dirname, '..', '.env.local');
-if (!fs.existsSync(envPath)) {
-  console.log('⚠️  .env.local не найден. Создаю из .env.example...');
-  const envExamplePath = path.join(__dirname, '..', '.env.example');
-  if (fs.existsSync(envExamplePath)) {
-    fs.copyFileSync(envExamplePath, envPath);
-    console.log('✓ .env.local создан');
-  } else {
-    console.error('❌ .env.example не найден!');
-    process.exit(1);
-  }
+// Проверяем наличие .env.production или .env (для локальной разработки)
+const envProductionPath = path.join(__dirname, '..', '.env.production');
+const envPath = path.join(__dirname, '..', '.env');
+const envLocalPath = path.join(__dirname, '..', '.env.local');
+
+// НЕ создаём .env.local автоматически - это ломает сборку на сервере!
+// Если нужен локальный конфиг - создайте .env.local вручную
+if (!fs.existsSync(envProductionPath) && !fs.existsSync(envPath) && !fs.existsSync(envLocalPath)) {
+  console.error('❌ Ни один из файлов .env.production, .env или .env.local не найден!');
+  console.error('Для продакшена создайте .env.production, для разработки - .env.local');
+  process.exit(1);
 }
 
 // Проверяем, что DATABASE_URL настроен на SQLite
