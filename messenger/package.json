@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/migrate-sqlite.js && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
@@ -12,7 +12,7 @@
     "create-admin": "npx ts-node --project tsconfig.json -r tsconfig-paths/register scripts/create-admin.ts",
     "generate-vapid": "npx web-push generate-vapid-keys",
     "create-image-placeholders": "node scripts/create-image-placeholders.js",
-    "setup": "npm install && npm run create-image-placeholders && node scripts/migrate-sqlite.js",
+    "setup": "npm install && npm run create-image-placeholders",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma db push",

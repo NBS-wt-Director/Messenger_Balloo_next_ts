@@ -3,22 +3,22 @@
     "name": "Balloo Messenger",
     "version": "1.0.0",
     "description": "Безопасный мессенджер с шифрованием",
-    "url": "http://localhost:3000"
+    "url": "https://alpha.balloo.su"
   },
   "auth": {
-    "jwtSecret": "RnTytYjfV1Np5dEi4J8vroMHG2uPFKUCZx9DQ3eqbLOX0hSI6zWkgscmAlBa7w",
+    "jwtSecret": "G8lmx76bCLJktj5y4J63pxlNOpda82EX5ru7ghCbg2Y=",
     "jwtExpiresIn": "7d",
     "bcryptRounds": 10
   },
   "push": {
-    "vapidPublicKey": "BFGoKqGSzSF5cWmoIOfuvK661RqX4sr4r61Neab9y3BZkw0rJtnNbi5VkOtwBMmumC-HhtANH-Se0Of9ectF3C4",
-    "vapidPrivateKey": "Oous2uOoHCs_oC-Sce4XovUxBJGyQw_mJ8bCBFusmjI",
-    "vapidSubject": "mailto:support@balloo.ru"
+    "vapidPublicKey": "BK2ry-hpw8IowwtQ5NrgbBTW6Oh2TAY2KB0zZaHhov6Bgwte1lsXLW1GDJaGO5KiTta1dJVyNT6Cd8F5kL0Iy-s",
+    "vapidPrivateKey": "_71NmXD1ZWwASVQcY0mLLzFbxoT3WkVXYWgkvEIdimI",
+    "vapidSubject": "mailto:balloo.Messenger@yandex.ru"
   },
   "yandexDisk": {
-    "clientId": "",
-    "clientSecret": "",
-    "redirectUri": "http://localhost:3000/api/disk/callback"
+    "clientId": "d85039fba2e548dda7107120ec99dc01",
+    "clientSecret": "79ee8aa5f8e94691b423588077268ed2",
+    "redirectUri": "https://alpha.balloo.su/api/auth/yandex-disk/callback"
   },
   "database": {
     "name": "balloo",

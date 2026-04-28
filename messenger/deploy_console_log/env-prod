@@ -1,0 +1,35 @@
+# ===========================================
+# PRODUCTION ENVIRONMENT - alpha.balloo.su
+# ===========================================
+
+NODE_ENV=production
+
+# URLs
+NEXT_PUBLIC_APP_URL=https://alpha.balloo.su
+NEXT_PUBLIC_API_URL=https://alpha.balloo.su/api
+NEXT_PUBLIC_SERVER_URL=https://alpha.balloo.su
+
+# Security - СГЕНЕРИРУЙ СВОИ ЗНАЧЕНИЯ!
+NEXTAUTH_SECRET=сгенерируй-openssl-rand-base64-32
+ENCRYPTION_KEY=сгенерируй-уникальный-ключ-минимум-32-символа
+
+# Yandex OAuth (получить в https://oauth.yandex.ru/)
+YANDEX_CLIENT_ID=твой_client_id_от_яндекса
+YANDEX_CLIENT_SECRET=твой_client_secret_от_яндекса
+YANDEX_DISK_API_URL=https://cloud-api.yandex.net/v1/disk
+YANDEX_DISK_TOKEN=твой_токен_диска
+
+# Push Notifications (VAPID)
+VAPID_PUBLIC_KEY=сгенерируй-npx-web-push-generate-vapid-keys
+VAPID_PRIVATE_KEY=сгенерируй-npx-web-push-generate-vapid-keys
+
+# Rate Limiting
+RATE_LIMIT_MAX=100
+RATE_LIMIT_WINDOW=60
+
+# Email (SMTP для отправки писем)
+SMTP_HOST=smtp.yandex.ru
+SMTP_PORT=587
+SMTP_USER=robot@balloo.su
+SMTP_PASS=пароль_приложения_яндекс_почты
+

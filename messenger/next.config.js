@@ -1,10 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  trailingSlash: false,
+  output: 'standalone',
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb'
-    }
+    },
+    // ЯВНО ВКЛЮЧАЕМ App Router
+    appDir: true
   },
   images: {
     dangerouslyAllowSVG: true,
