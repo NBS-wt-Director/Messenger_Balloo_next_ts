@@ -7,7 +7,7 @@ out/
 build/
 dist/
 
-# Environment (EXCEPT .env.production which should be committed)
+# Environment (EXCEPT .env.production which SHOULD be committed)
 .env.local
 .env.development.local
 .env.test.local
