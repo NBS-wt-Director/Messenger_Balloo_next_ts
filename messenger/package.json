@@ -20,8 +20,7 @@
     "db:deploy": "node scripts/migrate-sqlite.js",
     "db:seed": "prisma db seed",
     "db:setup": "node scripts/migrate-sqlite.js",
-    "update-statistics": "npx ts-node --project tsconfig.json scripts/update-statistics.ts",
-    "postinstall": "node scripts/migrate-sqlite.js"
+    "update-statistics": "npx ts-node --project tsconfig.json scripts/update-statistics.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.11.0",
