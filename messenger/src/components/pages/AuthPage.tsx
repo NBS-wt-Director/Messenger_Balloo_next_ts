@@ -9,6 +9,7 @@ import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { useAlert } from '@/hooks/useAlert';
 import { Eye, EyeOff, MessageCircle, Check, X, KeyRound } from 'lucide-react';
+import { getYandexAuthUrl } from '@/api/auth';
 import './AuthPage.css';
 
 interface AuthPageProps {
@@ -78,8 +79,22 @@ export function AuthPage({ mode }: AuthPageProps) {
   };
 
   const handleYandex = () => {
-    // Handle Yandex OAuth
-    alert({ message: 'Яндекс OAuth временно недоступен', type: 'warning' });
+    try {
+      const yandexAuthUrl = getYandexAuthUrl();
+      if (yandexAuthUrl) {
+        window.location.href = yandexAuthUrl;
+      } else {
+        alert({ 
+          message: 'Ошибка настройки Яндекс OAuth. Обратитесь к администратору.', 
+          type: 'error' 
+        });
+      }
+    } catch (error) {
+      alert({ 
+        message: 'Ошибка авторизации через Яндекс. Попробуйте позже.', 
+        type: 'error' 
+      });
+    }
   };
 
   return (
