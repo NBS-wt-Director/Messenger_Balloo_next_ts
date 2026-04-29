@@ -58,7 +58,7 @@ interface Chat {
 export function ChatPage() {
   const router = useRouter();
   const params = useParams();
-  const chatId = params.id as string;
+  const chatId = (params?.id as string) || '';
   
   const { user, isAuthenticated } = useAuthStore();
   const { language } = useSettingsStore();

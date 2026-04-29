@@ -128,7 +128,7 @@ export function Header() {
     setUserMenuOpen(false);
   };
 
-  const showBackButton = BACK_BUTTON_PAGES.some(page => pathname.startsWith(page));
+  const showBackButton = pathname ? BACK_BUTTON_PAGES.some(page => pathname.startsWith(page)) : false;
 
   return (
     <>
