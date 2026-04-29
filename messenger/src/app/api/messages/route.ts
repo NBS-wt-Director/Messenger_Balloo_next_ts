@@ -1,48 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMessagesCollection, getChatsCollection, getUsersCollection } from '@/lib/database';
+import { prisma } from '@/lib/prisma';
 
 /**
- * Создание уведомления через API
+ * GET /api/messages?chatId=xxx&limit=50&before=timestamp
+ * Получение сообщений чата
  */
-async function createNotification(data: {
-  userId: string;
-  type: 'message' | 'invitation' | 'system' | 'call';
-  title: string;
-  body: string;
-  url?: string;
-  data?: Record<string, any>;
-}) {
-  try {
-    const response = await fetch(new URL('/api/notifications/create', process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').toString(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      // Логирование только в development
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[Notifications] API error:', error);
-      }
-    }
-
-    return response.ok;
-  } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[Notifications] Failed to create notification:', error);
-    }
-    return false;
-  }
-}
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const chatId = searchParams.get('chatId');
     const limit = parseInt(searchParams.get('limit') || '50');
     const before = searchParams.get('before');
-    const page = parseInt(searchParams.get('page') || '1');
 
     if (!chatId) {
       return NextResponse.json(
@@ -51,50 +19,91 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const messagesCollection = await getMessagesCollection();
-    
-    let query = messagesCollection.find({
-      selector: { chatId },
-      sort: [{ createdAt: 'desc' }]
+    // Получаем сообщения из Prisma
+    const messages = await prisma.message.findMany({
+      where: { chatId },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            displayName: true,
+            avatar: true,
+          }
+        },
+        reactions: true,
+        replyTo: {
+          select: {
+            id: true,
+            content: true,
+            type: true,
+            senderId: true,
+          }
+        }
+      },
+      take: limit,
+      ...(before && {
+        cursor: { createdAt: new Date(parseInt(before)) },
+        skip: 1,
+      }),
+      orderBy: { createdAt: 'desc' },
     });
 
-    if (before) {
-      query = messagesCollection.find({
-        selector: { 
-          chatId,
-          createdAt: { $lt: parseInt(before) }
-        },
-        sort: [{ createdAt: 'desc' }]
-      });
-    }
-
-    const messages = await query.limit(limit).exec();
-    const totalCount = messages.length;
+    // Преобразуем в формат, совместимый с клиентом
+    const formattedMessages = messages.map(msg => ({
+      id: msg.id,
+      chatId: msg.chatId,
+      senderId: msg.senderId,
+      sender: msg.sender,
+      type: msg.type,
+      content: msg.content,
+      mediaUrl: msg.mediaUrl,
+      thumbnailUrl: msg.thumbnailUrl,
+      fileName: msg.fileName,
+      fileSize: msg.fileSize,
+      mimeType: msg.mimeType,
+      replyToId: msg.replyToId,
+      replyTo: msg.replyTo,
+      readBy: msg.readBy as string[],
+      status: msg.status,
+      reactions: msg.reactions.reduce((acc, r) => {
+        acc[r.emoji] = (acc[r.emoji] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      reactionsCount: msg.reactions.reduce((acc, r) => {
+        acc[r.emoji] = (acc[r.emoji] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      edited: msg.edited,
+      createdAt: msg.createdAt.getTime(),
+      updatedAt: msg.updatedAt.getTime(),
+    }));
 
     return NextResponse.json({
       success: true,
-      messages: messages.map(m => m.toJSON()),
+      messages: formattedMessages,
       pagination: {
-        page,
+        page: 1,
         limit,
-        hasMore: totalCount === limit,
+        hasMore: messages.length === limit,
       }
     });
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[API] Error fetching messages:', error);
-      }
-      return NextResponse.json(
-        { error: 'Failed to fetch messages' },
-        { status: 500 }
-      );
-    }
+  } catch (error) {
+    console.error('[API Messages GET] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch messages' },
+      { status: 500 }
+    );
+  }
 }
 
+/**
+ * POST /api/messages
+ * Создание нового сообщения
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { chatId, senderId, type, content, mediaUrl, replyToId } = body;
+    const { chatId, senderId, type, content, mediaUrl, replyToId, fileName, fileSize, mimeType } = body;
 
     // Валидация
     if (!chatId || !senderId || !type || !content) {
@@ -104,11 +113,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const messagesCollection = await getMessagesCollection();
-    const chatsCollection = await getChatsCollection();
-
     // Проверка существования чата
-    const chat = await chatsCollection.findOne({ selector: { id: chatId } }).exec();
+    const chat = await prisma.chat.findUnique({
+      where: { id: chatId },
+      include: { members: true }
+    });
+
     if (!chat) {
       return NextResponse.json(
         { error: 'Chat not found' },
@@ -117,7 +127,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверка участия в чате
-    const member = chat.members[senderId];
+    const member = chat.members.find(m => m.userId === senderId);
     if (!member) {
       return NextResponse.json(
         { error: 'You are not a member of this chat' },
@@ -125,109 +135,119 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Проверка прав на отправку сообщений
-    if (type !== 'system' && member.role === 'reader') {
-      return NextResponse.json(
-        { error: 'You do not have permission to send messages' },
-        { status: 403 }
-      );
-    }
-
     // Получение replyToMessage если есть
     let replyToMessage = null;
     if (replyToId) {
-      const messagesCollection = await getMessagesCollection();
-      const replyTo = await messagesCollection.findOne({ selector: { id: replyToId } }).exec();
+      const replyTo = await prisma.message.findUnique({
+        where: { id: replyToId },
+        include: {
+          sender: {
+            select: {
+              id: true,
+              displayName: true,
+            }
+          }
+        }
+      });
+
       if (replyTo) {
-        const usersCollection = await getUsersCollection();
-        const sender = await usersCollection.findOne({ selector: { id: replyTo.senderId } }).exec();
         replyToMessage = {
           id: replyTo.id,
           content: replyTo.content,
           type: replyTo.type,
           senderId: replyTo.senderId,
-          senderName: sender?.displayName || 'Unknown'
+          senderName: replyTo.sender.displayName || 'Unknown'
         };
       }
     }
 
-    // Создание сообщения
-    const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const now = Date.now();
-
-    const newMessage = await messagesCollection.insert({
-      id: messageId,
-      chatId,
-      senderId,
-      type,
-      content,
-      mediaUrl: mediaUrl || null,
-      replyToId: replyToId || null,
-      replyToMessage,
-      reactions: {},
-      readBy: [senderId],
-      status: 'sent',
-      edited: false,
-      createdAt: now,
-      updatedAt: now
+    // Создание сообщения через Prisma
+    const message = await prisma.message.create({
+      data: {
+        chatId,
+        senderId,
+        type,
+        content,
+        mediaUrl: mediaUrl || null,
+        thumbnailUrl: null,
+        fileName: fileName || null,
+        fileSize: fileSize || null,
+        mimeType: mimeType || null,
+        replyToId: replyToId || null,
+        readBy: [senderId],
+        status: 'sent',
+        edited: false,
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            displayName: true,
+            avatar: true,
+          }
+        },
+        reactions: true,
+        replyTo: replyToId ? {
+          select: {
+            id: true,
+            content: true,
+            type: true,
+            senderId: true,
+          }
+        } : false,
+      }
     });
 
-    // Обновление последнего сообщения в чате
-    const chatDoc = await chatsCollection.findOne({ selector: { id: chatId } }).exec();
-    if (chatDoc) {
-      await chatDoc.patch({
-        lastMessage: {
-          id: messageId,
-          content,
-          type,
-          createdAt: now,
-          senderId
-        },
-        updatedAt: now
-      });
-    }
+    // Форматируем ответ
+    const formattedMessage = {
+      id: message.id,
+      chatId: message.chatId,
+      senderId: message.senderId,
+      sender: message.sender,
+      type: message.type,
+      content: message.content,
+      mediaUrl: message.mediaUrl,
+      thumbnailUrl: message.thumbnailUrl,
+      fileName: message.fileName,
+      fileSize: message.fileSize,
+      mimeType: message.mimeType,
+      replyToId: message.replyToId,
+      replyTo: replyToMessage,
+      readBy: message.readBy as string[],
+      status: message.status,
+      reactions: {},
+      reactionsCount: {},
+      edited: message.edited,
+      createdAt: message.createdAt.getTime(),
+      updatedAt: message.updatedAt.getTime(),
+    };
 
-    // Отправка уведомлений участникам чата
-    const participants = Object.keys(chat.members).filter(id => id !== senderId);
-    for (const participantId of participants) {
-      await createNotification({
-        userId: participantId,
-        type: 'message',
-        title: senderId === 'system' ? 'Balloo' : 'Новое сообщение',
-        body: content.substring(0, 100),
-        url: `/chats/${chatId}`,
-        data: { chatId, messageId, senderId }
-      });
-
-      // Увеличение счетчика непрочитанных
-      const chatDoc = await chatsCollection.findOne({ selector: { id: chatId } }).exec();
-      if (chatDoc) {
-        const currentUnread = chatDoc.unreadCount?.[participantId] || 0;
-        await chatDoc.patch({
-          unreadCount: {
-            ...chatDoc.unreadCount,
-            [participantId]: currentUnread + 1
-          }
-        });
+    // Обновляем lastMessage в чате
+    await prisma.chat.update({
+      where: { id: chatId },
+      data: {
+        updatedAt: new Date(),
       }
-    }
+    });
 
     return NextResponse.json({
       success: true,
-      message: newMessage.toJSON(),
-      createdAt: now
+      message: formattedMessage,
+      createdAt: message.createdAt.getTime(),
     });
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[API] Error creating message:', error);
-      }
-      return NextResponse.json(
-        { error: 'Failed to create message' },
-        { status: 500 }
-      );
-    }
+  } catch (error) {
+    console.error('[API Messages POST] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to create message' },
+      { status: 500 }
+    );
+  }
 }
 
+/**
+ * PATCH /api/messages
+ * Редактирование сообщения
+ */
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
@@ -240,8 +260,9 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const messagesCollection = await getMessagesCollection();
-    const message = await messagesCollection.findOne({ selector: { id: messageId } }).exec();
+    const message = await prisma.message.findUnique({
+      where: { id: messageId }
+    });
 
     if (!message) {
       return NextResponse.json(
@@ -250,33 +271,37 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    await message.patch({
-      content,
-      edited: true,
-      editedAt: Date.now(),
-      updatedAt: Date.now()
+    const updated = await prisma.message.update({
+      where: { id: messageId },
+      data: {
+        content,
+        edited: true,
+        updatedAt: new Date(),
+      },
     });
 
     return NextResponse.json({
       success: true,
       message: {
-        id: messageId,
-        content,
+        id: updated.id,
+        content: updated.content,
         edited: true,
-        editedAt: Date.now()
+        editedAt: updated.updatedAt.getTime(),
       }
     });
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[API] Error updating message:', error);
-      }
-      return NextResponse.json(
-        { error: 'Failed to update message' },
-        { status: 500 }
-      );
-    }
+  } catch (error) {
+    console.error('[API Messages PATCH] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to update message' },
+      { status: 500 }
+    );
+  }
 }
 
+/**
+ * DELETE /api/messages?messageId=xxx
+ * Удаление сообщения
+ */
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -289,8 +314,9 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const messagesCollection = await getMessagesCollection();
-    const message = await messagesCollection.findOne({ selector: { id: messageId } }).exec();
+    const message = await prisma.message.findUnique({
+      where: { id: messageId }
+    });
 
     if (!message) {
       return NextResponse.json(
@@ -299,19 +325,20 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await message.remove();
+    await prisma.message.delete({
+      where: { id: messageId }
+    });
 
     return NextResponse.json({
       success: true,
       message: 'Message deleted'
     });
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[API] Error deleting message:', error);
-      }
-      return NextResponse.json(
-        { error: 'Failed to delete message' },
-        { status: 500 }
-      );
-    }
+  } catch (error) {
+    console.error('[API Messages DELETE] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete message' },
+      { status: 500 }
+    );
+  }
 }
+
