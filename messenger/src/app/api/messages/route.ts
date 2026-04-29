@@ -20,8 +20,17 @@ export async function GET(request: NextRequest) {
     }
 
     // Получаем сообщения из Prisma
+    const where: any = { chatId };
+    
+    // Если есть before timestamp - фильтруем сообщения до этого времени
+    if (before) {
+      where.createdAt = {
+        lt: new Date(parseInt(before))
+      };
+    }
+
     const messages = await prisma.message.findMany({
-      where: { chatId },
+      where,
       include: {
         sender: {
           select: {
@@ -41,10 +50,6 @@ export async function GET(request: NextRequest) {
         }
       },
       take: limit,
-      ...(before && {
-        cursor: { createdAt: new Date(parseInt(before)) },
-        skip: 1,
-      }),
       orderBy: { createdAt: 'desc' },
     });
 
