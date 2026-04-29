@@ -90,40 +90,6 @@ export function ChatPage() {
       return;
     }
 
-    // Проверяем существование чата и создаём если нужно
-    const initChat = async () => {
-      try {
-        const response = await fetch(`/api/chats-new?userId=${user?.id}`);
-        
-        if (response.ok) {
-          const data = await response.json();
-          const chatExists = data.chats?.some((c: any) => c.id === chatId);
-          
-          if (!chatExists) {
-            // Создаём чат
-            const createResponse = await fetch('/api/chats-new', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                type: chatId === 'balloo-news' || chatId === 'chat2' ? 'group' : 'private',
-                participants: [user.id, chatId === 'balloo-news' || chatId === 'chat2' ? 'system' : 'user2'],
-                name: chatId === 'balloo-news' ? 'Balloo - новости, фичи, план' : chatId === 'chat2' ? 'Разработчики' : undefined,
-                createdBy: user.id
-              })
-            });
-            
-            if (!createResponse.ok) {
-              console.error('[Chat] Failed to create chat');
-            }
-          }
-        }
-      } catch (error) {
-        console.error('[Chat] Error initializing chat:', error);
-      }
-    };
-
-    initChat();
-
     // Загрузка сообщений из API
     const loadMessages = async () => {
       try {

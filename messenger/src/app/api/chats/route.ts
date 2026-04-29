@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getChatsCollection, getUsersCollection } from '@/lib/database';
+import { prisma } from '@/lib/prisma';
 
+/**
+ * GET /api/chats?userId=xxx
+ * Получение списка чатов пользователя через Prisma
+ */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
-    const type = searchParams.get('type'); // 'private', 'group', 'all'
+    const type = searchParams.get('type');
     const favorite = searchParams.get('favorite') === 'true';
 
     if (!userId) {
@@ -15,50 +19,100 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const chatsCollection = await getChatsCollection();
-    
-    // Найти все чаты с этим пользователем
-    let chats = await chatsCollection.find({
-      selector: {
-        participants: { $contains: userId }
-      },
-      sort: [{ updatedAt: 'desc' }]
-    }).exec();
+    // Получаем все чаты где пользователь участник
+    const chatMemberships = await prisma.chatMember.findMany({
+      where: { userId },
+      include: {
+        chat: {
+          include: {
+            members: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    displayName: true,
+                    avatar: true,
+                  }
+                }
+              }
+            },
+            messages: {
+              orderBy: { createdAt: 'desc' },
+              take: 1,
+              include: {
+                sender: {
+                  select: {
+                    id: true,
+                    displayName: true,
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
 
-    // Фильтрация по типу
-    if (type && type !== 'all') {
-      chats = chats.filter(chat => chat.type === type);
-    }
+    // Преобразуем в формат чатов
+    const chats = chatMemberships.map(member => {
+      const chat = member.chat;
+      const lastMessage = chat.messages[0];
+      
+      let chatName = chat.name;
+      if (chat.type === 'private' && !chatName) {
+        const otherMember = chat.members.find(m => m.userId !== userId);
+        chatName = otherMember?.user.displayName || 'Пользователь';
+      }
 
-    // Фильтрация по избранному
-    if (favorite) {
-      chats = chats.filter(chat => chat.isFavorite?.[userId]);
-    }
-
-    // Преобразовать в JSON
-    const chatsJSON = chats.map(c => c.toJSON());
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[API] Найдено чатов для ${userId}:`, chatsJSON.length);
-    }
+      return {
+        id: chat.id,
+        type: chat.type,
+        name: chatName,
+        avatar: chat.avatar,
+        isSystemChat: chat.isSystemChat,
+        participants: chat.members.map(m => m.userId),
+        members: chat.members.reduce((acc, m) => {
+          acc[m.userId] = m.role;
+          return acc;
+        }, {} as Record<string, string>),
+        createdBy: chat.createdBy,
+        createdAt: chat.createdAt.getTime(),
+        updatedAt: chat.updatedAt.getTime(),
+        lastMessage: lastMessage ? {
+          id: lastMessage.id,
+          content: lastMessage.content,
+          type: lastMessage.type,
+          createdAt: lastMessage.createdAt.getTime(),
+          senderId: lastMessage.senderId,
+          senderName: lastMessage.sender.displayName,
+        } : null,
+        isFavorite: false,
+        pinned: false,
+        unreadCount: 0,
+      };
+    });
 
     return NextResponse.json({
       success: true,
-      chats: chatsJSON
+      chats
     });
-  } catch (error: any) {
-    console.error('[API] Error fetching chats:', error);
+  } catch (error) {
+    console.error('[API Chats GET] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch chats', details: error.message },
+      { error: 'Failed to fetch chats' },
       { status: 500 }
     );
   }
 }
 
+/**
+ * POST /api/chats
+ * Создание нового чата через Prisma
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, participants, name, description, createdBy, avatar } = body;
+    const { type, participants, name, createdBy } = body;
 
     // Валидация
     if (!type || !participants || !createdBy) {
@@ -75,111 +129,61 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const chatsCollection = await getChatsCollection();
-    const usersCollection = await getUsersCollection();
-
-    // Проверка участников
-    for (const participantId of participants) {
-      const user = await usersCollection.findOne({ selector: { id: participantId } }).exec();
-      if (!user) {
-        return NextResponse.json(
-          { error: `User ${participantId} not found` },
-          { status: 404 }
-        );
-      }
-    }
-
     // Для private чата - проверить существующий
     if (type === 'private' && participants.length === 2) {
-      const existingChats = await chatsCollection.find({
-        selector: {
+      const sortedParticipants = [...participants].sort();
+      const existingChat = await prisma.chat.findFirst({
+        where: {
           type: 'private',
-          participants: { $all: participants }
+          members: {
+            every: {
+              userId: { in: sortedParticipants }
+            }
+          }
+        },
+        include: {
+          members: true
         }
-      }).exec();
+      });
 
-      if (existingChats.length > 0) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[API] Чат уже существует:', existingChats[0].toJSON().id);
-        }
+      if (existingChat) {
         return NextResponse.json({
           success: true,
-          chat: existingChats[0].toJSON(),
-          chatId: existingChats[0].toJSON().id,
+          chat: { id: existingChat.id },
           exists: true
         });
       }
     }
 
-    // Создание members объекта
-    const members: Record<string, { role: string; joinedAt: number; lastReadMessageId?: string }> = {};
-    participants.forEach((userId: string, index: number) => {
-      members[userId] = {
-        role: index === 0 ? 'creator' : 'author',
-        joinedAt: Date.now(),
-        lastReadMessageId: ''
-      };
-    });
-
-    // Инициализация полей для каждого участника
-    const isFavorite: Record<string, boolean> = {};
-    const pinned: Record<string, boolean> = {};
-    const unreadCount: Record<string, number> = {};
-    participants.forEach((pid: string) => {
-      isFavorite[pid] = false;
-      pinned[pid] = false;
-      unreadCount[pid] = 0;
-    });
-
     // Создание чата
-    const chatId = type === 'private' 
-      ? `chat_${participants.sort().join('-')}`
-      : `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    const now = Date.now();
-
-    await chatsCollection.insert({
-      id: chatId,
-      type,
-      name: name || '',
-      avatar: avatar || '',
-      participants,
-      members,
-      adminIds: type === 'group' ? [createdBy] : [],
-      createdBy,
-      description: description || '',
-      isFavorite,
-      pinned,
-      unreadCount,
-      lastMessage: {},
-      createdAt: now,
-      updatedAt: now,
-      isSystemChat: false
+    const chat = await prisma.chat.create({
+      data: {
+        type,
+        name: name || null,
+        createdBy,
+        isSystemChat: false,
+        members: {
+          create: participants.map((userId: string, index: number) => ({
+            userId,
+            role: index === 0 ? 'creator' : 'reader',
+            joinedAt: new Date()
+          }))
+        }
+      },
+      include: {
+        members: true
+      }
     });
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[API] Чат создан:', chatId);
-    }
 
     return NextResponse.json({
       success: true,
-      chat: { id: chatId, type, participants, name },
-      chatId
+      chat: { id: chat.id },
+      chatId: chat.id
     });
-  } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error creating chat:', error);
-    }
-    
-    if (error.code === 'CONFLICT') {
-      return NextResponse.json(
-        { error: 'Чат уже существует' },
-        { status: 409 }
-      );
-    }
-
+  } catch (error) {
+    console.error('[API Chats POST] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to create chat', details: error.message },
+      { error: 'Failed to create chat' },
       { status: 500 }
     );
   }
