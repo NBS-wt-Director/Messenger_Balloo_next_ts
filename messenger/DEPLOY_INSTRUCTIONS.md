@@ -1,10 +1,52 @@
 # 🚀 100% РАБОЧАЯ ИНСТРУКЦИЯ ДЕПЛОЯ НА alpha.balloo.su
 
-## ПРОБЛЕМА
-Ошибка сборки: `Couldn't find a 'pages' directory`
-Причина: Next.js ищет папку pages, но проект использует App Router (src/app)
+## 🆕 ЧТО НОВОГО (Версия 2.0)
 
-## РЕШЕНИЕ - ВЫПОЛНИТЬ ПО ШАГАМ
+### Системные чаты (создаются автоматически при регистрации)
+
+| Чат | Описание | Доступ |
+|-----|----------|--------|
+| **Мои заметки** | Чат с самим собой | Только владелец |
+| **Техподдержка Balloo** | Чат с поддержкой | Пользователь + support |
+| **Balloo - новости** | Канал с новостями | Все пользователи (читатели) |
+
+### Профиль пользователя
+
+Новые поля:
+- **ID** (не редактируется, уникальные идентификатор)
+- **Номер телефона** (редактируется)
+- **Онлайн статус** (обновляется автоматически)
+- **Дата регистрации** (не редактируется)
+
+### Семейные связи
+
+При создании частного чата:
+- ✅ Участники добавляются в контакты друг друга (зеркально)
+- ✅ Создаются семейные связи (relationType: 'friend')
+
+---
+
+## 🚀 АВТОМАТИЗИРОВАННЫЙ ДЕПЛОЙ (РЕКОМЕНДУЕТСЯ)
+
+### Один скрипт - всё автоматически:
+
+```bash
+cd ~/Messenger_Balloo_next_ts && bash messenger/deploy-and-fix.sh
+```
+
+Скрипт выполняет:
+1. ✅ git pull origin main
+2. ✅ npm install --production
+3. ✅ npx prisma migrate deploy
+4. ✅ node deploy-fix.js (создаёт системные чаты для всех)
+5. ✅ Пересборка приложения
+6. ✅ Перезапуск PM2
+7. ✅ Перезагрузка Nginx
+8. ✅ Проверка статуса
+
+---
+
+## 📝 РУЧНОЙ ДЕПЛОЙ (по шагам)
 
 ### ШАГ 1: Подключение к серверу
 ```bash
@@ -13,186 +55,230 @@ ssh balloo@31.128.37.165
 
 ### ШАГ 2: Переход в директорию проекта
 ```bash
-cd ~/Messenger_Balloo_next_ts/messenger
+cd ~/Messenger_Balloo_next_ts
 ```
 
-### ШАГ 3: Очистка кэша и старых файлов
+### ШАГ 3: Обновление кода
 ```bash
-rm -rf .next node_modules package-lock.json
+git pull origin main
 ```
 
-### ШАГ 4: Удаление лишнего .env.production (будет перезаписан)
+### ШАГ 4: Установить зависимости
 ```bash
-rm -f .env.production
+cd messenger
+npm install --production
 ```
 
-### ШАГ 5: Создание правильного .env.local
+### ШАГ 5: Применить миграции БД
 ```bash
-cat > .env.local << 'EOF'
-# ===========================================
-# PRODUCTION ENVIRONMENT - alpha.balloo.su
-# ===========================================
+npx prisma migrate deploy
+```
 
-NODE_ENV=production
+### ШАГ 6: Исправить системные чаты (важно!)
+```bash
+node deploy-fix.js
+```
 
-# URLs
-NEXT_PUBLIC_APP_URL=https://alpha.balloo.su
-NEXT_PUBLIC_API_URL=https://alpha.balloo.su/api
-NEXT_PUBLIC_SERVER_URL=https://alpha.balloo.su
+Этот скрипт:
+- Создаёт системного пользователя 'support'
+- Создаёт системные чаты для ВСЕХ существующих пользователей
+- Исправляет контакты и семейные связи
+- Проверяет целостность данных
 
-# Security
-JWT_SECRET=qhB74DY5AYgLNknsUAPbyANb2HgUXZM1FINy8O51JOklvgx7Bhn4oGGDe0J0MORN
-NEXTAUTH_SECRET=G8lmx76bCLJktj5y4J63pxlNOpda82EX5ru7ghCbg2Y=
-ENCRYPTION_KEY=sECmSzKbSwdFIbX12ZVWdkzq7SzgNHHDDaccmo9pV3HlB4jc6Zi6xSu28wcacdIG
+### ШАГ 7: Пересобрать приложение
+```bash
+pm2 stop messenger-alpha || true
+rm -rf .next
+NODE_ENV=production npx next build
+```
 
-# Yandex OAuth
-YANDEX_CLIENT_ID=d85039fba2e548dda7107120ec99dc01
-YANDEX_CLIENT_SECRET=79ee8aa5f8e94691b423588077268ed2
-YANDEX_DISK_API_URL=https://cloud-api.yandex.net/v1/disk
-YANDEX_DISK_TOKEN=
+### ШАГ 8: Перезапустить PM2
+```bash
+NODE_ENV=production pm2 start "npx next start -p 3000" --name "messenger-alpha" --update-env
+pm2 save
+```
 
-# Push Notifications (VAPID)
-VAPID_PUBLIC_KEY=BK2ry-hpw8IowwtQ5NrgbBTW6Oh2TAY2KB0zZaHhov6Bgwte1lsXLW1GDJaGO5KiTta1dJVyNT6Cd8F5kL0Iy-s
-VAPID_PRIVATE_KEY=_71NmXD1ZWwASVQcY0mLLzFbxoT3WkVXYWgkvEIdimI
-VAPID_SUBJECT=mailto:balloo.Messenger@yandex.ru
+### ШАГ 9: Перезагрузить Nginx
+```bash
+sudo systemctl reload nginx
+```
 
-# Rate Limiting
-RATE_LIMIT_MAX=100
-RATE_LIMIT_WINDOW=60
+### ШАГ 10: Проверить статус
+```bash
+pm2 status messenger-alpha
+pm2 logs messenger-alpha --lines 20
+```
 
-# Email
-SMTP_HOST=smtp.yandex.ru
-SMTP_PORT=587
-SMTP_USER=balloo.Messenger@yandex.ru
-SMTP_PASS=wfosbmhyfyfvmvve
+---
 
-# Admin
-ADMIN_EMAIL=balloo.Messenger@yandex.ru
+## ✅ ПРОВЕРКА РАБОТЫ
 
-# SQLite
-DATABASE_URL="file:./prisma/dev.db"
+### 1. Проверка веб-интерфейса
+```
+Откройте: https://alpha.balloo.su
+```
+
+### 2. Проверка регистрации нового пользователя
+```
+1. Откройте: https://alpha.balloo.su/register
+2. Создайте пользователя
+3. После входа проверьте чаты - должны быть:
+   ✅ Мои заметки
+   ✅ Техподдержка Balloo
+   ✅ Balloo - новости и обновления
+```
+
+### 3. Проверка профиля
+```
+1. Откройте: https://alpha.balloo.su/profile
+2. Проверьте поля:
+   ✅ ID (не редактируется)
+   ✅ Email (не редактируется)
+   ✅ Телефон (редактируется)
+   ✅ Онлайн (автоматический)
+   ✅ Дата регистрации
+```
+
+### 4. Проверка создания чата
+```bash
+# Отправьте запрос:
+curl -X POST https://alpha.balloo.su/api/chats \
+  -H "Content-Type: application/json" \
+  -d '{"type":"private","participants":["user1","user2"],"createdBy":"user1"}'
+
+# Проверьте в БД:
+cd messenger
+npx prisma db execute --stdin << EOF
+SELECT * FROM Contact WHERE userId='user1' OR userId='user2';
+SELECT * FROM FamilyRelation WHERE userId='user1' OR userId='user2';
+EOF
+
+# Должно быть:
+# ✅ 2 контакта (зеркально)
+# ✅ 2 семейные связи (friend)
+```
+
+### 5. Проверка отправки сообщений
+```bash
+# Отправьте сообщение:
+curl -X POST https://alpha.balloo.su/api/messages \
+  -H "Content-Type: application/json" \
+  -d '{"chatId":"CHAT_ID","senderId":"user1","type":"text","content":"Привет!"}'
+
+# Получите сообщения:
+curl "https://alpha.balloo.su/api/messages?chatId=CHAT_ID"
+```
+
+---
+
+## 🔍 ДИАГНОСТИКА И ИСПРАВЛЕНИЕ
+
+### Проверка системных чатов
+```bash
+cd messenger
+
+# Сколько системных чатов создано?
+npx prisma db execute --stdin << EOF
+SELECT COUNT(*) as count FROM Chat WHERE isSystemChat = true;
+EOF
+
+# Список системных чатов
+npx prisma db execute --stdin << EOF
+SELECT id, type, name, isSystemChat FROM Chat WHERE isSystemChat = true;
 EOF
 ```
 
-### ШАГ 6: Установка зависимостей
+### Исправление системных чатов
 ```bash
-npm install --legacy-peer-deps --no-workspaces
+cd messenger
+
+# Запустите fix-скрипт
+node deploy-fix.js
 ```
 
-### ШАГ 7: Генерация Prisma Client
-```bash
-npx prisma generate
-```
-
-### ШАГ 8: Применение схемы базы данных (если БД новая)
-```bash
-npx prisma db push
-```
-
-### ШАГ 9: Сборка приложения
-```bash
-npm run build
-```
-
-### ШАГ 10: Запуск через PM2
-```bash
-cd ~/Messenger_Balloo_next_ts/messenger
-pm2 start "npm start" --name "balloo-messenger"
-pm2 save
-pm2 startup
-```
-
-### ШАГ 11: Проверка статуса
+### Проверка PM2
 ```bash
 pm2 status
-pm2 logs balloo-messenger
+pm2 logs messenger-alpha --lines 50
+pm2 show messenger-alpha
+```
+
+### Проверка Nginx
+```bash
+sudo nginx -t
+sudo systemctl status nginx
+sudo tail -f /var/log/nginx/error.log
 ```
 
 ---
 
-## ДОПОЛНИТЕЛЬНО: Обновление кода через Git
+## 🐛 ВОЗМОЖНЫЕ ПРОБЛЕМЫ
 
-### Если нужно обновить код с GitHub/GitLab:
+### Проблема: Нет системных чатов у пользователей
 
+**Решение:**
 ```bash
-cd ~/Messenger_Balloo_next_ts
-
-# 1. Сохраняем текущую версию .env.local
-cp messenger/.env.local /tmp/env.local.backup
-
-# 2. Пушим изменения в репозиторий (на вашем компьютере)
-# git add .
-# git commit -m "description"
-# git push origin main
-
-# 3. На сервере - обновляем код
-cd ~/Messenger_Balloo_next_ts
-git pull origin main
-
-# 4. Восстанавливаем .env.local
-cp /tmp/env.local.backup messenger/.env.local
-
-# 5. Пересобираем
 cd messenger
-rm -rf .next
-npm run build
-
-# 6. Перезапускаем PM2
-pm2 restart balloo-messenger
-pm2 logs balloo-messenger
+node deploy-fix.js
 ```
 
----
+### Проблема: Ошибка при регистрации
 
-## ПРОВЕРКА РАБОТЫ
-
-1. Откройте браузер: `https://alpha.balloo.su`
-2. Проверьте консоль сервера: `pm2 logs balloo-messenger`
-3. Проверьте статус PM2: `pm2 status`
-
----
-
-## ЕСЛИ ЕСТЬ ОШИБКИ
-
-### Ошибка сборки "pages directory not found":
+**Решение:**
 ```bash
-# Проверьте next.config.js
-cat next.config.js
-
-# Должен быть корректный конфиг без требований к pages
+pm2 logs messenger-alpha --lines 50
+npx prisma studio
 ```
 
-### Ошибка базы данных:
-```bash
-# Пересоздайте БД
-npx prisma db push
-```
+### Проблема: Профиль не обновляется
 
-### Ошибка портов:
+**Решение:**
 ```bash
-# Проверьте, занят ли порт 3000
-lsof -i :3000
-
-# Убейте процесс если занят
-sudo kill -9 PID
+curl -X PUT https://alpha.balloo.su/api/users/USER_ID \
+  -H "Content-Type: application/json" \
+  -d '{"displayName":"Новое имя","phone":"+79991234567"}'
 ```
 
 ---
 
-## ВАЖНЫЕ ЗАМЕЧАНИЯ
+## 📊 СТАТИСТИКА БАЗЫ ДАННЫХ
 
-✅ Секреты из файла `messenger\deploy_console_log\secrets` уже использованы
-✅ Node.js 20.x установлен
-✅ PM2 настроен и добавлен в автозагрузку
-✅ SQLite БД будет создана автоматически
-✅ Все переменные окружения корректны
+```bash
+cd messenger
+
+npx prisma db execute --stdin << EOF
+SELECT 'Users' as table, COUNT(*) as count FROM User
+UNION ALL
+SELECT 'Chats', COUNT(*) FROM Chat
+UNION ALL
+SELECT 'Messages', COUNT(*) FROM Message
+UNION ALL
+SELECT 'Contacts', COUNT(*) FROM Contact
+UNION ALL
+SELECT 'Family Relations', COUNT(*) FROM FamilyRelation;
+EOF
+```
 
 ---
 
-## КОНТАКТЫ ДЛЯ ОТЛАДКИ
+## ✅ ЧЕК-ЛИСТ ДЕПЛОЯ
 
-Если что-то не работает:
-1. Проверьте логи: `pm2 logs balloo-messenger`
-2. Проверьте статус: `pm2 status`
-3. Проверьте .env.local: `cat .env.local`
-4. Проверьте сборку: `npm run build`
+- [ ] Код обновлён (git pull)
+- [ ] Зависимости установлены (npm install)
+- [ ] Миграции применены (prisma migrate deploy)
+- [ ] Fix-скрипт выполнен (node deploy-fix.js)
+- [ ] Приложение собрано (next build)
+- [ ] PM2 перезапущен
+- [ ] Nginx перезагружен
+- [ ] Новые пользователи получают системные чаты
+- [ ] Существующие пользователи получили системные чаты
+- [ ] Профиль отображает все поля
+- [ ] Отправка/получение сообщений работает
+- [ ] Создание чатов работает
+- [ ] Контакты создаются зеркально
+- [ ] Семейные связи создаются автоматически
+
+---
+
+**Дата обновления:** 2025-01-XX
+**Версия:** 2.0.0
