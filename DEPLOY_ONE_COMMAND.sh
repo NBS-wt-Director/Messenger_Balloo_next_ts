@@ -21,7 +21,7 @@ git pull origin main
 echo ""
 echo "📦 2. Установка зависимостей..."
 cd messenger
-npm ci --only=production
+npm install --production
 
 echo ""
 echo "🔧 3. Генерация Prisma Client..."

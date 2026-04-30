@@ -46,7 +46,7 @@ fi
 echo ""
 echo "📦 3. Установка зависимостей..."
 cd messenger
-npm ci --only=production
+npm install --production
 
 echo ""
 echo "🔧 4. Генерация Prisma Client..."
