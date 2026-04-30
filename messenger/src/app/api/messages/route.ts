@@ -77,8 +77,8 @@ export async function GET(request: NextRequest) {
         return acc;
       }, {} as Record<string, number>),
       edited: msg.edited,
-      createdAt: msg.createdAt.getTime(),
-      updatedAt: msg.updatedAt.getTime(),
+      createdAt: Number(msg.createdAt),
+      updatedAt: Number(msg.updatedAt),
     }));
 
     return NextResponse.json({
@@ -221,8 +221,8 @@ export async function POST(request: NextRequest) {
       reactions: {},
       reactionsCount: {},
       edited: message.edited,
-      createdAt: message.createdAt.getTime(),
-      updatedAt: message.updatedAt.getTime(),
+      createdAt: Number(message.createdAt),
+      updatedAt: Number(message.updatedAt),
     };
 
     // Обновляем lastMessage в чате
@@ -236,7 +236,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: formattedMessage,
-      createdAt: message.createdAt.getTime(),
+      createdAt: Number(message.createdAt),
     });
   } catch (error) {
     console.error('[API Messages POST] Error:', error);
@@ -289,7 +289,7 @@ export async function PATCH(request: NextRequest) {
         id: updated.id,
         content: updated.content,
         edited: true,
-        editedAt: updated.updatedAt.getTime(),
+        editedAt: Number(updated.updatedAt),
       }
     });
   } catch (error) {

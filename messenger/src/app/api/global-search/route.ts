@@ -89,9 +89,9 @@ export async function GET(request: NextRequest) {
       const users = await prisma.user.findMany({
         where: {
           OR: [
-            { displayName: { contains: query, mode: 'insensitive' } },
-            { fullName: { contains: query, mode: 'insensitive' } },
-            { email: { contains: query, mode: 'insensitive' } },
+            { displayName: { contains: query } },
+            { fullName: { contains: query } },
+            { email: { contains: query } },
           ]
         },
         select: {
@@ -114,8 +114,8 @@ export async function GET(request: NextRequest) {
         where: {
           type: 'group',
           OR: [
-            { name: { contains: query, mode: 'insensitive' } },
-            { description: { contains: query, mode: 'insensitive' } },
+            { name: { contains: query } },
+            { description: { contains: query } },
           ]
         },
         select: {
@@ -146,8 +146,8 @@ export async function GET(request: NextRequest) {
         where: {
           type: 'channel',
           OR: [
-            { name: { contains: query, mode: 'insensitive' } },
-            { description: { contains: query, mode: 'insensitive' } },
+            { name: { contains: query } },
+            { description: { contains: query } },
           ]
         },
         select: {

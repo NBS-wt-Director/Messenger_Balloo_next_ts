@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
         type: msg.type,
         content: msg.content,
         mediaUrl: msg.mediaUrl,
-        createdAt: msg.createdAt.getTime(),
+        createdAt: Number(msg.createdAt),
         chat: msg.chat,
       })),
       total,

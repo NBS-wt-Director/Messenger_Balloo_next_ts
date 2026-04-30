@@ -81,18 +81,16 @@ export function VersionsAdmin() {
   };
 
   const handleDelete = async (version: string) => {
-    ConfirmComponent && ConfirmComponent({
-      title: 'Удалить версию',
-      message: `Вы действительно хотите удалить версию ${version}?`,
-      variant: 'warning',
-      confirmText: 'Удалить',
-      cancelText: 'Отмена'
-    }).then(async (confirmed) => {
-      if (!confirmed) return;
-      
-      // TODO: Добавить API для удаления
-      alert({ message: 'Функция удаления в разработке', type: 'info' });
-    });
+    const confirmed = await confirm(
+      `Вы действительно хотите удалить версию ${version}?`,
+      'warning',
+      'Удалить',
+      'Отмена'
+    );
+    if (!confirmed) return;
+
+    // TODO: Добавить API для удаления
+    alert({ message: 'Функция удаления в разработке', type: 'info' });
   };
 
   const handleSubmit = async () => {

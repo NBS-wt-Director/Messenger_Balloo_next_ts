@@ -39,12 +39,16 @@ export async function createUser(data: {
   displayName: string;
   avatar?: string;
   fullName?: string;
+  bio?: string;
+  settings?: any;
   isAdmin?: boolean;
   isSuperAdmin?: boolean;
 }): Promise<User> {
   return prisma.user.create({
     data: {
       ...data,
+      bio: data.bio || null,
+      settings: data.settings || {},
       createdAt: new Date(),
       updatedAt: new Date(),
       adminRoles: [],

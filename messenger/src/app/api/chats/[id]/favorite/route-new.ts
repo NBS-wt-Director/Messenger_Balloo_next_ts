@@ -27,25 +27,25 @@ export async function POST(
       return NextResponse.json({ error: 'Чат не найден' }, { status: 404 });
     }
 
-    const currentFavorite = chat.isFavorite as Record<string, boolean> || {};
-
-    const updatedChat = await prisma.chat.update({
-      where: { id: chatId },
-      data: {
-        isFavorite: {
-          ...currentFavorite,
-          [userId]: favorite
+    if (favorite) {
+      await prisma.chatFavorite.upsert({
+        where: {
+          chatId_userId: { chatId, userId }
         },
-        updatedAt: new Date()
-      }
-    });
+        update: {},
+        create: { chatId, userId }
+      });
+    } else {
+      await prisma.chatFavorite.deleteMany({
+        where: { chatId, userId }
+      });
+    }
 
     logger.info(`[API] Чат ${favorite ? 'добавлен в избранное' : 'убран из избранного'}: ${chatId}`);
 
     return NextResponse.json({ 
       success: true,
-      favorite,
-      chat: updatedChat
+      favorite
     });
   } catch (error: any) {
     logger.error('[API] Error favoriting chat:', error);

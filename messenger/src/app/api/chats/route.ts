@@ -82,13 +82,13 @@ export async function GET(request: NextRequest) {
           return acc;
         }, {} as Record<string, string>),
         createdBy: chat.createdBy,
-        createdAt: chat.createdAt.getTime(),
-        updatedAt: chat.updatedAt.getTime(),
+        createdAt: Number(chat.createdAt),
+        updatedAt: Number(chat.updatedAt),
         lastMessage: lastMessage ? {
           id: lastMessage.id,
           content: lastMessage.content,
           type: lastMessage.type,
-          createdAt: lastMessage.createdAt.getTime(),
+          createdAt: Number(lastMessage.createdAt),
           senderId: lastMessage.senderId,
           senderName: lastMessage.sender.displayName,
         } : null,
@@ -196,7 +196,8 @@ export async function POST(request: NextRequest) {
         update: {},
         create: {
           userId: user1,
-          contactId: user2
+          contactId: user2,
+          name: user2 === 'support' ? 'Техподдержка' : `User ${user2}`
         }
       });
 
@@ -211,7 +212,8 @@ export async function POST(request: NextRequest) {
         update: {},
         create: {
           userId: user2,
-          contactId: user1
+          contactId: user1,
+          name: user1 === 'support' ? 'Техподдержка' : `User ${user1}`
         }
       });
 
@@ -227,7 +229,7 @@ export async function POST(request: NextRequest) {
         create: {
           userId: user1,
           relatedUserId: user2,
-          relationType: 'friend'
+          type: 'friend'
         }
       });
 
@@ -242,7 +244,7 @@ export async function POST(request: NextRequest) {
         create: {
           userId: user2,
           relatedUserId: user1,
-          relationType: 'friend'
+          type: 'friend'
         }
       });
     }

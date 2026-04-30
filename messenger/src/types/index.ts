@@ -223,7 +223,12 @@ export interface AuthUser {
   // Дополнительные поля профиля
   fullName?: string;
   birthDate?: number;
+  phone?: string;
   familyRelations?: FamilyRelation[];
+  
+  // Статус
+  isOnline?: boolean;
+  createdAt?: number;
   
   // Админ-права
   isAdmin?: boolean;

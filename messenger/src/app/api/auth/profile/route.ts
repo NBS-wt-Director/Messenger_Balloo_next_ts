@@ -70,15 +70,15 @@ export async function GET(request: NextRequest) {
         displayName: user.displayName,
         fullName: user.fullName,
         avatar: user.avatar,
-        birthDate: user.birthDate?.getTime(),
+        birthDate: user.birthDate,
         status: user.status,
         bio: user.bio,
         phone: user.phone,
         isAdmin: user.isAdmin,
         isSuperAdmin: user.isSuperAdmin,
         settings: user.settings as any,
-        createdAt: user.createdAt.getTime(),
-        lastSeen: user.lastSeen?.getTime()
+        createdAt: Number(user.createdAt),
+        lastSeen: user.lastSeen ? Number(user.lastSeen) : null
       }
     });
   } catch (error) {

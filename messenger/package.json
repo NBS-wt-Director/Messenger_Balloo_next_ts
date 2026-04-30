@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
+    "typecheck": "tsc --noEmit",
     "setup-test-data": "node scripts/setup-test-data.js",
     "create-admin": "npx ts-node --project tsconfig.json -r tsconfig-paths/register scripts/create-admin.ts",
     "generate-vapid": "npx web-push generate-vapid-keys",
@@ -20,7 +21,8 @@
     "db:deploy": "node scripts/migrate-sqlite.js",
     "db:seed": "prisma db seed",
     "db:setup": "node scripts/migrate-sqlite.js",
-    "update-statistics": "npx ts-node --project tsconfig.json scripts/update-statistics.ts"
+    "update-statistics": "npx ts-node --project tsconfig.json scripts/update-statistics.ts",
+    "pre-deploy": "node scripts/pre-deploy-check.js"
   },
   "dependencies": {
     "@prisma/client": "^6.11.0",

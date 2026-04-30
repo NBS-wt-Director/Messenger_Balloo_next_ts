@@ -11,7 +11,7 @@ import './ProfilePage.css';
 
 export function ProfilePage() {
   const router = useRouter();
-  const { user, isAuthenticated, logout, updateUser } = useAuthStore();
+  const { user, isAuthenticated, logout, updateProfile } = useAuthStore();
   const { language } = useSettingsStore();
   const { alert, confirm, AlertComponent, ConfirmComponent } = useAlert();
 
@@ -59,7 +59,7 @@ export function ProfilePage() {
 
       if (response.ok) {
         const updated = await response.json();
-        updateUser(updated.user);
+        updateProfile(updated.user);
         alert({ message: 'Профиль обновлён', type: 'success' });
         setEditMode(false);
       } else {
@@ -86,19 +86,17 @@ export function ProfilePage() {
     setEditMode(false);
   };
 
-  const handleLogout = () => {
-    ConfirmComponent && ConfirmComponent({
-      title: 'Выход из аккаунта',
-      message: 'Вы действительно хотите выйти?',
-      variant: 'warning',
-      confirmText: 'Выйти',
-      cancelText: 'Отмена'
-    }).then((confirmed) => {
-      if (confirmed) {
-        logout();
-        router.push('/login');
-      }
-    });
+  const handleLogout = async () => {
+    const confirmed = await confirm(
+      'Вы действительно хотите выйти?',
+      'warning',
+      'Выйти',
+      'Отмена'
+    );
+    if (confirmed) {
+      logout();
+      router.push('/login');
+    }
   };
 
   if (!user) {
@@ -270,7 +268,7 @@ export function ProfilePage() {
               <div className="profile-input-wrapper">
                 <input
                   type="text"
-                  value={new Date(user.createdAt).toLocaleDateString('ru-RU', {
+                  value={new Date(user.createdAt || Date.now()).toLocaleDateString('ru-RU', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'

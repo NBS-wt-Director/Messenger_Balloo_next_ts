@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
         displayName,
         fullName: fullName || null,
         phone: phone || null,
+        adminRoles: [],
         online: false,
         isOnline: false,
       },

@@ -32,11 +32,10 @@ export async function POST(
       where: { chatId }
     });
 
-    // Обновить lastMessage в чате
+    // Обновить чат
     await prisma.chat.update({
       where: { id: chatId },
       data: {
-        lastMessage: null,
         updatedAt: new Date()
       }
     });

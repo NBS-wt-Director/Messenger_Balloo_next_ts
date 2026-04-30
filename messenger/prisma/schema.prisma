@@ -36,6 +36,8 @@ model User {
   yandexDiskRefreshToken String?
   // Profile fields
   phone        String?
+  bio          String?
+  settings     Json?
   online       Boolean  @default(false)
   createdAt    DateTime @default(now())
   lastSeen     DateTime?
@@ -75,6 +77,7 @@ model FamilyRelation {
   user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   relatedUser    User   @relation("FamilyRelations", fields: [relatedUserId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, relatedUserId], name: "userId_relatedUserId")
   @@unique([userId, relatedUserId, type])
   @@index([userId])
 }
@@ -208,6 +211,7 @@ model InvitationUse {
 model Contact {
   id        String   @id @default(cuid())
   userId    String
+  contactId String?
   name      String
   phone     String?
   email     String?
@@ -219,6 +223,7 @@ model Contact {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   chat  Chat? @relation("ContactChat", fields: [chatId], references: [id])
 
+  @@unique([userId, contactId], name: "userId_contactId")
   @@index([userId])
   @@index([phone])
   @@index([email])

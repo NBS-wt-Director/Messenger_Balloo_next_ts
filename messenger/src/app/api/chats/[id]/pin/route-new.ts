@@ -27,12 +27,11 @@ export async function POST(
       return NextResponse.json({ error: 'Чат не найден' }, { status: 404 });
     }
 
-    // Парсим текущий pinned из JSON
-    const currentPinned = chat.pinned as Record<string, boolean> || {};
-    
     // Проверка лимита на 15 закреплённых чатов
     if (pinned) {
-      const pinnedCount = Object.values(currentPinned).filter(Boolean).length;
+      const pinnedCount = await prisma.chatPinned.count({
+        where: { userId }
+      });
       if (pinnedCount >= 15) {
         return NextResponse.json(
           { error: 'Можно закрепить максимум 15 чатов' },
@@ -41,23 +40,25 @@ export async function POST(
       }
     }
 
-    const updatedChat = await prisma.chat.update({
-      where: { id: chatId },
-      data: {
-        pinned: {
-          ...currentPinned,
-          [userId]: pinned
+    if (pinned) {
+      await prisma.chatPinned.upsert({
+        where: {
+          chatId_userId: { chatId, userId }
         },
-        updatedAt: new Date()
-      }
-    });
+        update: {},
+        create: { chatId, userId }
+      });
+    } else {
+      await prisma.chatPinned.deleteMany({
+        where: { chatId, userId }
+      });
+    }
 
     logger.info(`[API] Чат ${pinned ? 'закреплён' : 'откреплён'}: ${chatId}`);
 
     return NextResponse.json({ 
       success: true,
-      pinned,
-      chat: updatedChat
+      pinned
     });
   } catch (error: any) {
     logger.error('[API] Error pinning chat:', error);

@@ -47,8 +47,8 @@ export async function GET(request: NextRequest) {
       where: {
         id: { in: userChatIds },
         OR: [
-          { name: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } },
+          { name: { contains: query } },
+          { description: { contains: query } },
         ]
       },
       include: {
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
       
       let chatName = chat.name;
       if (chat.type === 'private' && !chatName) {
-        const otherMember = chat.members.find(m => m.userId !== userId);
+        const otherMember = chat.members.find((m: { userId: string; user: { displayName: string } }) => m.userId !== userId);
         chatName = otherMember?.user.displayName || 'Пользователь';
       }
 
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
           id: lastMessage.id,
           content: lastMessage.content,
           type: lastMessage.type,
-          createdAt: lastMessage.createdAt.getTime(),
+          createdAt: Number(lastMessage.createdAt),
           senderId: lastMessage.senderId,
           senderName: lastMessage.sender.displayName,
         } : null,
@@ -111,8 +111,8 @@ export async function GET(request: NextRequest) {
       where: {
         id: { in: userChatIds },
         OR: [
-          { name: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } },
+          { name: { contains: query } },
+          { description: { contains: query } },
         ]
       }
     });

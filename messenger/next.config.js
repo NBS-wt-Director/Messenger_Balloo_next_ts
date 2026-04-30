@@ -1,13 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '10mb'
-    },
-    // Явно включаем App Router
-    appDir: true
-  },
   distDir: '.next',
   trailingSlash: false,
   images: {

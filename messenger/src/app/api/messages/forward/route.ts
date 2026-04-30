@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         type: forwardedMessage.type,
         content: forwardedMessage.content,
         mediaUrl: forwardedMessage.mediaUrl,
-        createdAt: forwardedMessage.createdAt.getTime(),
+        createdAt: Number(forwardedMessage.createdAt),
         forwardFromId: forwardedMessage.forwardFromId,
         forwardFromChatId: forwardedMessage.forwardFromChatId,
       }
