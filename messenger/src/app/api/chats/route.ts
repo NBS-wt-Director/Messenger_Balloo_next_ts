@@ -60,8 +60,14 @@ export async function GET(request: NextRequest) {
       
       let chatName = chat.name;
       if (chat.type === 'private' && !chatName) {
-        const otherMember = chat.members.find(m => m.userId !== userId);
-        chatName = otherMember?.user.displayName || 'Пользователь';
+        // Для частного чата - проверить это "Мои заметки"
+        const isNotesChat = chat.isSystemChat && chat.members.length === 1 && chat.members[0].userId === userId;
+        if (isNotesChat) {
+          chatName = 'Мои заметки';
+        } else {
+          const otherMember = chat.members.find(m => m.userId !== userId);
+          chatName = otherMember?.user.displayName || 'Пользователь';
+        }
       }
 
       return {

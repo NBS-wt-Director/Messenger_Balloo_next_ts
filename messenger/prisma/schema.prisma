@@ -34,6 +34,9 @@ model User {
   yandexDiskConnected Boolean @default(false)
   yandexDiskAccessToken String?
   yandexDiskRefreshToken String?
+  // Profile fields
+  phone        String?
+  online       Boolean  @default(false)
   createdAt    DateTime @default(now())
   lastSeen     DateTime?
   isOnline     Boolean  @default(false)
