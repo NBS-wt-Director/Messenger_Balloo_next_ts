@@ -19,6 +19,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/about-company': 'aboutCompany',
   '/features': 'features',
   '/support': 'supportProject',
+  '/history': 'historyBalloo',
   '/chats': 'chats',
   '/settings': 'settings',
   '/admin': 'adminPanel',
@@ -44,6 +45,7 @@ const MAIN_MENU_ITEMS = [
   { path: '/about-company', label: 'aboutCompany', icon: null },
   { path: '/features', label: 'features', icon: null },
   { path: '/support', label: 'supportProject', icon: null },
+  { path: '/history', label: 'historyBalloo', icon: null },
 ];
 
 const AUTH_MENU_ITEMS = [

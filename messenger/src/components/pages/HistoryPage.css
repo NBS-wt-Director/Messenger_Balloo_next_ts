@@ -1,0 +1,220 @@
+.history-page {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.history-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header */
+.history-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.history-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.history-subtitle {
+  font-size: 1.125rem;
+  color: var(--muted-foreground);
+}
+
+/* Current Version */
+.history-current-version {
+  background: var(--card);
+  border: 2px solid var(--primary);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.history-current-version-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.history-current-version-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Versions List */
+.history-versions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.history-version-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.history-version-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.history-version-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.history-version-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.history-version-type {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+}
+
+.history-version-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.history-version-date,
+.history-version-time {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Version Sections */
+.history-version-section {
+  margin-bottom: 1.5rem;
+}
+
+.history-version-section:last-child {
+  margin-bottom: 0;
+}
+
+.history-version-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--foreground);
+}
+
+.history-version-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-version-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+.history-version-item-icon {
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+/* Footer */
+.history-version-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.history-version-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.history-version-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 1.5rem 0 0 0;
+}
+
+/* Empty State */
+.history-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--muted-foreground);
+}
+
+.history-empty svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.history-empty p {
+  font-size: 1.125rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .history-main {
+    padding: 1rem 0.5rem;
+  }
+
+  .history-title {
+    font-size: 2rem;
+  }
+
+  .history-current-version-number {
+    font-size: 2.5rem;
+  }
+
+  .history-version-header {
+    flex-direction: column;
+  }
+
+  .history-version-card {
+    padding: 1rem;
+  }
+}

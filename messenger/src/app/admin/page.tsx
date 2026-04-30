@@ -6,9 +6,10 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useAdminCheck, ADMIN_ROLE_LABELS, ADMIN_ROLE_DESCRIPTIONS } from '@/lib/admin';
 import { getTranslations } from '@/i18n';
 import { useSettingsStore } from '@/stores/settings-store';
-import { ArrowLeft, Users, MessageCircle, Settings, Shield, BarChart3, Ban, FileText, Crown, Heart } from 'lucide-react';
+import { ArrowLeft, Users, MessageCircle, Settings, Shield, BarChart3, Ban, FileText, Crown, Heart, Tag } from 'lucide-react';
 import { AdminUsersSection, AdminChatsSection, AdminMessagesSection, AdminBansSection, AdminSettingsSection } from './sections';
 import { FeaturesSection } from './features-section';
+import { VersionsAdmin } from '@/components/admin/VersionsAdmin';
 import './page.css';
 
 export default function AdminPage() {
@@ -82,6 +83,7 @@ export default function AdminPage() {
     { id: 'chats', label: 'Чаты', icon: MessageCircle, roles: ['chats'] as string[] },
     { id: 'messages', label: 'Сообщения', icon: FileText, roles: ['messages'] as string[] },
     { id: 'bans', label: 'Блокировки', icon: Ban, roles: ['bans'] as string[] },
+    { id: 'versions', label: 'Версии', icon: Tag, roles: ['settings'] as string[] },
     { id: 'features', label: 'Функции и страницы', icon: Heart, roles: ['settings'] as string[] },
     { id: 'settings', label: 'Настройки', icon: Settings, roles: ['settings'] as string[] },
   ];
@@ -200,6 +202,10 @@ export default function AdminPage() {
 
           {activeTab === 'bans' && (
             <AdminBansSection />
+          )}
+
+          {activeTab === 'versions' && (
+            <VersionsAdmin />
           )}
 
           {activeTab === 'features' && (

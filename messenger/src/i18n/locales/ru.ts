@@ -265,4 +265,13 @@ export const ru: Translation = {
   personalInfo: 'Личная информация',
   preferences: 'Настройки',
   inviteFriendsAndGetPoints: 'Приглашайте друзей и получайте баллы',
+  historyBalloo: 'История Balloo',
+  currentVersion: 'Текущая версия',
+  newFeatures: 'Новые функции',
+  fixes: 'Исправления',
+  versionAuthor: 'Автор',
+  release: 'Релиз',
+  beta: 'Бета',
+  alpha: 'Альфа',
+  patch: 'Исправление',
 };

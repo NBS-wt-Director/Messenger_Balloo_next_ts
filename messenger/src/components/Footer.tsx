@@ -1,14 +1,43 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { Logo } from './ui/Logo';
 import './layout/Footer.css';
 
+interface VersionsData {
+  currentVersion: string;
+  versions: Array<{
+    version: string;
+    date: string;
+    time: string;
+    type: string;
+    features: string[];
+    fixes: string[];
+    author: string;
+  }>;
+}
+
 export function Footer() {
   const { language } = useSettingsStore();
   const translations = getTranslations(language);
+  const [version, setVersion] = useState<string>('0.0.0');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/versions')
+      .then(res => res.json())
+      .then(data => {
+        setVersion(data.currentVersion || '0.0.0');
+        setLoading(false);
+      })
+      .catch(() => {
+        setVersion('0.0.0');
+        setLoading(false);
+      });
+  }, []);
 
   const currentYear = new Date().getFullYear();
 
@@ -64,7 +93,9 @@ export function Footer() {
 
         {/* Версия */}
         <div className="footer-version">
-          v1.0.0
+          <Link href="/history" className="footer-version-link">
+            v{loading ? '...' : version}
+          </Link>
         </div>
       </div>
     </footer>
