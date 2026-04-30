@@ -130,6 +130,48 @@ NODE_ENV=production npx next build
 
 ---
 
+## 🗄️ ВАЖНО: Информация о миграциях БД
+
+### ✅ Миграции БЕЗОПАСНЫ для существующих пользователей!
+
+**Краткий ответ: НЕТ, миграции НЕ сломают регистрацию и сообщения.**
+
+**Что добавлено:**
+- ✅ `bio` - опциональное поле "о себе" (TEXT, nullable)
+- ✅ `settings` - опциональные настройки пользователя (JSON, nullable)
+- ✅ Исправлены индексы для Contact и FamilyRelation
+
+**Что НЕ изменено:**
+- ❌ Нет изменений в email, password, displayName
+- ❌ Нет изменений в сообщениях и чатах
+- ❌ Нет изменений в логике регистрации/входа
+
+**Подробности:** См. файл `DATABASE_MIGRATION_INFO.md`
+
+### 🛡️ Рекомендация: Создайте резервную копию
+
+**Перед миграцией выполните:**
+
+```bash
+# Вариант 1: Автоматический (рекомендуется)
+bash SAFE_DEPLOY.sh
+
+# Вариант 2: Ручной бэкап
+pm2 stop messenger-alpha
+cp messenger/prisma/dev.db messenger/prisma/dev.db.backup.$(date +%Y%m%d_%H%M%S)
+pm2 start messenger-alpha
+```
+
+### 🔄 Откат (если нужно)
+
+```bash
+pm2 stop messenger-alpha
+cp messenger/prisma/dev.db.backup.YYYYMMDD_HHMMSS messenger/prisma/dev.db
+pm2 start messenger-alpha
+```
+
+---
+
 ## 🔐 Перед деплоем - ОБЯЗАТЕЛЬНО
 
 Проверьте файл `.env.production` на сервере:
