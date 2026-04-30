@@ -191,6 +191,11 @@ export function ChatsPage() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   
+  // 3-режимный поиск
+  const [searchMode, setSearchMode] = useState<'chats' | 'messages' | 'global'>('chats');
+  const [globalSearchResults, setGlobalSearchResults] = useState<any>({ users: [], chats: [] });
+  const [chatSearchResults, setChatSearchResults] = useState<any[]>([]);
+  
   const translations = getTranslations(language);
 
   // Загрузка чатов из API
@@ -531,6 +536,54 @@ export function ChatsPage() {
     }
   };
 
+  // Глобальный поиск (по пользователям и чатам)
+  const handleGlobalSearch = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      setSearchLoading(true);
+      const response = await fetch(`/api/global-search?q=${encodeURIComponent(searchQuery)}&type=all&limit=20`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setGlobalSearchResults(data);
+      } else {
+        setGlobalSearchResults({ users: [], chats: [] });
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Global Search] Error:', error);
+      }
+      setGlobalSearchResults({ users: [], chats: [] });
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  // Поиск по чатам пользователя
+  const handleChatSearch = async () => {
+    if (!searchQuery.trim() || !user?.id) return;
+
+    try {
+      setSearchLoading(true);
+      const response = await fetch(`/api/chats/search?q=${encodeURIComponent(searchQuery)}&userId=${user.id}&limit=20`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setChatSearchResults(data.chats || []);
+      } else {
+        setChatSearchResults([]);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Chat Search] Error:', error);
+      }
+      setChatSearchResults([]);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
   const formatTime = (timestamp: number) => {
     const now = Date.now();
     const diff = now - timestamp;
@@ -666,8 +719,8 @@ export function ChatsPage() {
                 </button>
                 <button
                   className="chats-filters-search-messages"
-                  onClick={() => setSearchMessagesOpen(true)}
-                  title="Поиск по сообщениям"
+                  onClick={() => { setSearchMessagesOpen(true); setShowSearch(true); }}
+                  title="Поиск (чаты/сообщения/глобальный)"
                 >
                   <MessageSquare size={18} />
                 </button>
@@ -825,68 +878,205 @@ export function ChatsPage() {
         )}
       </main>
 
-      {/* Search Messages Modal */}
-      {searchMessagesOpen && (
+      {/* 3-режимный поиск */}
+      {(searchMessagesOpen || showSearch) && (
         <Modal
-          isOpen={searchMessagesOpen}
-          onClose={() => setSearchMessagesOpen(false)}
-          title="Поиск по сообщениям"
+          isOpen={searchMessagesOpen || showSearch}
+          onClose={() => { setSearchMessagesOpen(false); setShowSearch(false); setSearchMode('chats'); setSearchQuery(''); }}
+          title="Поиск"
         >
           <div className="search-messages-modal">
+            {/* Режимы поиска */}
+            <div className="search-mode-tabs" style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
+              <button 
+                className={`btn-secondary ${searchMode === 'chats' ? 'active' : ''}`}
+                onClick={() => { setSearchMode('chats'); setChatSearchResults([]); }}
+              >
+                По чатам
+              </button>
+              <button 
+                className={`btn-secondary ${searchMode === 'messages' ? 'active' : ''}`}
+                onClick={() => { setSearchMode('messages'); setSearchResults([]); }}
+              >
+                По сообщениям
+              </button>
+              <button
+                className={`btn-secondary ${searchMode === 'global' ? 'active' : ''}`}
+                onClick={() => { setSearchMode('global'); setGlobalSearchResults({ users: [], chats: [] }); }}
+              >
+                Глобальный
+              </button>
+            </div>
+
+            {/* Поле ввода */}
             <div className="search-input-group">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearchMessages()}
-                placeholder="Введите текст для поиска..."
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    if (searchMode === 'chats') handleChatSearch();
+                    else if (searchMode === 'messages') handleSearchMessages();
+                    else handleGlobalSearch();
+                  }
+                }}
+                placeholder={
+                  searchMode === 'chats' ? 'Поиск по чатам...' :
+                  searchMode === 'messages' ? 'Поиск по сообщениям...' :
+                  'Поиск по пользователям и чатам...'
+                }
                 className="search-messages-input"
                 autoFocus
               />
               <button 
                 className="search-messages-btn"
-                onClick={handleSearchMessages}
+                onClick={() => {
+                  if (searchMode === 'chats') handleChatSearch();
+                  else if (searchMode === 'messages') handleSearchMessages();
+                  else handleGlobalSearch();
+                }}
                 disabled={searchLoading || !searchQuery.trim()}
               >
                 {searchLoading ? 'Поиск...' : 'Найти'}
               </button>
             </div>
 
-            {searchLoading && (
-              <div className="search-loading">
-                <div className="spinner" />
-                <p>Поиск сообщений...</p>
-              </div>
-            )}
-
-            {!searchLoading && searchResults.length > 0 && (
-              <div className="search-results">
-                <p className="search-results-count">Найдено: {searchResults.length}</p>
-                {searchResults.map((msg: any) => (
-                  <div
-                    key={msg.id}
-                    className="search-result-item"
-                    onClick={() => {
-                      setSearchMessagesOpen(false);
-                      router.push(`/chats/${msg.chatId}`);
-                    }}
-                  >
-                    <div className="search-result-content">
-                      <p className="search-result-text">{msg.content}</p>
-                      <span className="search-result-date">
-                        {new Date(msg.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
+            {/* Поиск по чатам пользователя */}
+            {searchMode === 'chats' && (
+              <>
+                {searchLoading && (
+                  <div className="search-loading">
+                    <div className="spinner" />
+                    <p>Поиск чатов...</p>
                   </div>
-                ))}
-              </div>
+                )}
+
+                {!searchLoading && chatSearchResults.length > 0 && (
+                  <div className="search-results">
+                    <p className="search-results-count">Найдено чатов: {chatSearchResults.length}</p>
+                    {chatSearchResults.map((chat: any) => (
+                      <div
+                        key={chat.id}
+                        className="search-result-item"
+                        onClick={() => {
+                          setSearchMessagesOpen(false);
+                          setShowSearch(false);
+                          router.push(`/chats/${chat.id}`);
+                        }}
+                      >
+                        <div className="search-result-content">
+                          <p className="search-result-text">{chat.name || 'Чат'}</p>
+                          <span className="search-result-date">
+                            {chat.lastMessage?.content?.substring(0, 50) || ''}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {!searchLoading && searchQuery && chatSearchResults.length === 0 && (
+                  <div className="search-empty">
+                    <Search size={48} />
+                    <p>Чаты не найдены</p>
+                  </div>
+                )}
+              </>
             )}
 
-            {!searchLoading && searchQuery && searchResults.length === 0 && (
-              <div className="search-empty">
-                <Search size={48} />
-                <p>Ничего не найдено</p>
-              </div>
+            {/* Поиск по сообщениям */}
+            {searchMode === 'messages' && (
+              <>
+                {searchLoading && (
+                  <div className="search-loading">
+                    <div className="spinner" />
+                    <p>Поиск сообщений...</p>
+                  </div>
+                )}
+
+                {!searchLoading && searchResults.length > 0 && (
+                  <div className="search-results">
+                    <p className="search-results-count">Найдено сообщений: {searchResults.length}</p>
+                    {searchResults.map((msg: any) => (
+                      <div
+                        key={msg.id}
+                        className="search-result-item"
+                        onClick={() => {
+                          setSearchMessagesOpen(false);
+                          setShowSearch(false);
+                          router.push(`/chats/${msg.chatId}`);
+                        }}
+                      >
+                        <div className="search-result-content">
+                          <p className="search-result-text">{msg.content}</p>
+                          <span className="search-result-date">
+                            {msg.chat?.name || 'Чат'} • {new Date(msg.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {!searchLoading && searchQuery && searchResults.length === 0 && (
+                  <div className="search-empty">
+                    <Search size={48} />
+                    <p>Сообщения не найдены</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Глобальный поиск */}
+            {searchMode === 'global' && (
+              <>
+                {searchLoading && (
+                  <div className="search-loading">
+                    <div className="spinner" />
+                    <p>Глобальный поиск...</p>
+                  </div>
+                )}
+
+                {!searchLoading && (globalSearchResults.users?.length > 0 || globalSearchResults.chats?.length > 0) && (
+                  <div className="search-results">
+                    {globalSearchResults.users?.length > 0 && (
+                      <div>
+                        <h4>Пользователи ({globalSearchResults.users.length})</h4>
+                        {globalSearchResults.users.map((user: any) => (
+                          <div key={user.id} className="search-result-item">
+                            <div className="search-result-content">
+                              <p className="search-result-text">{user.displayName || user.fullName}</p>
+                              <span className="search-result-date">{user.status || 'offline'}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {globalSearchResults.chats?.length > 0 && (
+                      <div style={{ marginTop: '1rem' }}>
+                        <h4>Чаты ({globalSearchResults.chats.length})</h4>
+                        {globalSearchResults.chats.map((chat: any) => (
+                          <div key={chat.id} className="search-result-item">
+                            <div className="search-result-content">
+                              <p className="search-result-text">{chat.name || 'Чат'}</p>
+                              <span className="search-result-date">{chat.description || chat.type}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!searchLoading && searchQuery && globalSearchResults.users?.length === 0 && globalSearchResults.chats?.length === 0 && (
+                  <div className="search-empty">
+                    <Search size={48} />
+                    <p>Ничего не найдено</p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </Modal>

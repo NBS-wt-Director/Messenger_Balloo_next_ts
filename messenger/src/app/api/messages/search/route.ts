@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
-import { logger } from '@/lib/logger';
+import { prisma } from '@/lib/prisma';
 
 /**
- * GET /api/messages/search - Поиск по сообщениям
+ * GET /api/messages/search?q=...&chatId=...&userId=...&limit=20
+ * Поиск по сообщениям
  */
 export async function GET(request: NextRequest) {
   try {
@@ -11,10 +11,9 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('q');
     const chatId = searchParams.get('chatId');
     const userId = searchParams.get('userId');
-    const limit = parseInt(searchParams.get('limit') || '20', 10);
-    const offset = parseInt(searchParams.get('offset') || '0', 10);
+    const limit = parseInt(searchParams.get('limit') || '20');
 
-    if (!query) {
+    if (!query || query.length < 1) {
       return NextResponse.json(
         { error: 'Поисковый запрос обязателен' },
         { status: 400 }
@@ -28,48 +27,99 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const messagesCollection = db.messages;
+    // Проверка участия пользователя в чате (если указан chatId)
+    if (chatId) {
+      const member = await prisma.chatMember.findFirst({
+        where: {
+          chatId,
+          userId
+        }
+      });
 
-    // Базовый селектор
-    const selector: any = {
+      if (!member) {
+        return NextResponse.json(
+          { error: 'У вас нет доступа к этому чату' },
+          { status: 403 }
+        );
+      }
+    }
+
+    // Поиск сообщений
+    const where: any = {
       content: {
-        $regex: new RegExp(query, 'i') // Регистронезависимый поиск
+        contains: query,
+        mode: 'insensitive'
       }
     };
 
     // Если указан chatId, ищем только в нём
     if (chatId) {
-      selector.chatId = chatId;
+      where.chatId = chatId;
+    } else {
+      // Иначе ищем только в чатах где пользователь участник
+      const userChatIds = await prisma.chatMember.findMany({
+        where: { userId },
+        select: { chatId: true }
+      });
+      
+      where.chatId = {
+        in: userChatIds.map(c => c.chatId)
+      };
     }
 
-    // Выполняем поиск
-    const messages = await messagesCollection.find({
-      selector,
-      limit,
-      skip: offset,
-      sort: [{ createdAt: 'desc' }]
-    }).exec();
+    const messages = await prisma.message.findMany({
+      where,
+      include: {
+        chat: {
+          select: {
+            id: true,
+            type: true,
+            name: true,
+            avatar: true,
+            members: {
+              where: { userId },
+              select: {
+                userId: true,
+                role: true,
+              }
+            }
+          }
+        },
+        sender: {
+          select: {
+            id: true,
+            displayName: true,
+            avatar: true,
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
 
-    const messagesData = messages.map(m => m.toJSON());
-
-    // Получаем общее количество результатов
-    const total = await messagesCollection.count({
-      selector
-    }).exec();
-
-    logger.info(`[Search] Найдено ${messagesData.length} сообщений по запросу "${query}"`);
+    // Получаем общее количество
+    const total = await prisma.message.count({ where });
 
     return NextResponse.json({
       success: true,
-      messages: messagesData,
+      messages: messages.map(msg => ({
+        id: msg.id,
+        chatId: msg.chatId,
+        senderId: msg.senderId,
+        sender: msg.sender,
+        type: msg.type,
+        content: msg.content,
+        mediaUrl: msg.mediaUrl,
+        createdAt: msg.createdAt.getTime(),
+        chat: msg.chat,
+      })),
       total,
-      hasMore: offset + messagesData.length < total
+      hasMore: messages.length === limit
     });
-  } catch (error: any) {
-    logger.error('[API] Error searching messages:', error);
+  } catch (error) {
+    console.error('[Message Search] Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Ошибка при поиске сообщений' },
+      { error: 'Ошибка при поиске сообщений' },
       { status: 500 }
     );
   }
