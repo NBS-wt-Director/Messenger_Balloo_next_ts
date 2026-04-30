@@ -193,7 +193,8 @@ export function ChatsPage() {
   
   // 3-режимный поиск
   const [searchMode, setSearchMode] = useState<'chats' | 'messages' | 'global'>('chats');
-  const [globalSearchResults, setGlobalSearchResults] = useState<any>({ users: [], chats: [] });
+  const [globalSearchSubMode, setGlobalSearchSubMode] = useState<'all' | 'users' | 'groups' | 'communities'>('all');
+  const [globalSearchResults, setGlobalSearchResults] = useState<any>({ users: [], groups: [], communities: [] });
   const [chatSearchResults, setChatSearchResults] = useState<any[]>([]);
   
   const translations = getTranslations(language);
@@ -538,27 +539,38 @@ export function ChatsPage() {
 
   // Глобальный поиск (по пользователям и чатам)
   const handleGlobalSearch = async () => {
-    if (!searchQuery.trim()) return;
+    if (!user?.id) return;
 
     try {
       setSearchLoading(true);
-      const response = await fetch(`/api/global-search?q=${encodeURIComponent(searchQuery)}&type=all&limit=20`);
+      const url = searchQuery.trim() 
+        ? `/api/global-search?q=${encodeURIComponent(searchQuery)}&type=${globalSearchSubMode}&limit=20&userId=${user.id}`
+        : `/api/global-search?type=${globalSearchSubMode}&limit=20&userId=${user.id}`;
+      
+      const response = await fetch(url);
       
       if (response.ok) {
         const data = await response.json();
         setGlobalSearchResults(data);
       } else {
-        setGlobalSearchResults({ users: [], chats: [] });
+        setGlobalSearchResults({ users: [], groups: [], communities: [] });
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('[Global Search] Error:', error);
       }
-      setGlobalSearchResults({ users: [], chats: [] });
+      setGlobalSearchResults({ users: [], groups: [], communities: [] });
     } finally {
       setSearchLoading(false);
     }
   };
+
+  // Загрузка при открытии модального окна
+  useEffect(() => {
+    if (searchMessagesOpen && searchMode === 'global' && !searchQuery) {
+      handleGlobalSearch();
+    }
+  }, [searchMessagesOpen, searchMode, globalSearchSubMode]);
 
   // Поиск по чатам пользователя
   const handleChatSearch = async () => {
@@ -882,11 +894,11 @@ export function ChatsPage() {
       {(searchMessagesOpen || showSearch) && (
         <Modal
           isOpen={searchMessagesOpen || showSearch}
-          onClose={() => { setSearchMessagesOpen(false); setShowSearch(false); setSearchMode('chats'); setSearchQuery(''); }}
+          onClose={() => { setSearchMessagesOpen(false); setShowSearch(false); setSearchMode('chats'); setGlobalSearchSubMode('all'); setSearchQuery(''); setGlobalSearchResults({ users: [], groups: [], communities: [] }); }}
           title="Поиск"
         >
           <div className="search-messages-modal">
-            {/* Режимы поиска */}
+            {/* Основные режимы поиска */}
             <div className="search-mode-tabs" style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
               <button 
                 className={`btn-secondary ${searchMode === 'chats' ? 'active' : ''}`}
@@ -902,11 +914,41 @@ export function ChatsPage() {
               </button>
               <button
                 className={`btn-secondary ${searchMode === 'global' ? 'active' : ''}`}
-                onClick={() => { setSearchMode('global'); setGlobalSearchResults({ users: [], chats: [] }); }}
+                onClick={() => { setSearchMode('global'); setGlobalSearchResults({ users: [], groups: [], communities: [] }); handleGlobalSearch(); }}
               >
                 Глобальный
               </button>
             </div>
+
+            {/* Подрежимы для глобального поиска */}
+            {searchMode === 'global' && (
+              <div className="search-submode-tabs" style={{ display: 'flex', gap: '8px', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                <button
+                  className={`btn-small ${globalSearchSubMode === 'all' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => { setGlobalSearchSubMode('all'); }}
+                >
+                  Всё
+                </button>
+                <button
+                  className={`btn-small ${globalSearchSubMode === 'users' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => { setGlobalSearchSubMode('users'); }}
+                >
+                  Люди
+                </button>
+                <button
+                  className={`btn-small ${globalSearchSubMode === 'groups' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => { setGlobalSearchSubMode('groups'); }}
+                >
+                  Группы
+                </button>
+                <button
+                  className={`btn-small ${globalSearchSubMode === 'communities' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => { setGlobalSearchSubMode('communities'); }}
+                >
+                  Сообщества
+                </button>
+              </div>
+            )}
 
             {/* Поле ввода */}
             <div className="search-input-group">
@@ -1038,30 +1080,44 @@ export function ChatsPage() {
                   </div>
                 )}
 
-                {!searchLoading && (globalSearchResults.users?.length > 0 || globalSearchResults.chats?.length > 0) && (
+                {!searchLoading && (globalSearchResults.users?.length > 0 || globalSearchResults.groups?.length > 0 || globalSearchResults.communities?.length > 0) && (
                   <div className="search-results">
                     {globalSearchResults.users?.length > 0 && (
                       <div>
                         <h4>Пользователи ({globalSearchResults.users.length})</h4>
-                        {globalSearchResults.users.map((user: any) => (
-                          <div key={user.id} className="search-result-item">
+                        {globalSearchResults.users.map((u: any) => (
+                          <div key={u.id} className="search-result-item">
                             <div className="search-result-content">
-                              <p className="search-result-text">{user.displayName || user.fullName}</p>
-                              <span className="search-result-date">{user.status || 'offline'}</span>
+                              <p className="search-result-text">{u.displayName || u.fullName}</p>
+                              <span className="search-result-date">{u.status || 'offline'}</span>
                             </div>
                           </div>
                         ))}
                       </div>
                     )}
 
-                    {globalSearchResults.chats?.length > 0 && (
+                    {globalSearchResults.groups?.length > 0 && (
                       <div style={{ marginTop: '1rem' }}>
-                        <h4>Чаты ({globalSearchResults.chats.length})</h4>
-                        {globalSearchResults.chats.map((chat: any) => (
+                        <h4>Группы ({globalSearchResults.groups.length})</h4>
+                        {globalSearchResults.groups.map((chat: any) => (
                           <div key={chat.id} className="search-result-item">
                             <div className="search-result-content">
-                              <p className="search-result-text">{chat.name || 'Чат'}</p>
-                              <span className="search-result-date">{chat.description || chat.type}</span>
+                              <p className="search-result-text">{chat.name || 'Группа'}</p>
+                              <span className="search-result-date">{chat.description || 'Чат'}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {globalSearchResults.communities?.length > 0 && (
+                      <div style={{ marginTop: '1rem' }}>
+                        <h4>Сообщества ({globalSearchResults.communities.length})</h4>
+                        {globalSearchResults.communities.map((chat: any) => (
+                          <div key={chat.id} className="search-result-item">
+                            <div className="search-result-content">
+                              <p className="search-result-text">{chat.name || 'Сообщество'}</p>
+                              <span className="search-result-date">{chat.description || 'Канал'}</span>
                             </div>
                           </div>
                         ))}
@@ -1070,10 +1126,17 @@ export function ChatsPage() {
                   </div>
                 )}
 
-                {!searchLoading && searchQuery && globalSearchResults.users?.length === 0 && globalSearchResults.chats?.length === 0 && (
+                {!searchLoading && searchQuery && globalSearchResults.users?.length === 0 && globalSearchResults.groups?.length === 0 && globalSearchResults.communities?.length === 0 && (
                   <div className="search-empty">
                     <Search size={48} />
                     <p>Ничего не найдено</p>
+                  </div>
+                )}
+
+                {!searchLoading && !searchQuery && globalSearchResults.users?.length === 0 && globalSearchResults.groups?.length === 0 && globalSearchResults.communities?.length === 0 && (
+                  <div className="search-empty">
+                    <Search size={48} />
+                    <p>Введите запрос для поиска</p>
                   </div>
                 )}
               </>

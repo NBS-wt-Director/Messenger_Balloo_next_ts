@@ -2,27 +2,87 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 /**
- * GET /api/global-search?q=...&type=users|chats|all&limit=20
+ * GET /api/global-search?q=...&type=users|groups|communities|all&limit=20&userId=...
  * Глобальный поиск по пользователям и чатам
  */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
-    const type = searchParams.get('type') || 'all'; // 'users', 'chats', 'all'
+    const type = searchParams.get('type') || 'all'; // 'users', 'groups', 'communities', 'all'
     const limit = parseInt(searchParams.get('limit') || '20');
-
-    if (!query || query.length < 2) {
-      return NextResponse.json(
-        { error: 'Запрос должен быть не менее 2 символов' },
-        { status: 400 }
-      );
-    }
+    const userId = searchParams.get('userId');
 
     const result = {
       users: [] as any[],
-      chats: [] as any[],
+      groups: [] as any[], // Группы (малые чаты)
+      communities: [] as any[], // Сообщества (большие чаты/каналы)
+      totalGroups: 0,
+      totalCommunities: 0,
     };
+
+    // Если запрос пустой или меньше 2 символов - возвращаем всё (если чатов < 200)
+    if (!query || query.length < 2) {
+      // Получаем все группы и сообщества
+      const allChats = await prisma.chat.findMany({
+        where: {
+          type: { in: ['group', 'channel'] }
+        },
+        select: {
+          id: true,
+          type: true,
+          name: true,
+          description: true,
+          avatar: true,
+          createdBy: true,
+          createdAt: true,
+          members: {
+            select: {
+              userId: true,
+              role: true,
+            }
+          }
+        },
+        take: 200,
+      });
+
+      // Разделяем на группы и сообщества
+      result.groups = allChats.filter(c => c.type === 'group');
+      result.communities = allChats.filter(c => c.type === 'channel');
+      result.totalGroups = result.groups.length;
+      result.totalCommunities = result.communities.length;
+
+      // Если пользователей не ищем - возвращаем чаты
+      if (type !== 'users' && type !== 'all') {
+        return NextResponse.json({
+          success: true,
+          ...result,
+          query: query || '(все)'
+        });
+      }
+
+      // Получаем пользователей
+      if (type === 'users' || type === 'all') {
+        const users = await prisma.user.findMany({
+          select: {
+            id: true,
+            displayName: true,
+            fullName: true,
+            avatar: true,
+            status: true,
+            bio: true,
+          },
+          take: limit,
+        });
+        result.users = users;
+      }
+
+      return NextResponse.json({
+        success: true,
+        ...result,
+        query: query || '(все)'
+      });
+    }
 
     // Поиск по пользователям
     if (type === 'users' || type === 'all') {
@@ -48,11 +108,11 @@ export async function GET(request: NextRequest) {
       result.users = users;
     }
 
-    // Поиск по чатам (группы и каналы)
-    if (type === 'chats' || type === 'all') {
-      const chats = await prisma.chat.findMany({
+    // Поиск по группам (малые чаты)
+    if (type === 'groups' || type === 'all') {
+      const groups = await prisma.chat.findMany({
         where: {
-          type: { in: ['group', 'channel'] },
+          type: 'group',
           OR: [
             { name: { contains: query, mode: 'insensitive' } },
             { description: { contains: query, mode: 'insensitive' } },
@@ -76,7 +136,40 @@ export async function GET(request: NextRequest) {
         take: limit,
       });
 
-      result.chats = chats;
+      result.groups = groups;
+      result.totalGroups = groups.length;
+    }
+
+    // Поиск по сообществам (каналы/большие чаты)
+    if (type === 'communities' || type === 'all') {
+      const communities = await prisma.chat.findMany({
+        where: {
+          type: 'channel',
+          OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { description: { contains: query, mode: 'insensitive' } },
+          ]
+        },
+        select: {
+          id: true,
+          type: true,
+          name: true,
+          description: true,
+          avatar: true,
+          createdBy: true,
+          createdAt: true,
+          members: {
+            select: {
+              userId: true,
+              role: true,
+            }
+          }
+        },
+        take: limit,
+      });
+
+      result.communities = communities;
+      result.totalCommunities = communities.length;
     }
 
     return NextResponse.json({

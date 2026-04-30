@@ -175,6 +175,72 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    // Для частного чата - автоматически добавить участников в контакты друг друга
+    if (type === 'private' && participants.length === 2) {
+      const [user1, user2] = participants;
+      
+      // Добавляем user2 в контакты user1
+      await prisma.contact.upsert({
+        where: {
+          userId_contactId: {
+            userId: user1,
+            contactId: user2
+          }
+        },
+        update: {},
+        create: {
+          userId: user1,
+          contactId: user2
+        }
+      });
+
+      // Добавляем user1 в контакты user2 (зеркально)
+      await prisma.contact.upsert({
+        where: {
+          userId_contactId: {
+            userId: user2,
+            contactId: user1
+          }
+        },
+        update: {},
+        create: {
+          userId: user2,
+          contactId: user1
+        }
+      });
+
+      // Создаем семейные связи (если не существуют)
+      await prisma.familyRelation.upsert({
+        where: {
+          userId_relatedUserId: {
+            userId: user1,
+            relatedUserId: user2
+          }
+        },
+        update: {},
+        create: {
+          userId: user1,
+          relatedUserId: user2,
+          relationType: 'friend'
+        }
+      });
+
+      await prisma.familyRelation.upsert({
+        where: {
+          userId_relatedUserId: {
+            userId: user2,
+            relatedUserId: user1
+          }
+        },
+        update: {},
+        create: {
+          userId: user2,
+          relatedUserId: user1,
+          relationType: 'friend'
+        }
+      });
+    }
+
     return NextResponse.json({
       success: true,
       chat: { id: chat.id },
