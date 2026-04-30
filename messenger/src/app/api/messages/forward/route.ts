@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMessagesCollection } from '@/lib/database';
+import { prisma } from '@/lib/prisma';
 
 /**
  * POST /api/messages/forward - Пересылка сообщения
@@ -16,12 +16,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const messagesCollection = await getMessagesCollection();
-
     // Находим оригинальное сообщение
-    const originalMessage = await messagesCollection.findOne({
-      selector: { id: messageId }
-    }).exec();
+    const originalMessage = await prisma.message.findUnique({
+      where: { id: messageId }
+    });
 
     if (!originalMessage) {
       return NextResponse.json(
@@ -30,48 +28,55 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const messageData = originalMessage.toJSON();
+    // Проверка участия в целевом чате
+    const chatMember = await prisma.chatMember.findFirst({
+      where: {
+        chatId: targetChatId,
+        userId: senderId
+      }
+    });
 
-    // Проверка доступа к оригинальному сообщению
-    // В реальном приложении нужно проверять права доступа
-    // Если сообщение зашифровано, нужна расшифровка
+    if (!chatMember) {
+      return NextResponse.json(
+        { error: 'Вы не участник этого чата' },
+        { status: 403 }
+      );
+    }
 
     // Создаём пересланное сообщение
-    const newMessageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const now = Date.now();
-
-    const forwardedMessage = await messagesCollection.insert({
-      id: newMessageId,
-      chatId: targetChatId,
-      senderId,
-      type: messageData.type,
-      content: messageData.content,
-      mediaUrl: messageData.mediaUrl,
-      thumbnailUrl: messageData.thumbnailUrl,
-      fileName: messageData.fileName,
-      fileSize: messageData.fileSize,
-      mimeType: messageData.mimeType,
-      replyToId: messageData.replyToId,
-      // Индикация пересланного сообщения
-      forwardFromId: messageData.id,
-      forwardFromChatId: messageData.chatId,
-      forwardFrom: {
-        senderId: messageData.senderId,
-        chatId: messageData.chatId,
-        content: messageData.content,
-        type: messageData.type
-      },
-      readBy: [senderId],
-      status: 'sent',
-      edited: false,
-      reactions: {},
-      createdAt: now,
-      updatedAt: now
+    const forwardedMessage = await prisma.message.create({
+      data: {
+        chatId: targetChatId,
+        senderId,
+        type: originalMessage.type,
+        content: originalMessage.content,
+        mediaUrl: originalMessage.mediaUrl,
+        thumbnailUrl: originalMessage.thumbnailUrl,
+        fileName: originalMessage.fileName,
+        fileSize: originalMessage.fileSize,
+        mimeType: originalMessage.mimeType,
+        replyToId: originalMessage.replyToId,
+        readBy: [senderId],
+        status: 'sent',
+        edited: false,
+        forwardFromId: originalMessage.id,
+        forwardFromChatId: originalMessage.chatId,
+      }
     });
 
     return NextResponse.json({
       success: true,
-      message: forwardedMessage.toJSON()
+      message: {
+        id: forwardedMessage.id,
+        chatId: forwardedMessage.chatId,
+        senderId: forwardedMessage.senderId,
+        type: forwardedMessage.type,
+        content: forwardedMessage.content,
+        mediaUrl: forwardedMessage.mediaUrl,
+        createdAt: forwardedMessage.createdAt.getTime(),
+        forwardFromId: forwardedMessage.forwardFromId,
+        forwardFromChatId: forwardedMessage.forwardFromChatId,
+      }
     });
 
   } catch (error: any) {
@@ -84,4 +89,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

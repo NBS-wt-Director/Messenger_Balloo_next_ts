@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase, getUsersCollection } from '@/lib/database';
+import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
 import { verifyPassword } from '@/lib/password';
 
@@ -8,13 +8,11 @@ export async function POST(request: NextRequest) {
     const { email, password } = await request.json();
 
     logger.debug('[API Login] Поиск пользователя:', email);
-    const usersCollection = await getUsersCollection();
-    logger.debug('[API Login] Коллекция получена:', !!usersCollection);
 
-    // Поиск пользователя
-    const user = await usersCollection.findOne({
-      selector: { email: email.toLowerCase() }
-    }).exec();
+    // Поиск пользователя через Prisma
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
+    });
 
     logger.debug('[API Login] Пользователь найден:', !!user);
 
@@ -26,21 +24,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userData = user.toJSON();
-    logger.debug('[API Login] Данные пользователя:', { id: userData.id, email: userData.email });
+    logger.debug('[API Login] Данные пользователя:', { id: user.id, email: user.email });
 
     // Проверка пароля с bcrypt
     let isValidPassword = false;
     
     // Поддержка старых хешей SHA256 для миграции
-    if (userData.passwordHash?.length === 64) {
+    if (user.passwordHash?.length === 64) {
       // Старый SHA256 хеш
-      const crypto = require('crypto');
+      const crypto = await import('crypto');
       const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-      isValidPassword = hashedPassword === userData.passwordHash;
+      isValidPassword = hashedPassword === user.passwordHash;
     } else {
       // Новый bcrypt хеш
-      isValidPassword = await verifyPassword(password, userData.passwordHash);
+      isValidPassword = await verifyPassword(password, user.passwordHash);
     }
     logger.debug('[API Login] Пароль верен:', isValidPassword);
 
@@ -53,29 +50,30 @@ export async function POST(request: NextRequest) {
     }
 
     // Обновление статуса
-    await user.patch({
-      status: 'online',
-      lastSeen: Date.now(),
-      updatedAt: Date.now()
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        status: 'online',
+        lastSeen: new Date()
+      }
     });
 
     // Генерация токена сессии
     const sessionToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 16)}`;
 
-    logger.info('[API Login] Успешный вход:', userData.id);
+    logger.info('[API Login] Успешный вход:', user.id);
 
     return NextResponse.json({
       success: true,
       user: {
-        id: userData.id,
-        email: userData.email,
-        displayName: userData.displayName,
-        fullName: userData.fullName,
-        avatar: userData.avatar,
-        status: userData.status,
-        isAdmin: userData.isAdmin,
-        isSuperAdmin: userData.isSuperAdmin,
-        settings: userData.settings
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        fullName: user.fullName,
+        avatar: user.avatar,
+        status: user.status,
+        isAdmin: user.isAdmin,
+        isSuperAdmin: user.isSuperAdmin,
       },
       token: sessionToken,
       message: 'Вход выполнен успешно'
@@ -88,4 +86,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

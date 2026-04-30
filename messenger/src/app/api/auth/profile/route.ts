@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersCollection } from '@/lib/database';
+import { prisma } from '@/lib/prisma';
 
+// Выход (обновление статуса на offline)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -13,17 +14,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const usersCollection = await getUsersCollection();
-
     // Обновление статуса на offline
-    const userDoc = await usersCollection.findOne({ selector: { id: userId } }).exec();
-    if (userDoc) {
-      await userDoc.patch({
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
         status: 'offline',
-        lastSeen: Date.now(),
-        updatedAt: Date.now()
-      });
-    }
+        lastSeen: new Date()
+      }
+    });
 
     return NextResponse.json({
       success: true,
@@ -53,8 +51,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const usersCollection = await getUsersCollection();
-    const user = await usersCollection.findOne({ selector: { id: userId } }).exec();
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
 
     if (!user) {
       return NextResponse.json(
@@ -63,27 +62,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const userData = user.toJSON();
-
     return NextResponse.json({
       success: true,
       user: {
-        id: userData.id,
-        email: userData.email,
-        displayName: userData.displayName,
-        fullName: userData.fullName,
-        avatar: userData.avatar,
-        birthDate: userData.birthDate,
-        status: userData.status,
-        bio: userData.bio,
-        phone: userData.phone,
-        isAdmin: userData.isAdmin,
-        isSuperAdmin: userData.isSuperAdmin,
-        adminRoles: userData.adminRoles,
-        settings: userData.settings,
-        familyRelations: userData.familyRelations,
-        createdAt: userData.createdAt,
-        lastSeen: userData.lastSeen
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        fullName: user.fullName,
+        avatar: user.avatar,
+        birthDate: user.birthDate?.getTime(),
+        status: user.status,
+        bio: user.bio,
+        phone: user.phone,
+        isAdmin: user.isAdmin,
+        isSuperAdmin: user.isSuperAdmin,
+        settings: user.settings as any,
+        createdAt: user.createdAt.getTime(),
+        lastSeen: user.lastSeen?.getTime()
       }
     });
   } catch (error) {
@@ -110,8 +105,9 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const usersCollection = await getUsersCollection();
-    const user = await usersCollection.findOne({ selector: { id: userId } }).exec();
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
 
     if (!user) {
       return NextResponse.json(
@@ -125,10 +121,8 @@ export async function PATCH(request: NextRequest) {
       'displayName',
       'fullName',
       'avatar',
-      'birthDate',
       'bio',
-      'phone',
-      'settings'
+      'phone'
     ];
 
     const updateData: Record<string, any> = {};
@@ -139,26 +133,24 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    updateData.updatedAt = Date.now();
+    updateData.updatedAt = new Date();
 
-    await user.patch(updateData);
-
-    const updatedUser = await usersCollection.findOne({ selector: { id: userId } }).exec();
-    const userData = updatedUser?.toJSON();
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData
+    });
 
     return NextResponse.json({
       success: true,
       user: {
-        id: userData.id,
-        email: userData.email,
-        displayName: userData.displayName,
-        fullName: userData.fullName,
-        avatar: userData.avatar,
-        birthDate: userData.birthDate,
-        status: userData.status,
-        bio: userData.bio,
-        phone: userData.phone,
-        settings: userData.settings
+        id: updatedUser.id,
+        email: updatedUser.email,
+        displayName: updatedUser.displayName,
+        fullName: updatedUser.fullName,
+        avatar: updatedUser.avatar,
+        status: updatedUser.status,
+        bio: updatedUser.bio,
+        phone: updatedUser.phone
       }
     });
   } catch (error) {
