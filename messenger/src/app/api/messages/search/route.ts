@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * GET /api/messages/search?q=...&chatId=...&userId=...&limit=20
@@ -29,12 +29,7 @@ export async function GET(request: NextRequest) {
 
     // Проверка участия пользователя в чате (если указан chatId)
     if (chatId) {
-      const member = await prisma.chatMember.findFirst({
-        where: {
-          chatId,
-          userId
-        }
-      });
+      const member = db.prepare('SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?').get(chatId, userId);
 
       if (!member) {
         return NextResponse.json(
@@ -45,76 +40,67 @@ export async function GET(request: NextRequest) {
     }
 
     // Поиск сообщений
-    const where: any = {
-      content: {
-        contains: query,
-        mode: 'insensitive'
-      }
-    };
+    let params: any[] = [`%${query}%`];
+    let whereClause = 'WHERE m.text LIKE ?';
 
-    // Если указан chatId, ищем только в нём
     if (chatId) {
-      where.chatId = chatId;
+      whereClause += ' AND m.chatId = ?';
+      params.push(chatId);
     } else {
-      // Иначе ищем только в чатах где пользователь участник
-      const userChatIds = await prisma.chatMember.findMany({
-        where: { userId },
-        select: { chatId: true }
-      });
+      const userChats = db.prepare('SELECT chatId FROM ChatMember WHERE userId = ?').all(userId) as any[];
+      const userChatIds = userChats.map((c: any) => c.chatId);
       
-      where.chatId = {
-        in: userChatIds.map(c => c.chatId)
-      };
+      if (userChatIds.length === 0) {
+        return NextResponse.json({
+          success: true,
+          messages: [],
+          total: 0,
+          hasMore: false
+        });
+      }
+      
+      const chatIdsStr = userChatIds.map(() => '?').join(',');
+      whereClause += ` AND m.chatId IN (${chatIdsStr})`;
+      params.push(...userChatIds);
     }
 
-    const messages = await prisma.message.findMany({
-      where,
-      include: {
-        chat: {
-          select: {
-            id: true,
-            type: true,
-            name: true,
-            avatar: true,
-            members: {
-              where: { userId },
-              select: {
-                userId: true,
-                role: true,
-              }
-            }
-          }
-        },
-        sender: {
-          select: {
-            id: true,
-            displayName: true,
-            avatar: true,
-          }
-        }
-      },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-    });
+    const messagesRaw = db.prepare(`
+      SELECT m.*, c.type as chatType, c.name as chatName, c.avatar as chatAvatar,
+             u.displayName as senderDisplayName, u.avatar as senderAvatar
+      FROM Message m
+      JOIN Chat c ON m.chatId = c.id
+      JOIN User u ON m.userId = u.id
+      ${whereClause}
+      ORDER BY m.createdAt DESC
+      LIMIT ?
+    `).run(...params, limit) as any[];
 
-    // Получаем общее количество
-    const total = await prisma.message.count({ where });
+    const messages = messagesRaw.map((msg: any) => ({
+      id: msg.id,
+      chatId: msg.chatId,
+      senderId: msg.userId,
+      sender: {
+        id: msg.userId,
+        displayName: msg.senderDisplayName,
+        avatar: msg.senderAvatar,
+      },
+      type: msg.type,
+      content: msg.text,
+      mediaUrl: msg.attachmentId,
+      createdAt: msg.createdAt,
+      chat: {
+        id: msg.chatId,
+        type: msg.chatType,
+        name: msg.chatName,
+        avatar: msg.chatAvatar,
+      },
+    }));
 
     return NextResponse.json({
       success: true,
-      messages: messages.map(msg => ({
-        id: msg.id,
-        chatId: msg.chatId,
-        senderId: msg.senderId,
-        sender: msg.sender,
-        type: msg.type,
-        content: msg.content,
-        mediaUrl: msg.mediaUrl,
-        createdAt: Number(msg.createdAt),
-        chat: msg.chat,
-      })),
-      total,
-      hasMore: messages.length === limit
+      messages,
+      total: messages.length,
+      hasMore: false
     });
   } catch (error) {
     console.error('[Message Search] Error:', error);

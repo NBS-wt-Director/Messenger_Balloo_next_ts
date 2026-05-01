@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * GET /api/global-search?q=...&type=users|groups|communities|all&limit=20&userId=...
@@ -9,50 +9,28 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
-    const type = searchParams.get('type') || 'all'; // 'users', 'groups', 'communities', 'all'
+    const type = searchParams.get('type') || 'all';
     const limit = parseInt(searchParams.get('limit') || '20');
-    const userId = searchParams.get('userId');
 
     const result = {
       users: [] as any[],
-      groups: [] as any[], // Группы (малые чаты)
-      communities: [] as any[], // Сообщества (большие чаты/каналы)
+      groups: [] as any[],
+      communities: [] as any[],
       totalGroups: 0,
       totalCommunities: 0,
     };
 
-    // Если запрос пустой или меньше 2 символов - возвращаем всё (если чатов < 200)
+    // Если запрос пустой или меньше 2 символов - возвращаем всё
     if (!query || query.length < 2) {
-      // Получаем все группы и сообщества
-      const allChats = await prisma.chat.findMany({
-        where: {
-          type: { in: ['group', 'channel'] }
-        },
-        select: {
-          id: true,
-          type: true,
-          name: true,
-          description: true,
-          avatar: true,
-          createdBy: true,
-          createdAt: true,
-          members: {
-            select: {
-              userId: true,
-              role: true,
-            }
-          }
-        },
-        take: 200,
-      });
+      const allChats = db.prepare(`
+        SELECT * FROM Chat WHERE type IN ('group', 'channel') LIMIT 200
+      `).all() as any[];
 
-      // Разделяем на группы и сообщества
-      result.groups = allChats.filter(c => c.type === 'group');
-      result.communities = allChats.filter(c => c.type === 'channel');
+      result.groups = allChats.filter((c: any) => c.type === 'group');
+      result.communities = allChats.filter((c: any) => c.type === 'channel');
       result.totalGroups = result.groups.length;
       result.totalCommunities = result.communities.length;
 
-      // Если пользователей не ищем - возвращаем чаты
       if (type !== 'users' && type !== 'all') {
         return NextResponse.json({
           success: true,
@@ -61,19 +39,10 @@ export async function GET(request: NextRequest) {
         });
       }
 
-      // Получаем пользователей
       if (type === 'users' || type === 'all') {
-        const users = await prisma.user.findMany({
-          select: {
-            id: true,
-            displayName: true,
-            fullName: true,
-            avatar: true,
-            status: true,
-            bio: true,
-          },
-          take: limit,
-        });
+        const users = db.prepare(`
+          SELECT id, displayName, fullName, avatar, status, bio FROM User LIMIT ?
+        `).all(limit) as any[];
         result.users = users;
       }
 
@@ -86,88 +55,28 @@ export async function GET(request: NextRequest) {
 
     // Поиск по пользователям
     if (type === 'users' || type === 'all') {
-      const users = await prisma.user.findMany({
-        where: {
-          OR: [
-            { displayName: { contains: query } },
-            { fullName: { contains: query } },
-            { email: { contains: query } },
-          ]
-        },
-        select: {
-          id: true,
-          displayName: true,
-          fullName: true,
-          avatar: true,
-          status: true,
-          bio: true,
-        },
-        take: limit,
-      });
-
+      const users = db.prepare(`
+        SELECT id, displayName, fullName, avatar, status, bio FROM User
+        WHERE displayName LIKE ? OR fullName LIKE ? OR email LIKE ?
+        LIMIT ?
+      `).all(`%${query}%`, `%${query}%`, `%${query}%`, limit) as any[];
       result.users = users;
     }
 
-    // Поиск по группам (малые чаты)
+    // Поиск по группам
     if (type === 'groups' || type === 'all') {
-      const groups = await prisma.chat.findMany({
-        where: {
-          type: 'group',
-          OR: [
-            { name: { contains: query } },
-            { description: { contains: query } },
-          ]
-        },
-        select: {
-          id: true,
-          type: true,
-          name: true,
-          description: true,
-          avatar: true,
-          createdBy: true,
-          createdAt: true,
-          members: {
-            select: {
-              userId: true,
-              role: true,
-            }
-          }
-        },
-        take: limit,
-      });
-
+      const groups = db.prepare(`
+        SELECT * FROM Chat WHERE type = 'group' AND (name LIKE ? OR description LIKE ?) LIMIT ?
+      `).all(`%${query}%`, `%${query}%`, limit) as any[];
       result.groups = groups;
       result.totalGroups = groups.length;
     }
 
-    // Поиск по сообществам (каналы/большие чаты)
+    // Поиск по сообществам
     if (type === 'communities' || type === 'all') {
-      const communities = await prisma.chat.findMany({
-        where: {
-          type: 'channel',
-          OR: [
-            { name: { contains: query } },
-            { description: { contains: query } },
-          ]
-        },
-        select: {
-          id: true,
-          type: true,
-          name: true,
-          description: true,
-          avatar: true,
-          createdBy: true,
-          createdAt: true,
-          members: {
-            select: {
-              userId: true,
-              role: true,
-            }
-          }
-        },
-        take: limit,
-      });
-
+      const communities = db.prepare(`
+        SELECT * FROM Chat WHERE type = 'channel' AND (name LIKE ? OR description LIKE ?) LIMIT ?
+      `).all(`%${query}%`, `%${query}%`, limit) as any[];
       result.communities = communities;
       result.totalCommunities = communities.length;
     }

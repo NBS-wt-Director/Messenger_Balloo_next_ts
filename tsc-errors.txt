@@ -1,0 +1,49 @@
+﻿src/app/api/auth/register-extended.ts(41,7): error TS2322: Type '{ email: any; passwordHash: string; displayName: any; fullName: any; phone: any; online: false; isOnline: false; }' is not assignable to type '(Without<UserCreateInput, UserUncheckedCreateInput> & UserUncheckedCreateInput) | (Without<...> & UserCreateInput)'.
+  Type '{ email: any; passwordHash: string; displayName: any; fullName: any; phone: any; online: false; isOnline: false; }' is not assignable to type 'Without<UserUncheckedCreateInput, UserCreateInput> & UserCreateInput'.
+    Property 'adminRoles' is missing in type '{ email: any; passwordHash: string; displayName: any; fullName: any; phone: any; online: false; isOnline: false; }' but required in type 'UserCreateInput'.
+src/app/api/auth/register/route.ts(39,7): error TS2322: Type '{ email: any; passwordHash: string; displayName: any; fullName: any; phone: any; bio: null; settings: {}; online: false; isOnline: false; status: string; }' is not assignable to type '(Without<UserCreateInput, UserUncheckedCreateInput> & UserUncheckedCreateInput) | (Without<...> & UserCreateInput)'.
+  Type '{ email: any; passwordHash: string; displayName: any; fullName: any; phone: any; bio: null; settings: {}; online: false; isOnline: false; status: string; }' is not assignable to type 'Without<UserUncheckedCreateInput, UserCreateInput> & UserCreateInput'.
+    Property 'adminRoles' is missing in type '{ email: any; passwordHash: string; displayName: any; fullName: any; phone: any; bio: null; settings: {}; online: false; isOnline: false; status: string; }' but required in type 'UserCreateInput'.
+src/app/api/chats/[id]/clear/route-new.ts(39,9): error TS2353: Object literal may only specify known properties, and 'lastMessage' does not exist in type '(Without<ChatUpdateInput, ChatUncheckedUpdateInput> & ChatUncheckedUpdateInput) | (Without<...> & ChatUpdateInput)'.
+src/app/api/chats/[id]/favorite/route-new.ts(30,34): error TS2339: Property 'isFavorite' does not exist on type '{ id: string; type: string; createdAt: Date; createdBy: string; updatedAt: Date; name: string | null; description: string | null; avatar: string | null; isSystemChat: boolean; }'.
+src/app/api/chats/[id]/favorite/route-new.ts(35,9): error TS2561: Object literal may only specify known properties, but 'isFavorite' does not exist in type '(Without<ChatUpdateInput, ChatUncheckedUpdateInput> & ChatUncheckedUpdateInput) | (Without<...> & ChatUpdateInput)'. Did you mean to write 'favorites'?
+src/app/api/chats/[id]/pin/route-new.ts(31,32): error TS2339: Property 'pinned' does not exist on type '{ id: string; type: string; createdAt: Date; createdBy: string; updatedAt: Date; name: string | null; description: string | null; avatar: string | null; isSystemChat: boolean; }'.
+src/app/api/chats/route.ts(191,11): error TS2353: Object literal may only specify known properties, and 'userId_contactId' does not exist in type 'ContactWhereUniqueInput'.
+src/app/api/chats/route.ts(199,11): error TS2353: Object literal may only specify known properties, and 'contactId' does not exist in type '(Without<ContactCreateInput, ContactUncheckedCreateInput> & ContactUncheckedCreateInput) | (Without<...> & ContactCreateInput)'.
+src/app/api/chats/route.ts(206,11): error TS2353: Object literal may only specify known properties, and 'userId_contactId' does not exist in type 'ContactWhereUniqueInput'.
+src/app/api/chats/route.ts(214,11): error TS2353: Object literal may only specify known properties, and 'contactId' does not exist in type '(Without<ContactCreateInput, ContactUncheckedCreateInput> & ContactUncheckedCreateInput) | (Without<...> & ContactCreateInput)'.
+src/app/api/chats/route.ts(221,11): error TS2561: Object literal may only specify known properties, but 'userId_relatedUserId' does not exist in type 'FamilyRelationWhereUniqueInput'. Did you mean to write 'userId_relatedUserId_type'?
+src/app/api/chats/route.ts(230,11): error TS2353: Object literal may only specify known properties, and 'relationType' does not exist in type '(Without<FamilyRelationCreateInput, FamilyRelationUncheckedCreateInput> & FamilyRelationUncheckedCreateInput) | (Without<...> & FamilyRelationCreateInput)'.
+src/app/api/chats/route.ts(236,11): error TS2561: Object literal may only specify known properties, but 'userId_relatedUserId' does not exist in type 'FamilyRelationWhereUniqueInput'. Did you mean to write 'userId_relatedUserId_type'?
+src/app/api/chats/route.ts(245,11): error TS2353: Object literal may only specify known properties, and 'relationType' does not exist in type '(Without<FamilyRelationCreateInput, FamilyRelationUncheckedCreateInput> & FamilyRelationUncheckedCreateInput) | (Without<...> & FamilyRelationCreateInput)'.
+src/app/api/chats/search/route.ts(50,38): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/app/api/chats/search/route.ts(51,45): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/app/api/chats/search/route.ts(84,32): error TS2339: Property 'messages' does not exist on type '{ id: string; type: string; createdAt: Date; createdBy: string; updatedAt: Date; name: string | null; description: string | null; avatar: string | null; isSystemChat: boolean; }'.
+src/app/api/chats/search/route.ts(88,34): error TS2339: Property 'members' does not exist on type '{ id: string; type: string; createdAt: Date; createdBy: string; updatedAt: Date; name: string | null; description: string | null; avatar: string | null; isSystemChat: boolean; }'.
+src/app/api/chats/search/route.ts(88,47): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/app/api/chats/search/route.ts(98,28): error TS2339: Property 'members' does not exist on type '{ id: string; type: string; createdAt: Date; createdBy: string; updatedAt: Date; name: string | null; description: string | null; avatar: string | null; isSystemChat: boolean; }'.
+src/app/api/chats/search/route.ts(98,40): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/app/api/chats/search/route.ts(114,38): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/app/api/chats/search/route.ts(115,45): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/app/api/global-search/route.ts(92,47): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringFilter<"User">'.
+src/app/api/global-search/route.ts(93,44): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"User">'.
+src/app/api/global-search/route.ts(94,41): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringFilter<"User">'.
+src/app/api/global-search/route.ts(117,40): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/app/api/global-search/route.ts(118,47): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/app/api/global-search/route.ts(149,40): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/app/api/global-search/route.ts(150,47): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'StringNullableFilter<"Chat">'.
+src/components/admin/VersionsAdmin.tsx(84,25): error TS2349: This expression is not callable.
+  Type 'ReactElement<unknown, string | JSXElementConstructor<any>>' has no call signatures.
+src/components/admin/VersionsAdmin.tsx(90,20): error TS7006: Parameter 'confirmed' implicitly has an 'any' type.
+src/components/pages/ProfilePage.tsx(14,42): error TS2339: Property 'updateUser' does not exist on type 'AuthState'.
+src/components/pages/ProfilePage.tsx(39,21): error TS2339: Property 'phone' does not exist on type 'AuthUser'.
+src/components/pages/ProfilePage.tsx(82,21): error TS2339: Property 'phone' does not exist on type 'AuthUser'.
+src/components/pages/ProfilePage.tsx(90,25): error TS2349: This expression is not callable.
+  Type 'ReactElement<unknown, string | JSXElementConstructor<any>>' has no call signatures.
+src/components/pages/ProfilePage.tsx(96,14): error TS7006: Parameter 'confirmed' implicitly has an 'any' type.
+src/components/pages/ProfilePage.tsx(237,31): error TS2339: Property 'isOnline' does not exist on type 'AuthUser'.
+src/components/pages/ProfilePage.tsx(242,33): error TS2339: Property 'isOnline' does not exist on type 'AuthUser'.
+src/components/pages/ProfilePage.tsx(252,38): error TS2339: Property 'isOnline' does not exist on type 'AuthUser'.
+src/components/pages/ProfilePage.tsx(273,40): error TS2339: Property 'createdAt' does not exist on type 'AuthUser'.
+src/lib/prisma.ts(48,17): error TS2339: Property 'bio' does not exist on type '{ email: string; passwordHash: string; displayName: string; avatar?: string | undefined; fullName?: string | undefined; isAdmin?: boolean | undefined; isSuperAdmin?: boolean | undefined; }'.
+src/lib/prisma.ts(49,22): error TS2339: Property 'settings' does not exist on type '{ email: string; passwordHash: string; displayName: string; avatar?: string | undefined; fullName?: string | undefined; isAdmin?: boolean | undefined; isSuperAdmin?: boolean | undefined; }'.

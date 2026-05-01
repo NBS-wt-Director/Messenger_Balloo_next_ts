@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
-import crypto from 'crypto';
 
 /**
  * POST /api/auth/email/verify - Отправить код подтверждения email
@@ -18,13 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const usersCollection = db.users;
-
-    // Находим пользователя
-    const user = await usersCollection.findOne({
-      selector: { id: userId }
-    }).exec();
+    const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -33,22 +26,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userData = user.toJSON();
-
     // Генерируем код подтверждения (6 цифр)
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     const codeExpiry = Date.now() + 10 * 60 * 1000; // 10 минут
 
-    // Сохраняем код в пользовательских данных
-    await user.patch({
-      emailVerificationCode: verificationCode,
-      emailVerificationExpiry: codeExpiry,
-      updatedAt: Date.now()
-    });
+    // Сохраняем код в пользовательских данных (используем settings)
+    const settings = JSON.parse(user.settings || '{}');
+    settings.emailVerificationCode = verificationCode;
+    settings.emailVerificationExpiry = codeExpiry;
+    
+    db.prepare('UPDATE User SET settings = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(settings), new Date().toISOString(), userId);
 
     // TODO: Отправка email с кодом
-    // В production здесь будет отправка через SMTP/SendGrid/другой сервис
-    logger.info(`[Email Verification] Code for ${userData.email}: ${verificationCode}`);
+    logger.info(`[Email Verification] Code for ${user.email}: ${verificationCode}`);
 
     return NextResponse.json({
       success: true,
@@ -80,13 +71,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const usersCollection = db.users;
-
-    // Находим пользователя
-    const user = await usersCollection.findOne({
-      selector: { id: userId }
-    }).exec();
+    const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -95,10 +80,10 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const userData = user.toJSON();
+    const settings = JSON.parse(user.settings || '{}');
 
     // Проверяем код
-    if (userData.emailVerificationCode !== code) {
+    if (settings.emailVerificationCode !== code) {
       return NextResponse.json(
         { error: 'Неверный код подтверждения' },
         { status: 400 }
@@ -106,7 +91,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Проверяем срок действия
-    if (!userData.emailVerificationExpiry || Date.now() > userData.emailVerificationExpiry) {
+    if (!settings.emailVerificationExpiry || Date.now() > settings.emailVerificationExpiry) {
       return NextResponse.json(
         { error: 'Код подтверждения истёк' },
         { status: 400 }
@@ -114,12 +99,12 @@ export async function PUT(request: NextRequest) {
     }
 
     // Подтверждаем email
-    await user.patch({
-      emailVerified: true,
-      emailVerificationCode: undefined,
-      emailVerificationExpiry: undefined,
-      updatedAt: Date.now()
-    });
+    settings.emailVerified = true;
+    settings.emailVerificationCode = undefined;
+    settings.emailVerificationExpiry = undefined;
+    
+    db.prepare('UPDATE User SET settings = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(settings), new Date().toISOString(), userId);
 
     return NextResponse.json({
       success: true,

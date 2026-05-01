@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersCollection } from '@/lib/database';
+import db from '@/lib/database';
+import { getUserById, getUsers } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 
 // Получение списка пользователей
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
     const adminId = searchParams.get('adminId');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '50');
-    const role = searchParams.get('role'); // 'admin', 'superadmin', 'all'
+    const role = searchParams.get('role');
 
     if (!adminId) {
       return NextResponse.json(
@@ -19,26 +20,25 @@ export async function GET(request: NextRequest) {
     }
 
     // Проверка прав администратора
-    const usersCollection = await getUsersCollection();
-    const admin = await usersCollection.findOne(adminId).exec();
+    const admin = getUserById(adminId);
 
-    if (!admin || (!admin.toJSON().isAdmin && !admin.toJSON().isSuperAdmin)) {
+    if (!admin || !(admin.adminRoles?.includes('admin') || admin.adminRoles?.includes('superadmin'))) {
       return NextResponse.json(
         { error: 'Доступ запрещен' },
         { status: 403 }
       );
     }
 
-    const allUsers = await usersCollection.find().exec();
+    const allUsers = getUsers(1000, 0);
     
     let filteredUsers = allUsers.filter(u => {
-      const data = u.toJSON();
+      const hasAdminRole = u.adminRoles?.includes('admin') || u.adminRoles?.includes('superadmin');
+      const isSuperAdmin = u.adminRoles?.includes('superadmin');
       
-      // Фильтрация по роли
       if (role === 'admin') {
-        return data.isAdmin || data.isSuperAdmin;
+        return hasAdminRole;
       } else if (role === 'superadmin') {
-        return data.isSuperAdmin;
+        return isSuperAdmin;
       }
       
       return true;
@@ -50,21 +50,18 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      users: paginatedUsers.map(u => {
-        const data = u.toJSON();
-        return {
-          id: data.id,
-          email: data.email,
-          displayName: data.displayName,
-          fullName: data.fullName,
-          avatar: data.avatar,
-          status: data.status,
-          isAdmin: data.isAdmin,
-          isSuperAdmin: data.isSuperAdmin,
-          createdAt: data.createdAt,
-          lastSeen: data.lastSeen
-        };
-      }),
+      users: paginatedUsers.map(u => ({
+        id: u.id,
+        email: u.email,
+        displayName: u.displayName,
+        fullName: u.fullName,
+        avatar: u.avatar,
+        status: u.status,
+        isAdmin: u.adminRoles?.includes('admin') || false,
+        isSuperAdmin: u.adminRoles?.includes('superadmin') || false,
+        createdAt: u.createdAt,
+        lastSeen: null
+      })),
       pagination: {
         page,
         limit,
@@ -87,7 +84,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { adminId, targetUserId, action } = body; // action: 'ban', 'unban', 'makeAdmin', 'removeAdmin'
+    const { adminId, targetUserId, action } = body;
 
     if (!adminId || !targetUserId || !action) {
       return NextResponse.json(
@@ -96,8 +93,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const usersCollection = await getUsersCollection();
-    const admin = await usersCollection.findOne(adminId).exec();
+    const admin = getUserById(adminId);
 
     if (!admin) {
       return NextResponse.json(
@@ -106,11 +102,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const adminData = admin.toJSON();
+    const adminRoles = admin.adminRoles || [];
     
     // Проверка прав
     if (action === 'makeAdmin' || action === 'removeAdmin') {
-      if (!adminData.isSuperAdmin) {
+      if (!adminRoles.includes('superadmin')) {
         return NextResponse.json(
           { error: 'Только супер-администраторы могут управлять правами' },
           { status: 403 }
@@ -118,7 +114,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const targetUser = await usersCollection.findOne(targetUserId).exec();
+    const targetUser = getUserById(targetUserId);
     if (!targetUser) {
       return NextResponse.json(
         { error: 'Пользователь не найден' },
@@ -126,46 +122,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const targetData = targetUser.toJSON();
     let updateData: Record<string, any> = {};
+    const now = new Date().toISOString();
 
     switch (action) {
       case 'ban':
-        updateData = {
-          status: 'banned',
-          updatedAt: Date.now()
-        };
+        updateData = { status: 'banned' };
+        db.prepare('UPDATE User SET status = ?, updatedAt = ? WHERE id = ?').run('banned', now, targetUserId);
         break;
       case 'unban':
-        updateData = {
-          status: 'offline',
-          updatedAt: Date.now()
-        };
+        db.prepare('UPDATE User SET status = ?, updatedAt = ? WHERE id = ?').run('offline', now, targetUserId);
         break;
       case 'makeAdmin':
-        updateData = {
-          isAdmin: true,
-          updatedAt: Date.now()
-        };
+        db.prepare('UPDATE User SET adminRoles = ?, updatedAt = ? WHERE id = ?')
+          .run(JSON.stringify(['admin']), now, targetUserId);
         break;
       case 'removeAdmin':
-        updateData = {
-          isAdmin: false,
-          isSuperAdmin: false,
-          adminRoles: [],
-          updatedAt: Date.now()
-        };
+        db.prepare('UPDATE User SET adminRoles = ?, updatedAt = ? WHERE id = ?')
+          .run(JSON.stringify([]), now, targetUserId);
         break;
       default:
         return NextResponse.json(
           { error: 'Недопустимое действие' },
           { status: 400 }
         );
-    }
-
-    const userDoc = await usersCollection.findOne({ selector: { id: targetUserId } }).exec();
-    if (userDoc) {
-      await userDoc.patch(updateData);
     }
 
     return NextResponse.json({

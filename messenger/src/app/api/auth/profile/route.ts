@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
+import { getUserById, updateUser } from '@/lib/prisma';
 
 // Выход (обновление статуса на offline)
 export async function POST(request: NextRequest) {
@@ -15,13 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Обновление статуса на offline
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        status: 'offline',
-        lastSeen: new Date()
-      }
-    });
+    db.prepare('UPDATE User SET status = ?, updatedAt = ? WHERE id = ?').run('offline', new Date().toISOString(), userId);
 
     return NextResponse.json({
       success: true,
@@ -51,9 +46,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId }
-    });
+    const user = getUserById(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -70,15 +63,15 @@ export async function GET(request: NextRequest) {
         displayName: user.displayName,
         fullName: user.fullName,
         avatar: user.avatar,
-        birthDate: user.birthDate,
+        birthDate: null,
         status: user.status,
         bio: user.bio,
         phone: user.phone,
-        isAdmin: user.isAdmin,
-        isSuperAdmin: user.isSuperAdmin,
-        settings: user.settings as any,
-        createdAt: Number(user.createdAt),
-        lastSeen: user.lastSeen ? Number(user.lastSeen) : null
+        isAdmin: user.adminRoles?.includes('admin') || false,
+        isSuperAdmin: user.adminRoles?.includes('superadmin') || false,
+        settings: JSON.parse(user.settings || '{}'),
+        createdAt: user.createdAt,
+        lastSeen: null
       }
     });
   } catch (error) {
@@ -105,9 +98,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId }
-    });
+    const user = getUserById(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -133,24 +124,19 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    updateData.updatedAt = new Date();
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: updateData
-    });
+    const updatedUser = updateUser(userId, updateData);
 
     return NextResponse.json({
       success: true,
       user: {
-        id: updatedUser.id,
-        email: updatedUser.email,
-        displayName: updatedUser.displayName,
-        fullName: updatedUser.fullName,
-        avatar: updatedUser.avatar,
-        status: updatedUser.status,
-        bio: updatedUser.bio,
-        phone: updatedUser.phone
+        id: updatedUser!.id,
+        email: updatedUser!.email,
+        displayName: updatedUser!.displayName,
+        fullName: updatedUser!.fullName,
+        avatar: updatedUser!.avatar,
+        status: updatedUser!.status,
+        bio: updatedUser!.bio,
+        phone: updatedUser!.phone
       }
     });
   } catch (error) {

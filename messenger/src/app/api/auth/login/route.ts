@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 import { verifyPassword } from '@/lib/password';
 
@@ -9,10 +9,8 @@ export async function POST(request: NextRequest) {
 
     logger.debug('[API Login] Поиск пользователя:', email);
 
-    // Поиск пользователя через Prisma
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() }
-    });
+    // Поиск пользователя
+    const user = db.prepare('SELECT * FROM User WHERE email = ?').get(email.toLowerCase());
 
     logger.debug('[API Login] Пользователь найден:', !!user);
 
@@ -50,13 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Обновление статуса
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        status: 'online',
-        lastSeen: new Date()
-      }
-    });
+    db.prepare('UPDATE User SET status = ?, updatedAt = ? WHERE id = ?').run('online', new Date().toISOString(), user.id);
 
     // Генерация токена сессии
     const sessionToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 16)}`;
@@ -72,8 +64,8 @@ export async function POST(request: NextRequest) {
         fullName: user.fullName,
         avatar: user.avatar,
         status: user.status,
-        isAdmin: user.isAdmin,
-        isSuperAdmin: user.isSuperAdmin,
+        isAdmin: user.adminRoles?.includes('admin') || false,
+        isSuperAdmin: user.adminRoles?.includes('superadmin') || false,
       },
       token: sessionToken,
       message: 'Вход выполнен успешно'

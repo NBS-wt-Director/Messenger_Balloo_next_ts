@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * GET /api/chats/search?q=...&userId=...&limit=20
@@ -27,12 +27,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Получаем все чаты пользователя
-    const userChatMemberships = await prisma.chatMember.findMany({
-      where: { userId },
-      select: { chatId: true }
-    });
-
-    const userChatIds = userChatMemberships.map(m => m.chatId);
+    const userChats = db.prepare('SELECT chatId FROM ChatMember WHERE userId = ?').all(userId) as any[];
+    const userChatIds = userChats.map((m: any) => m.chatId);
 
     if (userChatIds.length === 0) {
       return NextResponse.json({
@@ -43,50 +39,31 @@ export async function GET(request: NextRequest) {
     }
 
     // Поиск по чатам
-    const chats = await prisma.chat.findMany({
-      where: {
-        id: { in: userChatIds },
-        OR: [
-          { name: { contains: query } },
-          { description: { contains: query } },
-        ]
-      },
-      include: {
-        members: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                displayName: true,
-                avatar: true,
-              }
-            }
-          }
-        },
-        messages: {
-          orderBy: { createdAt: 'desc' },
-          take: 1,
-          include: {
-            sender: {
-              select: {
-                id: true,
-                displayName: true,
-              }
-            }
-          }
-        }
-      },
-      take: limit,
-    });
+    const chatIdsStr = userChatIds.map(() => '?').join(',');
+    const chats = db.prepare(`
+      SELECT c.*, 
+             (SELECT userId FROM ChatMember WHERE chatId = c.id AND userId != ? LIMIT 1) as otherUserId
+      FROM Chat c
+      WHERE c.id IN (${chatIdsStr})
+      AND (c.name LIKE ? OR c.description LIKE ?)
+      LIMIT ?
+    `).all(userId, ...userChatIds, `%${query}%`, `%${query}%`, limit) as any[];
 
     // Форматирование результатов
-    const formattedChats = chats.map(chat => {
-      const lastMessage = chat.messages[0];
-      
+    const formattedChats = chats.map((chat: any) => {
+      const lastMessage = db.prepare(`
+        SELECT m.*, u.displayName as senderName
+        FROM Message m
+        JOIN User u ON m.userId = u.id
+        WHERE m.chatId = ?
+        ORDER BY m.createdAt DESC
+        LIMIT 1
+      `).get(chat.id);
+
       let chatName = chat.name;
       if (chat.type === 'private' && !chatName) {
-        const otherMember = chat.members.find((m: { userId: string; user: { displayName: string } }) => m.userId !== userId);
-        chatName = otherMember?.user.displayName || 'Пользователь';
+        const otherMember = db.prepare('SELECT u.displayName FROM ChatMember cm JOIN User u ON cm.userId = u.id WHERE cm.chatId = ? AND cm.userId != ?').get(chat.id, userId);
+        chatName = otherMember?.displayName || 'Пользователь';
       }
 
       return {
@@ -95,33 +72,23 @@ export async function GET(request: NextRequest) {
         name: chatName,
         avatar: chat.avatar,
         description: chat.description,
-        participants: chat.members.map(m => m.userId),
+        participants: [],
         lastMessage: lastMessage ? {
           id: lastMessage.id,
-          content: lastMessage.content,
+          content: lastMessage.text,
           type: lastMessage.type,
-          createdAt: Number(lastMessage.createdAt),
-          senderId: lastMessage.senderId,
-          senderName: lastMessage.sender.displayName,
+          createdAt: lastMessage.createdAt,
+          senderId: lastMessage.userId,
+          senderName: lastMessage.senderName,
         } : null,
       };
-    });
-
-    const total = await prisma.chat.count({
-      where: {
-        id: { in: userChatIds },
-        OR: [
-          { name: { contains: query } },
-          { description: { contains: query } },
-        ]
-      }
     });
 
     return NextResponse.json({
       success: true,
       chats: formattedChats,
-      total,
-      hasMore: formattedChats.length === limit
+      total: formattedChats.length,
+      hasMore: false
     });
   } catch (error) {
     console.error('[Chats Search] Error:', error);

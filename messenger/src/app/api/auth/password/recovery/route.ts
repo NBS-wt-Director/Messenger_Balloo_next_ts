@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 import crypto from 'crypto';
+import { hash } from 'bcryptjs';
 
 /**
  * POST /api/auth/password/recovery - Запрос на восстановление пароля
@@ -18,23 +19,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
-    const usersCollection = db.users;
-
-    // Находим пользователя
-    const user = await usersCollection.findOne({
-      selector: { email: email.toLowerCase() }
-    }).exec();
+    const user = db.prepare('SELECT * FROM User WHERE email = ?').get(email.toLowerCase());
 
     if (!user) {
-      // Для безопасности не сообщаем, существует ли пользователь
       return NextResponse.json({
         success: true,
         message: 'Если email существует, код восстановления будет отправлен'
       });
     }
-
-    const userData = user.toJSON();
 
     // Генерируем токен сброса пароля
     const resetToken = crypto.randomBytes(32).toString('hex');
@@ -44,17 +36,17 @@ export async function POST(request: NextRequest) {
       .digest('hex');
     const resetTokenExpiry = Date.now() + 60 * 60 * 1000; // 1 час
 
-    // Сохраняем токен
-    await user.patch({
-      passwordResetToken: resetTokenHash,
-      passwordResetExpiry: resetTokenExpiry,
-      updatedAt: Date.now()
-    });
+    // Сохраняем токен в settings
+    const settings = JSON.parse(user.settings || '{}');
+    settings.passwordResetToken = resetTokenHash;
+    settings.passwordResetExpiry = resetTokenExpiry;
+    
+    db.prepare('UPDATE User SET settings = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(settings), new Date().toISOString(), user.id);
 
     // TODO: Отправка email с ссылкой сброса
-    // В production здесь будет отправка через SMTP/SendGrid/другой сервис
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
-    logger.info(`[Password Recovery] Reset URL for ${userData.email}: ${resetUrl}`);
+    logger.info(`[Password Recovery] Reset URL for ${user.email}: ${resetUrl}`);
 
     return NextResponse.json({
       success: true,
@@ -103,8 +95,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Хешируем новый пароль
-    const bcrypt = await import('bcryptjs');
-    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+    const newPasswordHash = await hash(newPassword, 10);
 
     // Генерируем хеш токена
     const resetTokenHash = crypto
@@ -112,16 +103,7 @@ export async function PUT(request: NextRequest) {
       .update(token)
       .digest('hex');
 
-    const db = await getDatabase();
-    const usersCollection = db.users;
-
-    // Находим пользователя с этим токеном
-    const user = await usersCollection.findOne({
-      selector: {
-        passwordResetToken: resetTokenHash,
-        passwordResetExpiry: { $gt: Date.now() }
-      }
-    }).exec();
+    const user = db.prepare('SELECT * FROM User WHERE settings LIKE ?').get(`%"passwordResetToken":"${resetTokenHash}"%`);
 
     if (!user) {
       return NextResponse.json(
@@ -130,13 +112,21 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // Проверяем срок действия токена
+    const settings = JSON.parse(user.settings || '{}');
+    if (!settings.passwordResetExpiry || Date.now() > settings.passwordResetExpiry) {
+      return NextResponse.json(
+        { error: 'Токен сброса истёк' },
+        { status: 400 }
+      );
+    }
+
     // Обновляем пароль и очищаем токен
-    await user.patch({
-      passwordHash: newPasswordHash,
-      passwordResetToken: undefined,
-      passwordResetExpiry: undefined,
-      updatedAt: Date.now()
-    });
+    settings.passwordResetToken = undefined;
+    settings.passwordResetExpiry = undefined;
+    
+    db.prepare('UPDATE User SET passwordHash = ?, settings = ?, updatedAt = ? WHERE id = ?')
+      .run(newPasswordHash, JSON.stringify(settings), new Date().toISOString(), user.id);
 
     return NextResponse.json({
       success: true,
@@ -173,20 +163,15 @@ export async function GET(request: NextRequest) {
       .update(token)
       .digest('hex');
 
-    const db = await getDatabase();
-    const usersCollection = db.users;
+    const user = db.prepare('SELECT settings FROM User WHERE settings LIKE ?').get(`%"passwordResetToken":"${resetTokenHash}"%`);
 
-    // Находим пользователя с этим токеном
-    const user = await usersCollection.findOne({
-      selector: {
-        passwordResetToken: resetTokenHash,
-        passwordResetExpiry: { $gt: Date.now() }
-      }
-    }).exec();
+    if (user) {
+      const settings = JSON.parse(user.settings || '{}');
+      const valid = settings.passwordResetExpiry && Date.now() < settings.passwordResetExpiry;
+      return NextResponse.json({ valid });
+    }
 
-    return NextResponse.json({
-      valid: !!user
-    });
+    return NextResponse.json({ valid: false });
 
   } catch (error: any) {
     logger.error('[API] Error validating token:', error);

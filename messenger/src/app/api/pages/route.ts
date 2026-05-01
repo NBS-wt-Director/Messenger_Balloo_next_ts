@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * GET /api/pages - Получить контент страницы
- * query: slug: 'support' | 'about-company' | 'about-balloo'
  */
 export async function GET(request: NextRequest) {
   try {
@@ -18,12 +17,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const page = await prisma.page.findUnique({
-      where: { id: slug }
-    });
+    const page = db.prepare('SELECT * FROM Page WHERE id = ?').get(slug);
 
     if (!page) {
-      // Возвращаем дефолтный контент если страница не найдена
       return NextResponse.json({
         success: true,
         page: getDefaultPage(slug),
@@ -37,9 +33,9 @@ export async function GET(request: NextRequest) {
         id: page.id,
         title: page.title,
         content: page.content,
-        sections: page.sections,
-        metadata: page.metadata,
-        isActive: page.isActive,
+        sections: JSON.parse(page.sections || '[]'),
+        metadata: JSON.parse(page.metadata || '{}'),
+        isActive: page.isActive === 1,
         createdBy: page.createdBy,
         createdAt: page.createdAt,
         updatedAt: page.updatedAt
@@ -61,13 +57,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      slug, 
-      title, 
-      content, 
-      sections,
-      metadata 
-    } = body;
+    const { slug, title, content, sections, metadata } = body;
 
     if (!slug || !title) {
       return NextResponse.json(
@@ -76,33 +66,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const now = Date.now();
+    const now = new Date().toISOString();
+    const page = db.prepare('SELECT id FROM Page WHERE id = ?').get(slug);
 
-    const updatedPage = await prisma.page.upsert({
-      where: { id: slug },
-      create: {
-        id: slug,
-        title,
-        content: content || '',
-        sections: sections || [],
-        metadata: metadata || {},
-        isActive: true,
-        createdBy: 'admin',
-        createdAt: new Date(now),
-        updatedAt: new Date(now)
-      },
-      update: {
-        title,
-        content: content || undefined,
-        sections: sections || undefined,
-        metadata: metadata || undefined,
-        updatedAt: new Date(now)
-      }
-    });
+    if (page) {
+      db.prepare(`
+        UPDATE Page SET title = ?, content = ?, sections = ?, metadata = ?, updatedAt = ?
+        WHERE id = ?
+      `).run(title, content || '', JSON.stringify(sections || []), JSON.stringify(metadata || {}), now, slug);
+    } else {
+      db.prepare(`
+        INSERT INTO Page (id, title, content, sections, metadata, isActive, createdBy, createdAt, updatedAt)
+        VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)
+      `).run(slug, title, content || '', JSON.stringify(sections || []), JSON.stringify(metadata || {}), 'admin', now, now);
+    }
 
     return NextResponse.json({
       success: true,
-      page: updatedPage,
+      page: { id: slug, title, content, sections, metadata, updatedAt: now },
       message: 'Страница сохранена'
     });
   } catch (error: any) {

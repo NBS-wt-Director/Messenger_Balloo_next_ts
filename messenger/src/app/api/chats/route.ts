@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * GET /api/chats?userId=xxx
- * Получение списка чатов пользователя через Prisma
+ * Получение списка чатов пользователя
  */
 export async function GET(request: NextRequest) {
   try {
@@ -20,53 +20,50 @@ export async function GET(request: NextRequest) {
     }
 
     // Получаем все чаты где пользователь участник
-    const chatMemberships = await prisma.chatMember.findMany({
-      where: { userId },
-      include: {
-        chat: {
-          include: {
-            members: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    displayName: true,
-                    avatar: true,
-                  }
-                }
-              }
-            },
-            messages: {
-              orderBy: { createdAt: 'desc' },
-              take: 1,
-              include: {
-                sender: {
-                  select: {
-                    id: true,
-                    displayName: true,
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    });
+    let query = `
+      SELECT c.*, cm.role
+      FROM Chat c
+      JOIN ChatMember cm ON c.id = cm.chatId
+      WHERE cm.userId = ?
+    `;
+    const params: any[] = [userId];
 
-    // Преобразуем в формат чатов
-    const chats = chatMemberships.map(member => {
-      const chat = member.chat;
-      const lastMessage = chat.messages[0];
+    if (type) {
+      query += ' AND c.type = ?';
+      params.push(type);
+    }
+
+    const chatMemberships = db.prepare(query).all(...params);
+
+    // Получаем детали для каждого чата
+    const chats = chatMemberships.map((member: any) => {
+      const chat = member;
       
+      // Получаем участников
+      const members = db.prepare('SELECT userId, role FROM ChatMember WHERE chatId = ?').all(chat.id);
+      
+      // Получаем последнее сообщение
+      const lastMessageRaw = db.prepare(`
+        SELECT m.*, u.displayName as senderName
+        FROM Message m
+        JOIN User u ON m.userId = u.id
+        WHERE m.chatId = ?
+        ORDER BY m.createdAt DESC
+        LIMIT 1
+      `).get(chat.id);
+
       let chatName = chat.name;
       if (chat.type === 'private' && !chatName) {
         // Для частного чата - проверить это "Мои заметки"
-        const isNotesChat = chat.isSystemChat && chat.members.length === 1 && chat.members[0].userId === userId;
+        const isNotesChat = chat.isSystemChat && members.length === 1 && members[0].userId === userId;
         if (isNotesChat) {
           chatName = 'Мои заметки';
         } else {
-          const otherMember = chat.members.find(m => m.userId !== userId);
-          chatName = otherMember?.user.displayName || 'Пользователь';
+          const otherMember = members.find((m: any) => m.userId !== userId);
+          if (otherMember) {
+            const user = db.prepare('SELECT displayName FROM User WHERE id = ?').get(otherMember.userId);
+            chatName = user?.displayName || 'Пользователь';
+          }
         }
       }
 
@@ -75,22 +72,22 @@ export async function GET(request: NextRequest) {
         type: chat.type,
         name: chatName,
         avatar: chat.avatar,
-        isSystemChat: chat.isSystemChat,
-        participants: chat.members.map(m => m.userId),
-        members: chat.members.reduce((acc, m) => {
+        isSystemChat: !!chat.isSystemChat,
+        participants: members.map((m: any) => m.userId),
+        members: members.reduce((acc: any, m: any) => {
           acc[m.userId] = m.role;
           return acc;
-        }, {} as Record<string, string>),
+        }, {}),
         createdBy: chat.createdBy,
-        createdAt: Number(chat.createdAt),
-        updatedAt: Number(chat.updatedAt),
-        lastMessage: lastMessage ? {
-          id: lastMessage.id,
-          content: lastMessage.content,
-          type: lastMessage.type,
-          createdAt: Number(lastMessage.createdAt),
-          senderId: lastMessage.senderId,
-          senderName: lastMessage.sender.displayName,
+        createdAt: chat.createdAt,
+        updatedAt: chat.updatedAt,
+        lastMessage: lastMessageRaw ? {
+          id: lastMessageRaw.id,
+          content: lastMessageRaw.text,
+          type: lastMessageRaw.type,
+          createdAt: lastMessageRaw.createdAt,
+          senderId: lastMessageRaw.userId,
+          senderName: lastMessageRaw.senderName,
         } : null,
         isFavorite: false,
         pinned: false,
@@ -113,7 +110,7 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/chats
- * Создание нового чата через Prisma
+ * Создание нового чата
  */
 export async function POST(request: NextRequest) {
   try {
@@ -138,19 +135,14 @@ export async function POST(request: NextRequest) {
     // Для private чата - проверить существующий
     if (type === 'private' && participants.length === 2) {
       const sortedParticipants = [...participants].sort();
-      const existingChat = await prisma.chat.findFirst({
-        where: {
-          type: 'private',
-          members: {
-            every: {
-              userId: { in: sortedParticipants }
-            }
-          }
-        },
-        include: {
-          members: true
-        }
-      });
+      const existingChat = db.prepare(`
+        SELECT c.* FROM Chat c
+        JOIN ChatMember cm1 ON c.id = cm1.chatId
+        JOIN ChatMember cm2 ON c.id = cm2.chatId
+        WHERE c.type = 'private'
+        AND cm1.userId = ? AND cm2.userId = ?
+        LIMIT 1
+      `).get(sortedParticipants[0], sortedParticipants[1]);
 
       if (existingChat) {
         return NextResponse.json({
@@ -162,97 +154,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Создание чата
-    const chat = await prisma.chat.create({
-      data: {
-        type,
-        name: name || null,
-        createdBy,
-        isSystemChat: false,
-        members: {
-          create: participants.map((userId: string, index: number) => ({
-            userId,
-            role: index === 0 ? 'creator' : 'reader',
-            joinedAt: new Date()
-          }))
-        }
-      },
-      include: {
-        members: true
-      }
+    const chatId = `chat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const now = new Date().toISOString();
+
+    db.prepare(`
+      INSERT INTO Chat (id, type, name, createdBy, isSystemChat, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, 0, ?, ?)
+    `).run(chatId, type, name || null, createdBy, now, now);
+
+    // Добавляем участников
+    participants.forEach((userId: string, index: number) => {
+      db.prepare(`
+        INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+        VALUES (?, ?, ?, ?)
+      `).run(chatId, userId, index === 0 ? 'creator' : 'reader', now);
     });
-
-    // Для частного чата - автоматически добавить участников в контакты друг друга
-    if (type === 'private' && participants.length === 2) {
-      const [user1, user2] = participants;
-      
-      // Добавляем user2 в контакты user1
-      await prisma.contact.upsert({
-        where: {
-          userId_contactId: {
-            userId: user1,
-            contactId: user2
-          }
-        },
-        update: {},
-        create: {
-          userId: user1,
-          contactId: user2,
-          name: user2 === 'support' ? 'Техподдержка' : `User ${user2}`
-        }
-      });
-
-      // Добавляем user1 в контакты user2 (зеркально)
-      await prisma.contact.upsert({
-        where: {
-          userId_contactId: {
-            userId: user2,
-            contactId: user1
-          }
-        },
-        update: {},
-        create: {
-          userId: user2,
-          contactId: user1,
-          name: user1 === 'support' ? 'Техподдержка' : `User ${user1}`
-        }
-      });
-
-      // Создаем семейные связи (если не существуют)
-      await prisma.familyRelation.upsert({
-        where: {
-          userId_relatedUserId: {
-            userId: user1,
-            relatedUserId: user2
-          }
-        },
-        update: {},
-        create: {
-          userId: user1,
-          relatedUserId: user2,
-          type: 'friend'
-        }
-      });
-
-      await prisma.familyRelation.upsert({
-        where: {
-          userId_relatedUserId: {
-            userId: user2,
-            relatedUserId: user1
-          }
-        },
-        update: {},
-        create: {
-          userId: user2,
-          relatedUserId: user1,
-          type: 'friend'
-        }
-      });
-    }
 
     return NextResponse.json({
       success: true,
-      chat: { id: chat.id },
-      chatId: chat.id
+      chat: { id: chatId },
+      chatId
     });
   } catch (error) {
     console.error('[API Chats POST] Error:', error);

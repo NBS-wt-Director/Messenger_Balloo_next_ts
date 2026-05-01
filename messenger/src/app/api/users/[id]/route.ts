@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
+import { getUserById, updateUser } from '@/lib/prisma';
 
 /**
  * GET /api/users/[id]
@@ -12,23 +13,7 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        email: true,
-        displayName: true,
-        fullName: true,
-        phone: true,
-        avatar: true,
-        status: true,
-        isOnline: true,
-        online: true,
-        createdAt: true,
-        updatedAt: true,
-        isAdmin: true,
-      }
-    });
+    const user = getUserById(id);
 
     if (!user) {
       return NextResponse.json(
@@ -39,7 +24,20 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      user
+      user: {
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        fullName: user.fullName,
+        phone: user.phone,
+        avatar: user.avatar,
+        status: user.status,
+        isOnline: user.isOnline === 1,
+        online: user.online === 1,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        isAdmin: user.adminRoles?.includes('admin') || false,
+      }
     });
   } catch (error) {
     console.error('[User GET] Error:', error);
@@ -72,9 +70,7 @@ export async function PUT(
     }
 
     // Проверка существования
-    const existingUser = await prisma.user.findUnique({
-      where: { id }
-    });
+    const existingUser = getUserById(id);
 
     if (!existingUser) {
       return NextResponse.json(
@@ -91,27 +87,23 @@ export async function PUT(
     if (status !== undefined) updateData.status = status;
     if (avatar !== undefined) updateData.avatar = avatar;
 
-    const user = await prisma.user.update({
-      where: { id },
-      data: updateData,
-      select: {
-        id: true,
-        email: true,
-        displayName: true,
-        fullName: true,
-        phone: true,
-        avatar: true,
-        status: true,
-        isOnline: true,
-        online: true,
-        createdAt: true,
-        updatedAt: true,
-      }
-    });
+    const user = updateUser(id, updateData);
 
     return NextResponse.json({
       success: true,
-      user
+      user: {
+        id: user!.id,
+        email: user!.email,
+        displayName: user!.displayName,
+        fullName: user!.fullName,
+        phone: user!.phone,
+        avatar: user!.avatar,
+        status: user!.status,
+        isOnline: user!.isOnline === 1,
+        online: user!.online === 1,
+        createdAt: user!.createdAt,
+        updatedAt: user!.updatedAt,
+      }
     });
   } catch (error) {
     console.error('[User PUT] Error:', error);

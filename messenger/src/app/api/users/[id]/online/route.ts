@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * POST /api/users/[id]/online
@@ -21,24 +21,20 @@ export async function POST(
       );
     }
 
-    const user = await prisma.user.update({
-      where: { id },
-      data: {
-        isOnline: isOnline,
-        online: isOnline,
-        lastSeen: new Date()
-      },
-      select: {
-        id: true,
-        isOnline: true,
-        online: true,
-        lastSeen: true
-      }
-    });
+    const now = new Date().toISOString();
+    const onlineInt = isOnline ? 1 : 0;
+
+    db.prepare('UPDATE User SET isOnline = ?, online = ?, updatedAt = ? WHERE id = ?')
+      .run(onlineInt, onlineInt, now, id);
 
     return NextResponse.json({
       success: true,
-      user
+      user: {
+        id,
+        isOnline,
+        online: isOnline,
+        lastSeen: now
+      }
     });
   } catch (error) {
     console.error('[User Online] Error:', error);

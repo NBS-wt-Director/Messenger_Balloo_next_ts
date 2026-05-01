@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * GET /api/messages?chatId=xxx&limit=50&before=timestamp
@@ -19,71 +19,72 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Получаем сообщения из Prisma
-    const messages = await prisma.message.findMany({
-      where: {
-        chatId,
-        ...(before && {
-          createdAt: {
-            lt: new Date(parseInt(before))
-          }
-        })
-      },
-      include: {
-        sender: {
-          select: {
-            id: true,
-            displayName: true,
-            avatar: true,
-          }
-        },
-        reactions: true,
-        replyTo: {
-          select: {
-            id: true,
-            content: true,
-            type: true,
-            senderId: true,
-          }
-        }
-      },
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-    });
+    // Получаем сообщения
+    let query = `
+      SELECT m.*, 
+             u.displayName as senderDisplayName, u.avatar as senderAvatar,
+             replyTo.content as replyToContent, replyTo.type as replyToType, replyTo.senderId as replyToSenderId
+      FROM Message m
+      JOIN User u ON m.userId = u.id
+      LEFT JOIN Message replyTo ON m.replyToId = replyTo.id
+      WHERE m.chatId = ?
+    `;
+    const params: any[] = [chatId];
 
-    // Преобразуем в формат, совместимый с клиентом
-    const formattedMessages = messages.map(msg => ({
-      id: msg.id,
-      chatId: msg.chatId,
-      senderId: msg.senderId,
-      sender: msg.sender,
-      type: msg.type,
-      content: msg.content,
-      mediaUrl: msg.mediaUrl,
-      thumbnailUrl: msg.thumbnailUrl,
-      fileName: msg.fileName,
-      fileSize: msg.fileSize,
-      mimeType: msg.mimeType,
-      replyToId: msg.replyToId,
-      replyTo: msg.replyTo,
-      readBy: msg.readBy as string[],
-      status: msg.status,
-      reactions: msg.reactions.reduce((acc, r) => {
-        acc[r.emoji] = (acc[r.emoji] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>),
-      reactionsCount: msg.reactions.reduce((acc, r) => {
-        acc[r.emoji] = (acc[r.emoji] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>),
-      edited: msg.edited,
-      createdAt: Number(msg.createdAt),
-      updatedAt: Number(msg.updatedAt),
-    }));
+    if (before) {
+      query += ' AND m.createdAt < datetime(?)';
+      params.push(new Date(parseInt(before)).toISOString());
+    }
+
+    query += ' ORDER BY m.createdAt DESC LIMIT ?';
+    params.push(limit);
+
+    const messagesRaw = db.prepare(query).all(...params);
+
+    // Получаем реакции для каждого сообщения
+    const messages = messagesRaw.map((msg: any) => {
+      const reactionsRaw = db.prepare('SELECT emoji FROM MessageReaction WHERE messageId = ?').all(msg.id);
+      const reactions: Record<string, number> = {};
+      reactionsRaw.forEach((r: any) => {
+        reactions[r.emoji] = (reactions[r.emoji] || 0) + 1;
+      });
+
+      return {
+        id: msg.id,
+        chatId: msg.chatId,
+        senderId: msg.userId,
+        sender: {
+          id: msg.userId,
+          displayName: msg.senderDisplayName,
+          avatar: msg.senderAvatar,
+        },
+        type: msg.type || 'text',
+        content: msg.text,
+        mediaUrl: msg.attachmentId,
+        thumbnailUrl: null,
+        fileName: null,
+        fileSize: null,
+        mimeType: null,
+        replyToId: msg.replyToId,
+        replyTo: msg.replyToContent ? {
+          id: msg.replyToId,
+          content: msg.replyToContent,
+          type: msg.replyToType,
+          senderId: msg.replyToSenderId,
+        } : null,
+        readBy: [msg.userId],
+        status: 'sent',
+        reactions,
+        reactionsCount: reactions,
+        edited: false,
+        createdAt: msg.createdAt,
+        updatedAt: msg.createdAt,
+      };
+    });
 
     return NextResponse.json({
       success: true,
-      messages: formattedMessages,
+      messages,
       pagination: {
         page: 1,
         limit,
@@ -117,10 +118,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверка существования чата
-    const chat = await prisma.chat.findUnique({
-      where: { id: chatId },
-      include: { members: true }
-    });
+    const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId);
 
     if (!chat) {
       return NextResponse.json(
@@ -130,7 +128,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверка участия в чате
-    const member = chat.members.find(m => m.userId === senderId);
+    const member = db.prepare('SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?').get(chatId, senderId);
     if (!member) {
       return NextResponse.json(
         { error: 'You are not a member of this chat' },
@@ -141,102 +139,71 @@ export async function POST(request: NextRequest) {
     // Получение replyToMessage если есть
     let replyToMessage = null;
     if (replyToId) {
-      const replyTo = await prisma.message.findUnique({
-        where: { id: replyToId },
-        include: {
-          sender: {
-            select: {
-              id: true,
-              displayName: true,
-            }
-          }
-        }
-      });
-
+      const replyTo = db.prepare('SELECT id, text as content, type, userId as senderId FROM Message WHERE id = ?').get(replyToId);
       if (replyTo) {
+        const sender = db.prepare('SELECT displayName FROM User WHERE id = ?').get(replyTo.userId);
         replyToMessage = {
           id: replyTo.id,
           content: replyTo.content,
           type: replyTo.type,
           senderId: replyTo.senderId,
-          senderName: replyTo.sender.displayName || 'Unknown'
+          senderName: sender?.displayName || 'Unknown'
         };
       }
     }
 
-    // Создание сообщения через Prisma
-    const message = await prisma.message.create({
-      data: {
-        chatId,
-        senderId,
-        type,
-        content,
-        mediaUrl: mediaUrl || null,
-        thumbnailUrl: null,
-        fileName: fileName || null,
-        fileSize: fileSize || null,
-        mimeType: mimeType || null,
-        replyToId: replyToId || null,
-        readBy: [senderId],
-        status: 'sent',
-        edited: false,
-      },
-      include: {
-        sender: {
-          select: {
-            id: true,
-            displayName: true,
-            avatar: true,
-          }
-        },
-        reactions: true,
-        replyTo: replyToId ? {
-          select: {
-            id: true,
-            content: true,
-            type: true,
-            senderId: true,
-          }
-        } : false,
-      }
-    });
+    // Создание сообщения
+    const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const createdAt = new Date().toISOString();
+
+    db.prepare(`
+      INSERT INTO Message (id, chatId, userId, text, replyToId, attachmentId, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(messageId, chatId, senderId, content, replyToId || null, mediaUrl || null, createdAt);
+
+    // Получаем созданное сообщение
+    const message = db.prepare(`
+      SELECT m.*, u.displayName as senderDisplayName, u.avatar as senderAvatar
+      FROM Message m
+      JOIN User u ON m.userId = u.id
+      WHERE m.id = ?
+    `).get(messageId);
 
     // Форматируем ответ
     const formattedMessage = {
       id: message.id,
       chatId: message.chatId,
-      senderId: message.senderId,
-      sender: message.sender,
-      type: message.type,
-      content: message.content,
-      mediaUrl: message.mediaUrl,
-      thumbnailUrl: message.thumbnailUrl,
-      fileName: message.fileName,
-      fileSize: message.fileSize,
-      mimeType: message.mimeType,
+      senderId: message.userId,
+      sender: {
+        id: message.userId,
+        displayName: message.senderDisplayName,
+        avatar: message.senderAvatar,
+      },
+      type: message.type || 'text',
+      content: message.text,
+      mediaUrl: message.attachmentId,
+      thumbnailUrl: null,
+      fileName: null,
+      fileSize: null,
+      mimeType: null,
       replyToId: message.replyToId,
       replyTo: replyToMessage,
-      readBy: message.readBy as string[],
-      status: message.status,
+      readBy: [senderId],
+      status: 'sent',
       reactions: {},
       reactionsCount: {},
-      edited: message.edited,
-      createdAt: Number(message.createdAt),
-      updatedAt: Number(message.updatedAt),
+      edited: false,
+      createdAt,
+      updatedAt: createdAt,
     };
 
-    // Обновляем lastMessage в чате
-    await prisma.chat.update({
-      where: { id: chatId },
-      data: {
-        updatedAt: new Date(),
-      }
-    });
+    // Обновляем updatedAt в чате
+    db.prepare('UPDATE Chat SET updatedAt = ? WHERE id = ?').run(createdAt, chatId);
 
     return NextResponse.json({
       success: true,
       message: formattedMessage,
-      createdAt: Number(message.createdAt),
+      createdAt,
     });
   } catch (error) {
     console.error('[API Messages POST] Error:', error);

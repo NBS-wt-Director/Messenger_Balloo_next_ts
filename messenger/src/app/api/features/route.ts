@@ -1,27 +1,27 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 
 /**
  * GET /api/features - Получить список функций
- * query: status?: 'planned' | 'in-progress' | 'completed' | 'all'
  */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || 'all';
 
-    const where: any = {};
+    let query = 'SELECT * FROM Feature';
+    const params: any[] = [];
+
     if (status !== 'all') {
-      where.status = status;
+      query += ' WHERE status = ?';
+      params.push(status);
     }
 
-    const features = await prisma.feature.findMany({
-      where,
-      include: { featureVotes: true },
-      orderBy: { createdAt: 'desc' }
-    });
+    query += ' ORDER BY createdAt DESC';
+
+    const features = db.prepare(query).all(...params) as any[];
 
     return NextResponse.json({
       success: true,
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
         description: f.description,
         category: f.category,
         status: f.status,
-        votes: f.featureVotes.length,
+        votes: f.votes,
         adminNote: f.adminNote,
         plannedAt: f.plannedAt,
         completedAt: f.completedAt,
@@ -50,18 +50,12 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * POST /api/features - Предложить новую функцию (от пользователя)
+ * POST /api/features - Предложить новую функцию
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      title, 
-      description, 
-      category,
-      userId,
-      userName
-    } = body;
+    const { title, description, category, userId } = body;
 
     if (!title || !description || !userId) {
       return NextResponse.json(
@@ -70,38 +64,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const now = new Date();
+    const id = `feat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const now = new Date().toISOString();
 
-    const newFeature = await prisma.feature.create({
-      data: {
-        id: `feat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        title,
-        description,
-        category: category || 'general',
-        status: 'pending',
-        votes: 0,
-        adminNote: '',
-        plannedAt: null,
-        completedAt: null,
-        createdBy: userId,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      include: { featureVotes: false }
-    });
+    db.prepare(`
+      INSERT INTO Feature (id, title, description, category, status, votes, adminNote, createdBy, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, 'pending', 0, '', ?, ?, ?)
+    `).run(id, title, description, category || 'general', userId, now, now);
 
     return NextResponse.json({
       success: true,
       feature: {
-        id: newFeature.id,
-        title: newFeature.title,
-        description: newFeature.description,
-        category: newFeature.category,
-        status: newFeature.status,
-        votes: newFeature.votes,
-        createdBy: newFeature.createdBy,
-        createdAt: newFeature.createdAt,
-        updatedAt: newFeature.updatedAt
+        id, title, description, category: category || 'general', status: 'pending', votes: 0,
+        createdBy: userId, createdAt: now, updatedAt: now
       },
       message: 'Функция предложена! Спасибо за ваш вклад.'
     });
@@ -115,7 +90,7 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * PATCH /api/features - Обновить функцию (для админки)
+ * PATCH /api/features - Обновить функцию
  */
 export async function PATCH(request: NextRequest) {
   try {
@@ -129,14 +104,21 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const updatedFeature = await prisma.feature.update({
-      where: { id: featureId },
-      data: {
-        ...updates,
-        updatedAt: new Date()
-      },
-      include: { featureVotes: false }
-    });
+    const updateFields: string[] = [];
+    const params: any[] = [];
+
+    for (const key of Object.keys(updates)) {
+      updateFields.push(`${key} = ?`);
+      params.push(updates[key]);
+    }
+
+    const now = new Date().toISOString();
+    updateFields.push('updatedAt = ?');
+    params.push(now, featureId);
+
+    db.prepare(`UPDATE Feature SET ${updateFields.join(', ')} WHERE id = ?`).run(...params);
+
+    const updatedFeature = db.prepare('SELECT * FROM Feature WHERE id = ?').get(featureId);
 
     return NextResponse.json({
       success: true,
@@ -167,9 +149,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await prisma.feature.delete({
-      where: { id: featureId }
-    });
+    db.prepare('DELETE FROM Feature WHERE id = ?').run(featureId);
 
     return NextResponse.json({
       success: true,

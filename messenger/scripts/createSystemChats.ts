@@ -5,9 +5,11 @@
  * Запуск: npx ts-node createSystemChats.ts <userId>
  */
 
-import { PrismaClient } from '@prisma/client';
+const path = require('path');
+const Database = require('better-sqlite3');
 
-const prisma = new PrismaClient();
+const dbPath = path.join(process.cwd(), 'data', 'app.db');
+const db = new Database(dbPath);
 
 const SYSTEM_CHATS = {
   NOTES: {
@@ -27,9 +29,7 @@ async function createSystemChats(userId: string) {
 
   try {
     // 1. Проверить существование пользователя
-    const user = await prisma.user.findUnique({
-      where: { id: userId }
-    });
+    const user = db.prepare('SELECT id FROM User WHERE id = ?').get(userId);
 
     if (!user) {
       console.error(`[SystemChats] Пользователь ${userId} не найден!`);
@@ -39,73 +39,54 @@ async function createSystemChats(userId: string) {
     // 2. Создать чат "Избранное" (личная заметка)
     const notesChatId = `${SYSTEM_CHATS.NOTES.idPrefix}${userId}`;
     
-    const notesChat = await prisma.chat.upsert({
-      where: { id: notesChatId },
-      update: {},
-      create: {
-        id: notesChatId,
-        type: 'private',
-        name: SYSTEM_CHATS.NOTES.name,
-        description: SYSTEM_CHATS.NOTES.description,
-        createdBy: userId,
-        isSystemChat: true,
-        members: {
-          create: {
-            userId: userId,
-            role: 'creator',
-            joinedAt: new Date()
-          }
-        }
-      }
-    });
-
-    console.log(`[SystemChats] ✅ Чат "Избранное" создан: ${notesChatId}`);
+    const existingNotes = db.prepare('SELECT id FROM Chat WHERE id = ?').get(notesChatId);
+    
+    if (!existingNotes) {
+      const now = new Date().toISOString();
+      db.prepare(`
+        INSERT INTO Chat (id, type, name, description, createdBy, isSystemChat, createdAt, updatedAt)
+        VALUES (?, 'private', ?, ?, ?, 1, ?, ?)
+      `).run(notesChatId, SYSTEM_CHATS.NOTES.name, SYSTEM_CHATS.NOTES.description, userId, now, now);
+      
+      db.prepare(`
+        INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+        VALUES (?, ?, 'creator', ?)
+      `).run(notesChatId, userId, now);
+      
+      console.log(`[SystemChats] ✅ Чат "Избранное" создан: ${notesChatId}`);
+    }
 
     // 3. Проверить существование чата новостей
-    let newsChat = await prisma.chat.findUnique({
-      where: { id: SYSTEM_CHATS.NEWS.id }
-    });
+    const newsChat = db.prepare('SELECT id FROM Chat WHERE id = ?').get(SYSTEM_CHATS.NEWS.id);
 
     // 4. Если чат новостей не существует - создать
     if (!newsChat) {
-      newsChat = await prisma.chat.create({
-        data: {
-          id: SYSTEM_CHATS.NEWS.id,
-          type: 'channel',
-          name: SYSTEM_CHATS.NEWS.name,
-          description: SYSTEM_CHATS.NEWS.description,
-          createdBy: 'system',
-          isSystemChat: true,
-          members: {
-            create: {
-              userId: userId,
-              role: 'reader',
-              joinedAt: new Date()
-            }
-          }
-        }
-      });
+      const now = new Date().toISOString();
+      db.prepare(`
+        INSERT INTO Chat (id, type, name, description, createdBy, isSystemChat, createdAt, updatedAt)
+        VALUES (?, 'channel', ?, ?, 'system', 1, ?, ?)
+      `).run(SYSTEM_CHATS.NEWS.id, SYSTEM_CHATS.NEWS.name, SYSTEM_CHATS.NEWS.description, now, now);
+      
+      db.prepare(`
+        INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+        VALUES (?, ?, 'reader', ?)
+      `).run(SYSTEM_CHATS.NEWS.id, userId, now);
+      
       console.log(`[SystemChats] ✅ Чат "Новости" создан (первый пользователь)`);
     } else {
       // 5. Добавить пользователя в существующий чат новостей
-      await prisma.chatMember.upsert({
-        where: {
-          chatId_userId: {
-            chatId: SYSTEM_CHATS.NEWS.id,
-            userId: userId
-          }
-        },
-        update: {
-          joinedAt: new Date()
-        },
-        create: {
-          chatId: SYSTEM_CHATS.NEWS.id,
-          userId: userId,
-          role: 'reader',
-          joinedAt: new Date()
-        }
-      });
-      console.log(`[SystemChats] ✅ Пользователь добавлен в чат "Новости"`);
+      const existingMember = db.prepare('SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?').get(SYSTEM_CHATS.NEWS.id, userId);
+      
+      if (!existingMember) {
+        const now = new Date().toISOString();
+        db.prepare(`
+          INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+          VALUES (?, ?, 'reader', ?)
+        `).run(SYSTEM_CHATS.NEWS.id, userId, now);
+        console.log(`[SystemChats] ✅ Пользователь добавлен в чат "Новости"`);
+      } else {
+        console.log(`[SystemChats] ✅ Пользователь уже в чате "Новости"`);
+      }
     }
 
     console.log(`[SystemChats] ✅ Все системные чаты созданы для ${userId}`);
@@ -127,8 +108,6 @@ async function main() {
   }
 
   const success = await createSystemChats(userId);
-  
-  await prisma.$disconnect();
   process.exit(success ? 0 : 1);
 }
 
