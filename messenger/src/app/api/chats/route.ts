@@ -35,8 +35,20 @@ export async function GET(request: NextRequest) {
 
     const chatMemberships = db.prepare(query).all(...params);
 
+    // Также добавляем системные чаты где пользователь ещё не член (новости)
+    const systemChatsQuery = `
+      SELECT c.*, 'reader' as role
+      FROM Chat c
+      WHERE c.isSystemChat = 1
+      AND c.id NOT IN (SELECT chatId FROM ChatMember WHERE userId = ?)
+    `;
+    const additionalChats = db.prepare(systemChatsQuery).all(userId);
+
+    // Объединяем списки
+    const allChats = [...chatMemberships, ...additionalChats];
+
     // Получаем детали для каждого чата
-    const chats = chatMemberships.map((member: any) => {
+    const chats = allChats.map((member: any) => {
       const chat = member;
       
       // Получаем участников
@@ -54,10 +66,10 @@ export async function GET(request: NextRequest) {
 
       let chatName = chat.name;
       if (chat.type === 'private' && !chatName) {
-        // Для частного чата - проверить это "Мои заметки"
-        const isNotesChat = chat.isSystemChat && members.length === 1 && members[0].userId === userId;
+        // Для частного чата - проверить это "Избранное"
+        const isNotesChat = chat.isSystemChat && chat.createdBy === userId;
         if (isNotesChat) {
-          chatName = 'Мои заметки';
+          chatName = 'Избранное';
         } else {
           const otherMember = members.find((m: any) => m.userId !== userId);
           if (otherMember) {

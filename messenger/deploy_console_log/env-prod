@@ -30,6 +30,6 @@ RATE_LIMIT_WINDOW=60
 # Email (SMTP для отправки писем)
 SMTP_HOST=smtp.yandex.ru
 SMTP_PORT=587
-SMTP_USER=robot@balloo.su
-SMTP_PASS=пароль_приложения_яндекс_почты
+SMTP_USER=balloo.Messenger@yandex.ru
+SMTP_PASS=gouewuqhsufqsbgu
 

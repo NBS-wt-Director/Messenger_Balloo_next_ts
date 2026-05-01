@@ -118,7 +118,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверка существования чата
-    const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId);
+    let chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId);
+
+    // Если чат не существует - создаём автоматически
+    if (!chat) {
+      const now = new Date().toISOString();
+      const newChatId = `chat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Создаём чат
+      db.prepare(`
+        INSERT INTO Chat (id, type, name, createdBy, isSystemChat, createdAt, updatedAt)
+        VALUES (?, 'private', NULL, ?, 0, ?, ?)
+      `).run(newChatId, senderId, now, now);
+      
+      // Добавляем отправителя как участника
+      db.prepare(`
+        INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+        VALUES (?, ?, 'creator', ?)
+      `).run(newChatId, senderId, now);
+      
+      chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(newChatId);
+    }
 
     if (!chat) {
       return NextResponse.json(
@@ -127,11 +147,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Проверка участия в чате
+    // Проверка участия в чате (если чат только что создан, пользователь уже участник)
     const member = db.prepare('SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?').get(chatId, senderId);
     if (!member) {
       return NextResponse.json(
-        { error: 'You are not a member of this chat' },
+        { error: 'Вы не являетесь участником этого чата' },
         { status: 403 }
       );
     }

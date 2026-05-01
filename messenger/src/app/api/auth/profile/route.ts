@@ -63,6 +63,7 @@ export async function GET(request: NextRequest) {
         displayName: user.displayName,
         fullName: user.fullName,
         avatar: user.avatar,
+        avatarHistory: JSON.parse(user.avatarHistory || '[]'),
         birthDate: null,
         status: user.status,
         bio: user.bio,
@@ -71,7 +72,9 @@ export async function GET(request: NextRequest) {
         isSuperAdmin: user.adminRoles?.includes('superadmin') || false,
         settings: JSON.parse(user.settings || '{}'),
         createdAt: user.createdAt,
-        lastSeen: null
+        lastSeen: null,
+        userNumber: user.userNumber || null,
+        points: user.points || -55,
       }
     });
   } catch (error) {

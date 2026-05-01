@@ -27,11 +27,15 @@ db.exec(`
     phone TEXT,
     bio TEXT,
     avatar TEXT,
+    avatarHistory TEXT DEFAULT '[]',
+    emailVerified INTEGER DEFAULT 0,
     adminRoles TEXT DEFAULT '[]',
     online INTEGER DEFAULT 0,
     isOnline INTEGER DEFAULT 0,
     status TEXT DEFAULT 'offline',
     settings TEXT DEFAULT '{}',
+    points INTEGER DEFAULT -55,
+    userNumber INTEGER,
     createdAt TEXT DEFAULT (datetime('now')),
     updatedAt TEXT DEFAULT (datetime('now'))
   );
@@ -179,6 +183,28 @@ db.exec(`
     rolled_back_at TEXT,
     started_at TEXT DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS VerificationCode (
+    id TEXT PRIMARY KEY,
+    userId TEXT NOT NULL,
+    code TEXT NOT NULL,
+    createdAt TEXT DEFAULT (datetime('now')),
+    expiresAt TEXT NOT NULL,
+    used INTEGER DEFAULT 0,
+    usedAt TEXT,
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+  );
 `);
+
+// Индексы для оптимизации
+db.exec(`
+  CREATE INDEX IF NOT EXISTS idx_user_email ON User(email);
+  CREATE INDEX IF NOT EXISTS idx_chat_member_user ON ChatMember(userId);
+  CREATE INDEX IF NOT EXISTS idx_message_chat ON Message(chatId);
+  CREATE INDEX IF NOT EXISTS idx_verification_user ON VerificationCode(userId);
+  CREATE INDEX IF NOT EXISTS idx_verification_expires ON VerificationCode(expiresAt);
+`);
+
+console.log('✓ Все таблицы и индексы созданы успешно');
 
 module.exports = db;

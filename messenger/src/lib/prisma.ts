@@ -17,11 +17,14 @@ export type User = {
   phone?: string;
   bio?: string;
   avatar?: string;
+  avatarHistory?: string;
   adminRoles: string[];
   online: number;
   isOnline: number;
   status: string;
   settings: string;
+  points: number;
+  userNumber: number | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -59,14 +62,16 @@ export function createUser(data: {
   fullName?: string;
   bio?: string;
   settings?: any;
+  userNumber?: number;
+  points?: number;
 }): Promise<User> {
   const userId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const now = new Date().toISOString();
   
   db.prepare(`
-    INSERT INTO User (id, email, displayName, passwordHash, fullName, phone, bio, avatar, adminRoles, online, isOnline, status, settings, createdAt, updatedAt)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, '[]', 0, 0, 'offline', '{}', ?, ?)
-  `).run(userId, data.email, data.displayName, data.passwordHash, data.fullName || null, data.phone || null, data.bio || null, data.avatar || null, now, now);
+    INSERT INTO User (id, email, displayName, passwordHash, fullName, phone, bio, avatar, adminRoles, online, isOnline, status, settings, userNumber, points, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, '[]', 0, 0, 'offline', '{}', ?, ?, ?, ?)
+  `).run(userId, data.email, data.displayName, data.passwordHash, data.fullName || null, data.phone || null, data.bio || null, data.avatar || null, data.userNumber || null, data.points || -55, now, now);
   
   return getUserById(userId) as unknown as Promise<User>;
 }
@@ -83,7 +88,7 @@ export function updateUser(id: string, data: Partial<User>): User | null {
   const updates: string[] = [];
   const params: any[] = [];
   
-  for (const key of ['displayName', 'fullName', 'phone', 'bio', 'avatar', 'status', 'settings']) {
+  for (const key of ['displayName', 'fullName', 'phone', 'bio', 'avatar', 'avatarHistory', 'status', 'settings', 'userNumber', 'points']) {
     if (data[key as keyof User] !== undefined) {
       updates.push(`${key} = ?`);
       params.push(data[key as keyof User]);

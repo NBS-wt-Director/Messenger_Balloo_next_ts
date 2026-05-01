@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/database';
 import { hash } from 'bcryptjs';
+import { generateUserAvatar, updateAvatarHistory } from '@/lib/avatar';
+import { generateVerificationCode } from '@/lib/verification-code';
+import { sendVerificationEmail } from '@/lib/email';
 
 /**
  * POST /api/auth/register
@@ -32,14 +35,25 @@ export async function POST(request: NextRequest) {
     // Хеширование пароля
     const passwordHash = await hash(password, 10);
 
-    // Создание пользователя
+    // Создаём пользователя
     const userId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date().toISOString();
 
+    // Генерация аватара
+    const avatar = generateUserAvatar(userId, displayName);
+
+    // Проверяем количество пользователей для номера и баллов
+    const userCount = db.prepare('SELECT COUNT(*) as count FROM User').get();
+    const userNumber = (userCount.count || 0) + 1;
+    const points = userNumber <= 10000 ? 5000 : -55;
+
+    // Первый пользователь получает супер-админа
+    const adminRoles = userNumber === 1 ? '["superadmin"]' : '[]';
+
     db.prepare(`
-      INSERT INTO User (id, email, displayName, passwordHash, fullName, phone, bio, settings, adminRoles, online, isOnline, status, createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, '', '{}', '[]', 0, 0, 'offline', ?, ?)
-    `).run(userId, email, displayName, passwordHash, fullName || null, phone || null, now, now);
+      INSERT INTO User (id, email, displayName, passwordHash, fullName, phone, bio, avatar, avatarHistory, settings, adminRoles, online, isOnline, status, userNumber, points, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, '', ?, '[]', '{}', ?, 0, 0, 'offline', ?, ?, ?, ?)
+    `).run(userId, email, displayName, passwordHash, fullName || null, phone || null, avatar, adminRoles, userNumber, points, now, now);
 
     const user = {
       id: userId,
@@ -47,17 +61,19 @@ export async function POST(request: NextRequest) {
       displayName,
       fullName: fullName || null,
       phone: phone || null,
-      avatar: null,
+      avatar,
       createdAt: now,
+      userNumber,
+      points,
     };
 
     // === СОЗДАНИЕ СИСТЕМНЫХ ЧАТОВ ===
 
-    // 1. Чат "Мои заметки" (чат с самим собой)
+    // 1. Чат "Избранное" (чат с самим собой)
     const notesChatId = `chat-notes-${userId}`;
     db.prepare(`
       INSERT INTO Chat (id, type, name, createdBy, isSystemChat, createdAt, updatedAt)
-      VALUES (?, 'private', NULL, ?, 1, ?, ?)
+      VALUES (?, 'private', 'Избранное', ?, 1, ?, ?)
     `).run(notesChatId, userId, now, now);
 
     db.prepare(`
@@ -74,24 +90,48 @@ export async function POST(request: NextRequest) {
 
     db.prepare(`
       INSERT INTO ChatMember (chatId, userId, role, joinedAt)
-      VALUES (?, ?, 'reader', ?), ('chat-support-system', 'support', 'creator', ?)
-    `).run(supportChatId, userId, now, now);
+      VALUES (?, ?, 'reader', ?)
+    `).run(supportChatId, userId, now);
 
-    // 3. Добавить в чат "Balloo - новости и обновления"
+    // Добавить системного пользователя поддержки
+    db.prepare(`
+      INSERT OR IGNORE INTO ChatMember (chatId, userId, role, joinedAt)
+      VALUES (?, 'support', 'creator', ?)
+    `).run(supportChatId, now);
+
+    // 3. Чат "Balloo - новости, фичи, возможности" (общий для всех)
     const newsChatId = 'balloo-news';
     const newsChatExists = db.prepare('SELECT id FROM Chat WHERE id = ?').get(newsChatId);
 
     if (!newsChatExists) {
       db.prepare(`
         INSERT INTO Chat (id, type, name, description, createdBy, isSystemChat, createdAt, updatedAt)
-        VALUES (?, 'channel', 'Balloo - новости и обновления', 'Официальные новости, фичи и планы проекта', 'system', 1, ?, ?)
+        VALUES (?, 'channel', 'Balloo - новости, фичи, возможности', 'Официальные новости, фичи и возможности мессенджера', 'system', 1, ?, ?)
       `).run(newsChatId, now, now);
+      console.log('✓ Создан системный чат новостей');
     }
 
+    // Добавляем пользователя в чат новостей
+    const alreadyMember = db.prepare('SELECT 1 FROM ChatMember WHERE chatId = ? AND userId = ?').get(newsChatId, userId);
+    if (!alreadyMember) {
+      db.prepare(`
+        INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+        VALUES (?, ?, 'reader', ?)
+      `).run(newsChatId, userId, now);
+    }
+    
+    // === ОТПРАВКА КОДА ВЕРИФИКАЦИИ ===
+    const verificationCode = generateVerificationCode();
+    await sendVerificationEmail(email, verificationCode);
+    
+    // Сохраняем код в БД
+    const codeExpiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
     db.prepare(`
-      INSERT OR IGNORE INTO ChatMember (chatId, userId, role, joinedAt)
-      VALUES (?, ?, 'reader', ?)
-    `).run(newsChatId, userId, now);
+      INSERT INTO VerificationCode (id, userId, code, expiresAt, used)
+      VALUES (?, ?, ?, ?, 0)
+    `).run(`code-${Date.now()}`, userId, verificationCode, codeExpiresAt);
+    
+    console.log(`[Register] Verification code for ${email}: ${verificationCode}`);
     
     return NextResponse.json({
       success: true,
@@ -107,7 +147,10 @@ export async function POST(request: NextRequest) {
         notes: notesChatId,
         support: supportChatId,
         news: newsChatId
-      }
+      },
+      requiresVerification: true,
+      emailMasked: email.replace(/(.{3}).+(@.+)/, '$1***$2'),
+      codeHint: verificationCode.split('-').slice(0, 3).join('-') + '...'
     });
   } catch (error) {
     console.error('[Register] Error:', error);

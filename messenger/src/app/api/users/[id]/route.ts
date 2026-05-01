@@ -37,6 +37,8 @@ export async function GET(
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         isAdmin: user.adminRoles?.includes('admin') || false,
+        userNumber: user.userNumber || null,
+        // points НЕ возвращаем другим пользователям!
       }
     });
   } catch (error) {
