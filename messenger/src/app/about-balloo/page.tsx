@@ -1,3 +1,5 @@
+
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,6 +11,7 @@ import { Footer } from '@/components/Footer';
 import { MessageCircle, Shield, Zap, Users, Star, Send, Lock, Video, Image, Mic, FileText, Bell, Search, Palette, Cloud, Smartphone, Globe, Heart, Plus, X, ThumbsUp } from 'lucide-react';
 import { useAlert } from '@/hooks/useAlert';
 import { Modal } from '@/components/ui/Modal';
+
 
 interface Feature {
   id: string;

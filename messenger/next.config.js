@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   distDir: '.next',
   trailingSlash: false,
+  outputFileTracingRoot: '../../',
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
@@ -39,6 +40,9 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['better-sqlite3'],
   },
 };
 
