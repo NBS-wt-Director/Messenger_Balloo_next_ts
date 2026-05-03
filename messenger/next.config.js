@@ -4,7 +4,7 @@ const nextConfig = {
   reactStrictMode: true,
   distDir: '.next',
   trailingSlash: false,
-  outputFileTracingRoot: '../../',
+  outputFileTracingRoot: 'C:/Users/IvanO/OneDrive/Desktop/проекты',
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
@@ -42,9 +42,7 @@ const nextConfig = {
       },
     ];
   },
-  experimental: {
-    serverComponentsExternalPackages: ['better-sqlite3'],
-  },
+  serverExternalPackages: ['better-sqlite3'],
 };
 
 module.exports = nextConfig;
