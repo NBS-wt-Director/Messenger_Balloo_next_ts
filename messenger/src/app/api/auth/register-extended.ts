@@ -1,8 +1,28 @@
 // /api/auth/register/route.ts - Обновлённая версия с системными чатами
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 import { hash } from 'bcryptjs';
+
+function createUser(data: any): Promise<any> {
+  const userId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const now = new Date().toISOString();
+  
+  db.prepare(`
+    INSERT INTO User (id, email, passwordHash, displayName, fullName, phone, bio, avatar, adminRoles, online, isOnline, status, settings, userNumber, points, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, '', ?, '[]', 0, 0, 'offline', '{}', ?, ?, ?, ?)
+  `).run(userId, data.email, data.passwordHash, data.displayName, data.fullName || null, data.phone || null, data.avatar || null, data.userNumber || null, data.points || -55, now, now);
+  
+  return getUserById(userId);
+}
+
+function getUserById(id: string): any {
+  return db.prepare('SELECT * FROM User WHERE id = ?').get(id) as any || null;
+}
+
+function getUserByEmail(email: string): any {
+  return db.prepare('SELECT * FROM User WHERE email = ?').get(email) as any || null;
+}
 
 /**
  * POST /api/auth/register
@@ -22,9 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверка уникальности email
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
+    const existingUser = getUserByEmail(email);
 
     if (existingUser) {
       return NextResponse.json(
@@ -36,106 +54,71 @@ export async function POST(request: NextRequest) {
     // Хеширование пароля
     const passwordHash = await hash(password, 10);
 
-    // Создание пользователя
-    const user = await prisma.user.create({
-      data: {
-        email,
-        passwordHash,
-        displayName,
-        fullName: fullName || null,
-        phone: phone || null,
-        adminRoles: [],
-        online: false,
-        isOnline: false,
-      },
-      select: {
-        id: true,
-        email: true,
-        displayName: true,
-        fullName: true,
-        phone: true,
-        avatar: true,
-        createdAt: true,
-      }
-    });
+    // Создаём пользователя
+    const userId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const now = new Date().toISOString();
+
+    const userCount = db.prepare('SELECT COUNT(*) as count FROM User').get() as any;
+    const userNumber = (userCount.count || 0) + 1;
+
+    db.prepare(`
+      INSERT INTO User (id, email, displayName, passwordHash, fullName, phone, bio, avatar, adminRoles, online, isOnline, status, settings, userNumber, points, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, '', NULL, '[]', 0, 0, 'offline', '{}', ?, -55, ?, ?)
+    `).run(userId, email, displayName, passwordHash, fullName || null, phone || null, userNumber, now, now);
+
+    const user = {
+      id: userId,
+      email,
+      displayName,
+      fullName: fullName || null,
+      phone: phone || null,
+      avatar: null,
+      createdAt: now,
+    };
 
     // === СОЗДАНИЕ СИСТЕМНЫХ ЧАТОВ ===
 
     // 1. Чат "Мои заметки" (чат с самим собой)
-    const notesChat = await prisma.chat.create({
-      data: {
-        type: 'private',
-        name: null,
-        createdBy: user.id,
-        isSystemChat: true,
-        members: {
-          create: {
-            userId: user.id,
-            role: 'creator',
-            joinedAt: new Date()
-          }
-        }
-      }
-    });
+    const notesChatId = `chat-notes-${userId}`;
+    db.prepare(`
+      INSERT INTO Chat (id, type, name, createdBy, isSystemChat, createdAt, updatedAt)
+      VALUES (?, 'private', NULL, ?, 1, ?, ?)
+    `).run(notesChatId, userId, now, now);
+
+    db.prepare(`
+      INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+      VALUES (?, ?, 'creator', ?)
+    `).run(notesChatId, userId, now);
 
     // 2. Чат с техподдержкой
-    const supportChat = await prisma.chat.create({
-      data: {
-        type: 'private',
-        name: 'Техподдержка Balloo',
-        createdBy: 'system',
-        isSystemChat: true,
-        members: {
-          create: [
-            {
-              userId: user.id,
-              role: 'reader',
-              joinedAt: new Date()
-            },
-            {
-              userId: 'support', // Системный пользователь поддержки
-              role: 'creator',
-              joinedAt: new Date()
-            }
-          ]
-        }
-      }
-    });
+    const supportChatId = `chat-support-${userId}`;
+    db.prepare(`
+      INSERT INTO Chat (id, type, name, createdBy, isSystemChat, createdAt, updatedAt)
+      VALUES (?, 'private', 'Техподдержка Balloo', 'system', 1, ?, ?)
+    `).run(supportChatId, now, now);
 
-    // 3. Добавить в чат "Balloo - новости и обновления" (если существует или создать)
-    let newsChat = await prisma.chat.findUnique({
-      where: { id: 'balloo-news' }
-    });
+    db.prepare(`
+      INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+      VALUES (?, ?, 'reader', ?)
+    `).run(supportChatId, userId, now);
 
-    if (!newsChat) {
-      // Создаём чат новостей
-      newsChat = await prisma.chat.create({
-        data: {
-          id: 'balloo-news',
-          type: 'channel',
-          name: 'Balloo - новости и обновления',
-          description: 'Официальные новости, фичи и планы проекта',
-          createdBy: 'system',
-          isSystemChat: true,
-          members: {
-            create: {
-              userId: user.id,
-              role: 'reader',
-              joinedAt: new Date()
-            }
-          }
-        }
-      });
-    } else {
-      // Добавляем пользователя в существующий чат новостей
-      await prisma.chatMember.create({
-        data: {
-          chatId: 'balloo-news',
-          userId: user.id,
-          role: 'reader',
-          joinedAt: new Date()
-        }
-      });
+    // 3. Чат новостей (общий для всех)
+    const newsChatId = 'balloo-news';
+    const newsChatExists = db.prepare('SELECT id FROM Chat WHERE id = ?').get(newsChatId);
+
+    if (!newsChatExists) {
+      db.prepare(`
+        INSERT INTO Chat (id, type, name, description, createdBy, isSystemChat, createdAt, updatedAt)
+        VALUES (?, 'channel', 'Balloo - новости и обновления', 'Официальные новости, фичи и планы проекта', 'system', 1, ?, ?)
+      `).run(newsChatId, now, now);
+    }
+
+    const alreadyMember = db.prepare('SELECT 1 FROM ChatMember WHERE chatId = ? AND userId = ?').get(newsChatId, userId);
+    if (!alreadyMember) {
+      db.prepare(`
+        INSERT INTO ChatMember (chatId, userId, role, joinedAt)
+        VALUES (?, ?, 'reader', ?)
+      `).run(newsChatId, userId, now);
     }
 
     return NextResponse.json({
@@ -149,9 +132,9 @@ export async function POST(request: NextRequest) {
         avatar: user.avatar,
       },
       systemChats: {
-        notes: notesChat.id,
-        support: supportChat.id,
-        news: newsChat.id
+        notes: notesChatId,
+        support: supportChatId,
+        news: newsChatId
       }
     });
   } catch (error) {

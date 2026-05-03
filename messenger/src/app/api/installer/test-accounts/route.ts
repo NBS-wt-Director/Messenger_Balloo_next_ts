@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 import bcrypt from 'bcryptjs';
 
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { adminEmail, adminPassword } = body;
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const usersCollection = db.users;
     const chatsCollection = db.chats;
 
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 
     // 3. Создаём тестовые чаты
     const users = await usersCollection.find().exec();
-    const userIds = users.map(u => u.id);
+    const userIds = users.map((u: any) => u.id);
 
     // Общий чат
     await chatsCollection.insert({
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
       name: 'Общий чат',
       avatar: '',
       participants: userIds,
-      members: userIds.reduce((acc: any, id) => {
+      members: userIds.reduce((acc: any, id: string) => {
         acc[id] = { role: 'member', joinedAt: now, lastReadMessageId: null };
         return acc;
       }, {}),
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
       name: 'Разработчики',
       avatar: '',
       participants: userIds.slice(0, 2),
-      members: userIds.slice(0, 2).reduce((acc: any, id) => {
+      members: userIds.slice(0, 2).reduce((acc: any, id: string) => {
         acc[id] = { role: 'member', joinedAt: now, lastReadMessageId: null };
         return acc;
       }, {}),

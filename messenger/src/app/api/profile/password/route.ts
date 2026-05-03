@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 import { hashPassword, verifyPassword, isPasswordStrong } from '@/lib/password';
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const usersCollection = db.users;
 
     // Находим пользователя

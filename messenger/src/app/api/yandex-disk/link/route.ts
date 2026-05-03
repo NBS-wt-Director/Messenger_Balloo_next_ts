@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 
 const YANDEX_TOKEN_URL = 'https://oauth.yandex.ru/token';
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   // Если передан userId - проверяем статус
   if (userId) {
     try {
-      const db = await getDatabase();
+      // SQLite db уже доступен
       const usersCollection = db.users;
 
       const user = await usersCollection.findOne({
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
     const { access_token, refresh_token } = tokenData;
 
     // Сохраняем токены в профиле пользователя
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const usersCollection = db.users;
 
     const user = await usersCollection.findOne({
@@ -167,7 +167,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const usersCollection = db.users;
 
     const user = await usersCollection.findOne({

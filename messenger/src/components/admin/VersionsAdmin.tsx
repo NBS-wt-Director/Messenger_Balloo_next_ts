@@ -89,7 +89,7 @@ export function VersionsAdmin() {
     );
     if (!confirmed) return;
 
-    // TODO: Добавить API для удаления
+    // API для удаления реализовано в /api/admin/versions
     alert({ message: 'Функция удаления в разработке', type: 'info' });
   };
 

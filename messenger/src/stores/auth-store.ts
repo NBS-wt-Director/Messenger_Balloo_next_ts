@@ -14,6 +14,7 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
   updateToken: (accessToken: string, refreshToken?: string) => void;
   updateProfile: (updates: Partial<AuthUser>) => void;
+  updateUser: (updates: Partial<AuthUser>) => void; // Alias для updateProfile
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -60,6 +61,19 @@ export const useAuthStore = create<AuthState>()(
       },
 
       updateProfile: (updates) => {
+        const { user } = get();
+        if (user) {
+          set({
+            user: {
+              ...user,
+              ...updates,
+            },
+          });
+        }
+      },
+
+      updateUser: (updates) => {
+        // Alias для updateProfile
         const { user } = get();
         if (user) {
           set({

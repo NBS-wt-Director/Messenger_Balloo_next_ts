@@ -1,5 +1,10 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
 
 # Production
 .next/
@@ -7,35 +12,56 @@ out/
 build/
 dist/
 
-# Environment (EXCEPT .env.production which SHOULD be committed)
+# Environment variables
+.env
 .env.local
 .env.development.local
 .env.test.local
-.env*.local
+.env.production.local
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+data/
+prisma/dev.db
+prisma/*.db
 
 # Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# OS files
+.DS_Store
+Thumbs.db
+
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
 *.swo
 *~
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
-coverage/
+# TypeScript
+*.tsbuildinfo
 
 # Misc
-*.log
+.cache/
+temp/
+tmp/
 *.tmp
+
+# config.json with secrets (keep template only)
+config.json
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
 *.cache
 
 # Config (SECRETS!)

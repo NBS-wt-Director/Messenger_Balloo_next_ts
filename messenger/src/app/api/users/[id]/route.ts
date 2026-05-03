@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/database';
-import { getUserById, updateUser } from '@/lib/prisma';
+
+function getUserById(id: string): any {
+  return db.prepare('SELECT * FROM User WHERE id = ?').get(id) as any || null;
+}
+
+function updateUser(id: string, data: any): any {
+  const updates: string[] = [];
+  const params: any[] = [];
+  
+  for (const key of ['displayName', 'fullName', 'phone', 'status', 'avatar']) {
+    if (data[key] !== undefined) {
+      updates.push(`${key} = ?`);
+      params.push(data[key]);
+    }
+  }
+  
+  if (updates.length === 0) return getUserById(id);
+  
+  updates.push('updatedAt = ?');
+  params.push(new Date().toISOString(), id);
+  
+  db.prepare(`UPDATE User SET ${updates.join(', ')} WHERE id = ?`).run(...params);
+  return getUserById(id);
+}
 
 /**
  * GET /api/users/[id]

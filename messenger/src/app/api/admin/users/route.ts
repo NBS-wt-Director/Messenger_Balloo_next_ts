@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/database';
-import { getUserById, getUsers } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+
+function getUserById(id: string): any {
+  return db.prepare('SELECT * FROM User WHERE id = ?').get(id) as any || null;
+}
+
+function getUsers(limit: number = 100, offset: number = 0): any[] {
+  return db.prepare('SELECT * FROM User LIMIT ? OFFSET ?').all(limit, offset) as any[];
+}
 
 // Получение списка пользователей
 export async function GET(request: NextRequest) {

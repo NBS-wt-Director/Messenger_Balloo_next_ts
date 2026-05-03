@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 import { optimizeImage, createThumbnail, getImageMetadata } from '@/lib/image-optimizer';
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     const thumbnailUrl = `data:image/webp;base64,${thumbnailBase64}`;
 
     // Обновляем профиль пользователя
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const usersCollection = db.users;
 
     const user = await usersCollection.findOne({

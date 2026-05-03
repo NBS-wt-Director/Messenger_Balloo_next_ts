@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * POST /api/chats/group - Создание группового чата
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     // Создаём групповой чат
@@ -100,7 +100,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({
@@ -153,7 +153,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({

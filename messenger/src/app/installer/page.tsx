@@ -10,7 +10,7 @@ import {
   ChevronDown, ChevronUp, ExternalLink, Copy
 } from 'lucide-react';
 
-const INSTALLER_PASSWORD = 'A13n10n2013aKonstantinovna';
+const INSTALLER_PASSWORD = process.env.NEXT_PUBLIC_INSTALLER_PASSWORD || 'A13n10n2013aKonstantinovna';
 
 interface InstallerData {
   // Server

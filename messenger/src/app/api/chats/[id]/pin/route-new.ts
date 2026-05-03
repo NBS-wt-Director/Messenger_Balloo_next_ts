@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
+
+function getChatById(id: string): any {
+  return db.prepare('SELECT * FROM Chat WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/chats/[id]/pin - Закрепить/открепить чат
@@ -18,9 +22,7 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    const chat = await prisma.chat.findUnique({
-      where: { id: chatId }
-    });
+    const chat = getChatById(chatId);
 
     if (!chat) {
       logger.warn(`[API] Чат не найден: ${chatId}`);
@@ -29,10 +31,8 @@ export async function POST(
 
     // Проверка лимита на 15 закреплённых чатов
     if (pinned) {
-      const pinnedCount = await prisma.chatPinned.count({
-        where: { userId }
-      });
-      if (pinnedCount >= 15) {
+      const pinnedCount = db.prepare('SELECT COUNT(*) as count FROM ChatPinned WHERE userId = ?').get(userId) as any;
+      if (pinnedCount.count >= 15) {
         return NextResponse.json(
           { error: 'Можно закрепить максимум 15 чатов' },
           { status: 400 }
@@ -41,17 +41,12 @@ export async function POST(
     }
 
     if (pinned) {
-      await prisma.chatPinned.upsert({
-        where: {
-          chatId_userId: { chatId, userId }
-        },
-        update: {},
-        create: { chatId, userId }
-      });
+      const existing = db.prepare('SELECT 1 FROM ChatPinned WHERE chatId = ? AND userId = ?').get(chatId, userId);
+      if (!existing) {
+        db.prepare('INSERT INTO ChatPinned (chatId, userId, createdAt) VALUES (?, ?, ?)').run(chatId, userId, new Date().toISOString());
+      }
     } else {
-      await prisma.chatPinned.deleteMany({
-        where: { chatId, userId }
-      });
+      db.prepare('DELETE FROM ChatPinned WHERE chatId = ? AND userId = ?').run(chatId, userId);
     }
 
     logger.info(`[API] Чат ${pinned ? 'закреплён' : 'откреплён'}: ${chatId}`);

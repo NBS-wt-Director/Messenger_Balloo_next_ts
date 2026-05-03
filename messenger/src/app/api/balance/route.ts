@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/database';
-import { getUserById } from '@/lib/prisma';
+
+function getUserById(id: string): any {
+  return db.prepare('SELECT * FROM User WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * GET /api/balance

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * API для бэкапа и восстановления базы данных
@@ -38,28 +38,28 @@ export async function POST(request: NextRequest) {
       console.log(`[Backup] Creating backup for admin ${adminId}`);
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const now = Date.now();
 
     // Сбор данных из всех коллекций
-    const users = await db.users.find().exec();
-    const chats = await db.chats.find().exec();
-    const messages = includeMessages !== false ? await db.messages.find().exec() : [];
-    const invitations = await db.invitations.find().exec();
-    const attachments = includeAttachments !== false ? await db.attachments.find().exec() : [];
-    const contacts = await db.contacts.find().exec();
-    const notifications = await db.notifications.find().exec();
+      const users = await db.users.find().exec();
+      const chats = await db.chats.find().exec();
+      const messages = includeMessages !== false ? await db.messages.find().exec() : [];
+      const invitations = await db.invitations.find().exec();
+      const attachments = includeAttachments !== false ? await db.attachments.find().exec() : [];
+      const contacts = await db.contacts.find().exec();
+      const notifications = await db.notifications.find().exec();
 
     const backup: BackupData = {
       version: '1.0',
       timestamp: now,
-      users: users.map(u => u.toJSON()),
-      chats: chats.map(c => c.toJSON()),
-      messages: messages.map(m => m.toJSON()),
-      invitations: invitations.map(i => i.toJSON()),
-      attachments: attachments.map(a => a.toJSON()),
-      contacts: contacts.map(c => c.toJSON()),
-      notifications: notifications.map(n => n.toJSON()),
+      users: users.map((u: any) => u.toJSON()),
+      chats: chats.map((c: any) => c.toJSON()),
+      messages: messages.map((m: any) => m.toJSON()),
+      invitations: invitations.map((i: any) => i.toJSON()),
+      attachments: attachments.map((a: any) => a.toJSON()),
+      contacts: contacts.map((c: any) => c.toJSON()),
+      notifications: notifications.map((n: any) => n.toJSON()),
       settings: {
         backupCreated: new Date(now).toISOString(),
         includeMessages: includeMessages !== false,

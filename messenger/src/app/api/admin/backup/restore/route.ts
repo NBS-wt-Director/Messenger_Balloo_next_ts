@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * API для восстановления из бэкапа
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       console.log(`[Restore] Starting restore for admin ${adminId}`);
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const now = Date.now();
     const stats = {
       users: 0,

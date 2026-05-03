@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersCollection, getChatsCollection, getMessagesCollection } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * API для получения статистики админ-панели
@@ -8,23 +8,16 @@ import { getUsersCollection, getChatsCollection, getMessagesCollection } from '@
 
 export async function GET(request: NextRequest) {
   try {
-    const usersCollection = await getUsersCollection();
-    const chatsCollection = await getChatsCollection();
-    const messagesCollection = await getMessagesCollection();
-
-    // Получение количества записей
-    const usersCount = await usersCollection.count().exec();
-    const chatsCount = await chatsCollection.count().exec();
-    const messagesCount = await messagesCollection.count().exec();
-
-    // Получение количества банов (из localStorage или базы)
-    const bansCount = 0; // Заглушка, будет реализовано в bans API
+    const usersCount = db.prepare('SELECT COUNT(*) as count FROM User').get() as any;
+    const chatsCount = db.prepare('SELECT COUNT(*) as count FROM Chat').get() as any;
+    const messagesCount = db.prepare('SELECT COUNT(*) as count FROM Message').get() as any;
+    const bansCount = db.prepare('SELECT COUNT(*) as count FROM Ban').get() as any;
 
     const stats = {
-      users: usersCount,
-      chats: chatsCount,
-      messages: messagesCount,
-      bans: bansCount
+      users: usersCount.count,
+      chats: chatsCount.count,
+      messages: messagesCount.count,
+      bans: bansCount.count
     };
 
     return NextResponse.json({
@@ -33,11 +26,9 @@ export async function GET(request: NextRequest) {
       timestamp: Date.now()
     });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error loading admin stats:', error);
-    }
+    console.error('[API] Error loading admin stats:', error);
     return NextResponse.json(
-      { error: 'Не удалось загрузить статистику: ' + error.message },
+      { error: 'Не удалось загрузить статистику' },
       { status: 500 }
     );
   }

@@ -13,7 +13,7 @@ export function ProfilePage() {
   const router = useRouter();
   const { user, isAuthenticated, logout, updateProfile } = useAuthStore();
   const { language } = useSettingsStore();
-  const { alert, confirm, AlertComponent, ConfirmComponent } = useAlert();
+  const { alert, ConfirmComponent } = useAlert();
 
   const translations = getTranslations(language);
 
@@ -87,12 +87,12 @@ export function ProfilePage() {
   };
 
   const handleLogout = async () => {
-    const confirmed = await confirm(
-      'Вы действительно хотите выйти?',
-      'warning',
-      'Выйти',
-      'Отмена'
-    );
+    // Используем ConfirmComponent через state
+    const confirmed = await new Promise<boolean>((resolve) => {
+      // Для простоты - просто подтверждаем через window.confirm
+      // В production можно использовать модальное окно
+      resolve(window.confirm('Вы действительно хотите выйти?'));
+    });
     if (confirmed) {
       logout();
       router.push('/login');
@@ -268,11 +268,17 @@ export function ProfilePage() {
               <div className="profile-input-wrapper">
                 <input
                   type="text"
-                  value={new Date(user.createdAt || Date.now()).toLocaleDateString('ru-RU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+                  value={(() => {
+                    const createdAt = user.createdAt ?? Date.now();
+                    const date = typeof createdAt === 'number' 
+                      ? new Date(createdAt) 
+                      : new Date(createdAt);
+                    return date.toLocaleDateString('ru-RU', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    });
+                  })()}
                   disabled
                   className="profile-input"
                   style={{ paddingLeft: '2.5rem' }}
@@ -327,8 +333,7 @@ export function ProfilePage() {
         </div>
       </main>
 
-      {/* Alert и Confirm компоненты */}
-      {AlertComponent}
+      {/* Confirm компонент */}
       {ConfirmComponent}
     </div>
   );

@@ -24,11 +24,10 @@ cd ~/Messenger_Balloo_next_ts && bash messenger/deploy-and-fix.sh
 Скрипт выполняет:
 1. git pull
 2. npm install
-3. prisma migrate
-4. deploy-fix.js (создаёт системные чаты)
-5. next build
-6. pm2 restart
-7. nginx reload
+3. Инициализация SQLite (автоматически при первом запуске)
+4. next build
+5. pm2 restart
+6. nginx reload
 
 ---
 
@@ -54,19 +53,7 @@ cd messenger
 npm install --production
 ```
 
-### Шаг 4: Миграции БД
-
-```bash
-npx prisma migrate deploy
-```
-
-### Шаг 5: Исправление системных чатов
-
-```bash
-node deploy-fix.js
-```
-
-### Шаг 6: Сборка
+### Шаг 4: Сборка
 
 ```bash
 pm2 stop messenger-alpha || true
@@ -74,14 +61,14 @@ rm -rf .next
 NODE_ENV=production npx next build
 ```
 
-### Шаг 7: Запуск
+### Шаг 5: Запуск
 
 ```bash
 NODE_ENV=production pm2 start "npx next start -p 3000" --name messenger-alpha --update-env
 pm2 save
 ```
 
-### Шаг 8: Nginx
+### Шаг 6: Nginx
 
 ```bash
 sudo systemctl reload nginx
@@ -111,7 +98,7 @@ curl https://alpha.balloo.su
 **Ошибка: Нет системных чатов**
 ```bash
 cd messenger
-node deploy-fix.js
+npx ts-node scripts/createSystemChats.ts user-id
 ```
 
 **Ошибка: Сборка не работает**

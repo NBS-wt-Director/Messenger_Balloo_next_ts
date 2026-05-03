@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
+
+function getChatById(id: string): any {
+  return db.prepare('SELECT * FROM Chat WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/chats/[id]/favorite - Добавить/убрать из избранного
@@ -18,9 +22,7 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    const chat = await prisma.chat.findUnique({
-      where: { id: chatId }
-    });
+    const chat = getChatById(chatId);
 
     if (!chat) {
       logger.warn(`[API] Чат не найден: ${chatId}`);
@@ -28,17 +30,12 @@ export async function POST(
     }
 
     if (favorite) {
-      await prisma.chatFavorite.upsert({
-        where: {
-          chatId_userId: { chatId, userId }
-        },
-        update: {},
-        create: { chatId, userId }
-      });
+      const existing = db.prepare('SELECT 1 FROM ChatFavorite WHERE chatId = ? AND userId = ?').get(chatId, userId);
+      if (!existing) {
+        db.prepare('INSERT INTO ChatFavorite (chatId, userId, createdAt) VALUES (?, ?, ?)').run(chatId, userId, new Date().toISOString());
+      }
     } else {
-      await prisma.chatFavorite.deleteMany({
-        where: { chatId, userId }
-      });
+      db.prepare('DELETE FROM ChatFavorite WHERE chatId = ? AND userId = ?').run(chatId, userId);
     }
 
     logger.info(`[API] Чат ${favorite ? 'добавлен в избранное' : 'убран из избранного'}: ${chatId}`);

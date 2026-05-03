@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/database';
 
+function getMessageById(id: string): any {
+  return db.prepare('SELECT * FROM Message WHERE id = ?').get(id) as any || null;
+}
+
 /**
  * GET /api/messages?chatId=xxx&limit=50&before=timestamp
  * Получение сообщений чата
@@ -250,9 +254,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const message = await prisma.message.findUnique({
-      where: { id: messageId }
-    });
+    const message = getMessageById(messageId);
 
     if (!message) {
       return NextResponse.json(
@@ -261,22 +263,19 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const updated = await prisma.message.update({
-      where: { id: messageId },
-      data: {
-        content,
-        edited: true,
-        updatedAt: new Date(),
-      },
-    });
+    db.prepare(`
+      UPDATE Message SET text = ?, edited = 1, updatedAt = ? WHERE id = ?
+    `).run(content, new Date().toISOString(), messageId);
+
+    const updated = getMessageById(messageId);
 
     return NextResponse.json({
       success: true,
       message: {
-        id: updated.id,
-        content: updated.content,
+        id: updated!.id,
+        content: updated!.text,
         edited: true,
-        editedAt: Number(updated.updatedAt),
+        editedAt: Date.now(),
       }
     });
   } catch (error) {
@@ -304,9 +303,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const message = await prisma.message.findUnique({
-      where: { id: messageId }
-    });
+    const message = getMessageById(messageId);
 
     if (!message) {
       return NextResponse.json(
@@ -315,9 +312,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await prisma.message.delete({
-      where: { id: messageId }
-    });
+    db.prepare('DELETE FROM Message WHERE id = ?').run(messageId);
 
     return NextResponse.json({
       success: true,

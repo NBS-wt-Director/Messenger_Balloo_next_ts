@@ -4,7 +4,13 @@ import { useState, useEffect } from 'react';
 import { Lock, Mail, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 import './VerificationModal.css';
 
-export function VerificationModal({ userId, onClose, onVerify }) {
+interface VerificationModalProps {
+  userId: string;
+  onClose: () => void;
+  onVerify?: () => void;
+}
+
+export function VerificationModal({ userId, onClose, onVerify }: VerificationModalProps) {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,7 +24,7 @@ export function VerificationModal({ userId, onClose, onVerify }) {
 
     // Таймер для повторной отправки
     const timer = setInterval(() => {
-      setResendTimer(prev => Math.max(0, prev - 1));
+      setResendTimer((prev) => Math.max(0, prev - 1));
     }, 1000);
 
     return () => clearInterval(timer);
@@ -46,7 +52,7 @@ export function VerificationModal({ userId, onClose, onVerify }) {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!code.trim()) {
@@ -83,7 +89,7 @@ export function VerificationModal({ userId, onClose, onVerify }) {
     }
   };
 
-  const formatTimer = (seconds) => {
+  const formatTimer = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;

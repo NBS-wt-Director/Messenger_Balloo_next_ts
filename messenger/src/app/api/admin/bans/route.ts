@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersCollection, getChatsCollection } from '@/lib/database';
+import db from '@/lib/database';
 
 interface BanData {
   id: string;
@@ -8,12 +8,9 @@ interface BanData {
   chatId: string | null;
   bannedBy: string;
   reason: string;
-  expiresAt: number | null;
-  createdAt: number;
+  expiresAt: string | null;
+  createdAt: string;
 }
-
-// Хранилище банов (в реальном приложении - база данных)
-const bans = new Map<string, BanData>();
 
 // Получение списка банов
 export async function GET(request: NextRequest) {
@@ -30,24 +27,27 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    let filteredBans = Array.from(bans.values());
+    let query = 'SELECT * FROM Ban WHERE 1=1';
+    const params: any[] = [];
 
     if (userId) {
-      filteredBans = filteredBans.filter(b => b.userId === userId);
+      query += ' AND userId = ?';
+      params.push(userId);
     }
 
     if (chatId) {
-      filteredBans = filteredBans.filter(b => b.chatId === chatId);
+      query += ' AND chatId = ?';
+      params.push(chatId);
     }
+
+    const bans = db.prepare(query).all(...params) as BanData[];
 
     return NextResponse.json({
       success: true,
-      bans: filteredBans
+      bans
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error fetching bans:', error);
-    }
+    console.error('[API] Error fetching bans:', error);
     return NextResponse.json(
       { error: 'Не удалось получить список банов' },
       { status: 500 }
@@ -68,10 +68,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const usersCollection = await getUsersCollection();
-    const admin = await usersCollection.findOne(adminId).exec();
+    // Проверка прав администратора
+    const admin = db.prepare('SELECT * FROM User WHERE id = ?').get(adminId) as any;
 
-    if (!admin || !admin.toJSON().isAdmin) {
+    if (!admin || !JSON.parse(admin.adminRoles || '[]').includes('admin')) {
       return NextResponse.json(
         { error: 'Доступ запрещен' },
         { status: 403 }
@@ -79,55 +79,43 @@ export async function POST(request: NextRequest) {
     }
 
     const banId = `ban_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const now = Date.now();
-    const expiresAt = expiresDays ? now + (expiresDays * 24 * 60 * 60 * 1000) : null;
+    const now = new Date().toISOString();
+    const expiresAt = expiresDays ? new Date(Date.now() + (expiresDays * 24 * 60 * 60 * 1000)).toISOString() : null;
 
-    const ban: BanData = {
-      id: banId,
-      userId,
-      chatId: chatId || null,
-      bannedBy: adminId,
-      reason,
-      expiresAt,
-      createdAt: now
-    };
-
-    bans.set(banId, ban);
+    db.prepare(`
+      INSERT INTO Ban (id, userId, chatId, bannedBy, reason, expiresAt, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(banId, userId, chatId || null, adminId, reason, expiresAt, now);
 
     // Обновление статуса пользователя
-    const userDoc = await usersCollection.findOne({ selector: { id: userId } }).exec();
-    if (userDoc) {
-      await userDoc.patch({
-        status: 'banned',
-        updatedAt: now
-      });
-    }
+    db.prepare('UPDATE User SET status = ?, updatedAt = ? WHERE id = ?').run('banned', now, userId);
 
     // Если бан в чате - удаление из участников
     if (chatId) {
-      const chatsCollection = await getChatsCollection();
-      const chatDoc = await chatsCollection.findOne({ selector: { id: chatId } }).exec();
-      if (chatDoc) {
-        const newParticipants = chatDoc.participants.filter((p: string) => p !== userId);
-        const newMembers = { ...chatDoc.members };
-        delete newMembers[userId];
-        await chatDoc.patch({
-          participants: newParticipants,
-          members: newMembers,
-          updatedAt: now
-        });
+      const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId) as any;
+      if (chat) {
+        const members = db.prepare('SELECT * FROM ChatMember WHERE chatId = ?').all(chatId) as any[];
+        const newMembers = members.filter((m: any) => m.userId !== userId);
+        
+        db.prepare('DELETE FROM ChatMember WHERE chatId = ? AND userId = ?').run(chatId, userId);
       }
     }
 
     return NextResponse.json({
       success: true,
-      ban,
+      ban: {
+        id: banId,
+        userId,
+        chatId: chatId || null,
+        bannedBy: adminId,
+        reason,
+        expiresAt,
+        createdAt: now
+      },
       message: 'Пользователь заблокирован'
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error creating ban:', error);
-    }
+    console.error('[API] Error creating ban:', error);
     return NextResponse.json(
       { error: 'Не удалось создать бан' },
       { status: 500 }
@@ -148,7 +136,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const ban = bans.get(banId);
+    const ban = db.prepare('SELECT * FROM Ban WHERE id = ?').get(banId) as any;
     if (!ban) {
       return NextResponse.json(
         { error: 'Бан не найден' },
@@ -156,26 +144,17 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    bans.delete(banId);
+    db.prepare('DELETE FROM Ban WHERE id = ?').run(banId);
 
     // Восстановление статуса пользователя
-    const usersCollection = await getUsersCollection();
-    const userDoc = await usersCollection.findOne({ selector: { id: ban.userId } }).exec();
-    if (userDoc) {
-      await userDoc.patch({
-        status: 'offline',
-        updatedAt: Date.now()
-      });
-    }
+    db.prepare('UPDATE User SET status = ?, updatedAt = ? WHERE id = ?').run('offline', new Date().toISOString(), ban.userId);
 
     return NextResponse.json({
       success: true,
       message: 'Пользователь разблокирован'
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error removing ban:', error);
-    }
+    console.error('[API] Error removing ban:', error);
     return NextResponse.json(
       { error: 'Не удалось удалить бан' },
       { status: 500 }

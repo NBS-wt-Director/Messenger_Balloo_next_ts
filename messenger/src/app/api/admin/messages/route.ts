@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMessagesCollection } from '@/lib/database';
+import db from '@/lib/database';
 
-// Получение списка сообщений
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -12,102 +11,83 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50');
 
     if (!adminId) {
-      return NextResponse.json(
-        { error: 'adminId требуется' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'adminId требуется' }, { status: 400 });
     }
 
-    const messagesCollection = await getMessagesCollection();
-    
-    let selector: any = {};
-    
+    let query = 'SELECT * FROM Message WHERE 1=1';
+    const params: any[] = [];
+
     if (chatId) {
-      selector.chatId = chatId;
+      query += ' AND chatId = ?';
+      params.push(chatId);
     }
     
     if (userId) {
-      selector.senderId = userId;
+      query += ' AND userId = ?';
+      params.push(userId);
     }
 
-    let query = messagesCollection.find({
-      selector,
-      sort: [{ createdAt: 'desc' }]
-    });
+    query += ' ORDER BY createdAt DESC LIMIT ? OFFSET ?';
+    const offset = (page - 1) * limit;
+    params.push(limit, offset);
 
-    const allMessages = await query.exec();
-    
-    // Пагинация
-    const startIndex = (page - 1) * limit;
-    const paginatedMessages = allMessages.slice(startIndex, startIndex + limit);
+    const messages = db.prepare(query).all(...params) as any[];
+
+    let countQuery = 'SELECT COUNT(*) as count FROM Message WHERE 1=1';
+    let countParams: any[] = [];
+    if (chatId) {
+      countQuery += ' AND chatId = ?';
+      countParams.push(chatId);
+    }
+    if (userId) {
+      countQuery += ' AND userId = ?';
+      countParams.push(userId);
+    }
+    const total = db.prepare(countQuery).get(...countParams) as any;
 
     return NextResponse.json({
       success: true,
-      messages: paginatedMessages.map(m => {
-        const data = m.toJSON();
-        return {
-          id: data.id,
-          chatId: data.chatId,
-          senderId: data.senderId,
-          type: data.type,
-          content: data.content.substring(0, 200),
-          createdAt: data.createdAt
-        };
-      }),
+      messages: messages.map(m => ({
+        id: m.id,
+        chatId: m.chatId,
+        senderId: m.userId,
+        type: m.type,
+        content: (m.text || '').substring(0, 200),
+        createdAt: m.createdAt
+      })),
       pagination: {
         page,
         limit,
-        total: allMessages.length,
-        totalPages: Math.ceil(allMessages.length / limit)
+        total: total.count,
+        totalPages: Math.ceil(total.count / limit)
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error fetching messages:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось получить список сообщений' },
-      { status: 500 }
-    );
+    console.error('[API] Error fetching messages:', error);
+    return NextResponse.json({ error: 'Не удалось получить список сообщений' }, { status: 500 });
   }
 }
 
-// Удаление сообщения
 export async function DELETE(request: NextRequest) {
   try {
     const body = await request.json();
     const { adminId, messageId } = body;
 
     if (!adminId || !messageId) {
-      return NextResponse.json(
-        { error: 'adminId и messageId обязательны' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'adminId и messageId обязательны' }, { status: 400 });
     }
 
-    const messagesCollection = await getMessagesCollection();
-    const message = await messagesCollection.findOne(messageId).exec();
+    const message = db.prepare('SELECT * FROM Message WHERE id = ?').get(messageId) as any;
 
     if (!message) {
-      return NextResponse.json(
-        { error: 'Сообщение не найдено' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Сообщение не найдено' }, { status: 404 });
     }
 
-    await message.remove();
+    db.prepare('DELETE FROM Message WHERE id = ?').run(messageId);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Сообщение удалено'
-    });
+    return NextResponse.json({ success: true, message: 'Сообщение удалено' });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error deleting message:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось удалить сообщение' },
-      { status: 500 }
-    );
+    console.error('[API] Error deleting message:', error);
+    return NextResponse.json({ error: 'Не удалось удалить сообщение' }, { status: 500 });
   }
 }

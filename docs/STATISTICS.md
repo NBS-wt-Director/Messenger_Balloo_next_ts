@@ -81,7 +81,7 @@
 |-------|--------|
 | next | `{{NEXT_VERSION}}` |
 | react | `{{REACT_VERSION}}` |
-| @prisma/client | `{{PRISMA_VERSION}}` |
+| better-sqlite3 | `{{SQLITE_VERSION}}` |
 | rxdb | `{{RXDB_VERSION}}` |
 | zustand | `{{ZUSTAND_VERSION}}` |
 

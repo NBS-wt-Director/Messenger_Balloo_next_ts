@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersCollection, getContactsCollection } from '@/lib/database';
+import db from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,53 +22,48 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const usersCollection = await getUsersCollection();
-    const contactsCollection = await getContactsCollection();
-
     // Поиск пользователей по имени, email или телефону
-    const searchRegex = new RegExp(query, 'i');
-    
-    const allUsers = await usersCollection.find().exec();
-    const matchingUsers = allUsers.filter(user => {
-      const data = user.toJSON();
-      return (
-        data.id !== currentUserId &&
-        !data.isBlocked &&
-        (
-          data.displayName?.match(searchRegex) ||
-          data.fullName?.match(searchRegex) ||
-          data.email?.match(searchRegex) ||
-          data.phone?.match(searchRegex)
-        )
-      );
-    }).slice(0, limit);
+    const searchPattern = `%${query}%`;
+    const users = db.prepare(`
+      SELECT * FROM User 
+      WHERE id != ? 
+      AND (
+        displayName LIKE ? 
+        OR fullName LIKE ? 
+        OR email LIKE ? 
+        OR phone LIKE ?
+      )
+      LIMIT ?
+    `).all(currentUserId, searchPattern, searchPattern, searchPattern, searchPattern, limit) as any[];
 
     // Получение информации о существующих контактах
-    const contactIds = matchingUsers.map(u => u.id);
-    const existingContacts = await contactsCollection.find({
-      selector: {
-        userId: currentUserId,
-        contactUserId: { $in: contactIds }
-      }
-    }).exec();
+    const contactIds = users.map(u => u.id);
+    let existingContacts: any[] = [];
+    
+    if (contactIds.length > 0) {
+      const placeholders = contactIds.map(() => '?').join(',');
+      existingContacts = db.prepare(`
+        SELECT * FROM Contact 
+        WHERE userId = ? AND contactId IN (${placeholders})
+      `).all(currentUserId, ...contactIds) as any[];
+    }
 
     const existingContactMap = new Map(
-      existingContacts.map(c => [c.toJSON().contactUserId, c.toJSON()])
+      existingContacts.map(c => [c.contactId, c])
     );
 
     // Формирование результата
-    const contacts = matchingUsers.map(user => {
-      const userData = user.toJSON();
-      const existingContact = existingContactMap.get(userData.id);
+    const contacts = users.map(user => {
+      const existingContact = existingContactMap.get(user.id);
       
       return {
-        id: userData.id,
-        displayName: userData.displayName,
-        fullName: userData.fullName,
-        email: userData.email,
-        phone: userData.phone,
-        avatar: userData.avatar,
-        status: userData.status,
+        id: user.id,
+        displayName: user.displayName,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        status: user.status,
         isContact: !!existingContact,
         isFavorite: existingContact?.isFavorite || false,
         isBlocked: existingContact?.isBlocked || false
@@ -81,9 +76,7 @@ export async function GET(request: NextRequest) {
       query
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error searching contacts:', error);
-    }
+    console.error('[API] Error searching contacts:', error);
     return NextResponse.json(
       { error: 'Не удалось выполнить поиск' },
       { status: 500 }

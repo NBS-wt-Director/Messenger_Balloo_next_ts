@@ -1,151 +1,63 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersCollection } from '@/lib/database';
+import db from '@/lib/database';
 import webpush from 'web-push';
 import { getVapidKeys } from '@/lib/config';
 
-/**
- * Конфигурация VAPID из config.json
- */
 const vapidKeys = getVapidKeys();
-
-// Настройка VAPID
-webpush.setVapidDetails(
-  vapidKeys.subject,
-  vapidKeys.publicKey,
-  vapidKeys.privateKey
-);
+webpush.setVapidDetails(vapidKeys.subject, vapidKeys.publicKey, vapidKeys.privateKey);
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      userId, 
-      title,
-      body: messageBody,
-      url = '/chats',
-      icon = '/icons/icon-192x192.png',
-      badge = '/icons/badge-72x72.png',
-      tag = 'balloo-notification',
-      requireInteraction = false,
-      vibrate = [200, 100, 200]
-    } = body;
+    const { userId, title, body: messageBody, url = '/chats', icon = '/icons/icon-192x192.png', badge = '/icons/badge-72x72.png' } = body;
 
-    // Валидация
     if (!userId || !title || !messageBody) {
-      return NextResponse.json(
-        { error: 'userId, title и body обязательны' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'userId, title и body обязательны' }, { status: 400 });
     }
 
-    const usersCollection = await getUsersCollection();
-    const user = await usersCollection.findOne(userId).exec();
+    const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId) as any;
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Пользователь не найден' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
     }
 
-    const pushTokens = user.pushTokens || [];
+    const pushTokens = JSON.parse(user.pushTokens || '[]') as any[];
     const now = Date.now();
+    const activeTokens = pushTokens.filter((t: any) => !t.expiresAt || t.expiresAt > now);
 
-    // Фильтруем активные токены
-    const activeTokens = pushTokens.filter((t: any) => 
-      !t.expiresAt || t.expiresAt > now
-    );
-    
     if (activeTokens.length === 0) {
-      return NextResponse.json({
-        success: true,
-        message: 'Нет активных подписок',
-        sentAt: now,
-        recipients: 0,
-        subscribed: false
-      });
+      return NextResponse.json({ success: true, message: 'Нет активных подписок', sentAt: now, recipients: 0 });
     }
 
-    const notificationPayload = JSON.stringify({
-      title,
-      body: messageBody,
-      icon,
-      badge,
-      url,
-      tag,
-      requireInteraction,
-      vibrate,
-      userId,
-      timestamp: now
-    });
+    const notificationPayload = JSON.stringify({ title, body: messageBody, icon, badge, url, userId, timestamp: now });
 
     let sentCount = 0;
     let failedCount = 0;
     const expiredTokens: string[] = [];
 
-    // Отправка всем активным токенам
-    const sendPromises = activeTokens.map(async (tokenData: any) => {
-      const subscription = {
-        endpoint: tokenData.token,
-        keys: tokenData.keys
-      };
-
+    for (const tokenData of activeTokens) {
+      const subscription = { endpoint: tokenData.token, keys: tokenData.keys };
       try {
         await webpush.sendNotification(subscription, notificationPayload);
         sentCount++;
-        tokenData.lastUsedAt = now;
-        return { success: true, token: tokenData.token };
       } catch (error: any) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[Push] Error sending to token:', error);
-        }
         failedCount++;
-        
-        // Если 410 (Gone) или 404 (Not Found) - токен недействителен
         if (error.statusCode === 410 || error.statusCode === 404) {
           expiredTokens.push(tokenData.token);
         }
-        
-        return { success: false, token: tokenData.token, error: error.message };
       }
-    });
+    }
 
-    await Promise.all(sendPromises);
-
-    // Удаляем недействительные токены
     if (expiredTokens.length > 0) {
-      const updatedTokens = pushTokens.filter((t: any) => 
-        !expiredTokens.includes(t.token)
-      );
-
-      await user.update({
-        $set: {
-          pushTokens: updatedTokens,
-          updatedAt: now
-        }
-      });
+      const updatedTokens = pushTokens.filter((t: any) => !expiredTokens.includes(t.token));
+      db.prepare('UPDATE User SET pushTokens = ?, updatedAt = ? WHERE id = ?')
+        .run(JSON.stringify(updatedTokens), new Date().toISOString(), userId);
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[API] Notification sent: ${sentCount} success, ${failedCount} failed, ${expiredTokens.length} expired`);
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Уведомление отправлено',
-      sentAt: now,
-      recipients: sentCount,
-      failed: failedCount,
-      expiredRemoved: expiredTokens.length
-    });
+    return NextResponse.json({ success: true, message: 'Уведомление отправлено', sentAt: now, recipients: sentCount, failed: failedCount });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error sending notification:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось отправить уведомление: ' + error.message },
-      { status: 500 }
-    );
+    console.error('[API] Error sending notification:', error);
+    return NextResponse.json({ error: 'Не удалось отправить уведомление' }, { status: 500 });
   }
 }
 

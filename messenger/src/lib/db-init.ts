@@ -2,23 +2,27 @@
  * Инициализация базы данных при старте приложения
  */
 
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 let dbInitialized = false;
 
 /**
  * Инициализировать базу данных (вызывается один раз при старте)
  */
-export async function ensureDBInitialized(): Promise<void> {
+export function ensureDBInitialized(): void {
   if (dbInitialized) {
     return;
   }
 
   try {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[DB] 🔄 Инициализация базы данных...');
+    // SQLite инициализируется автоматически при импорте
+    // Проверяем что таблица User существует
+    const table = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='User'").get();
+    
+    if (!table) {
+      throw new Error('User table not found');
     }
-    await getDatabase();
+    
     dbInitialized = true;
     if (process.env.NODE_ENV === 'development') {
       console.log('[DB] ✅ База данных успешно инициализирована');

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * POST /api/statuses - Создание статуса
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const statusesCollection = db.statuses || await createStatusesCollection(db);
 
     const statusId = `status_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const statusesCollection = db.statuses || await createStatusesCollection(db);
 
     let query: any = {
@@ -118,7 +118,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const statusesCollection = db.statuses || await createStatusesCollection(db);
 
     const status = await statusesCollection.findOne({
@@ -165,7 +165,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const statusesCollection = db.statuses || await createStatusesCollection(db);
 
     const status = await statusesCollection.findOne({

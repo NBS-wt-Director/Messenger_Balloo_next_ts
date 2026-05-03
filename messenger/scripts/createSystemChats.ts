@@ -99,7 +99,7 @@ async function createSystemChats(userId: string) {
 }
 
 // Запуск при вызове скрипта
-async function main() {
+(async () => {
   const userId = process.argv[2];
 
   if (!userId) {
@@ -109,6 +109,4 @@ async function main() {
 
   const success = await createSystemChats(userId);
   process.exit(success ? 0 : 1);
-}
-
-main();
+})();

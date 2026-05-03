@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 
 /**
@@ -18,7 +18,7 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chat = await db.chats.findOne(chatId).exec();
 
     if (!chat) {

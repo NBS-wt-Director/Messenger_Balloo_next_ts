@@ -1,8 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
-import { getJwtSecret } from '@/lib/config';
+import { jwtVerify, SignJWT } from 'jose';
+import { logger } from '@/lib/logger';
 
-const JWT_SECRET = new TextEncoder().encode(getJwtSecret());
+// Получаем JWT секрет из переменных окружения
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret-change-in-production');
+
+// Конфигурация cookies
+const COOKIE_NAME = 'auth_token';
+const COOKIE_AGE_DAYS = parseInt(process.env.JWT_EXPIRES_IN_DAYS || '7');
+
+/**
+ * Генерация JWT токена
+ */
+export async function generateToken(userId: string, email: string): Promise<string> {
+  return new SignJWT({ userId, email })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime(process.env.JWT_EXPIRES_IN || '7d')
+    .sign(JWT_SECRET);
+}
 
 /**
  * Проверка JWT токена
@@ -16,16 +32,53 @@ export async function verifyToken(token: string): Promise<{ userId: string; emai
     };
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('[Auth] Token verification failed:', error);
+      logger.debug('[Auth] Token verification failed:', error);
     }
     return null;
   }
 }
 
 /**
- * Получение токена из заголовков
+ * Создание httpOnly cookie с токеном
+ */
+export function createAuthCookie(token: string): string {
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  return [
+    `${COOKIE_NAME}=${token}`,
+    `Max-Age=${COOKIE_AGE_DAYS * 86400}`,
+    `Path=/`,
+    `HttpOnly`,
+    `Secure=${isProduction}`,
+    `SameSite=Strict`
+  ].join('; ');
+}
+
+/**
+ * Удаление auth cookie
+ */
+export function deleteAuthCookie(): string {
+  return `${COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; Secure=${process.env.NODE_ENV === 'production'}; SameSite=Strict`;
+}
+
+/**
+ * Получение токена из httpOnly cookie
+ */
+export function getTokenFromCookie(request: NextRequest): string | null {
+  return request.cookies.get(COOKIE_NAME)?.value || null;
+}
+
+/**
+ * Получение токена из заголовков (для API клиентов)
  */
 export function getTokenFromRequest(request: NextRequest): string | null {
+  // Сначала проверяем cookie
+  const cookieToken = getTokenFromCookie(request);
+  if (cookieToken) {
+    return cookieToken;
+  }
+  
+  // Затем проверяем Authorization header
   const authHeader = request.headers.get('authorization');
   
   if (!authHeader) {

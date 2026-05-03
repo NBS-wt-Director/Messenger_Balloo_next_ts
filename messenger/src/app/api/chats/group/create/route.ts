@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * POST /api/chats/group/create - Создание группы с настройками
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
     const usersCollection = db.users;
 

@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersCollection } from '@/lib/database';
+import db from '@/lib/database';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { z } from 'zod';
 
-/**
- * Валидация схемы для подписки
- */
 const subscribeSchema = z.object({
   userId: z.string().min(1).max(100),
   subscription: z.object({
@@ -18,222 +15,122 @@ const subscribeSchema = z.object({
   platform: z.enum(['web', 'android', 'ios', 'desktop']).optional().default('web')
 });
 
-/**
- * API для подписки на push-уведомления
- * POST /api/notifications/subscribe
- */
-
 export async function POST(request: NextRequest) {
   try {
-    // Проверка авторизации
     const token = getTokenFromRequest(request);
     if (token) {
       const userAuth = await verifyToken(token);
       if (!userAuth) {
-        return NextResponse.json(
-          { error: 'Неверный токен' },
-          { status: 401 }
-        );
+        return NextResponse.json({ error: 'Неверный токен' }, { status: 401 });
       }
     }
 
     const body = await request.json();
+    const { userId, subscription, platform } = subscribeSchema.parse(body);
     
-    // Валидация входных данных
-    const validatedData = subscribeSchema.parse(body);
-    const {
-      userId,
-      subscription,
-      platform
-    } = validatedData;
-
-    const usersCollection = await getUsersCollection();
-    const user = await usersCollection.findOne(userId).exec();
+    const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId) as any;
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Пользователь не найден' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
     }
 
     const now = Date.now();
     const pushToken = {
       token: subscription.endpoint,
       platform,
-      keys: subscription.keys, // p256dh и auth
+      keys: subscription.keys,
       createdAt: now,
-      expiresAt: now + (30 * 24 * 60 * 60 * 1000), // 30 дней
+      expiresAt: now + (30 * 24 * 60 * 60 * 1000),
       lastUsedAt: now
     };
 
-    // Получаем текущие токены
-    const currentTokens = user.pushTokens || [];
-
-    // Проверяем, есть ли уже такой токен
-    const existingIndex = currentTokens.findIndex(
-      (t: any) => t.token === subscription.endpoint
-    );
+    const currentTokens = JSON.parse(user.pushTokens || '[]') as any[];
+    const existingIndex = currentTokens.findIndex((t: any) => t.token === subscription.endpoint);
 
     if (existingIndex !== -1) {
-      // Обновляем существующий
-      currentTokens[existingIndex] = {
-        ...currentTokens[existingIndex],
-        ...pushToken,
-        lastUsedAt: now
-      };
+      currentTokens[existingIndex] = { ...currentTokens[existingIndex], ...pushToken, lastUsedAt: now };
     } else {
-      // Добавляем новый
       currentTokens.push(pushToken);
     }
 
-    // Ограничиваем до 5 токенов на пользователя
     const tokensToKeep = currentTokens.slice(-5);
+    db.prepare('UPDATE User SET pushTokens = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(tokensToKeep), new Date().toISOString(), userId);
 
-    // Обновляем пользователя
-    await user.update({
-      $set: {
-        pushTokens: tokensToKeep,
-        updatedAt: now
-      }
-    });
-
-    return NextResponse.json({
-      success: true,
-      message: 'Подписка оформлена',
-      tokenCount: tokensToKeep.length
-    });
+    return NextResponse.json({ success: true, message: 'Подписка оформлена', tokenCount: tokensToKeep.length });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error subscribing to notifications:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось оформить подписку: ' + error.message },
-      { status: 500 }
-    );
+    console.error('[API] Error subscribing to notifications:', error);
+    return NextResponse.json({ error: 'Не удалось оформить подписку' }, { status: 500 });
   }
 }
 
-/**
- * API для отписки от push-уведомлений
- * DELETE /api/notifications/subscribe
- */
-
 export async function DELETE(request: NextRequest) {
   try {
-    // Проверка авторизации
     const token = getTokenFromRequest(request);
     if (token) {
       const userAuth = await verifyToken(token);
       if (!userAuth) {
-        return NextResponse.json(
-          { error: 'Неверный токен' },
-          { status: 401 }
-        );
+        return NextResponse.json({ error: 'Неверный токен' }, { status: 401 });
       }
     }
 
     const body = await request.json();
     const { userId, token: pushToken } = body;
 
-    // Валидация
-    if (!userId || typeof userId !== 'string' || userId.length > 100) {
-      return NextResponse.json(
-        { error: 'Неверный userId' },
-        { status: 400 }
-      );
+    if (!userId) {
+      return NextResponse.json({ error: 'Неверный userId' }, { status: 400 });
     }
 
-    const usersCollection = await getUsersCollection();
-    const user = await usersCollection.findOne(userId).exec();
+    const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId) as any;
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Пользователь не найден' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
     }
 
-    let pushTokens = user.pushTokens || [];
+    let tokens = JSON.parse(user.pushTokens || '[]') as any[];
 
-    if (token) {
-      // Удаляем конкретный токен
-      pushTokens = pushTokens.filter((t: any) => t.token !== token);
+    if (pushToken) {
+      tokens = tokens.filter((t: any) => t.token !== pushToken);
     } else {
-      // Удаляем все токены
-      pushTokens = [];
+      tokens = [];
     }
 
-    await user.update({
-      $set: {
-        pushTokens,
-        updatedAt: Date.now()
-      }
-    });
+    db.prepare('UPDATE User SET pushTokens = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(tokens), new Date().toISOString(), userId);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Отписка успешна',
-      tokenCount: pushTokens.length
-    });
+    return NextResponse.json({ success: true, message: 'Отписка успешна', tokenCount: tokens.length });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error unsubscribing from notifications:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось отписаться: ' + error.message },
-      { status: 500 }
-    );
+    console.error('[API] Error unsubscribing from notifications:', error);
+    return NextResponse.json({ error: 'Не удалось отписаться' }, { status: 500 });
   }
 }
 
-/**
- * API для проверки статуса подписки
- * GET /api/notifications/subscribe?userId=USER_ID
- */
-
 export async function GET(request: NextRequest) {
   try {
-    // Проверка авторизации
     const token = getTokenFromRequest(request);
     if (token) {
       const userAuth = await verifyToken(token);
       if (!userAuth) {
-        return NextResponse.json(
-          { error: 'Неверный токен' },
-          { status: 401 }
-        );
+        return NextResponse.json({ error: 'Неверный токен' }, { status: 401 });
       }
     }
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
-    // Валидация
-    if (!userId || typeof userId !== 'string' || userId.length > 100) {
-      return NextResponse.json(
-        { error: 'Неверный userId' },
-        { status: 400 }
-      );
+    if (!userId) {
+      return NextResponse.json({ error: 'Неверный userId' }, { status: 400 });
     }
 
-    const usersCollection = await getUsersCollection();
-    const user = await usersCollection.findOne(userId).exec();
+    const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId) as any;
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Пользователь не найден' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
     }
 
-    const pushTokens = user.pushTokens || [];
+    const pushTokens = JSON.parse(user.pushTokens || '[]') as any[];
     const now = Date.now();
-
-    // Фильтруем активные токены (не истёкшие)
-    const activeTokens = pushTokens.filter((t: any) => 
-      !t.expiresAt || t.expiresAt > now
-    );
+    const activeTokens = pushTokens.filter((t: any) => !t.expiresAt || t.expiresAt > now);
 
     return NextResponse.json({
       success: true,
@@ -247,12 +144,7 @@ export async function GET(request: NextRequest) {
       }))
     });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error checking subscription status:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось проверить статус: ' + error.message },
-      { status: 500 }
-    );
+    console.error('[API] Error checking subscription status:', error);
+    return NextResponse.json({ error: 'Не удалось проверить статус' }, { status: 500 });
   }
 }

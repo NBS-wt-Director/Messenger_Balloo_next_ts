@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getInvitationsCollection, getChatsCollection } from '@/lib/database';
-
-/**
- * API для получения приглашений пользователя
- * GET /api/invitations/my?userId=USER_ID
- */
+import db from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,42 +7,30 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId');
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'userId требуется' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'userId требуется' }, { status: 400 });
     }
 
-    const invitationsCollection = await getInvitationsCollection();
     const now = Date.now();
+    const invitations = db.prepare(`
+      SELECT * FROM Invitation 
+      WHERE fromUserId = ? 
+      ORDER BY createdAt DESC
+    `).all(userId) as any[];
 
-    // Получение всех приглашений созданных пользователем
-    const invitations = await invitationsCollection
-      .find({
-        selector: {
-          invitedBy: userId
-        },
-        sort: [{ createdAt: 'desc' }]
-      })
-      .exec();
-
-    // Получение информации о чатах
-    const chatsCollection = await getChatsCollection();
-    const invitationsWithChat = await Promise.all(
-      invitations.map(async (invitation) => {
-        const chat = await chatsCollection.findOne(invitation.chatId).exec();
-        return {
-          ...invitation.toJSON(),
-          chatName: chat?.name || 'Личный чат',
-          chatAvatar: chat?.avatar,
-          chatType: chat?.type || 'private',
-          isExpired: invitation.expiresAt < now,
-          isActive: invitation.isActive && invitation.expiresAt > now && 
-                   (!invitation.isOneTime || invitation.currentUses < invitation.maxUses),
-          inviteUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/invite/${invitation.code}`
-        };
-      })
-    );
+    const invitationsWithChat = invitations.map(inv => {
+      const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(inv.chatId) as any;
+      const expiresAt = inv.expiresAt ? new Date(inv.expiresAt).getTime() : null;
+      
+      return {
+        ...inv,
+        chatName: chat?.name || 'Личный чат',
+        chatAvatar: chat?.avatar,
+        chatType: chat?.type || 'private',
+        isExpired: expiresAt ? expiresAt < now : false,
+        isActive: inv.isActive && (!expiresAt || expiresAt > now),
+        inviteUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/invite/${inv.code}`
+      };
+    });
 
     return NextResponse.json({
       success: true,
@@ -55,143 +38,84 @@ export async function GET(request: NextRequest) {
       count: invitationsWithChat.length
     });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error fetching invitations:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось получить приглашения: ' + error.message },
-      { status: 500 }
-    );
+    console.error('[API] Error fetching invitations:', error);
+    return NextResponse.json({ error: 'Не удалось получить приглашения' }, { status: 500 });
   }
 }
 
-/**
- * Создание нового приглашения
- * POST /api/invitations/my
- */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      chatId,
-      invitedBy,
-      message,
-      maxUses = 0, // 0 = безлимитно
-      expiresAt,
-      isOneTime = false
-    } = body;
+    const { chatId, invitedBy, message, maxUses = 0, expiresAt, isOneTime = false } = body;
 
     if (!chatId || !invitedBy) {
-      return NextResponse.json(
-        { error: 'chatId и invitedBy обязательны' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'chatId и invitedBy обязательны' }, { status: 400 });
     }
 
-    const invitationsCollection = await getInvitationsCollection();
-    const chatsCollection = await getChatsCollection();
-
-    // Проверка существования чата
-    const chat = await chatsCollection.findOne(chatId).exec();
+    const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId) as any;
     if (!chat) {
-      return NextResponse.json(
-        { error: 'Чат не найден' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Чат не найден' }, { status: 404 });
     }
 
-    // Генерация уникального кода
     const code = `inv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const now = Date.now();
+    const now = new Date().toISOString();
+    const expiresAtIso = expiresAt ? new Date(expiresAt).toISOString() : new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)).toISOString();
+    const invitationId = `invitation_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Создание приглашения
-    const newInvitation = await invitationsCollection.insert({
-      id: `invitation_${now}_${Math.random().toString(36).substr(2, 9)}`,
-      code,
-      chatId,
-      invitedBy,
-      invitedByEmail: '',
-      chatName: chat.name || 'Личный чат',
-      chatAvatar: chat.avatar,
-      chatType: chat.type,
-      message: message || '',
-      maxUses,
-      currentUses: 0,
-      expiresAt: expiresAt || (now + (7 * 24 * 60 * 60 * 1000)), // 7 дней по умолчанию
-      isActive: true,
-      isOneTime,
-      createdAt: now,
-      updatedAt: now
-    });
+    db.prepare(`
+      INSERT INTO Invitation (id, code, chatId, fromUserId, status, createdAt, expiresAt, maxUses, usedCount, isActive, isOneTime)
+      VALUES (?, ?, ?, ?, 'active', ?, ?, ?, 0, 1, ?)
+    `).run(invitationId, code, chatId, invitedBy, now, expiresAtIso, maxUses, isOneTime);
 
     const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/invite/${code}`;
 
     return NextResponse.json({
       success: true,
       invitation: {
-        ...newInvitation.toJSON(),
-        inviteUrl,
+        id: invitationId,
+        code,
+        chatId,
+        invitedBy,
         chatName: chat.name || 'Личный чат',
-        chatType: chat.type
+        chatType: chat.type,
+        message: message || '',
+        maxUses,
+        usedCount: 0,
+        expiresAt: expiresAtIso,
+        isActive: true,
+        isOneTime,
+        createdAt: now,
+        inviteUrl
       },
       message: 'Приглашение создано'
     });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error creating invitation:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось создать приглашение: ' + error.message },
-      { status: 500 }
-    );
+    console.error('[API] Error creating invitation:', error);
+    return NextResponse.json({ error: 'Не удалось создать приглашение' }, { status: 500 });
   }
 }
 
-/**
- * Удаление/деактивация приглашения
- * DELETE /api/invitations/my?id=INVITATION_ID
- */
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const invitationId = searchParams.get('id');
 
     if (!invitationId) {
-      return NextResponse.json(
-        { error: 'invitationId требуется' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'invitationId требуется' }, { status: 400 });
     }
 
-    const invitationsCollection = await getInvitationsCollection();
-    const invitation = await invitationsCollection.findOne(invitationId).exec();
+    const invitation = db.prepare('SELECT * FROM Invitation WHERE id = ?').get(invitationId) as any;
 
     if (!invitation) {
-      return NextResponse.json(
-        { error: 'Приглашение не найдено' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Приглашение не найдено' }, { status: 404 });
     }
 
-    // Деактивация приглашения
-    await invitation.update({
-      $set: {
-        isActive: false,
-        updatedAt: Date.now()
-      }
-    });
+    db.prepare('UPDATE Invitation SET isActive = 0, updatedAt = ? WHERE id = ?')
+      .run(new Date().toISOString(), invitationId);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Приглашение деактивировано'
-    });
+    return NextResponse.json({ success: true, message: 'Приглашение деактивировано' });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error deleting invitation:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось удалить приглашение: ' + error.message },
-      { status: 500 }
-    );
+    console.error('[API] Error deleting invitation:', error);
+    return NextResponse.json({ error: 'Не удалось удалить приглашение' }, { status: 500 });
   }
 }

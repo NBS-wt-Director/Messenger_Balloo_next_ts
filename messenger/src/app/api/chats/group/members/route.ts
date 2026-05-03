@@ -1,5 +1,5 @@
  import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * GET /api/chats/group/members?id={id} - Получить участников группы
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({
@@ -174,7 +174,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * POST /api/calls/signal - Отправка WebRTC сигнала
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const callsCollection = db.calls || await createCallsCollection(db);
 
     const callData = {
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const callsCollection = db.calls || await createCallsCollection(db);
 
     let query: any = {
@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const callsCollection = db.calls || await createCallsCollection(db);
 
     const call = await callsCollection.findOne({
@@ -181,7 +181,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const callsCollection = db.calls || await createCallsCollection(db);
 
     const call = await callsCollection.findOne({

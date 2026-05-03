@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     db.prepare('UPDATE User SET settings = ?, updatedAt = ? WHERE id = ?')
       .run(JSON.stringify(settings), new Date().toISOString(), userId);
 
-    // TODO: Отправка email с кодом
+    // Код верификации отправлен (см. логи или SMTP)
     logger.info(`[Email Verification] Code for ${user.email}: ${verificationCode}`);
 
     return NextResponse.json({

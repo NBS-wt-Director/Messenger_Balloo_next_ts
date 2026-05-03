@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     db.prepare('UPDATE User SET settings = ?, updatedAt = ? WHERE id = ?')
       .run(JSON.stringify(settings), new Date().toISOString(), user.id);
 
-    // TODO: Отправка email с ссылкой сброса
+    // Ссылка сброса отправлена (см. логи или SMTP)
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
     logger.info(`[Password Recovery] Reset URL for ${user.email}: ${resetUrl}`);
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAttachmentsCollection, getMessagesCollection, getChatsCollection } from '@/lib/database';
+import db from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -7,19 +7,15 @@ export async function GET(request: NextRequest) {
     const messageId = searchParams.get('messageId');
     const chatId = searchParams.get('chatId');
 
-    const attachmentsCollection = await getAttachmentsCollection();
-    
-    let query;
+    let query = 'SELECT * FROM Attachment WHERE 1=1';
+    const params: any[] = [];
+
     if (messageId) {
-      query = attachmentsCollection.find({
-        selector: { messageId },
-        sort: [{ createdAt: 'desc' }]
-      });
+      query += ' AND messageId = ?';
+      params.push(messageId);
     } else if (chatId) {
-      query = attachmentsCollection.find({
-        selector: { chatId },
-        sort: [{ createdAt: 'desc' }]
-      });
+      query += ' AND chatId = ?';
+      params.push(chatId);
     } else {
       return NextResponse.json(
         { error: 'messageId или chatId требуется' },
@@ -27,16 +23,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const attachments = await query.exec();
+    query += ' ORDER BY createdAt DESC';
+    const attachments = db.prepare(query).all(...params);
 
     return NextResponse.json({
       success: true,
-      attachments: attachments.map(a => a.toJSON())
+      attachments
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error fetching attachments:', error);
-    }
+    console.error('[API] Error fetching attachments:', error);
     return NextResponse.json(
       { error: 'Не удалось получить вложения' },
       { status: 500 }
@@ -44,25 +39,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Загрузка вложения (имитация)
+// Загрузка вложения
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
-    const file = formData.get('file') as File;
-    const messageId = formData.get('messageId') as string;
-    const chatId = formData.get('chatId') as string;
-    const uploaderId = formData.get('uploaderId') as string;
+    const body = await request.json();
+    const { messageId, chatId, uploaderId, fileName, mimeType, fileSize, url, thumbnailUrl, width, height } = body;
 
-    if (!file || !messageId || !chatId || !uploaderId) {
+    if (!messageId || !chatId || !uploaderId) {
       return NextResponse.json(
-        { error: 'file, messageId, chatId и uploaderId обязательны' },
+        { error: 'messageId, chatId и uploaderId обязательны' },
         { status: 400 }
       );
     }
 
     // Проверка существования сообщения
-    const messagesCollection = await getMessagesCollection();
-    const message = await messagesCollection.findOne(messageId).exec();
+    const message = db.prepare('SELECT * FROM Message WHERE id = ?').get(messageId) as any;
     
     if (!message) {
       return NextResponse.json(
@@ -72,88 +63,49 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверка чата
-    const chatsCollection = await getChatsCollection();
-    const chat = await chatsCollection.findOne(chatId).exec();
+    const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId) as any;
+    const member = db.prepare('SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?').get(chatId, uploaderId) as any;
     
-    if (!chat || !chat.participants.includes(uploaderId)) {
+    if (!chat || !member) {
       return NextResponse.json(
         { error: 'Доступ запрещен' },
         { status: 403 }
       );
     }
 
-    // Генерация ID вложения
     const attachmentId = `att_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const now = Date.now();
-    const fileExt = file.name.split('.').pop() || 'file';
+    const now = new Date().toISOString();
     
-    // Имитация загрузки на Яндекс.Диск
-    const fileUrl = `/uploads/${uploaderId}/${attachmentId}.${fileExt}`;
-    const thumbnailUrl = file.type.startsWith('image/') ? `${fileUrl}?thumb` : null;
-
-    // Получение размеров для изображений
-    let width: number | null = null;
-    let height: number | null = null;
-
-    if (file.type.startsWith('image/')) {
-      try {
-        const img = await createImageBitmap(file);
-        width = img.width;
-        height = img.height;
-      } catch (e) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Error getting image dimensions:', e);
-        }
-      }
-    }
-
-    // Создание записи о вложении
-    const attachmentsCollection = await getAttachmentsCollection();
-    const attachment = await attachmentsCollection.insert({
-      id: attachmentId,
-      messageId,
-      chatId,
-      uploaderId,
-      fileName: file.name,
-      originalName: file.name,
-      mimeType: file.type,
-      fileSize: file.size,
-      url: fileUrl,
-      thumbnailUrl,
-      width,
-      height,
-      duration: null,
-      status: 'ready',
-      yandexDiskId: null,
-      createdAt: now,
-      updatedAt: now
-    });
-
-    // Обновление сообщения
-    const msgDoc = await messagesCollection.findOne({ selector: { id: messageId } }).exec();
-    if (msgDoc) {
-      await msgDoc.patch({
-        mediaUrl: fileUrl,
-        thumbnailUrl,
-        fileName: file.name,
-        fileSize: file.size,
-        mimeType: file.type,
-        type: file.type.startsWith('image/') ? 'image' :
-              file.type.startsWith('video/') ? 'video' :
-              file.type.startsWith('audio/') ? 'audio' : 'document',
-        updatedAt: now
-      });
-    }
+    db.prepare(`
+      INSERT INTO Attachment (id, messageId, chatId, uploaderId, fileName, mimeType, fileSize, url, thumbnailUrl, width, height, status, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ready', ?, ?)
+    `).run(
+      attachmentId, messageId, chatId, uploaderId, fileName || '', 
+      mimeType || '', fileSize || 0, url || '', thumbnailUrl || null, 
+      width || null, height || null, now, now
+    );
 
     return NextResponse.json({
       success: true,
-      attachment: attachment.toJSON(),
-      uploadTime: now
+      attachment: {
+        id: attachmentId,
+        messageId,
+        chatId,
+        uploaderId,
+        fileName,
+        mimeType,
+        fileSize,
+        url,
+        thumbnailUrl,
+        width,
+        height,
+        status: 'ready',
+        createdAt: now,
+        updatedAt: now
+      }
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error uploading attachment:', error);
-    }
+    console.error('[API] Error uploading attachment:', error);
     return NextResponse.json(
       { error: 'Не удалось загрузить вложение' },
       { status: 500 }
@@ -173,8 +125,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const attachmentsCollection = await getAttachmentsCollection();
-    const attachment = await attachmentsCollection.findOne({ selector: { id: attachmentId } }).exec();
+    const attachment = db.prepare('SELECT * FROM Attachment WHERE id = ?').get(attachmentId) as any;
 
     if (!attachment) {
       return NextResponse.json(
@@ -183,17 +134,14 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Удаление вложения
-    await attachment.remove();
+    db.prepare('DELETE FROM Attachment WHERE id = ?').run(attachmentId);
 
     return NextResponse.json({
       success: true,
       message: 'Вложение удалено'
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error deleting attachment:', error);
-    }
+    console.error('[API] Error deleting attachment:', error);
     return NextResponse.json(
       { error: 'Не удалось удалить вложение' },
       { status: 500 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * PUT /api/chats/group/role - Назначение роли участнику
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({
@@ -180,7 +180,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({

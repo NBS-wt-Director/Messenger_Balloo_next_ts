@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getInvitationsCollection, getChatsCollection, getUsersCollection } from '@/lib/database';
+import db from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,11 +13,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const invitationsCollection = await getInvitationsCollection();
-    const invitation = await invitationsCollection.findOne({
-      selector: { code },
-      sort: [{ createdAt: 'desc' }]
-    }).exec();
+    const invitation = db.prepare('SELECT * FROM Invitation WHERE code = ?').get(code) as any;
 
     if (!invitation) {
       return NextResponse.json(
@@ -26,51 +22,41 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const inviteData = invitation.toJSON();
+    const now = Date.now();
+    const expiresAt = invitation.expiresAt ? new Date(invitation.expiresAt).getTime() : null;
 
     // Проверка срока действия
-    if (inviteData.expiresAt && Date.now() > inviteData.expiresAt) {
+    if (expiresAt && now > expiresAt) {
       return NextResponse.json({
         success: false,
         error: 'Invitation has expired',
-        invitation: {
-          ...inviteData,
-          isExpired: true
-        }
+        invitation: { ...invitation, isExpired: true }
       });
     }
 
     // Проверка лимита использования
-    if (inviteData.maxUses && inviteData.currentUses >= inviteData.maxUses) {
+    if (invitation.maxUses && invitation.usedCount >= invitation.maxUses) {
       return NextResponse.json({
         success: false,
         error: 'Invitation has reached its usage limit',
-        invitation: {
-          ...inviteData,
-          isMaxedOut: true
-        }
+        invitation: { ...invitation, isMaxedOut: true }
       });
     }
 
-    if (!inviteData.isActive) {
+    if (!invitation.isActive) {
       return NextResponse.json({
         success: false,
         error: 'Invitation is no longer active',
-        invitation: {
-          ...inviteData,
-          isInactive: true
-        }
+        invitation: { ...invitation, isInactive: true }
       });
     }
 
     return NextResponse.json({
       success: true,
-      invitation: inviteData
+      invitation
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error fetching invitation:', error);
-    }
+    console.error('[API] Error fetching invitation:', error);
     return NextResponse.json(
       { error: 'Failed to fetch invitation' },
       { status: 500 }
@@ -83,7 +69,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { chatId, invitedBy, message, maxUses, expiresDays, isOneTime } = body;
 
-    // Валидация
     if (!chatId || !invitedBy) {
       return NextResponse.json(
         { error: 'chatId и invitedBy являются обязательными' },
@@ -91,11 +76,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const invitationsCollection = await getInvitationsCollection();
-    const chatsCollection = await getChatsCollection();
-
-    // Получение информации о чате
-    const chat = await chatsCollection.findOne({ selector: { id: chatId } }).exec();
+    const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId) as any;
     if (!chat) {
       return NextResponse.json(
         { error: 'Chat not found' },
@@ -103,53 +84,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Проверка прав на создание приглашения
-    const member = chat.members[invitedBy];
-    if (!member || (chat.type === 'group' && !chat.adminIds.includes(invitedBy))) {
+    const member = db.prepare('SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?').get(chatId, invitedBy) as any;
+    if (!member) {
       return NextResponse.json(
         { error: 'You do not have permission to create invitations for this chat' },
         { status: 403 }
       );
     }
 
-    // Генерация уникального кода
     const code = `${Date.now().toString(36)}_${Math.random().toString(36).substr(2, 8)}`;
-    const now = Date.now();
-    const expiresAt = expiresDays ? now + (expiresDays * 24 * 60 * 60 * 1000) : null;
+    const now = new Date().toISOString();
+    const expiresAt = expiresDays ? new Date(Date.now() + (expiresDays * 24 * 60 * 60 * 1000)).toISOString() : null;
 
-    // Получение информации об отправителе
-    const usersCollection = await getUsersCollection();
-    const inviter = await usersCollection.findOne({ selector: { id: invitedBy } }).exec();
+    const inviter = db.prepare('SELECT email FROM User WHERE id = ?').get(invitedBy) as any;
 
-    // Создание приглашения
-    const invitation = await invitationsCollection.insert({
-      id: `inv_${code}`,
-      code,
-      chatId,
-      invitedBy,
-      invitedByEmail: inviter?.email || '',
-      chatName: chat.type === 'group' ? chat.name : 'Private Chat',
-      chatAvatar: chat.avatar,
-      chatType: chat.type,
-      message: message || `Приглашаю вас в чат "${chat.type === 'group' ? chat.name : 'Balloo'}"`,
-      maxUses: maxUses || null,
-      currentUses: 0,
-      expiresAt,
-      isActive: true,
-      isOneTime: isOneTime || false,
-      createdAt: now,
-      updatedAt: now
-    });
+    const invitationId = `inv_${code}`;
+    db.prepare(`
+      INSERT INTO Invitation (id, code, chatId, fromUserId, status, createdAt, expiresAt, maxUses, usedCount, isActive)
+      VALUES (?, ?, ?, ?, 'active', ?, ?, ?, 0, 1)
+    `).run(
+      invitationId, code, chatId, invitedBy, now, expiresAt, maxUses || null
+    );
 
     return NextResponse.json({
       success: true,
-      invitation: invitation.toJSON(),
+      invitation: {
+        id: invitationId,
+        code,
+        chatId,
+        invitedBy,
+        chatName: chat.type === 'group' ? chat.name : 'Private Chat',
+        chatType: chat.type,
+        message: message || `Приглашаю вас в чат`,
+        maxUses: maxUses || null,
+        usedCount: 0,
+        expiresAt,
+        isActive: true,
+        createdAt: now
+      },
       inviteUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://balloo.app'}/invite/${code}`
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error creating invitation:', error);
-    }
+    console.error('[API] Error creating invitation:', error);
     return NextResponse.json(
       { error: 'Failed to create invitation' },
       { status: 500 }
@@ -169,8 +145,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const invitationsCollection = await getInvitationsCollection();
-    const invitation = await invitationsCollection.findOne({ selector: { id: invitationId } }).exec();
+    const invitation = db.prepare('SELECT * FROM Invitation WHERE id = ?').get(invitationId) as any;
 
     if (!invitation) {
       return NextResponse.json(
@@ -179,20 +154,16 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Деактивация приглашения
-    await invitation.patch({
-      isActive: false,
-      updatedAt: Date.now()
-    });
+    db.prepare('UPDATE Invitation SET isActive = 0, updatedAt = ? WHERE id = ?').run(
+      new Date().toISOString(), invitationId
+    );
 
     return NextResponse.json({
       success: true,
       message: 'Invitation deactivated'
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error deleting invitation:', error);
-    }
+    console.error('[API] Error deleting invitation:', error);
     return NextResponse.json(
       { error: 'Failed to delete invitation' },
       { status: 500 }
@@ -200,7 +171,6 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
-// Accept invitation
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -213,13 +183,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const invitationsCollection = await getInvitationsCollection();
-    const chatsCollection = await getChatsCollection();
-
-    const invitation = await invitationsCollection.findOne({
-      selector: { code },
-      sort: [{ createdAt: 'desc' }]
-    }).exec();
+    const invitation = db.prepare('SELECT * FROM Invitation WHERE code = ?').get(code) as any;
 
     if (!invitation) {
       return NextResponse.json(
@@ -228,84 +192,48 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const inviteData = invitation.toJSON();
+    const now = Date.now();
+    const expiresAt = invitation.expiresAt ? new Date(invitation.expiresAt).getTime() : null;
 
-    // Проверка срока действия
-    if (inviteData.expiresAt && Date.now() > inviteData.expiresAt) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invitation has expired'
-      });
+    if (expiresAt && now > expiresAt) {
+      return NextResponse.json({ success: false, error: 'Invitation has expired' });
     }
 
-    // Проверка лимита использования
-    if (inviteData.maxUses && inviteData.currentUses >= inviteData.maxUses) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invitation has reached its usage limit'
-      });
+    if (invitation.maxUses && invitation.usedCount >= invitation.maxUses) {
+      return NextResponse.json({ success: false, error: 'Invitation has reached its usage limit' });
     }
 
-    if (!inviteData.isActive) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invitation is no longer active'
-      });
+    if (!invitation.isActive) {
+      return NextResponse.json({ success: false, error: 'Invitation is no longer active' });
     }
 
-    // Проверка, не состоит ли пользователь уже в чате
-    const chat = await chatsCollection.findOne({ selector: { id: inviteData.chatId } }).exec();
+    const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(invitation.chatId) as any;
     if (!chat) {
-      return NextResponse.json(
-        { error: 'Chat not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
     }
 
-    if (chat.participants.includes(userId)) {
-      return NextResponse.json({
-        success: false,
-        error: 'You are already a member of this chat'
-      });
+    const member = db.prepare('SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?').get(invitation.chatId, userId) as any;
+    if (member) {
+      return NextResponse.json({ success: false, error: 'You are already a member of this chat' });
     }
 
-    // Добавление пользователя в чат
-    const chatDoc = await chatsCollection.findOne({ selector: { id: inviteData.chatId } }).exec();
-    if (chatDoc) {
-      const newParticipants = [...chatDoc.participants, userId];
-      await chatDoc.patch({
-        participants: newParticipants,
-        members: {
-          ...chatDoc.members,
-          [userId]: {
-            role: 'author',
-            joinedAt: Date.now()
-          }
-        },
-        updatedAt: Date.now()
-      });
-    }
+    const nowIso = new Date().toISOString();
+    db.prepare('INSERT INTO ChatMember (chatId, userId, role, joinedAt) VALUES (?, ?, ?, ?)')
+      .run(invitation.chatId, userId, 'author', nowIso);
 
-    // Обновление счетчика использований
-    const newCurrentUses = inviteData.currentUses + 1;
-    const invDoc = await invitationsCollection.findOne({ selector: { id: invitation.id } }).exec();
-    if (invDoc) {
-      await invDoc.patch({
-        currentUses: newCurrentUses,
-        isActive: !inviteData.isOneTime && newCurrentUses < (inviteData.maxUses || Infinity),
-        updatedAt: Date.now()
-      });
-    }
+    const newUsedCount = invitation.usedCount + 1;
+    const isOneTime = invitation.isOneTime === 1 || invitation.isOneTime === true;
+    const shouldStayActive = !isOneTime && newUsedCount < (invitation.maxUses || Infinity);
+    db.prepare('UPDATE Invitation SET usedCount = ?, isActive = ?, updatedAt = ? WHERE id = ?')
+      .run(newUsedCount, shouldStayActive ? 1 : 0, nowIso, invitation.id);
 
     return NextResponse.json({
       success: true,
-      chatId: inviteData.chatId,
+      chatId: invitation.chatId,
       message: 'Successfully joined the chat'
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error accepting invitation:', error);
-    }
+    console.error('[API] Error accepting invitation:', error);
     return NextResponse.json(
       { error: 'Failed to accept invitation' },
       { status: 500 }

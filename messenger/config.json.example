@@ -1,0 +1,57 @@
+{
+  "_comment": "⚠️ НЕ ИСПОЛЬЗУЙТЕ ЭТОТ ФАЙЛ В ПРОДАКШЕНЕ! ⚠️",
+  "_note": "Все секреты перенесены в переменные окружения (.env). Этот файл оставлен только для документации.",
+  "app": {
+    "name": "Balloo Messenger",
+    "version": "1.0.0",
+    "description": "Безопасный мессенджер с шифрованием",
+    "url": "https://alpha.balloo.su"
+  },
+  "auth": {
+    "jwtSecret": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: JWT_SECRET",
+    "jwtExpiresIn": "7d",
+    "bcryptRounds": 10
+  },
+  "push": {
+    "vapidPublicKey": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: VAPID_PUBLIC_KEY",
+    "vapidPrivateKey": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: VAPID_PRIVATE_KEY",
+    "vapidSubject": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: VAPID_SUBJECT"
+  },
+  "yandexDisk": {
+    "clientId": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: YANDEX_CLIENT_ID",
+    "clientSecret": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: YANDEX_CLIENT_SECRET",
+    "redirectUri": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: YANDEX_REDIRECT_URI"
+  },
+  "database": {
+    "name": "balloo",
+    "password": "",
+    "multiInstance": true,
+    "ignoreDuplicate": true
+  },
+  "features": {
+    "maxPinnedChats": 15,
+    "maxPushTokensPerUser": 5,
+    "pushTokenExpiresDays": 30,
+    "invitationDefaultMaxUses": 10,
+    "invitationDefaultExpiresDays": 7
+  },
+  "admin": {
+    "superAdminEmail": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: SUPER_ADMIN_EMAIL",
+    "defaultAdminPassword": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: DEFAULT_ADMIN_PASSWORD"
+  },
+  "testUsers": [
+    {
+      "email": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: TEST_USER_1_EMAIL",
+      "password": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: TEST_USER_1_PASSWORD",
+      "displayName": "Администратор",
+      "isAdmin": true,
+      "isSuperAdmin": true
+    },
+    {
+      "email": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: TEST_USER_2_EMAIL",
+      "password": "ЧТИТЬ_ИЗ_ОКРУЖЕНИЯ: TEST_USER_2_PASSWORD",
+      "displayName": "Тестовый пользователь",
+      "isAdmin": false
+    }
+  ]
+}

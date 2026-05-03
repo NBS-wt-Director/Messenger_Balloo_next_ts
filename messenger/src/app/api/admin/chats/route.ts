@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getChatsCollection, getMessagesCollection } from '@/lib/database';
+import db from '@/lib/database';
 
 // Получение списка чатов
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const adminId = searchParams.get('adminId');
-    const type = searchParams.get('type'); // 'private', 'group', 'all'
+    const type = searchParams.get('type');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '50');
 
@@ -17,9 +17,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const chatsCollection = await getChatsCollection();
-    const admin = await chatsCollection.findOne(adminId).exec();
-
+    // Проверка администратора
+    const admin = db.prepare('SELECT * FROM User WHERE id = ?').get(adminId) as any;
     if (!admin) {
       return NextResponse.json(
         { error: 'Администратор не найден' },
@@ -27,42 +26,49 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    let allChats = await chatsCollection.find().exec();
-    
-    // Фильтрация по типу
+    let query = 'SELECT * FROM Chat WHERE 1=1';
+    const params: any[] = [];
+
     if (type && type !== 'all') {
-      allChats = allChats.filter(c => c.toJSON().type === type);
+      query += ' AND type = ?';
+      params.push(type);
     }
 
-    // Пагинация
-    const startIndex = (page - 1) * limit;
-    const paginatedChats = allChats.slice(startIndex, startIndex + limit);
+    query += ' ORDER BY createdAt DESC LIMIT ? OFFSET ?';
+    const offset = (page - 1) * limit;
+    params.push(limit, offset);
+
+    const chats = db.prepare(query).all(...params) as any[];
+
+    // Получение общего количества
+    let countQuery = 'SELECT COUNT(*) as count FROM Chat WHERE 1=1';
+    let countParams: any[] = [];
+    if (type && type !== 'all') {
+      countQuery += ' AND type = ?';
+      countParams.push(type);
+    }
+    const total = db.prepare(countQuery).get(...countParams) as any;
 
     return NextResponse.json({
       success: true,
-      chats: paginatedChats.map(c => {
-        const data = c.toJSON();
-        return {
-          id: data.id,
-          type: data.type,
-          name: data.name,
-          participants: data.participants.length,
-          createdBy: data.createdBy,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt
-        };
-      }),
+      chats: chats.map(chat => ({
+        id: chat.id,
+        type: chat.type,
+        name: chat.name,
+        participants: db.prepare('SELECT COUNT(*) as count FROM ChatMember WHERE chatId = ?').get(chat.id) as any,
+        createdBy: chat.createdBy,
+        createdAt: chat.createdAt,
+        updatedAt: chat.updatedAt
+      })),
       pagination: {
         page,
         limit,
-        total: allChats.length,
-        totalPages: Math.ceil(allChats.length / limit)
+        total: total.count,
+        totalPages: Math.ceil(total.count / limit)
       }
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error fetching chats:', error);
-    }
+    console.error('[API] Error fetching chats:', error);
     return NextResponse.json(
       { error: 'Не удалось получить список чатов' },
       { status: 500 }
@@ -83,10 +89,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const chatsCollection = await getChatsCollection();
-    const messagesCollection = await getMessagesCollection();
-
-    const chat = await chatsCollection.findOne(chatId).exec();
+    const chat = db.prepare('SELECT * FROM Chat WHERE id = ?').get(chatId) as any;
     if (!chat) {
       return NextResponse.json(
         { error: 'Чат не найден' },
@@ -95,25 +98,20 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Удаление всех сообщений в чате
-    const messages = await messagesCollection.find({
-      selector: { chatId }
-    }).exec();
+    db.prepare('DELETE FROM Message WHERE chatId = ?').run(chatId);
 
-    for (const message of messages) {
-      await message.remove();
-    }
+    // Удаление участников чата
+    db.prepare('DELETE FROM ChatMember WHERE chatId = ?').run(chatId);
 
     // Удаление чата
-    await chat.remove();
+    db.prepare('DELETE FROM Chat WHERE id = ?').run(chatId);
 
     return NextResponse.json({
       success: true,
       message: 'Чат и все сообщения удалены'
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error deleting chat:', error);
-    }
+    console.error('[API] Error deleting chat:', error);
     return NextResponse.json(
       { error: 'Не удалось удалить чат' },
       { status: 500 }

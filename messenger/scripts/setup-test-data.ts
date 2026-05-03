@@ -128,7 +128,12 @@ async function main() {
   console.log('========================================\n');
 }
 
-main().catch((error: any) => {
-  console.error('[Setup] Критическая ошибка:', error);
-  process.exit(1);
-});
+(async () => {
+  try {
+    await main();
+  } catch (error: any) {
+    console.error('[Setup] Критическая ошибка:', error);
+    process.exit(1);
+  }
+})();
+

@@ -7,11 +7,20 @@ import { Footer } from '@/components/Footer';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { Home, Search, MessageCircle } from 'lucide-react';
+import { fileLogger } from '@/lib/file-logger';
 
 export default function NotFound() {
   const router = useRouter();
   const { language } = useSettingsStore();
   const translations = getTranslations(language);
+
+  useEffect(() => {
+    // Логируем 404 ошибку
+    fileLogger.warn('[404 Error]', {
+      url: window.location.href,
+      referrer: document.referrer || 'direct',
+    });
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--background)' }}>

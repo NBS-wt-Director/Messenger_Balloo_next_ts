@@ -228,7 +228,8 @@ export interface AuthUser {
   
   // Статус
   isOnline?: boolean;
-  createdAt?: number;
+  createdAt?: number | string;
+  updatedAt?: number | string;
   
   // Админ-права
   isAdmin?: boolean;
@@ -236,7 +237,7 @@ export interface AuthUser {
   adminRoles?: AdminRole[];
   adminSince?: number;
 }
-
+  
 // Мультиаккаунты
 export interface Account {
   id: string;

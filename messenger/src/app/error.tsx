@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
@@ -9,6 +7,7 @@ import { Footer } from '@/components/Footer';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { AlertTriangle, RefreshCw, Home, MessageCircle } from 'lucide-react';
+import { fileLogger } from '@/lib/file-logger';
 
 export default function Error({
   error,
@@ -22,10 +21,25 @@ export default function Error({
   const translations = getTranslations(language);
 
   useEffect(() => {
-    // Логируем ошибку
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Application error:', error);
-    }
+    // Логируем ошибку в файл
+    fileLogger.error('[500 Error]', {
+      message: error.message,
+      stack: error.stack,
+      url: window.location.href,
+      digest: error.digest,
+    });
+    
+    // Отправляем на сервер для анализа
+    fetch('/api/error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: error.message,
+        stack: error.stack,
+        url: window.location.href,
+        digest: error.digest,
+      }),
+    }).catch(() => {});
   }, [error]);
 
   return (

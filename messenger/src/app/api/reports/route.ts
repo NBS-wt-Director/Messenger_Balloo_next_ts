@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getReportsCollection, getChatsCollection, getUsersCollection } from '@/lib/database';
+import db from '@/lib/database';
 
 /**
  * API для создания жалобы
@@ -24,20 +24,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const reportsCollection = await getReportsCollection();
-    const now = Date.now();
+    const now = new Date().toISOString();
+    const reportId = `report_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Проверка на дубликат жалобы
-    const existingReport = await reportsCollection
-      .findOne({
-        selector: {
-          targetType,
-          targetId,
-          reportedBy,
-          status: 'pending'
-        }
-      })
-      .exec();
+    const existingReport = db.prepare(`
+      SELECT id FROM Report WHERE targetType = ? AND targetId = ? AND reportedBy = ? AND status = 'pending'
+    `).get(targetType, targetId, reportedBy);
 
     if (existingReport) {
       return NextResponse.json(
@@ -47,32 +40,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Создание жалобы
-    const newReport = await reportsCollection.insert({
-      id: `report_${now}_${Math.random().toString(36).substr(2, 9)}`,
-      targetType,
-      targetId,
-      reportedBy,
-      reason,
-      description: description || '',
-      status: 'pending', // pending, reviewing, resolved, rejected
-      createdAt: now,
-      updatedAt: now,
-      reviewedBy: null,
-      reviewedAt: null,
-      resolution: null
-    });
+    db.prepare(`
+      INSERT INTO Report (id, targetType, targetId, reportedBy, reason, description, status, createdAt, reviewedBy, reviewedAt, resolution)
+      VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, NULL, NULL, NULL)
+    `).run(reportId, targetType, targetId, reportedBy, reason, description || '', now);
 
     return NextResponse.json({
       success: true,
-      report: newReport.toJSON(),
+      report: {
+        id: reportId,
+        targetType,
+        targetId,
+        reportedBy,
+        reason,
+        description: description || '',
+        status: 'pending',
+        createdAt: now,
+        reviewedBy: null,
+        reviewedAt: null,
+        resolution: null
+      },
       message: 'Жалоба отправлена'
     });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error creating report:', error);
-    }
+    console.error('[API] Error creating report:', error);
     return NextResponse.json(
-      { error: 'Не удалось создать жалобу: ' + error.message },
+      { error: 'Не удалось создать жалобу' },
       { status: 500 }
     );
   }
@@ -91,69 +84,75 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0');
     const targetType = searchParams.get('targetType');
 
-    const reportsCollection = await getReportsCollection();
-    const selector: any = {};
+    let query = `
+      SELECT * FROM Report WHERE 1=1
+    `;
+    const params: any[] = [];
 
     if (status !== 'all') {
-      selector.status = status;
+      query += ' AND status = ?';
+      params.push(status);
     }
 
     if (targetType) {
-      selector.targetType = targetType;
+      query += ' AND targetType = ?';
+      params.push(targetType);
     }
 
-    const reports = await reportsCollection
-      .find({
-        selector,
-        sort: [{ createdAt: 'desc' }],
-        limit,
-        skip: offset
-      })
-      .exec();
+    query += ' ORDER BY createdAt DESC LIMIT ? OFFSET ?';
+    params.push(limit, offset);
+
+    const reports = db.prepare(query).all(...params) as any[];
 
     // Получение дополнительной информации
     const reportsWithDetails = await Promise.all(
-      reports.map(async (report) => {
-        const reportData = report.toJSON();
-        
+      reports.map(async (report: any) => {
         // Информация о том, кто подал жалобу
-        const usersCollection = await getUsersCollection();
-        const reporter = await usersCollection.findOne({ selector: { id: reportData.reportedBy } }).exec();
+        const reporter = db.prepare('SELECT displayName, email FROM User WHERE id = ?').get(report.reportedBy) as any;
         
         // Информация об объекте жалобы
         let targetInfo: any = {};
-        if (reportData.targetType === 'chat') {
-          const chatsCollection = await getChatsCollection();
-          const chat = await chatsCollection.findOne({ selector: { id: reportData.targetId } }).exec();
+        if (report.targetType === 'chat') {
+          const chat = db.prepare('SELECT name, type FROM Chat WHERE id = ?').get(report.targetId) as any;
           targetInfo = { name: chat?.name, type: chat?.type };
-        } else if (reportData.targetType === 'user') {
-          const chat = await usersCollection.findOne({ selector: { id: reportData.targetId } }).exec();
-          targetInfo = { name: chat?.displayName, email: chat?.email };
+        } else if (report.targetType === 'user') {
+          const user = db.prepare('SELECT displayName, email FROM User WHERE id = ?').get(report.targetId) as any;
+          targetInfo = { name: user?.displayName, email: user?.email };
         }
 
         return {
-          ...reportData,
+          ...report,
           reporterName: reporter?.displayName || reporter?.email || 'Unknown',
           targetInfo
         };
       })
     );
 
-    const total = await reportsCollection.count(selector).exec();
+    const totalQuery = 'SELECT COUNT(*) as count FROM Report WHERE 1=1';
+    let totalParams: any[] = [];
+    
+    if (status !== 'all') {
+      query += ' AND status = ?';
+      totalParams.push(status);
+    }
+
+    if (targetType) {
+      totalParams.push(targetType);
+    }
+
+    const total = db.prepare(totalQuery).get(...totalParams) as any;
 
     return NextResponse.json({
       success: true,
       reports: reportsWithDetails,
-      total,
+      total: total.count,
       limit,
       offset
     });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error fetching reports:', error);
-    }
+    console.error('[API] Error fetching reports:', error);
     return NextResponse.json(
-      { error: 'Не удалось получить жалобы: ' + error.message },
+      { error: 'Не удалось получить жалобы' },
       { status: 500 }
     );
   }
@@ -177,8 +176,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const reportsCollection = await getReportsCollection();
-    const report = await reportsCollection.findOne({ selector: { id } }).exec();
+    const report = db.prepare('SELECT * FROM Report WHERE id = ?').get(id) as any;
 
     if (!report) {
       return NextResponse.json(
@@ -187,27 +185,33 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updateData: any = {
-      status: status || report.status,
-      resolution: resolution !== undefined ? resolution : report.resolution,
-      reviewedBy: reviewedBy || report.reviewedBy,
-      reviewedAt: Date.now(),
-      updatedAt: Date.now()
-    };
+    const updateStatus = status || report.status;
+    const updateResolution = resolution !== undefined ? resolution : report.resolution;
+    const updateReviewedBy = reviewedBy || report.reviewedBy;
+    const now = new Date().toISOString();
 
-    await report.patch(updateData);
+    db.prepare(`
+      UPDATE Report 
+      SET status = ?, resolution = ?, reviewedBy = ?, reviewedAt = ?, updatedAt = ?
+      WHERE id = ?
+    `).run(updateStatus, updateResolution, updateReviewedBy, now, now, id);
 
     return NextResponse.json({
       success: true,
       message: 'Жалоба обновлена',
-      report: { ...report.toJSON(), ...updateData }
+      report: {
+        ...report,
+        status: updateStatus,
+        resolution: updateResolution,
+        reviewedBy: updateReviewedBy,
+        reviewedAt: now,
+        updatedAt: now
+      }
     });
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error updating report:', error);
-    }
+    console.error('[API] Error updating report:', error);
     return NextResponse.json(
-      { error: 'Не удалось обновить жалобу: ' + error.message },
+      { error: 'Не удалось обновить жалобу' },
       { status: 500 }
     );
   }

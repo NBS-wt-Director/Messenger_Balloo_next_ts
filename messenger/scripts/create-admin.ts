@@ -2,29 +2,24 @@
  * Скрипт создания первого админ-аккаунта
  * 
  * Запуск: npx ts-node scripts/create-admin.ts
- * Или: node scripts/create-admin.js (после компиляции)
  * 
- * Учетные данные:
- * Email: i@o8eryukhtin.ru
- * Пароль: A13n10n13a
- * Имя: Balloo_father
- * ФИО: Оберюхтин Иван Анатольевич
- * Дата рождения: 06.04.1993
+ * Пароль берётся из переменной окружения:
+ * 1. Создать файл .env.local (если нет)
+ * 2. Добавить строку: ADMIN_PASSWORD=your-secure-password
+ * 3. Запустить скрипт
  * 
- * Права админа:
- * - SuperAdmin (полный доступ)
- * - Все административные роли
+ * По умолчанию: ADMIN_PASSWORD=BallooAdmin2024!SecurePass#XyZ
  */
 
-import { getDatabase } from '../src/lib/database';
+import { getDatabase } from '../src/lib/database.js';
 import bcrypt from 'bcryptjs';
 
-// Конфигурация админ-аккаунта
+// Конфигурация админ-аккаунта (пароль из окружения)
 const ADMIN_CONFIG = {
-  email: 'i@o8eryukhtin.ru',
-  password: 'A13n10n13a',
-  displayName: 'Balloo_father',
-  fullName: 'Оберюхтин Иван Анатольевич',
+  email: process.env.ADMIN_EMAIL || 'i@o8eryukhtin.ru',
+  password: process.env.ADMIN_PASSWORD || 'BallooAdmin2024!SecurePass#XyZ',
+  displayName: process.env.ADMIN_DISPLAY_NAME || 'Balloo_father',
+  fullName: process.env.ADMIN_FULL_NAME || 'Оберюхтин Иван Анатольевич',
   birthDate: new Date('1993-04-06').getTime(), // 06.04.1993
 };
 
@@ -100,7 +95,7 @@ async function createAdminAccount() {
     
     console.log('✅ Админ-аккаунт успешно создан/обновлён!\n');
     console.log('📧 Email:', ADMIN_CONFIG.email);
-    console.log('🔐 Пароль:', ADMIN_CONFIG.password);
+    console.log('🔐 Пароль: *** (из переменной окружения ADMIN_PASSWORD)');
     console.log('👤 Имя:', ADMIN_CONFIG.displayName);
     console.log('📝 ФИО:', ADMIN_CONFIG.fullName);
     console.log('📅 Дата рождения: 06.04.1993');
@@ -134,3 +129,6 @@ async function createAdminAccount() {
 
 // Запуск
 createAdminAccount();
+
+// Экспорт для использования в других скриптах
+export { getDatabase };

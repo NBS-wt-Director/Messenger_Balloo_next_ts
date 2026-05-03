@@ -51,7 +51,7 @@ app_balloo/
 ├── 📁 messenger/              # 🌐 Web приложение (Next.js 15)
 │   ├── src/
 │   ├── public/
-│   ├── prisma/
+│   ├── data/                  # SQLite база данных
 │   ├── docs/
 │   ├── config.json
 │   └── package.json
@@ -619,10 +619,10 @@ build:
 
 ### Рекомендации
 
-1. Используйте httpOnly cookies для токенов (TODO)
-2. Включите rate limiting (TODO)
-3. Настройте CORS
-4. Добавьте CSRF защиту
+1. ✅ httpOnly cookies для токенов - реализовано
+2. ✅ Rate limiting - реализован с поддержкой Redis
+3. ✅ Настройте CORS
+4. ✅ CSRF защита - реализована
 5. Регулярно обновляйте зависимости
 
 ---

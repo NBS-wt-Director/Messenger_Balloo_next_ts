@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { GroupRole } from '@/types';
 
 /**
@@ -25,7 +25,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    // SQLite db уже доступен
     const chatsCollection = db.chats;
 
     const chat = await chatsCollection.findOne({

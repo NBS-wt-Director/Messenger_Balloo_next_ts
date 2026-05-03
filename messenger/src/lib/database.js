@@ -34,7 +34,7 @@ db.exec(`
     isOnline INTEGER DEFAULT 0,
     status TEXT DEFAULT 'offline',
     settings TEXT DEFAULT '{}',
-    points INTEGER DEFAULT -55,
+    points INTEGER DEFAULT 0,
     userNumber INTEGER,
     createdAt TEXT DEFAULT (datetime('now')),
     updatedAt TEXT DEFAULT (datetime('now'))
@@ -174,16 +174,6 @@ db.exec(`
     PRIMARY KEY (userId1, userId2)
   );
 
-  CREATE TABLE IF NOT EXISTS _prisma_migrations (
-    id TEXT PRIMARY KEY,
-    checksum TEXT NOT NULL,
-    finished_at TEXT,
-    migration_name TEXT NOT NULL UNIQUE,
-    logs TEXT,
-    rolled_back_at TEXT,
-    started_at TEXT DEFAULT (datetime('now'))
-  );
-
   CREATE TABLE IF NOT EXISTS VerificationCode (
     id TEXT PRIMARY KEY,
     userId TEXT NOT NULL,
@@ -194,6 +184,38 @@ db.exec(`
     usedAt TEXT,
     FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS Ban (
+    id TEXT PRIMARY KEY,
+    userId TEXT NOT NULL,
+    chatId TEXT,
+    bannedBy TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    expiresAt TEXT,
+    createdAt TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (userId) REFERENCES User(id),
+    FOREIGN KEY (bannedBy) REFERENCES User(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS Attachment (
+    id TEXT PRIMARY KEY,
+    messageId TEXT,
+    chatId TEXT NOT NULL,
+    uploaderId TEXT NOT NULL,
+    fileName TEXT,
+    mimeType TEXT,
+    fileSize INTEGER DEFAULT 0,
+    url TEXT,
+    thumbnailUrl TEXT,
+    width INTEGER,
+    height INTEGER,
+    status TEXT DEFAULT 'ready',
+    createdAt TEXT DEFAULT (datetime('now')),
+    updatedAt TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (messageId) REFERENCES Message(id),
+    FOREIGN KEY (chatId) REFERENCES Chat(id),
+    FOREIGN KEY (uploaderId) REFERENCES User(id)
+  );
 `);
 
 // Индексы для оптимизации
@@ -203,8 +225,17 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_message_chat ON Message(chatId);
   CREATE INDEX IF NOT EXISTS idx_verification_user ON VerificationCode(userId);
   CREATE INDEX IF NOT EXISTS idx_verification_expires ON VerificationCode(expiresAt);
+  CREATE INDEX IF NOT EXISTS idx_attachment_message ON Attachment(messageId);
+  CREATE INDEX IF NOT EXISTS idx_attachment_chat ON Attachment(chatId);
 `);
 
 console.log('✓ Все таблицы и индексы созданы успешно');
 
 module.exports = db;
+
+// Для использования в скриптах
+function getDatabase() {
+  return db;
+}
+
+module.exports = { db, getDatabase };

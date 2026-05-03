@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
 
 /**
@@ -7,7 +7,7 @@ import { logger } from '@/lib/logger';
  */
 export async function POST(request: NextRequest) {
   try {
-    const db = await getDatabase();
+    // SQLite db уже доступен
 
     // Очищаем все коллекции
     const collections = Object.keys(db.collections) as Array<keyof typeof db.collections>;

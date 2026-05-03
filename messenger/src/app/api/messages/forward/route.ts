@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
+
+function getMessageById(id: string): any {
+  return db.prepare('SELECT * FROM Message WHERE id = ?').get(id) as any || null;
+}
+
+function getChatById(id: string): any {
+  return db.prepare('SELECT * FROM Chat WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/messages/forward - Пересылка сообщения
@@ -17,9 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Находим оригинальное сообщение
-    const originalMessage = await prisma.message.findUnique({
-      where: { id: messageId }
-    });
+    const originalMessage = getMessageById(messageId);
 
     if (!originalMessage) {
       return NextResponse.json(
@@ -29,12 +35,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверка участия в целевом чате
-    const chatMember = await prisma.chatMember.findFirst({
-      where: {
-        chatId: targetChatId,
-        userId: senderId
-      }
-    });
+    const chatMember = db.prepare(`
+      SELECT * FROM ChatMember WHERE chatId = ? AND userId = ?
+    `).get(targetChatId, senderId);
 
     if (!chatMember) {
       return NextResponse.json(
@@ -44,39 +47,23 @@ export async function POST(request: NextRequest) {
     }
 
     // Создаём пересланное сообщение
-    const forwardedMessage = await prisma.message.create({
-      data: {
-        chatId: targetChatId,
-        senderId,
-        type: originalMessage.type,
-        content: originalMessage.content,
-        mediaUrl: originalMessage.mediaUrl,
-        thumbnailUrl: originalMessage.thumbnailUrl,
-        fileName: originalMessage.fileName,
-        fileSize: originalMessage.fileSize,
-        mimeType: originalMessage.mimeType,
-        replyToId: originalMessage.replyToId,
-        readBy: [senderId],
-        status: 'sent',
-        edited: false,
-        forwardFromId: originalMessage.id,
-        forwardFromChatId: originalMessage.chatId,
-      }
-    });
+    const forwardedMessage = db.prepare(`
+      INSERT INTO Message (id, chatId, userId, text, type, replyToId, attachmentId, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      targetChatId,
+      senderId,
+      originalMessage.text,
+      originalMessage.type,
+      originalMessage.replyToId,
+      originalMessage.attachmentId,
+      new Date().toISOString()
+    );
 
     return NextResponse.json({
       success: true,
-      message: {
-        id: forwardedMessage.id,
-        chatId: forwardedMessage.chatId,
-        senderId: forwardedMessage.senderId,
-        type: forwardedMessage.type,
-        content: forwardedMessage.content,
-        mediaUrl: forwardedMessage.mediaUrl,
-        createdAt: Number(forwardedMessage.createdAt),
-        forwardFromId: forwardedMessage.forwardFromId,
-        forwardFromChatId: forwardedMessage.forwardFromChatId,
-      }
+      message: getMessageById(`msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`)
     });
 
   } catch (error: any) {

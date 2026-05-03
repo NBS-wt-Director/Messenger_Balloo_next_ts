@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import db from '@/lib/database';
 import { logger } from '@/lib/logger';
+
+function getChatById(id: string): any {
+  return db.prepare('SELECT * FROM Chat WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/chats/[id]/clear - Очистить чат (удалить все сообщения)
@@ -18,9 +22,7 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    const chat = await prisma.chat.findUnique({
-      where: { id: chatId }
-    });
+    const chat = getChatById(chatId);
 
     if (!chat) {
       logger.warn(`[API] Чат не найден: ${chatId}`);
@@ -28,17 +30,11 @@ export async function POST(
     }
 
     // Удалить все сообщения чата
-    const deleted = await prisma.message.deleteMany({
-      where: { chatId }
-    });
+    const deleted = db.prepare('SELECT COUNT(*) as count FROM Message WHERE chatId = ?').get(chatId) as any;
+    db.prepare('DELETE FROM Message WHERE chatId = ?').run(chatId);
 
     // Обновить чат
-    await prisma.chat.update({
-      where: { id: chatId },
-      data: {
-        updatedAt: new Date()
-      }
-    });
+    db.prepare('UPDATE Chat SET updatedAt = ? WHERE id = ?').run(new Date().toISOString(), chatId);
 
     logger.info(`[API] Чат очищен: ${chatId}, удалено сообщений: ${deleted.count}`);
 

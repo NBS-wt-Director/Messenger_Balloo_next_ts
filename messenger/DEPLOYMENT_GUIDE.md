@@ -58,7 +58,7 @@ NODE_ENV=production npm run build
 
 ---
 
-## 📤 Шаг 2: Загрузка на Git
+## 🔄 Шаг 2: Загрузка на Git
 
 ### 2.1 Коммит изменений
 ```bash
@@ -68,14 +68,14 @@ cd ~/Messenger_Balloo_next_ts
 git add .
 
 # Коммит с сообщением
-git commit -m "feat: email верификация + SMTP настройка + обновление версии"
+git commit -m "feat: миграция на Better-SQLite3 + email верификация"
 
 # Описание изменений:
+# - Миграция с Prisma на Better-SQLite3 (устранение path conflicts)
 # - Email верификация с кодом из 7 слов
 # - SMTP настроен: balloo.Messenger@yandex.ru
 # - Обновлён versions.json (01.06.2026)
 # - Автор: Оберюхтин-Кравец Иван Анатольевич
-# - Better-SQLite3 вместо Prisma
 # - Аватарки-восьмиугольники
 # - Яндекс авторизация с авто-регистрацией
 ```
@@ -114,6 +114,58 @@ ssh user@31.128.37.165
 ### 3.2 Переход в директорию проекта
 ```bash
 cd ~/Messenger_Balloo_next_ts
+```
+
+---
+
+## ⚠️ ВАЖНО: Миграция с Prisma на Better-SQLite3
+
+**Если на сервере уже было запущено приложение с Prisma:**
+
+```bash
+cd messenger
+
+# 1. Остановить приложение
+pm2 stop messenger-alpha
+
+# 2. Удалить Prisma dependencies
+npm uninstall @prisma/client prisma --save-dev
+
+# 3. Установить better-sqlite3
+npm install better-sqlite3
+
+# 4. Удалить старую сборку
+rm -rf .next
+
+# 5. Инициализировать БД (создаст таблицы если нет)
+mkdir -p data
+node scripts/init-db.js
+
+# 6. Проверить таблицы
+sqlite3 prisma/dev.db ".tables"
+
+# 7. Пересобрать
+NODE_ENV=production npm run build
+
+# 8. Запустить
+NODE_ENV=production pm2 start "npx next start -p 3000" --name "messenger-alpha"
+
+# 9. Сохранить
+pm2 save
+
+# 10. Проверить логи
+pm2 logs messenger-alpha --lines 50
+```
+
+**Ожидаемые логи:**
+```
+✓ Все таблицы и индексы созданы успешно
+✓ База данных инициализирована
+```
+
+**НЕ должно быть:**
+```
+❌ Invalid `prisma.chat.findUnique()` invocation:
 ```
 
 ---
