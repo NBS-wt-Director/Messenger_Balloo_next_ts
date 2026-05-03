@@ -1,17 +1,27 @@
+
+
 'use client';
 
-import { useEffect } from 'react';
 import { ReactNode } from 'react';
 import { PWAInstall } from '@/components/PWAInstall';
-import { ensureClientDBInitialized } from '@/lib/client-db';
 
 interface ProvidersProps {
   children: ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps) {
+  return (
+    <>
+      {children}
+      <PWAInstall />
+    </>
+  );
+}
+
+export function Providers({ children }: ProvidersProps) {
   // Инициализация клиентской базы данных при запуске приложения
   useEffect(() => {
+    const initDatabase = async () => {
     const initDatabase = async () => {
       try {
         await ensureClientDBInitialized();
