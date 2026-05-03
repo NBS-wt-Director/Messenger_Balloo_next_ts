@@ -10,6 +10,7 @@ export interface KeyPair {
 }
 
 // Генерация ключевой пары
+
 export function generateKeyPair(): KeyPair {
   const keyPair = nacl.box.keyPair();
   
