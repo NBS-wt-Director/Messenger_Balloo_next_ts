@@ -3,20 +3,22 @@ import { fileLogger } from '@/lib/file-logger';
 
 /**
  * POST /api/error
- * Клиентское логирование ошибок
+ * Клиентское и серверное логирование ошибок
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
     // Логирование ошибки
-    fileLogger.error('[Client Error]', {
+    fileLogger.error('[Error Report]', {
       message: body.error,
       stack: body.stack,
       url: body.url,
       digest: body.digest,
       userAgent: request.headers.get('user-agent'),
       ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+      isServer: body.isServerError ?? false,
+      timestamp: new Date().toISOString(),
     });
     
     return NextResponse.json({ success: true });
@@ -28,3 +30,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

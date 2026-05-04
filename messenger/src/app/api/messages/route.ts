@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { getDatabase } from '@/lib/database';
 
 function getMessageById(id: string): any {
   return db.prepare('SELECT * FROM Message WHERE id = ?').get(id) as any || null;

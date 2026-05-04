@@ -44,11 +44,11 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 let redisClient: any = null;
 if (process.env.REDIS_URL) {
   try {
-    const { createClient } = require('redis');
-    redisClient = createClient({ url: process.env.REDIS_URL });
-    redisClient.connect().catch(console.error);
+    const { Redis } = require('ioredis');
+    redisClient = new Redis(process.env.REDIS_URL);
   } catch (e) {
-    logger.warn('[RateLimit] Redis not available, using in-memory storage');
+    // eslint-disable-next-line no-console
+    console.warn('[RateLimit] Redis not available, using in-memory storage');
   }
 }
 
@@ -187,7 +187,8 @@ export const config = {
     '/admin/:path*',
     '/profile/:path*',
     '/settings/:path*',
-  ]
+  ],
+  runtime: 'nodejs', // Node.js runtime для доступа к Redis и другим Node.js модулям
 };
 
 /**

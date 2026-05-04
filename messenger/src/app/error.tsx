@@ -7,7 +7,7 @@ import { Footer } from '@/components/Footer';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { AlertTriangle, RefreshCw, Home, MessageCircle } from 'lucide-react';
-import { fileLogger } from '@/lib/file-logger';
+// fileLogger удален - он использует Node.js модули (fs, path), которые не работают в браузере
 
 export default function Error({
   error,
@@ -21,15 +21,15 @@ export default function Error({
   const translations = getTranslations(language);
 
   useEffect(() => {
-    // Логируем ошибку в файл
-    fileLogger.error('[500 Error]', {
+    // Логируем ошибку в консоль (клиентский fallback)
+    console.error('[Client Error]', {
       message: error.message,
       stack: error.stack,
       url: window.location.href,
       digest: error.digest,
     });
     
-    // Отправляем на сервер для анализа
+    // Отправляем на сервер для записи в файл
     fetch('/api/error', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,8 +38,12 @@ export default function Error({
         stack: error.stack,
         url: window.location.href,
         digest: error.digest,
+        isServerError: false, // Это клиентская ошибка
       }),
-    }).catch(() => {});
+    }).catch((fetchError) => {
+      // Если API не доступен — логируем в консоль
+      console.error('[Client] Failed to send error to server:', fetchError);
+    });
   }, [error]);
 
   return (

@@ -1,7 +1,7 @@
 
 import nacl from 'tweetnacl';
 import { encodeBase64, decodeBase64, encodeUTF8, decodeUTF8 } from 'tweetnacl-util';
-import { fileLogger } from './file-logger';
+// fileLogger удалён — используется console для клиентской совместимости
 
 // Типы ключей
 export interface KeyPair {
@@ -71,7 +71,7 @@ export function decryptMessage(
     const decrypted = nacl.box.open.after(encryptedBytes, nonceBytes, sharedSecretBytes);
     
     if (!decrypted) {
-      fileLogger.warn('[Crypto] Decryption failed: invalid ciphertext', {
+      console.warn('[Crypto] Decryption failed: invalid ciphertext', {
         encryptedLength: encrypted.length,
         nonceLength: nonce.length,
       });
@@ -80,7 +80,7 @@ export function decryptMessage(
     
     return encodeUTF8(decrypted);
   } catch (error: any) {
-    fileLogger.error('[Crypto] Decryption error', {
+    console.error('[Crypto] Decryption error', {
       message: error.message,
       name: error.name,
       encryptedLength: encrypted.length,
@@ -120,7 +120,7 @@ export function decryptSymmetric(
     const decrypted = nacl.secretbox.open(encryptedBytes, nonceBytes, keyBytes);
     
     if (!decrypted) {
-      fileLogger.warn('[Crypto] Symmetric decryption failed: invalid MAC', {
+      console.warn('[Crypto] Symmetric decryption failed: invalid MAC', {
         encryptedLength: encrypted.length,
       });
       return null;
@@ -128,7 +128,7 @@ export function decryptSymmetric(
     
     return encodeUTF8(decrypted);
   } catch (error: any) {
-    fileLogger.error('[Crypto] Symmetric decryption error', {
+    console.error('[Crypto] Symmetric decryption error', {
       message: error.message,
       name: error.name,
     });
@@ -255,7 +255,7 @@ export async function decryptFileAES(encrypted: Buffer, key: CryptoKey, ivHex: s
     
     return new Uint8Array(decrypted);
   } catch (error: any) {
-    fileLogger.error('[Crypto] AES-GCM file decryption failed', {
+    console.error('[Crypto] AES-GCM file decryption failed', {
       message: error.message,
       name: error.name,
       encryptedSize: encrypted.length,
@@ -313,7 +313,7 @@ export async function decryptTextAES(encryptedBase64: string, key: CryptoKey, iv
     const decoder = new TextDecoder();
     return decoder.decode(decrypted);
   } catch (error: any) {
-    fileLogger.error('[Crypto] AES-GCM text decryption failed', {
+    console.error('[Crypto] AES-GCM text decryption failed', {
       message: error.message,
       name: error.name,
       encryptedLength: encryptedBase64.length,

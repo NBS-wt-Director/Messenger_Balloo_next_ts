@@ -1,7 +1,7 @@
-
+﻿
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
-import db from '@/lib/database';
+import { getDatabase } from '@/lib/database';
 
 /**
  * GET /api/features - Получить список функций

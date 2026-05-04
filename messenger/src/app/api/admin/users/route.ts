@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import db from '@/lib/database.js';
 import bcrypt from 'bcryptjs';
 
 function getUserById(id: string): any {

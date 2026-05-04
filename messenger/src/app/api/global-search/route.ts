@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { getDatabase } from '@/lib/database';
 
 /**
  * GET /api/global-search?q=...&type=users|groups|communities|all&limit=20&userId=...

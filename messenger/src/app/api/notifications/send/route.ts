@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { getDatabase } from '@/lib/database';
 import webpush from 'web-push';
 import { getVapidKeys } from '@/lib/config';
 

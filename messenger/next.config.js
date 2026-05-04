@@ -4,7 +4,7 @@ const nextConfig = {
   reactStrictMode: true,
   distDir: '.next',
   trailingSlash: false,
-  outputFileTracingRoot: 'C:/Users/IvanO/OneDrive/Desktop/проекты',
+  outputFileTracingRoot: '/home/balloo/Messenger_Balloo_next_ts/',
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
@@ -42,7 +42,6 @@ const nextConfig = {
       },
     ];
   },
-  serverExternalPackages: ['better-sqlite3'],
 };
 
 module.exports = nextConfig;

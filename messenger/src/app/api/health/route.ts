@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+ import { NextRequest, NextResponse } from 'next/server';
 import { fileLogger } from '@/lib/file-logger';
 import { logger } from '@/lib/logger';
+import db from '@/lib/database.js';
 
 /**
  * GET /api/health
@@ -15,7 +16,6 @@ export async function GET(request: NextRequest) {
     let dbTables: string[] = [];
     
     try {
-      const { db } = await import('@/lib/database');
       const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as Array<{ name: string }>;
       dbTables = tables.map(t => t.name);
     } catch (error: any) {

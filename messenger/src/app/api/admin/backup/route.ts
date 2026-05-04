@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
-
-/**
- * API для бэкапа и восстановления базы данных
- * Доступно только администраторам
- */
+import { getDatabase } from '@/lib/database';
 
 interface BackupData {
   version: string;
@@ -19,26 +14,30 @@ interface BackupData {
   settings: any;
 }
 
-// POST - Создание бэкапа
-export async function POST(request: NextRequest) {
+/**
+ * API для создания бэкапа
+ */
+
+export async function GET(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { adminId, includeMessages, includeAttachments } = body;
+    const { searchParams } = new URL(request.url);
+    const adminId = searchParams.get('adminId');
+    const includeMessages = searchParams.get('includeMessages') !== 'false';
+    const includeAttachments = searchParams.get('includeAttachments') !== 'false';
 
     if (!adminId) {
       return NextResponse.json(
-        { error: 'adminId требуется' },
+        { error: 'adminId обязателен' },
         { status: 400 }
       );
     }
 
-    // Проверка прав администратора
-    // В реальном приложении - проверка через базу данных
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[Backup] Creating backup for admin ${adminId}`);
+      console.log(`[Backup] Starting backup for admin ${adminId}`);
     }
 
-    // SQLite db уже доступен
+    // Подключаемся к RxDB
+    const db: any = await getDatabase();
     const now = Date.now();
 
     // Сбор данных из всех коллекций
@@ -102,59 +101,6 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json(
       { error: 'Не удалось создать бэкап: ' + error.message },
-      { status: 500 }
-    );
-  }
-}
-
-// GET - Получение информации о бэкапах
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const adminId = searchParams.get('adminId');
-
-    if (!adminId) {
-      return NextResponse.json(
-        { error: 'adminId требуется' },
-        { status: 400 }
-      );
-    }
-
-    // В реальном приложении - получение списка бэкапов из хранилища
-    const backups = [
-      {
-        id: 'backup_1',
-        timestamp: Date.now() - 86400000,
-        size: 1024 * 1024 * 5,
-        records: {
-          users: 100,
-          chats: 50,
-          messages: 10000
-        }
-      },
-      {
-        id: 'backup_2',
-        timestamp: Date.now() - 172800000,
-        size: 1024 * 1024 * 4,
-        records: {
-          users: 98,
-          chats: 48,
-          messages: 9500
-        }
-      }
-    ];
-
-    return NextResponse.json({
-      success: true,
-      backups,
-      count: backups.length
-    });
-  } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[API] Error getting backups:', error);
-    }
-    return NextResponse.json(
-      { error: 'Не удалось получить список бэкапов' },
       { status: 500 }
     );
   }

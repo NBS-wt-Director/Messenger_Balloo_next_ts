@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+import { getDatabase } from '@/lib/database';
 import { logger } from '@/lib/logger';
 
 /**
@@ -18,7 +18,9 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    // SQLite db уже доступен
+    // Подключаемся к RxDB
+    const db: any = await getDatabase();
+
     const chat = await db.chats.findOne(chatId).exec();
 
     if (!chat) {

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { getDatabase } from '@/lib/database';
 
 function getUserById(id: string): any {
   return db.prepare('SELECT * FROM User WHERE id = ?').get(id) as any || null;

@@ -8,7 +8,7 @@ import { Footer } from '@/components/Footer';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
 import { Home, Search, MessageCircle } from 'lucide-react';
-import { fileLogger } from '@/lib/file-logger';
+// fileLogger удалён — логирование только на сервере
 
 export default function NotFound() {
   const router = useRouter();
@@ -16,8 +16,8 @@ export default function NotFound() {
   const translations = getTranslations(language);
 
   useEffect(() => {
-    // Логируем 404 ошибку
-    fileLogger.warn('[404 Error]', {
+    // Логируем 404 в консоль (клиентский fallback)
+    console.warn('[404 Client]', {
       url: window.location.href,
       referrer: document.referrer || 'direct',
     });

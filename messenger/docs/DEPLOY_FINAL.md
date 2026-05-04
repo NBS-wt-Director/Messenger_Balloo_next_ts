@@ -70,17 +70,31 @@ cat .env.example
 # Создать файл с секретами
 cat > .env.production << 'EOF'
 NODE_ENV=production
-JWT_SECRET=ваш-32-символьный-секрет
-VAPID_PUBLIC_KEY=ваш-public-key
-VAPID_PRIVATE_KEY=ваш-private-key
+NEXT_PUBLIC_APP_URL=https://alpha.balloo.su
+NEXT_PUBLIC_API_URL=https://alpha.balloo.su/api
+NEXT_PUBLIC_SERVER_URL=https://alpha.balloo.su
+NEXT_PUBLIC_YANDEX_CLIENT_ID=9ddfa97aa58f44b991f0a2a01a7fa9b1
+JWT_SECRET=qhB74DY5AYgLNknsUAPbyANb2HgUXZM1FINy8O51JOklvgx7Bhn4oGGDe0J0MORN
+NEXTAUTH_SECRET=G8lmx76bCLJktj5y4J63pxlNOpda82EX5ru7ghCbg2Y=
+ENCRYPTION_KEY=sECmSzKbSwdFIbX12ZVWdkzq7SzgNHHDDaccmo9pV3HlB4jc6Zi6xSu28wcacdIG
+YANDEX_CLIENT_ID=9ddfa97aa58f44b991f0a2a01a7fa9b1
+YANDEX_CLIENT_SECRET=81178677a1344bfea7f3f9c1dfaa1d73
+YANDEX_DISK_API_URL=https://cloud-api.yandex.net/v1/disk
+VAPID_PUBLIC_KEY=BK2ry-hpw8IowwtQ5NrgbBTW6Oh2TAY2KB0zZaHhov6Bgwte1lsXLW1GDJaGO5KiTta1dJVyNT6Cd8F5kL0Iy-s
+VAPID_PRIVATE_KEY=_71NmXD1ZWwASVQcY0mLLzFbxoT3WkVXYWgkvEIdimI
 VAPID_SUBJECT=mailto:robot@balloo.su
 SMTP_HOST=smtp.yandex.ru
 SMTP_PORT=587
 SMTP_USER=balloo.Messenger@yandex.ru
-SMTP_PASS=ваш-пароль
-DATABASE_URL=file:./data/app.db
+SMTP_PASS=gouewuqhsufqsbgu
+RATE_LIMIT_MAX=100
+RATE_LIMIT_WINDOW=60
+ADMIN_EMAIL=robot@balloo.su
+DATABASE_URL="file:./data/app.db"
 FRONTEND_URL=https://alpha.balloo.su
 RXDB_DATABASE_NAME=balloo-prod
+DEBUG=false
+LOGGING_ENABLED=true
 EOF
 ```
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+import { getDatabase } from '@/lib/database';
 import { logger } from '@/lib/logger';
 
 /**
@@ -28,7 +28,8 @@ export async function POST(
       );
     }
 
-    // SQLite db уже доступен
+    const db: any = await getDatabase();
+
     const user = await db.users.findOne(userId).exec();
 
     if (!user) {
@@ -82,7 +83,8 @@ export async function DELETE(
       );
     }
 
-    // SQLite db уже доступен
+    const db: any = await getDatabase();
+
     const user = await db.users.findOne(userId).exec();
 
     if (!user) {

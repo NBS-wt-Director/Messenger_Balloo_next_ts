@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { getDatabase } from '@/lib/database';
 import { hash } from 'bcryptjs';
 import { generateUserAvatar, updateAvatarHistory } from '@/lib/avatar';
 import { generateVerificationCode } from '@/lib/verification-code';

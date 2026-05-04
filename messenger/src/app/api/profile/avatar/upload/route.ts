@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { getDatabase } from '@/lib/database';
 import { logger } from '@/lib/logger';
 import { optimizeImage, createThumbnail, getImageMetadata } from '@/lib/image-optimizer';
 

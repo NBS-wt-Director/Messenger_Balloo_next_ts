@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-  
-      "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "setup-test-data": "node scripts/setup-test-data.js",
     "create-admin": "npx ts-node --project tsconfig.json -r tsconfig-paths/register scripts/create-admin.ts",
     "generate-vapid": "npx web-push generate-vapid-keys",
@@ -21,9 +20,9 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^11.0.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "ioredis": "^5.10.1",
     "jose": "^5.9.0",
     "lokijs": "^1.5.12",
     "lucide-react": "^0.460.0",

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/database';
+import { getDatabase } from '@/lib/database';
 
 /**
  * API для восстановления из бэкапа
@@ -21,7 +21,8 @@ export async function POST(request: NextRequest) {
       console.log(`[Restore] Starting restore for admin ${adminId}`);
     }
 
-    // SQLite db уже доступен
+    // Подключаемся к RxDB
+    const db: any = await getDatabase();
     const now = Date.now();
     const stats = {
       users: 0,
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
 
     // Восстановление пользователей
     if (backupData.users && options?.restoreUsers !== false) {
+      const db: any = await getDatabase();
       for (const userData of backupData.users) {
         try {
           const existing = await db.users.findOne(userData.id).exec();

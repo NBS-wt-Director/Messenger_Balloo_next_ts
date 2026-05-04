@@ -41,7 +41,7 @@ async function createAdminAccount() {
   
   try {
     // Подключаемся к БД
-    const db = await getDatabase();
+    const db: any = await getDatabase();
     const usersCollection = db.users;
     
     if (!usersCollection) {
