@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { AuthUser } from '@/types';
+import { authApi } from '@/api/client';
 
 interface AuthState {
   user: AuthUser | null;
@@ -10,7 +11,7 @@ interface AuthState {
   // Действия
   setUser: (user: AuthUser | null) => void;
   login: (user: AuthUser) => void;
-  logout: () => void;
+  logout: (callApi?: boolean) => Promise<void>;
   setLoading: (loading: boolean) => void;
   updateToken: (accessToken: string, refreshToken?: string) => void;
   updateProfile: (updates: Partial<AuthUser>) => void;
@@ -38,12 +39,31 @@ export const useAuthStore = create<AuthState>()(
           isLoading: false,
         }),
 
-      logout: () =>
+      logout: async (callApi = true) => {
+        // Вызываем API logout если нужно
+        if (callApi) {
+          try {
+            await authApi.logout();
+          } catch (error) {
+            console.error('Logout API error:', error);
+            // Продолжаем logout даже если API ошибка
+          }
+        }
+        
+        // Очищаем localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user');
+        }
+        
+        // Очищаем store
         set({
           user: null,
           isAuthenticated: false,
           isLoading: false,
-        }),
+        });
+      },
 
       setLoading: (isLoading) => set({ isLoading }),
 

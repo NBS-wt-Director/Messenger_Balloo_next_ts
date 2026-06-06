@@ -1,79 +1,101 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
-import { logger } from '@/lib/logger';
-import { verifyPassword } from '@/lib/password';
+import { NextRequest, NextResponse } from 'next/server';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const body = await request.json();
+    const { email, password } = body;
 
-    logger.debug('[API Login] Поиск пользователя:', email);
-
-    // Поиск пользователя
-    const user = db.prepare('SELECT * FROM User WHERE email = ?').get(email.toLowerCase());
-
-    logger.debug('[API Login] Пользователь найден:', !!user);
-
-    if (!user) {
-      logger.warn('[API Login] Пользователь не найден');
+    // Валидация
+    if (!email || !password) {
       return NextResponse.json(
-        { error: 'Неверный email или пароль' },
-        { status: 401 }
+        { 
+          success: false, 
+          error: 'Email и пароль обязательны' 
+        },
+        { status: 400 }
       );
     }
 
-    logger.debug('[API Login] Данные пользователя:', { id: user.id, email: user.email });
-
-    // Проверка пароля с bcrypt
-    let isValidPassword = false;
-    
-    // Поддержка старых хешей SHA256 для миграции
-    if (user.passwordHash?.length === 64) {
-      // Старый SHA256 хеш
-      const crypto = await import('crypto');
-      const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-      isValidPassword = hashedPassword === user.passwordHash;
-    } else {
-      // Новый bcrypt хеш
-      isValidPassword = await verifyPassword(password, user.passwordHash);
-    }
-    logger.debug('[API Login] Пароль верен:', isValidPassword);
-
-    if (!isValidPassword) {
-      logger.warn('[API Login] Неверный пароль');
-      return NextResponse.json(
-        { error: 'Неверный email или пароль' },
-        { status: 401 }
-      );
-    }
-
-    // Обновление статуса
-    db.prepare('UPDATE User SET status = ?, updatedAt = ? WHERE id = ?').run('online', new Date().toISOString(), user.id);
-
-    // Генерация токена сессии
-    const sessionToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 16)}`;
-
-    logger.info('[API Login] Успешный вход:', user.id);
-
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        displayName: user.displayName,
-        fullName: user.fullName,
-        avatar: user.avatar,
-        status: user.status,
-        isAdmin: user.adminRoles?.includes('admin') || false,
-        isSuperAdmin: user.adminRoles?.includes('superadmin') || false,
+    // Вызов backend API
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      token: sessionToken,
-      message: 'Вход выполнен успешно'
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     });
-  } catch (error) {
-    logger.error('[API] Error logging in:', error);
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // Если требуется 2FA, возвращаем специальные данные
+      if (response.status === 401 && data.requiresTwoFA) {
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: '2FA required',
+            requiresTwoFA: true,
+            userId: data.userId,
+            tempToken: data.tempToken,
+          },
+          { status: response.status }
+        );
+      }
+
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: data.error?.message || 'Ошибка входа' 
+        },
+        { status: response.status }
+      );
+    }
+
+    // Устанавливаем токены в cookies
+    const { accessToken, refreshToken, user } = data.data || data;
+    
+    const nextResponse = NextResponse.json({
+      success: true,
+      data: { user, accessToken, refreshToken },
+    });
+
+    nextResponse.cookies.set('auth_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
+    });
+
+    nextResponse.cookies.set('refresh_token', refreshToken || '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+      path: '/',
+    });
+
+    nextResponse.cookies.set('user', JSON.stringify(user), {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60,
+      path: '/',
+    });
+
+    return nextResponse;
+  } catch (error: any) {
+    console.error('[Login API] Error:', error);
     return NextResponse.json(
-      { error: 'Не удалось выполнить вход' },
+      { 
+        success: false, 
+        error: error.message || 'Внутренняя ошибка сервера' 
+      },
       { status: 500 }
     );
   }

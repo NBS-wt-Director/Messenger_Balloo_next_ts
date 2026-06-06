@@ -1,0 +1,22 @@
+{
+  "name": "@app-balloo/settings",
+  "version": "1.0.0",
+  "description": "Shared configuration for App Balloo project",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rmdir /s /q dist 2>nul || del dist\\*.* 2>nul"
+  },
+  "keywords": ["config", "settings", "balloo"],
+  "author": "NLP-Core-Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.3.0"
+  },
+  "peerDependencies": {
+    "dotenv": "^16.3.1"
+  }
+}

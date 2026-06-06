@@ -11,243 +11,251 @@ if (!fs.existsSync(dataDir)) {
 const dbPath = path.join(dataDir, 'app.db');
 
 let db = null;
+let isInitialized = false;
 
 async function initDatabase() {
-  if (db) return db;
+  if (isInitialized && db) return db;
 
-  const SQL = await initSqlJs();
+  try {
+    const SQL = await initSqlJs();
 
-  // Загружаем существующую БД или создаем новую
-  let fileBuffer;
-  if (fs.existsSync(dbPath)) {
-    fileBuffer = fs.readFileSync(dbPath);
-    db = new SQL.Database(fileBuffer);
-  } else {
-    db = new SQL.Database();
+    // Загружаем существующую БД или создаем новую
+    let fileBuffer;
+    if (fs.existsSync(dbPath)) {
+      fileBuffer = fs.readFileSync(dbPath);
+      db = new SQL.Database(fileBuffer);
+    } else {
+      db = new SQL.Database();
+    }
+
+    // Включаем WAL режим для лучшей производительности
+    db.run("PRAGMA journal_mode = WAL");
+    db.run("PRAGMA synchronous = NORMAL");
+
+    // Инициализация таблиц
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS User (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        displayName TEXT NOT NULL,
+        passwordHash TEXT,
+        authProvider TEXT,
+        fullName TEXT,
+        phone TEXT,
+        bio TEXT,
+        avatar TEXT,
+        avatarHistory TEXT DEFAULT '[]',
+        emailVerified INTEGER DEFAULT 0,
+        adminRoles TEXT DEFAULT '[]',
+        online INTEGER DEFAULT 0,
+        isOnline INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'offline',
+        settings TEXT DEFAULT '{}',
+        points INTEGER DEFAULT 0,
+        userNumber INTEGER,
+        createdAt TEXT DEFAULT (datetime('now')),
+        updatedAt TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS Chat (
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        description TEXT,
+        type TEXT DEFAULT 'private',
+        createdBy TEXT,
+        isSystemChat INTEGER DEFAULT 0,
+        avatar TEXT,
+        createdAt TEXT DEFAULT (datetime('now')),
+        updatedAt TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS ChatMember (
+        chatId TEXT NOT NULL,
+        userId TEXT NOT NULL,
+        role TEXT DEFAULT 'member',
+        joinedAt TEXT DEFAULT (datetime('now')),
+        PRIMARY KEY (chatId, userId)
+      );
+
+      CREATE TABLE IF NOT EXISTS Message (
+        id TEXT PRIMARY KEY,
+        chatId TEXT NOT NULL,
+        userId TEXT NOT NULL,
+        text TEXT,
+        replyToId TEXT,
+        forwardedFromId TEXT,
+        attachmentId TEXT,
+        createdAt TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (chatId) REFERENCES Chat(id),
+        FOREIGN KEY (userId) REFERENCES User(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS MessageReaction (
+        messageId TEXT NOT NULL,
+        userId TEXT NOT NULL,
+        emoji TEXT NOT NULL,
+        PRIMARY KEY (messageId, userId)
+      );
+
+      CREATE TABLE IF NOT EXISTS ChatFavorite (
+        userId TEXT NOT NULL,
+        chatId TEXT NOT NULL,
+        pinnedAt TEXT DEFAULT (datetime('now')),
+        PRIMARY KEY (userId, chatId)
+      );
+
+      CREATE TABLE IF NOT EXISTS ChatPinned (
+        userId TEXT NOT NULL,
+        chatId TEXT NOT NULL,
+        pinnedAt TEXT DEFAULT (datetime('now')),
+        PRIMARY KEY (userId, chatId)
+      );
+
+      CREATE TABLE IF NOT EXISTS Contact (
+        userId TEXT NOT NULL,
+        contactId TEXT NOT NULL,
+        nickname TEXT,
+        createdAt TEXT DEFAULT (datetime('now')),
+        PRIMARY KEY (userId, contactId)
+      );
+
+      CREATE TABLE IF NOT EXISTS Invitation (
+        id TEXT PRIMARY KEY,
+        code TEXT UNIQUE NOT NULL,
+        fromUserId TEXT NOT NULL,
+        toEmail TEXT,
+        status TEXT DEFAULT 'pending',
+        createdAt TEXT DEFAULT (datetime('now')),
+        acceptedAt TEXT,
+        FOREIGN KEY (fromUserId) REFERENCES User(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS InvitationUse (
+        invitationId TEXT NOT NULL,
+        userId TEXT NOT NULL,
+        usedAt TEXT DEFAULT (datetime('now')),
+        PRIMARY KEY (invitationId, userId)
+      );
+
+      CREATE TABLE IF NOT EXISTS Notification (
+        id TEXT PRIMARY KEY,
+        userId TEXT NOT NULL,
+        type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        body TEXT,
+        data TEXT DEFAULT '{}',
+        read INTEGER DEFAULT 0,
+        createdAt TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (userId) REFERENCES User(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS Report (
+        id TEXT PRIMARY KEY,
+        reporterId TEXT NOT NULL,
+        reportedUserId TEXT,
+        reportedChatId TEXT,
+        reason TEXT,
+        status TEXT DEFAULT 'pending',
+        createdAt TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (reporterId) REFERENCES User(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS Feature (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        enabled INTEGER DEFAULT 1
+      );
+
+      CREATE TABLE IF NOT EXISTS FeatureVote (
+        featureId TEXT NOT NULL,
+        userId TEXT NOT NULL,
+        votedAt TEXT DEFAULT (datetime('now')),
+        PRIMARY KEY (featureId, userId)
+      );
+
+      CREATE TABLE IF NOT EXISTS Page (
+        id TEXT PRIMARY KEY,
+        slug TEXT UNIQUE NOT NULL,
+        title TEXT,
+        content TEXT,
+        createdAt TEXT DEFAULT (datetime('now')),
+        updatedAt TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS FamilyRelation (
+        userId1 TEXT NOT NULL,
+        userId2 TEXT NOT NULL,
+        relationType TEXT NOT NULL,
+        createdAt TEXT DEFAULT (datetime('now')),
+        PRIMARY KEY (userId1, userId2)
+      );
+
+      CREATE TABLE IF NOT EXISTS VerificationCode (
+        id TEXT PRIMARY KEY,
+        userId TEXT NOT NULL,
+        code TEXT NOT NULL,
+        createdAt TEXT DEFAULT (datetime('now')),
+        expiresAt TEXT NOT NULL,
+        used INTEGER DEFAULT 0,
+        usedAt TEXT,
+        FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS Ban (
+        id TEXT PRIMARY KEY,
+        userId TEXT NOT NULL,
+        chatId TEXT,
+        bannedBy TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        expiresAt TEXT,
+        createdAt TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (userId) REFERENCES User(id),
+        FOREIGN KEY (bannedBy) REFERENCES User(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS Attachment (
+        id TEXT PRIMARY KEY,
+        messageId TEXT,
+        chatId TEXT NOT NULL,
+        uploaderId TEXT NOT NULL,
+        fileName TEXT,
+        mimeType TEXT,
+        fileSize INTEGER DEFAULT 0,
+        url TEXT,
+        thumbnailUrl TEXT,
+        width INTEGER,
+        height INTEGER,
+        status TEXT DEFAULT 'ready',
+        createdAt TEXT DEFAULT (datetime('now')),
+        updatedAt TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (messageId) REFERENCES Message(id),
+        FOREIGN KEY (chatId) REFERENCES Chat(id),
+        FOREIGN KEY (uploaderId) REFERENCES User(id)
+      );
+    `);
+
+    // Индексы для оптимизации
+    db.exec(`
+      CREATE INDEX IF NOT EXISTS idx_user_email ON User(email);
+      CREATE INDEX IF NOT EXISTS idx_chat_member_user ON ChatMember(userId);
+      CREATE INDEX IF NOT EXISTS idx_message_chat ON Message(chatId);
+      CREATE INDEX IF NOT EXISTS idx_verification_user ON VerificationCode(userId);
+      CREATE INDEX IF NOT EXISTS idx_verification_expires ON VerificationCode(expiresAt);
+      CREATE INDEX IF NOT EXISTS idx_attachment_message ON Attachment(messageId);
+      CREATE INDEX IF NOT EXISTS idx_attachment_chat ON Attachment(chatId);
+    `);
+
+    console.log('✓ Все таблицы и индексы созданы успешно');
+    
+    // Сохраняем БД
+    saveDatabase();
+    
+    isInitialized = true;
+  } catch (error) {
+    console.error('❌ Ошибка инициализации БД:', error);
+    throw error;
   }
-
-  // Включаем WAL режим для лучшей производительности
-  db.run("PRAGMA journal_mode = WAL");
-  db.run("PRAGMA synchronous = NORMAL");
-
-  // Инициализация таблиц
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS User (
-      id TEXT PRIMARY KEY,
-      email TEXT UNIQUE NOT NULL,
-      displayName TEXT NOT NULL,
-      passwordHash TEXT,
-      authProvider TEXT,
-      fullName TEXT,
-      phone TEXT,
-      bio TEXT,
-      avatar TEXT,
-      avatarHistory TEXT DEFAULT '[]',
-      emailVerified INTEGER DEFAULT 0,
-      adminRoles TEXT DEFAULT '[]',
-      online INTEGER DEFAULT 0,
-      isOnline INTEGER DEFAULT 0,
-      status TEXT DEFAULT 'offline',
-      settings TEXT DEFAULT '{}',
-      points INTEGER DEFAULT 0,
-      userNumber INTEGER,
-      createdAt TEXT DEFAULT (datetime('now')),
-      updatedAt TEXT DEFAULT (datetime('now'))
-    );
-
-    CREATE TABLE IF NOT EXISTS Chat (
-      id TEXT PRIMARY KEY,
-      name TEXT,
-      description TEXT,
-      type TEXT DEFAULT 'private',
-      createdBy TEXT,
-      isSystemChat INTEGER DEFAULT 0,
-      avatar TEXT,
-      createdAt TEXT DEFAULT (datetime('now')),
-      updatedAt TEXT DEFAULT (datetime('now'))
-    );
-
-    CREATE TABLE IF NOT EXISTS ChatMember (
-      chatId TEXT NOT NULL,
-      userId TEXT NOT NULL,
-      role TEXT DEFAULT 'member',
-      joinedAt TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (chatId, userId)
-    );
-
-    CREATE TABLE IF NOT EXISTS Message (
-      id TEXT PRIMARY KEY,
-      chatId TEXT NOT NULL,
-      userId TEXT NOT NULL,
-      text TEXT,
-      replyToId TEXT,
-      forwardedFromId TEXT,
-      attachmentId TEXT,
-      createdAt TEXT DEFAULT (datetime('now')),
-      FOREIGN KEY (chatId) REFERENCES Chat(id),
-      FOREIGN KEY (userId) REFERENCES User(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS MessageReaction (
-      messageId TEXT NOT NULL,
-      userId TEXT NOT NULL,
-      emoji TEXT NOT NULL,
-      PRIMARY KEY (messageId, userId)
-    );
-
-    CREATE TABLE IF NOT EXISTS ChatFavorite (
-      userId TEXT NOT NULL,
-      chatId TEXT NOT NULL,
-      pinnedAt TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (userId, chatId)
-    );
-
-    CREATE TABLE IF NOT EXISTS ChatPinned (
-      userId TEXT NOT NULL,
-      chatId TEXT NOT NULL,
-      pinnedAt TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (userId, chatId)
-    );
-
-    CREATE TABLE IF NOT EXISTS Contact (
-      userId TEXT NOT NULL,
-      contactId TEXT NOT NULL,
-      nickname TEXT,
-      createdAt TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (userId, contactId)
-    );
-
-    CREATE TABLE IF NOT EXISTS Invitation (
-      id TEXT PRIMARY KEY,
-      code TEXT UNIQUE NOT NULL,
-      fromUserId TEXT NOT NULL,
-      toEmail TEXT,
-      status TEXT DEFAULT 'pending',
-      createdAt TEXT DEFAULT (datetime('now')),
-      acceptedAt TEXT,
-      FOREIGN KEY (fromUserId) REFERENCES User(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS InvitationUse (
-      invitationId TEXT NOT NULL,
-      userId TEXT NOT NULL,
-      usedAt TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (invitationId, userId)
-    );
-
-    CREATE TABLE IF NOT EXISTS Notification (
-      id TEXT PRIMARY KEY,
-      userId TEXT NOT NULL,
-      type TEXT NOT NULL,
-      title TEXT NOT NULL,
-      body TEXT,
-      data TEXT DEFAULT '{}',
-      read INTEGER DEFAULT 0,
-      createdAt TEXT DEFAULT (datetime('now')),
-      FOREIGN KEY (userId) REFERENCES User(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS Report (
-      id TEXT PRIMARY KEY,
-      reporterId TEXT NOT NULL,
-      reportedUserId TEXT,
-      reportedChatId TEXT,
-      reason TEXT,
-      status TEXT DEFAULT 'pending',
-      createdAt TEXT DEFAULT (datetime('now')),
-      FOREIGN KEY (reporterId) REFERENCES User(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS Feature (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      description TEXT,
-      enabled INTEGER DEFAULT 1
-    );
-
-    CREATE TABLE IF NOT EXISTS FeatureVote (
-      featureId TEXT NOT NULL,
-      userId TEXT NOT NULL,
-      votedAt TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (featureId, userId)
-    );
-
-    CREATE TABLE IF NOT EXISTS Page (
-      id TEXT PRIMARY KEY,
-      slug TEXT UNIQUE NOT NULL,
-      title TEXT,
-      content TEXT,
-      createdAt TEXT DEFAULT (datetime('now')),
-      updatedAt TEXT DEFAULT (datetime('now'))
-    );
-
-    CREATE TABLE IF NOT EXISTS FamilyRelation (
-      userId1 TEXT NOT NULL,
-      userId2 TEXT NOT NULL,
-      relationType TEXT NOT NULL,
-      createdAt TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (userId1, userId2)
-    );
-
-    CREATE TABLE IF NOT EXISTS VerificationCode (
-      id TEXT PRIMARY KEY,
-      userId TEXT NOT NULL,
-      code TEXT NOT NULL,
-      createdAt TEXT DEFAULT (datetime('now')),
-      expiresAt TEXT NOT NULL,
-      used INTEGER DEFAULT 0,
-      usedAt TEXT,
-      FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS Ban (
-      id TEXT PRIMARY KEY,
-      userId TEXT NOT NULL,
-      chatId TEXT,
-      bannedBy TEXT NOT NULL,
-      reason TEXT NOT NULL,
-      expiresAt TEXT,
-      createdAt TEXT DEFAULT (datetime('now')),
-      FOREIGN KEY (userId) REFERENCES User(id),
-      FOREIGN KEY (bannedBy) REFERENCES User(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS Attachment (
-      id TEXT PRIMARY KEY,
-      messageId TEXT,
-      chatId TEXT NOT NULL,
-      uploaderId TEXT NOT NULL,
-      fileName TEXT,
-      mimeType TEXT,
-      fileSize INTEGER DEFAULT 0,
-      url TEXT,
-      thumbnailUrl TEXT,
-      width INTEGER,
-      height INTEGER,
-      status TEXT DEFAULT 'ready',
-      createdAt TEXT DEFAULT (datetime('now')),
-      updatedAt TEXT DEFAULT (datetime('now')),
-      FOREIGN KEY (messageId) REFERENCES Message(id),
-      FOREIGN KEY (chatId) REFERENCES Chat(id),
-      FOREIGN KEY (uploaderId) REFERENCES User(id)
-    );
-  `);
-
-  // Индексы для оптимизации
-  db.exec(`
-    CREATE INDEX IF NOT EXISTS idx_user_email ON User(email);
-    CREATE INDEX IF NOT EXISTS idx_chat_member_user ON ChatMember(userId);
-    CREATE INDEX IF NOT EXISTS idx_message_chat ON Message(chatId);
-    CREATE INDEX IF NOT EXISTS idx_verification_user ON VerificationCode(userId);
-    CREATE INDEX IF NOT EXISTS idx_verification_expires ON VerificationCode(expiresAt);
-    CREATE INDEX IF NOT EXISTS idx_attachment_message ON Attachment(messageId);
-    CREATE INDEX IF NOT EXISTS idx_attachment_chat ON Attachment(chatId);
-  `);
-
-  console.log('✓ Все таблицы и индексы созданы успешно');
-  
-  // Сохраняем БД
-  saveDatabase();
   
   return db;
 }
@@ -317,14 +325,21 @@ const syncDbWrapper = {
 };
 
 // Инициализация при импорте
-let initialized = false;
 (async () => {
-  if (!initialized) {
+  try {
     await initDatabase();
-    initialized = true;
+  } catch (error) {
+    console.error('❌ Ошибка при инициализации БД при импорте:', error);
   }
 })();
 
-// Экспорт
-Object.assign(syncDbWrapper, { initDatabase, saveDatabase, getDatabase: initDatabase });
-module.exports = syncDbWrapper;
+// Экспорт для Next.js
+const exported = {
+  ...syncDbWrapper,
+  initDatabase,
+  saveDatabase,
+  getDatabase: initDatabase
+};
+
+module.exports = exported;
+module.exports.default = exported;

@@ -1,10 +1,7 @@
 /**
  * File Logger для приложения Balloo
- * Логирование в JSON файл с возможностью просмотра из админки
+ * Client-side version - логи хранятся в localStorage
  */
-
-import * as fs from 'fs';
-import * as path from 'path';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -24,64 +21,44 @@ interface FileLogger {
   flush: () => void;
 }
 
-// Конфигурация
-const LOG_DIR = path.join(process.cwd(), 'logs');
-const LOG_FILE = process.env.LOG_FILE || path.join(LOG_DIR, 'app.json');
-const MAX_LOG_SIZE = parseInt(process.env.MAX_LOG_SIZE || '10485760', 10); // 10MB
-const MAX_LOG_ENTRIES = parseInt(process.env.MAX_LOG_ENTRIES || '10000', 10);
+const LOG_STORAGE_KEY = 'balloo_logs';
+const MAX_LOG_ENTRIES = 1000;
 
-// Буфер для логов
-let logBuffer: LogEntry[] = [];
-let isInitialized = false;
-
-// Инициализация
-function init(): void {
-  if (isInitialized) return;
-  
-  if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR, { recursive: true });
+// Получить логи из localStorage
+function getStoredLogs(): LogEntry[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const logs = localStorage.getItem(LOG_STORAGE_KEY);
+    return logs ? JSON.parse(logs) : [];
+  } catch {
+    return [];
   }
+}
   
-  // Проверка размера файла
-  if (fs.existsSync(LOG_FILE)) {
-    const stats = fs.statSync(LOG_FILE);
-    if (stats.size > MAX_LOG_SIZE) {
-      // Архивировать старый лог
-      const archiveName = `${LOG_FILE}.${Date.now()}.bak`;
-      fs.renameSync(LOG_FILE, archiveName);
-      logBuffer = [];
-    }
+// Сохранить логи в localStorage
+function setStoredLogs(logs: LogEntry[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    // Ограничиваем количество записей
+    const trimmedLogs = logs.slice(-MAX_LOG_ENTRIES);
+    localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(trimmedLogs));
+  } catch (error) {
+    console.error('[FileLogger] Failed to save logs:', error);
   }
-  
-  isInitialized = true;
 }
 
 // Запись лога
 function writeLog(entry: LogEntry): void {
-  init();
+  if (typeof window === 'undefined') return;
   
-  logBuffer.push(entry);
-  
-  // Сброс буфера если достигнут лимит
-  if (logBuffer.length >= MAX_LOG_ENTRIES) {
-    flush();
-  }
-  
-  // Асинхронная запись в файл
-  setTimeout(() => flush(), 100);
+  const logs = getStoredLogs();
+  logs.push(entry);
+  setStoredLogs(logs);
 }
 
 // Сброс буфера в файл
 export function flush(): void {
-  if (logBuffer.length === 0) return;
-  
-  try {
-    const content = logBuffer.map(entry => JSON.stringify(entry)).join('\n');
-    fs.appendFileSync(LOG_FILE, content + '\n');
-    logBuffer = [];
-  } catch (error) {
-    console.error('[FileLogger] Failed to write log:', error);
-  }
+  // Client-side: ничего не делаем, логи уже в localStorage
 }
 
 // Получить логи (для админки)
@@ -91,79 +68,36 @@ export function getLogs(options?: {
   since?: string;
   module?: string;
 }): LogEntry[] {
-  init();
+  let entries = getStoredLogs();
   
-  if (!fs.existsSync(LOG_FILE)) {
-    return [];
+  // Фильтрация
+  if (options?.level) {
+    entries = entries.filter(e => e.level === options.level);
   }
   
-  try {
-    const content = fs.readFileSync(LOG_FILE, 'utf-8');
-    let entries: LogEntry[] = content
-      .split('\n')
-      .filter(line => line.trim())
-      .map(line => JSON.parse(line))
-      .reverse(); // Новые логи первыми
-    
-    // Фильтрация
-    if (options?.level) {
-      entries = entries.filter(e => e.level === options.level);
-    }
-    
-    if (options?.since) {
-      entries = entries.filter(e => new Date(e.timestamp) >= new Date(options.since!));
-    }
-    
-    if (options?.module) {
-      entries = entries.filter(e => e.module === options.module);
-    }
-    
-    // Лимит
-    if (options?.limit) {
-      entries = entries.slice(0, options.limit);
-    }
-    
-    return entries;
-  } catch (error) {
-    console.error('[FileLogger] Failed to read logs:', error);
-    return [];
+  if (options?.since) {
+    entries = entries.filter(e => new Date(e.timestamp) >= new Date(options.since!));
   }
+  
+  if (options?.module) {
+    entries = entries.filter(e => e.module === options.module);
+  }
+  
+  // Лимит
+  if (options?.limit) {
+    entries = entries.slice(-options.limit);
+  }
+  
+  return entries.reverse();
 }
 
-// Очистка старых логов
-export function clearLogs(olderThanDays: number = 7): number {
-  init();
-  
-  if (!fs.existsSync(LOG_FILE)) {
-    return 0;
-  }
-  
+// Очистка логов
+export function clearLogs(): number {
+  if (typeof window === 'undefined') return 0;
   try {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - olderThanDays);
-    
-    const content = fs.readFileSync(LOG_FILE, 'utf-8');
-    const entries = content.split('\n').filter(line => line.trim());
-    const validEntries = entries.filter(line => {
-      try {
-        const entry = JSON.parse(line);
-        return new Date(entry.timestamp) >= cutoff;
-      } catch {
-        return true;
-      }
-    });
-    
-    const removed = entries.length - validEntries.length;
-    
-    if (validEntries.length === 0) {
-      fs.unlinkSync(LOG_FILE);
-    } else {
-      fs.writeFileSync(LOG_FILE, validEntries.join('\n') + '\n');
-    }
-    
-    return removed;
-  } catch (error) {
-    console.error('[FileLogger] Failed to clear logs:', error);
+    localStorage.removeItem(LOG_STORAGE_KEY);
+    return getStoredLogs().length;
+  } catch {
     return 0;
   }
 }
@@ -172,7 +106,7 @@ export function clearLogs(olderThanDays: number = 7): number {
 export function createFileLogger(module?: string): FileLogger {
   return {
     debug: (message: string, meta?: any) => {
-      if (process.env.NODE_ENV === 'production' || process.env.LOG_LEVEL === 'debug') {
+      if (process.env.NODE_ENV === 'development' || process.env.LOG_LEVEL === 'debug') {
         writeLog({
           timestamp: new Date().toISOString(),
           level: 'debug',

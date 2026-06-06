@@ -1,0 +1,281 @@
+/* Status Viewer Overlay */
+.status-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.status-viewer-content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 100vh;
+  max-height: 900px;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+/* Progress Bars */
+.status-header {
+  display: flex;
+  gap: 4px;
+  padding: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.status-progress-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.status-progress-bar.active {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.status-progress-bar.viewed {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.status-progress-fill {
+  height: 100%;
+  background: white;
+  transition: width 0.1s linear;
+}
+
+/* User Info */
+.status-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.status-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.status-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.status-user-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.status-user-name {
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+}
+
+.status-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.status-delete-btn {
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.status-delete-btn:hover {
+  background: rgba(255, 59, 59, 0.8);
+}
+
+/* Status Media Container with Octagon */
+.status-media-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 20px;
+}
+
+/* Octagon Shape - Equal-sided */
+.status-octagon {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  background: #000;
+  overflow: hidden;
+  clip-path: polygon(
+    30% 0%, 70% 0%,
+    100% 30%, 100% 70%,
+    70% 100%, 30% 100%,
+    0% 70%, 0% 30%
+  );
+  transition: transform 0.3s ease;
+}
+
+.status-octagon:hover {
+  transform: scale(1.05);
+}
+
+.status-octagon.image img,
+.status-octagon.video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.status-octagon.video {
+  width: 340px;
+  height: 340px;
+}
+
+.status-video-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.status-video:hover .status-video-overlay {
+  opacity: 1;
+}
+
+/* Touch Areas */
+.status-touch-area {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30%;
+  z-index: 5;
+}
+
+.status-touch-area.left {
+  left: 0;
+}
+
+.status-touch-area.right {
+  right: 0;
+}
+
+/* Views Count */
+.status-views {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  justify-content: center;
+}
+
+/* Hints */
+.status-hints {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Close Button */
+.status-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: background 0.2s;
+}
+
+.status-close-btn:hover {
+  background: rgba(255, 59, 59, 0.8);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .status-viewer-content {
+    max-width: 100%;
+  }
+
+  .status-octagon {
+    width: 280px;
+    height: 280px;
+  }
+
+  .status-octagon.video {
+    width: 300px;
+    height: 300px;
+  }
+
+  .status-user-info {
+    top: 40px;
+  }
+
+  .status-views {
+    bottom: 50px;
+  }
+}

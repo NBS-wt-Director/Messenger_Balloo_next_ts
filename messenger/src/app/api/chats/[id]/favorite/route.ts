@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database.js';
 import { logger } from '@/lib/logger';
+
+function getChatById(id: string): any {
+  return db.prepare('SELECT * FROM Chat WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/chats/[id]/favorite - Добавить/убрать из избранного
@@ -18,31 +22,24 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    const db: any = await getDatabase();
-
-    const chat = await db.chats.findOne(chatId).exec();
+    const chat = getChatById(chatId);
 
     if (!chat) {
       logger.warn(`[API] Чат не найден: ${chatId}`);
       return NextResponse.json({ error: 'Чат не найден' }, { status: 404 });
     }
 
-    const data = chat.toJSON();
+    const data = JSON.parse(chat.isFavorite || '{}');
+    data[userId] = favorite;
 
-    await chat.patch({
-      isFavorite: {
-        ...data.isFavorite,
-        [userId]: favorite
-      },
-      updatedAt: Date.now()
-    });
+    db.prepare('UPDATE Chat SET isFavorite = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(data), new Date().toISOString(), chatId);
 
     logger.info(`[API] Чат ${favorite ? 'добавлен в избранное' : 'убран из избранного'}: ${chatId}`);
 
     return NextResponse.json({ 
       success: true,
-      favorite,
-      chat: chat.toJSON()
+      favorite
     });
   } catch (error: any) {
     logger.error('[API] Error favoriting chat:', error);

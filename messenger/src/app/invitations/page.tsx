@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { useAlert } from '@/hooks/useAlert';
+import { invitationsApi } from '@/api/client';
 import './InvitationsPage.css';
 
 interface Invitation {
@@ -56,11 +57,10 @@ export default function InvitationsPage() {
   const loadInvitations = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/invitations?userId=${user?.id}`);
+      const response = await invitationsApi.get();
       
-      if (response.ok) {
-        const data = await response.json();
-        setInvitations(data.invitations || []);
+      if (response.success && response.data) {
+        setInvitations(response.data || []);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -78,17 +78,14 @@ export default function InvitationsPage() {
     }
 
     try {
-      const response = await fetch('/api/invitations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chatId,
-          maxUses,
-          expiresInDays: expiresIn
-        })
+      const expiresAt = Date.now() + (expiresIn * 24 * 60 * 60 * 1000); // дни в мс
+      const response = await invitationsApi.create({
+        chatId,
+        maxUses,
+        expiresAt
       });
 
-      if (response.ok) {
+      if (response.success && response.data) {
         setCreateModalOpen(false);
         setChatId('');
         setMaxUses(10);
@@ -96,8 +93,7 @@ export default function InvitationsPage() {
         loadInvitations();
         alert({ message: 'Приглашение создано', type: 'success' });
       } else {
-        const error = await response.json();
-        alert(error.error || 'Ошибка создания приглашения', 'error');
+        alert(response.error?.message || 'Ошибка создания приглашения', 'error');
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -112,13 +108,9 @@ export default function InvitationsPage() {
     if (!confirmed) return;
 
     try {
-      const response = await fetch('/api/invitations', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ invitationId: id })
-      });
+      const response = await invitationsApi.delete(id);
 
-      if (response.ok) {
+      if (response.success) {
         loadInvitations();
         alert({ message: 'Приглашение удалено', type: 'success' });
       }

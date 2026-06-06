@@ -1,0 +1,493 @@
+/**
+ * WebSocket Handler
+ * Полная реализация WebSocket для:
+ * - Чата (сообщения в реальном времени)
+ * - Уведомлений
+ * - Звонков (WebRTC сигнализация)
+ * - Статусов (печатает, онлайн)
+ */
+
+const logger = require('../config/logger');
+const { db } = require('../config/database');
+const { createCall, endCall } = require('../controllers/calls.controller');
+
+// Хранилище активных подключений: userId -> Set<WebSocket>
+const connections = new Map();
+
+// Хранилище звонков: callId -> { participants: Set<WebSocket>, recording: boolean, recordingFile: string }
+const activeCalls = new Map();
+
+/**
+ * Зарегистрировать подключение
+ */
+function registerConnection(userId, ws) {
+  if (!connections.has(userId)) {
+    connections.set(userId, new Set());
+  }
+  connections.get(userId).add(ws);
+  logger.info(`Connection registered: ${userId}, total: ${connections.get(userId).size}`);
+  
+  // Обновить lastSeen
+  db.prepare('UPDATE users SET lastSeen = ? WHERE id = ?').run(Date.now(), userId);
+  
+  // Уведомить контакты об онлайне
+  broadcastPresence(userId, 'online');
+}
+
+/**
+ * Удалить подключение
+ */
+function removeConnection(userId, ws) {
+  if (connections.has(userId)) {
+    connections.get(userId).delete(ws);
+    if (connections.get(userId).size === 0) {
+      connections.delete(userId);
+      // Обновить lastSeen и уведомить об оффлайне
+      db.prepare('UPDATE users SET lastSeen = ? WHERE id = ?').run(Date.now(), userId);
+      broadcastPresence(userId, 'offline');
+    }
+    logger.info(`Connection removed: ${userId}, remaining: ${connections.get(userId)?.size || 0}`);
+  }
+}
+
+/**
+ * Отправить событие пользователю
+ */
+function sendToUser(userId, event, data) {
+  const userConnections = connections.get(userId);
+  
+  if (userConnections) {
+    userConnections.forEach(ws => {
+      if (ws.readyState === 1) { // WebSocket.OPEN
+        try {
+          ws.send(JSON.stringify({ type: event, ...data }));
+        } catch (error) {
+          logger.error(`Error sending to user ${userId}:`, error);
+        }
+      }
+    });
+  }
+}
+
+/**
+ * Отправить событие всем в чате
+ */
+function sendToChat(chatId, event, data, excludeUserId = null) {
+  const chat = db.prepare('SELECT participants FROM chats WHERE id = ?').get(chatId);
+  if (!chat) return;
+  
+  const participants = JSON.parse(chat.participants);
+  
+  participants.forEach(userId => {
+    if (userId !== excludeUserId) {
+      sendToUser(userId, event, data);
+    }
+  });
+}
+
+/**
+ * Отправить событие всем контактам пользователя
+ */
+function broadcastPresence(userId, status) {
+  // Получить список контактов
+  const contacts = db.prepare('SELECT contactUserId FROM contacts WHERE userId = ?').all(userId);
+  
+  contacts.forEach(({ contactUserId }) => {
+    sendToUser(contactUserId, 'presence:update', {
+      userId,
+      status,
+      lastSeen: Date.now()
+    });
+  });
+}
+
+/**
+ * Обработчик события typing
+ */
+function handleTyping(ws, data) {
+  const { chatId, isTyping } = data;
+  
+  if (isTyping) {
+    sendToChat(chatId, 'typing:start', { 
+      userId: ws.userId,
+      chatId 
+    }, ws.userId);
+  } else {
+    sendToChat(chatId, 'typing:stop', { 
+      userId: ws.userId,
+      chatId 
+    }, ws.userId);
+  }
+}
+
+/**
+ * Обработчик события message
+ */
+function handleMessage(ws, data) {
+  const { chatId, content, type, encryptedInfo, attachmentId, replyToId } = data;
+  
+  // Сохранить сообщение в БД
+  const messageId = require('uuid').v4();
+  const now = Date.now();
+  
+  db.prepare(`
+    INSERT INTO messages (id, chatId, senderId, type, content, encryptedInfo, attachmentId, replyToId, reactions, readBy, status, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, '{}', '[]', 'sent', ?, ?)
+  `).run(messageId, chatId, ws.userId, type || 'text', content || '', encryptedInfo ? JSON.stringify(encryptedInfo) : null, attachmentId || null, replyToId || null, now, now);
+  
+  // Обновить lastMessage в чате
+  const messageData = {
+    id: messageId,
+    content: content,
+    type: type || 'text',
+    createdAt: now,
+    senderId: ws.userId
+  };
+  
+  db.prepare('UPDATE chats SET lastMessage = ?, updatedAt = ? WHERE id = ?')
+    .run(JSON.stringify(messageData), now, chatId);
+  
+  // Отправить всем в чате
+  sendToChat(chatId, 'message:new', {
+    message: {
+      id: messageId,
+      chatId,
+      senderId: ws.userId,
+      type: type || 'text',
+      content,
+      encryptedInfo,
+      attachmentId,
+      replyToId,
+      createdAt: now,
+      status: 'sent'
+    }
+  }, ws.userId);
+  
+  // Подтвердить отправку отправителю
+  sendToUser(ws.userId, 'message:sent', { messageId, status: 'sent' });
+}
+
+/**
+ * Обработчик события message:read
+ */
+function handleMessageRead(ws, data) {
+  const { chatId, messageId } = data;
+  
+  const message = db.prepare('SELECT * FROM messages WHERE id = ?').get(messageId);
+  if (!message) return;
+  
+  const readBy = JSON.parse(message.readBy || '[]');
+  if (!readBy.includes(ws.userId)) {
+    readBy.push(ws.userId);
+    db.prepare('UPDATE messages SET readBy = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(readBy), Date.now(), messageId);
+  }
+  
+  // Уведомить отправителя
+  sendToUser(message.senderId, 'message:read', {
+    messageId,
+    readerId: ws.userId,
+    chatId
+  });
+}
+
+/**
+ * Обработчик события call:offer (WebRTC)
+ */
+function handleCallOffer(ws, data) {
+  const { callId, offer, to, type } = data;
+  
+  // Создать запись о звонке
+  const callData = {
+    id: callId,
+    from: ws.userId,
+    to,
+    type, // 'audio' or 'video'
+    offer: JSON.stringify(offer),
+    status: 'offered',
+    createdAt: Date.now()
+  };
+  
+  db.prepare(`
+    INSERT INTO calls (id, fromUserId, toUserId, type, offer, answer, status, recording, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, NULL, 'offered', 0, ?, ?)
+  `).run(callId, ws.userId, to, type, JSON.stringify(offer), Date.now(), Date.now());
+  
+  // Отправить получателю
+  sendToUser(to, 'call:incoming', {
+    callId,
+    from: ws.userId,
+    type,
+    offer
+  });
+}
+
+/**
+ * Обработчик события call:answer
+ */
+function handleCallAnswer(ws, data) {
+  const { callId, answer } = data;
+  
+  // Обновить звонок
+  db.prepare('UPDATE calls SET answer = ?, status = ? WHERE id = ?')
+    .run(JSON.stringify(answer), 'connected', callId);
+  
+  // Отправить инициатору
+  const call = db.prepare('SELECT * FROM calls WHERE id = ?').get(callId);
+  sendToUser(call.fromUserId, 'call:answered', {
+    callId,
+    answer
+  });
+  
+  // Инициализировать запись звонка если это видео
+  if (call.type === 'video') {
+    startCallRecording(callId);
+  }
+}
+
+/**
+ * Обработчик события call:ice-candidate
+ */
+function handleIceCandidate(ws, data) {
+  const { callId, candidate } = data;
+  
+  // Переслать участнику звонка
+  const call = db.prepare('SELECT * FROM calls WHERE id = ?').get(callId);
+  const targetUserId = ws.userId === call.fromUserId ? call.toUserId : call.fromUserId;
+  
+  sendToUser(targetUserId, 'call:ice-candidate', {
+    callId,
+    candidate
+  });
+}
+
+/**
+ * Обработчик события call:end
+ */
+function handleCallEnd(ws, data) {
+  const { callId } = data;
+  
+  const call = db.prepare('SELECT * FROM calls WHERE id = ?').get(callId);
+  if (!call) return;
+  
+  // Завершить запись если шла
+  if (call.recording) {
+    stopCallRecording(callId);
+  }
+  
+  // Обновить статус
+  db.prepare('UPDATE calls SET status = ?, endedAt = ?, updatedAt = ? WHERE id = ?')
+    .run('ended', Date.now(), Date.now(), callId);
+  
+  // Уведомить всех участников
+  ['fromUserId', 'toUserId'].forEach(field => {
+    const userId = call[field];
+    sendToUser(userId, 'call:ended', { callId });
+  });
+  
+  // Удалить из активных звонков
+  activeCalls.delete(callId);
+}
+
+/**
+ * Запустить запись звонка
+ */
+function startCallRecording(callId) {
+  const call = db.prepare('SELECT * FROM calls WHERE id = ?').get(callId);
+  if (!call) return;
+  
+  const recordingId = require('uuid').v4();
+  const fileName = `call_${callId}_${Date.now()}.webm`;
+  const yandexPath = `/messenger/call-recordings/${fileName}`;
+  
+  // Сохранить информацию о записи
+  db.prepare('UPDATE calls SET recording = 1, recordingId = ?, recordingPath = ? WHERE id = ?')
+    .run(recordingId, yandexPath, callId);
+  
+  logger.info(`Call recording started: ${callId}, path: ${yandexPath}`);
+  
+  // TODO: Реальная запись через WebRTC MediaStream
+  // Для демо - заглушка
+}
+
+/**
+ * Остановить запись звонка
+ */
+function stopCallRecording(callId) {
+  const call = db.prepare('SELECT * FROM calls WHERE id = ?').get(callId);
+  if (!call) return;
+  
+  // Загрузить запись на Яндекс.Диск
+  // TODO: Реализовать загрузку файла
+  
+  // Обновить запись
+  db.prepare('UPDATE calls SET recording = 0, recordingUrl = ?, updatedAt = ? WHERE id = ?')
+    .run(`https://disk.yandex.ru${call.recordingPath}`, Date.now(), callId);
+  
+  logger.info(`Call recording stopped: ${callId}`);
+}
+
+/**
+ * Обработчик события subscribe:chat
+ */
+function handleSubscribeChat(ws, data) {
+  const { chatId } = data;
+  
+  // Сохранить подписку (можно добавить в БД)
+  logger.info(`User ${ws.userId} subscribed to chat ${chatId}`);
+  
+  sendToUser(ws.userId, 'subscribe:success', { chatId });
+}
+
+/**
+ * Обработчик события unsubscribe:chat
+ */
+function handleUnsubscribeChat(ws, data) {
+  const { chatId } = data;
+  
+  logger.info(`User ${ws.userId} unsubscribed from chat ${chatId}`);
+  
+  sendToUser(ws.userId, 'unsubscribe:success', { chatId });
+}
+
+/**
+ * Обработчик события notification:read
+ */
+function handleNotificationRead(ws, data) {
+  const { notificationId } = data;
+  
+  db.prepare('UPDATE notifications SET read = 1, readAt = ? WHERE id = ? AND userId = ?')
+    .run(Date.now(), notificationId, ws.userId);
+}
+
+/**
+ * Обработчик сообщения WebSocket
+ */
+function handleMessage(ws, message) {
+  try {
+    const data = JSON.parse(message);
+    const { type, ...payload } = data;
+    
+    logger.debug(`WebSocket message from ${ws.userId}:`, type);
+    
+    switch (type) {
+      case 'typing:start':
+      case 'typing:stop':
+        handleTyping(ws, payload);
+        break;
+        
+      case 'message:send':
+        handleMessage(ws, payload);
+        break;
+        
+      case 'message:read':
+        handleMessageRead(ws, payload);
+        break;
+        
+      case 'call:offer':
+        handleCallOffer(ws, payload);
+        break;
+        
+      case 'call:answer':
+        handleCallAnswer(ws, payload);
+        break;
+        
+      case 'call:ice-candidate':
+        handleIceCandidate(ws, payload);
+        break;
+        
+      case 'call:end':
+        handleCallEnd(ws, payload);
+        break;
+        
+      case 'subscribe:chat':
+        handleSubscribeChat(ws, payload);
+        break;
+        
+      case 'unsubscribe:chat':
+        handleUnsubscribeChat(ws, payload);
+        break;
+        
+      case 'notification:read':
+        handleNotificationRead(ws, payload);
+        break;
+        
+      case 'presence:update':
+        // Статус уже обновляется в registerConnection
+        break;
+        
+      default:
+        logger.warn(`Unknown WebSocket message type: ${type}`);
+    }
+  } catch (error) {
+    logger.error('WebSocket message error:', error);
+    ws.send(JSON.stringify({
+      type: 'error',
+      error: { code: 'INVALID_MESSAGE', message: 'Неверный формат сообщения' }
+    }));
+  }
+}
+
+/**
+ * Отправить уведомление пользователю
+ */
+function sendNotification(userId, notificationData) {
+  // Создать уведомление в БД
+  const notificationId = require('uuid').v4();
+  const now = Date.now();
+  
+  db.prepare(`
+    INSERT INTO notifications (id, userId, type, title, body, data, read, createdAt, expiresAt)
+    VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)
+  `).run(
+    notificationId,
+    userId,
+    notificationData.type,
+    notificationData.title,
+    notificationData.body,
+    JSON.stringify(notificationData.data || {}),
+    now,
+    notificationData.expiresAt || null
+  );
+  
+  // Отправить через WebSocket
+  sendToUser(userId, 'notification:new', {
+    id: notificationId,
+    ...notificationData
+  });
+}
+
+/**
+ * Настройка обработчиков событий для Socket.IO сокета
+ */
+function setupSocketHandlers(socket) {
+  // Обработка событий
+  socket.on('typing:start', (data) => handleTyping(socket, { ...data, isTyping: true }));
+  socket.on('typing:stop', (data) => handleTyping(socket, { ...data, isTyping: false }));
+  socket.on('message:send', (data) => handleMessage(socket, data));
+  socket.on('message:read', (data) => handleMessageRead(socket, data));
+  socket.on('call:offer', (data) => handleCallOffer(socket, data));
+  socket.on('call:answer', (data) => handleCallAnswer(socket, data));
+  socket.on('call:ice-candidate', (data) => handleIceCandidate(socket, data));
+  socket.on('call:end', (data) => handleCallEnd(socket, data));
+  socket.on('subscribe:chat', (data) => handleSubscribeChat(socket, data));
+  socket.on('unsubscribe:chat', (data) => handleUnsubscribeChat(socket, data));
+  socket.on('notification:read', (data) => handleNotificationRead(socket, data));
+  socket.on('presence:update', (data) => {
+    // Статус уже обновляется в registerConnection
+    logger.debug(`Presence update for ${socket.userId}`);
+  });
+}
+
+module.exports = {
+  connections,
+  activeCalls,
+  registerConnection,
+  removeConnection,
+  sendToUser,
+  sendToChat,
+  sendNotification,
+  handleMessage,
+  broadcastPresence,
+  setupSocketHandlers
+};

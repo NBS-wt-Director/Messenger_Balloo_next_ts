@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database.js';
 import { logger } from '@/lib/logger';
+
+function getChatById(id: string): any {
+  return db.prepare('SELECT * FROM Chat WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/chats/[id]/pin - Закрепить/открепить чат
@@ -18,20 +22,18 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    const db: any = await getDatabase();
-
-    const chat = await db.chats.findOne(chatId).exec();
+    const chat = getChatById(chatId);
 
     if (!chat) {
       logger.warn(`[API] Чат не найден: ${chatId}`);
       return NextResponse.json({ error: 'Чат не найден' }, { status: 404 });
     }
 
-    const data = chat.toJSON();
+    const data = JSON.parse(chat.pinned || '{}');
     
     // Проверка лимита на 15 закреплённых чатов
     if (pinned) {
-      const pinnedCount = Object.values(data.pinned || {}).filter(Boolean).length;
+      const pinnedCount = Object.values(data).filter(Boolean).length;
       if (pinnedCount >= 15) {
         return NextResponse.json(
           { error: 'Можно закрепить максимум 15 чатов' },
@@ -39,21 +41,17 @@ export async function POST(
         );
       }
     }
+    
+    data[userId] = pinned;
 
-    await chat.patch({
-      pinned: {
-        ...data.pinned,
-        [userId]: pinned
-      },
-      updatedAt: Date.now()
-    });
+    db.prepare('UPDATE Chat SET pinned = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(data), new Date().toISOString(), chatId);
 
     logger.info(`[API] Чат ${pinned ? 'закреплён' : 'откреплён'}: ${chatId}`);
 
     return NextResponse.json({ 
       success: true,
-      pinned,
-      chat: chat.toJSON()
+      pinned
     });
   } catch (error: any) {
     logger.error('[API] Error pinning chat:', error);

@@ -1,0 +1,220 @@
+/* Statuses Page */
+.statuses-page {
+  min-height: 100vh;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.statuses-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.statuses-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+.statuses-description {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+/* Loading */
+.statuses-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.statuses-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.statuses-empty h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+.statuses-empty p {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+/* Grid */
+.statuses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.status-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: var(--card);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.status-card:hover {
+  background: var(--background-secondary);
+  transform: translateY(-2px);
+}
+
+.status-card.viewed {
+  opacity: 0.7;
+}
+
+.status-card-avatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 28px;
+  border: 3px solid var(--primary);
+  transition: border-color 0.2s;
+}
+
+.status-card:not(.viewed):hover .status-card-avatar {
+  border-color: var(--primary-dark);
+}
+
+.status-card-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.status-video-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  font-size: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-card-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.status-unread-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 2px solid var(--card);
+}
+
+/* Add Status Button */
+.add-status-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.4);
+  transition: all 0.2s;
+  z-index: 100;
+}
+
+.add-status-btn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+}
+
+.add-status-btn:active {
+  transform: scale(0.95);
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .statuses-page {
+    padding: 16px;
+    padding-bottom: 100px;
+  }
+
+  .statuses-header h1 {
+    font-size: 24px;
+  }
+
+  .statuses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+  }
+
+  .status-card {
+    padding: 12px;
+  }
+
+  .status-card-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 24px;
+  }
+
+  .add-status-btn {
+    bottom: 70px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}

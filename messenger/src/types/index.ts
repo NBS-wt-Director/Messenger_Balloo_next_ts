@@ -185,17 +185,21 @@ export interface Message {
 export interface Attachment {
   id: string;
   ownerId: string;
-  type: 'image' | 'video' | 'file' | 'audio' | 'avatar';
+  type: 'image' | 'video' | 'file' | 'audio' | 'avatar' | 'document' | 'pdf' | 'office';
   yandexDiskPath: string; // Путь на Яндекс.Диске
   publicUrl?: string; // Публичная ссылка
   mimeType: string;
   size: number;
+  fileSize?: number; // Для совместимости
   width?: number;
   height?: number;
   duration?: number; // Для видео/аудио
   thumbnailUrl?: string;
   fileName: string;
   createdAt: number;
+  url?: string; // Для загрузки
+  encrypted?: boolean;
+  status?: 'uploading' | 'ready' | 'failed';
 }
 
 // Статус (сторис)

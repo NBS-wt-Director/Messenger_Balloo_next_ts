@@ -138,6 +138,19 @@ export async function getFilesList(
 }
 
 /**
+ * Загрузить файл на Яндекс.Диск (обертка для компонента FileUpload)
+ */
+export async function uploadFileToYandexDisk(
+  accessToken: string,
+  file: Blob,
+  fileName: string,
+  path: string = '/',
+  onProgress?: (progress: number) => void
+): Promise<DiskUploadResponse> {
+  return uploadFile(accessToken, file, fileName, path, onProgress);
+}
+
+/**
  * Загрузить файл на Яндекс.Диск
  */
 export async function uploadFile(

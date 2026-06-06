@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { useAlert } from '@/hooks/useAlert';
+import { getChats, togglePin, toggleFavorite, clearChat, chatsApi } from '@/api/chats';
+import { contactsApi, invitationsApi, pagesApi, featuresApi } from '@/api/client';
 import './ChatsPage.css';
 
 interface Contact {
@@ -282,12 +284,10 @@ export function ChatsPage() {
   const loadChats = async () => {
     try {
       setChatsLoading(true);
-      const response = await fetch(`/api/chats?userId=${user?.id}`);
+      const result = await getChats();
       
-      if (response.ok) {
-        const data = await response.json();
-        // Добавляем системные чаты к пользовательским
-        const userChats = data.chats?.filter((c: any) => !['favorites', 'support', 'balloo-news'].includes(c.id)) || [];
+      if (result.success) {
+        const userChats = result.chats?.filter((c: any) => !['favorites', 'support', 'balloo-news'].includes(c.id)) || [];
         setChats([...systemChats, ...userChats]);
       } else {
         // Если API не работает, используем только системные чаты
@@ -357,33 +357,34 @@ export function ChatsPage() {
             }
           }
           
-          await fetch(`/api/chats/${chat.id}/pin`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: user.id, pinned: !isPinned })
-          });
-          loadChats();
+          const result = await togglePin(chat.id);
+          if (result.success) {
+            loadChats();
+          } else {
+            alert({ message: 'Ошибка при закреплении чата', type: 'error' });
+          }
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             console.error('[Pin] Error:', error);
           }
+          alert({ message: 'Ошибка при закреплении чата', type: 'error' });
         }
         break;
 
       case 'favorite':
         // В избранное/убрать
         try {
-          const isFavorite = chat.isFavorite?.[user.id];
-          await fetch(`/api/chats/${chat.id}/favorite`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: user.id, favorite: !isFavorite })
-          });
-          loadChats();
+          const result = await toggleFavorite(chat.id);
+          if (result.success) {
+            loadChats();
+          } else {
+            alert({ message: 'Ошибка при обновлении избранного', type: 'error' });
+          }
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             console.error('[Favorite] Error:', error);
           }
+          alert({ message: 'Ошибка при обновлении избранного', type: 'error' });
         }
         break;
 
@@ -393,12 +394,13 @@ export function ChatsPage() {
           .then(async (confirmed) => {
             if (!confirmed) return;
             try {
-              await fetch(`/api/chats/${chat.id}/clear`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user.id })
-              });
-              loadChats();
+              const result = await clearChat(chat.id);
+              if (result.success) {
+                loadChats();
+                alert({ message: 'Чат очищен', type: 'success' });
+              } else {
+                alert({ message: 'Ошибка при очистке чата', type: 'error' });
+              }
             } catch (error) {
               if (process.env.NODE_ENV === 'development') {
                 console.error('[Clear] Error:', error);
@@ -414,13 +416,16 @@ export function ChatsPage() {
           .then(async (confirmed) => {
             if (!confirmed) return;
             try {
-              await fetch(`/api/users/${chat.participants.find((p: string) => p !== user.id)}/block`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: user.id })
-              });
-              loadChats();
-              alert({ message: 'Пользователь заблокирован', type: 'success' });
+              const otherUserId = chat.participants.find((p: string) => p !== user.id);
+              if (otherUserId) {
+                const result = await contactsApi.toggleBlock(otherUserId);
+                if (result.success) {
+                  loadChats();
+                  alert({ message: 'Пользователь заблокирован', type: 'success' });
+                } else {
+                  alert({ message: 'Ошибка при блокировке', type: 'error' });
+                }
+              }
             } catch (error) {
               if (process.env.NODE_ENV === 'development') {
                 console.error('[Block] Error:', error);
@@ -519,6 +524,7 @@ export function ChatsPage() {
 
     try {
       setSearchLoading(true);
+      // Пока используем fetch, так как глобальный поиск ещё не в wrapper
       const response = await fetch(`/api/messages/search?q=${encodeURIComponent(searchQuery)}&userId=${user.id}&limit=20`);
       
       if (response.ok) {

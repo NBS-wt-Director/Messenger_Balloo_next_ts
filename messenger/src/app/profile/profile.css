@@ -504,6 +504,16 @@
   border-color: #22c55e;
 }
 
+.setting-item-btn.danger {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.setting-item-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #dc2626;
+}
+
 .section-desc {
   font-size: 13px;
   color: var(--muted-foreground);

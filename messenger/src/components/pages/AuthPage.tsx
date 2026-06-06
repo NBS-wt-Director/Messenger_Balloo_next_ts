@@ -1,248 +1,288 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
-import { useAccountsStore } from '@/stores/accounts-store';
-import { useSettingsStore } from '@/stores/settings-store';
-import { getTranslations } from '@/i18n';
-import { useAlert } from '@/hooks/useAlert';
-import { Eye, EyeOff, MessageCircle, Check, X, KeyRound } from 'lucide-react';
+import * as authApi from '@/api/auth';
 import { getYandexAuthUrl } from '@/api/auth';
+import { Alert } from '@/components/ui/Alert';
+import { Loader2, Mail, Lock, User, Smartphone } from 'lucide-react';
 import './AuthPage.css';
 
+type AuthMode = 'login' | 'register';
+type TwoFAMode = 'sms' | 'bot' | 'totp';
+
 interface AuthPageProps {
-  mode: 'login' | 'register';
+  mode?: AuthMode;
 }
 
-export function AuthPage({ mode }: AuthPageProps) {
+export default function AuthPage({ mode: initialMode = 'login' }: AuthPageProps) {
   const router = useRouter();
-  const { login, isAuthenticated } = useAuthStore();
-  const { addAccount } = useAccountsStore();
-  const { language } = useSettingsStore();
-  const { alert, AlertComponent } = useAlert();
-  const translations = getTranslations(language);
-
+  const { login, setUser, setLoading } = useAuthStore();
+  
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [twoFACode, setTwoFACode] = useState('');
+  const [twoFAMode, setTwoFAMode] = useState<TwoFAMode>('sms');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [twoFARequired, setTwoFARequired] = useState(false);
+  const [verificationCodeSent, setVerificationCodeSent] = useState(false);
+  const [tempUserId, setTempUserId] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [yandexLoading, setYandexLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  const passwordChecks = mode === 'register' ? {
-    length: password.length >= 8,
-    number: /\d/.test(password),
-    lowercase: /[a-z]/.test(password),
-    uppercase: /[A-Z]/.test(password),
-  } : null;
-
-  const passwordsMatch = password === confirmPassword && password.length > 0;
+  // Валидация пароля
+  const validatePassword = (pwd: string): boolean => {
+    if (pwd.length < 8) {
+      setPasswordError('Пароль должен содержать минимум 8 символов');
+      return false;
+    }
+    if (!/[A-Z]/.test(pwd)) {
+      setPasswordError('Пароль должен содержать заглавную букву');
+      return false;
+    }
+    if (!/[0-9]/.test(pwd)) {
+      setPasswordError('Пароль должен содержать цифру');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
-
-    if (mode === 'register') {
-      if (!Object.values(passwordChecks!).every(Boolean)) {
-        setError('Пароль должен содержать минимум 8 символов, цифры, строчные и заглавные буквы');
-        setIsLoading(false);
-        return;
-      }
-      if (!passwordsMatch) {
-        setError('Пароли не совпадают');
-        setIsLoading(false);
-        return;
-      }
-    }
+    setSuccess('');
+    setShowError(false);
+    setShowSuccess(false);
+    setPasswordError('');
+    setLoading(true);
 
     try {
-      // Demo: just login
-      const user = {
-        id: 'user1',
-        email: email || 'demo@balloo.app',
-        displayName: displayName || 'Demo User',
-        provider: 'email' as const,
-      };
-      
-      login(user);
-      addAccount(user);
-      router.push('/chats');
-    } catch (err) {
-      setError(translations.errorNetwork);
+      if (mode === 'login') {
+        if (twoFARequired) {
+          if (!tempUserId) {
+            setError('Ошибка: userId не найден. Пожалуйста, попробуйте войти снова.');
+            setShowError(true);
+            setLoading(false);
+            return;
+          }
+          const response = await authApi.verifyTwoFA(twoFACode, twoFAMode, tempUserId);
+          login(response.user as any);
+          setUser(response.user as any);
+          router.push('/chats');
+        } else {
+          const response = await authApi.login({ email, password });
+          
+          if (response.requiresTwoFA) {
+            setTempUserId(response.userId || response.user?.id || '');
+            setTwoFARequired(true);
+            await authApi.requestTwoFA(tempUserId, twoFAMode);
+            setVerificationCodeSent(true);
+            setSuccess('Код отправлен! Проверьте SMS/bot.');
+            setShowSuccess(true);
+          } else {
+            login(response.user as any);
+            setUser(response.user as any);
+            router.push('/chats');
+          }
+        }
+      } else {
+        if (!validatePassword(password)) {
+          setLoading(false);
+          return;
+        }
+        
+        const response = await authApi.register({
+          email,
+          password,
+          displayName: displayName || undefined,
+          phone: phone || undefined,
+        });
+        
+        login(response.user as any);
+        setUser(response.user as any);
+        router.push('/chats');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Произошла ошибка');
+      setShowError(true);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleYandex = () => {
-    try {
-      const yandexAuthUrl = getYandexAuthUrl();
-      if (yandexAuthUrl) {
-        window.location.href = yandexAuthUrl;
-      } else {
-        alert({ 
-          message: 'Ошибка настройки Яндекс OAuth. Обратитесь к администратору.', 
-          type: 'error' 
-        });
-      }
-    } catch (error) {
-      alert({ 
-        message: 'Ошибка авторизации через Яндекс. Попробуйте позже.', 
-        type: 'error' 
-      });
-    }
+  const handleYandexAuth = () => {
+    setYandexLoading(true);
+    const url = getYandexAuthUrl();
+    // Сбрасываем loading если не перенаправило через 5 секунд
+    setTimeout(() => setYandexLoading(false), 5000);
+    window.location.href = url;
   };
 
   return (
     <div className="auth-page">
-      {AlertComponent}
-      <main className="auth-main">
-        <div className="auth-container">
-          {/* Логотип */}
-          <div className="auth-logo">
-            <div className="auth-logo-icon">
-              <MessageCircle size={40} />
-            </div>
-            <h1 className="auth-logo-title">
-              {mode === 'login' ? translations.appName : translations.createAccount}
-            </h1>
-            <p className="auth-logo-subtitle">
-              {mode === 'login' ? translations.loginWithEmail : translations.appName}
-            </p>
-          </div>
+      <div className="auth-container">
+        <div className="auth-header">
+          <h1>App Balloo</h1>
+          <p>Безопасный мессенджер</p>
+        </div>
 
-          {/* Форма */}
-          <form onSubmit={handleSubmit} className="auth-form">
-            {mode === 'register' && (
-              <div className="auth-form-group">
-                <label className="auth-label">{translations.displayName}</label>
+        {showError && <Alert message={error} type="error" onClose={() => setShowError(false)} duration={5000} />}
+        {showSuccess && <Alert message={success} type="success" onClose={() => setShowSuccess(false)} duration={5000} />}
+
+        <div className="auth-tabs">
+          <button
+            className={`auth-tab ${mode === 'login' ? 'active' : ''}`}
+            onClick={() => {
+              setMode('login');
+              setTwoFARequired(false);
+              setVerificationCodeSent(false);
+              setError('');
+              setSuccess('');
+              setShowError(false);
+              setShowSuccess(false);
+            }}
+          >
+            Вход
+          </button>
+          <button
+            className={`auth-tab ${mode === 'register' ? 'active' : ''}`}
+            onClick={() => {
+              setMode('register');
+              setTwoFARequired(false);
+              setVerificationCodeSent(false);
+              setError('');
+              setSuccess('');
+              setShowError(false);
+              setShowSuccess(false);
+            }}
+          >
+            Регистрация
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          {mode === 'register' && (
+            <>
+              <div className="form-group">
+                <User className="icon" />
                 <input
                   type="text"
+                  placeholder="Имя (опционально)"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="auth-input"
-                  placeholder="Ваше имя"
+                  required={false}
                 />
-              </div>
-            )}
-
-            <div className="auth-form-group">
-              <label className="auth-label">{translations.email}</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="auth-input"
-                placeholder="example@mail.ru"
-              />
-            </div>
-
-            <div className="auth-form-group">
-              <label className="auth-label">{translations.password}</label>
-              <div className="auth-input-wrapper">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="auth-input auth-input-password"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="auth-input-icon"
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
               </div>
               
-              {mode === 'register' && password && passwordChecks && (
-                <div className="password-checks">
-                  <div className={`password-check ${passwordChecks.length ? 'valid' : 'invalid'}`}>
-                    {passwordChecks.length ? <Check size={14} /> : <X size={14} />}
-                    Минимум 8 символов
-                  </div>
-                  <div className={`password-check ${passwordChecks.number ? 'valid' : 'invalid'}`}>
-                    {passwordChecks.number ? <Check size={14} /> : <X size={14} />}
-                    Минимум 1 цифра
-                  </div>
-                  <div className={`password-check ${passwordChecks.lowercase ? 'valid' : 'invalid'}`}>
-                    {passwordChecks.lowercase ? <Check size={14} /> : <X size={14} />}
-                    Минимум 1 строчная буква
-                  </div>
-                  <div className={`password-check ${passwordChecks.uppercase ? 'valid' : 'invalid'}`}>
-                    {passwordChecks.uppercase ? <Check size={14} /> : <X size={14} />}
-                    Минимум 1 заглавная буква
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {mode === 'register' && (
-              <div className="auth-form-group">
-                <label className="auth-label">{translations.confirmPassword}</label>
+              <div className="form-group">
+                <Smartphone className="icon" />
                 <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  className="auth-input"
-                  placeholder="••••••••"
+                  type="tel"
+                  placeholder="Телефон (опционально)"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required={false}
                 />
-                {confirmPassword && (
-                  <div className={`password-match ${passwordsMatch ? 'valid' : 'invalid'}`}>
-                    {passwordsMatch ? <Check size={14} /> : <X size={14} />}
-                    Пароли совпадают
-                  </div>
-                )}
               </div>
-            )}
+            </>
+          )}
 
-            {error && <p className="auth-error">{error}</p>}
-
-            {mode === 'login' && (
-              <div className="forgot-password-link">
-                <Link href="/forgot-password" className="auth-footer-link">
-                  <KeyRound size={14} style={{ marginRight: '4px' }} />
-                  Забыли пароль?
-                </Link>
-              </div>
-            )}
-
-            <button type="submit" disabled={isLoading} className="auth-submit">
-              {isLoading ? translations.loading : (mode === 'login' ? translations.login : translations.createAccount)}
-            </button>
-          </form>
-
-          {/* Разделитель */}
-          <div className="auth-divider">
-            <div className="auth-divider-line"><span></span></div>
-            <div className="auth-divider-text"><span>{translations.orContinueWith}</span></div>
+          <div className="form-group">
+            <Mail className="icon" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
 
-          {/* Соцсеть */}
-          <button onClick={handleYandex} className="auth-social">
-            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-            </svg>
-            {translations.loginWithYandex}
-          </button>
+          <div className="form-group">
+            <Lock className="icon" />
+            <input
+              type="password"
+              placeholder="Пароль"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+            />
+          </div>
 
-          {/* Ссылка */}
-          <p className="auth-footer">
-            {mode === 'login' ? translations.dontHaveAccount : translations.alreadyHaveAccount}{' '}
-            <Link href={mode === 'login' ? '/register' : '/login'} className="auth-footer-link">
-              {mode === 'login' ? translations.createAccount : translations.login}
-            </Link>
-          </p>
+          {passwordError && (
+            <div style={{ color: '#c33', fontSize: '14px', marginTop: '-8px', marginBottom: '8px' }}>
+              {passwordError}
+            </div>
+          )}
+
+          {twoFARequired && (
+            <div className="form-group">
+              <Smartphone className="icon" />
+              <input
+                type="text"
+                placeholder={`Код из ${twoFAMode === 'sms' ? 'SMS' : twoFAMode === 'bot' ? 'бота' : 'TOTP'}`}
+                value={twoFACode}
+                onChange={(e) => setTwoFACode(e.target.value)}
+                required
+                maxLength={6}
+              />
+            </div>
+          )}
+
+          {twoFARequired && !verificationCodeSent && (
+            <div className="twofa-mode-selector">
+              <label>Способ получения кода:</label>
+              <select
+                value={twoFAMode}
+                onChange={(e) => setTwoFAMode(e.target.value as TwoFAMode)}
+              >
+                <option value="sms">SMS</option>
+                <option value="bot">Telegram Bot</option>
+                <option value="totp">TOTP (Google Auth)</option>
+              </select>
+            </div>
+          )}
+
+          <button type="submit" className="auth-button" disabled={useAuthStore.getState().isLoading}>
+            {useAuthStore.getState().isLoading ? (
+              <Loader2 className="spinner" />
+            ) : (
+              mode === 'login' ? (twoFARequired ? 'Подтвердить' : 'Войти') : 'Зарегистрироваться'
+            )}
+          </button>
+        </form>
+
+        <div className="auth-divider">
+          <span>или</span>
         </div>
-      </main>
+
+        <button className="yandex-button" onClick={handleYandexAuth} disabled={yandexLoading}>
+          {yandexLoading ? (
+            <Loader2 className="spinner" />
+          ) : (
+            <>
+              <svg viewBox="0 0 24 24" className="yandex-icon">
+                <path fill="#FC3F1D" d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 21.6c-5.302 0-9.6-4.298-9.6-9.6S6.698 2.4 12 2.4s9.6 4.298 9.6 9.6-4.298 9.6-9.6 9.6z"/>
+                <path fill="#FC3F1D" d="M15.36 10.8c-.288-.576-.72-1.008-1.296-1.296-.576-.288-1.296-.432-2.16-.432h-2.88v5.76h2.88c.864 0 1.584-.144 2.16-.432.576-.288 1.008-.72 1.296-1.296.288-.576.432-1.296.432-2.16s-.144-1.584-.432-2.16zm-1.728 3.456c-.288.288-.72.432-1.296.432h-1.152v-3.456h1.152c.576 0 1.008.144 1.296.432.288.288.432.72.432 1.296s-.144 1.008-.432 1.296z"/>
+              </svg>
+              Войти через Яндекс
+            </>
+          )}
+        </button>
+
+        <div className="auth-footer">
+          <p>Безопасность и приватность превыше всего</p>
+        </div>
+      </div>
     </div>
   );
 }

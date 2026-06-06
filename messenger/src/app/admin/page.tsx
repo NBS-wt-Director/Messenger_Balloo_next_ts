@@ -10,6 +10,7 @@ import { ArrowLeft, Users, MessageCircle, Settings, Shield, BarChart3, Ban, File
 import { AdminUsersSection, AdminChatsSection, AdminMessagesSection, AdminBansSection, AdminSettingsSection } from './sections';
 import { FeaturesSection } from './features-section';
 import { VersionsAdmin } from '@/components/admin/VersionsAdmin';
+import { getAdminStats } from '@/api/admin';
 import './page.css';
 
 export default function AdminPage() {
@@ -46,11 +47,10 @@ export default function AdminPage() {
   const loadStats = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/stats');
+      const result = await getAdminStats();
       
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data.stats || { users: 0, chats: 0, messages: 0, bans: 0 });
+      if (result.success) {
+        setStats(result.stats || { users: 0, chats: 0, messages: 0, bans: 0 });
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {

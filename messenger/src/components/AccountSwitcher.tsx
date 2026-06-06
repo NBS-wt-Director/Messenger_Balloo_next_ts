@@ -47,15 +47,15 @@ export function AccountSwitcher() {
   };
 
   // Выйти из текущего аккаунта
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     router.push('/login');
   };
 
   // Выйти из всех аккаунтов
-  const handleLogoutAll = () => {
+  const handleLogoutAll = async () => {
     accounts.forEach(a => removeAccount(a.id));
-    logout();
+    await logout(false); // false = не вызывать API повторно
     router.push('/login');
   };
 

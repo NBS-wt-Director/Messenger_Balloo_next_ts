@@ -1,7 +1,12 @@
 /**
  * Конфигурация приложения из переменных окружения
- * Все секреты берутся из .env файла
+ * Использует общие настройки из @app-balloo/settings
  */
+
+import { getSettings, isDev, isProd } from '@app-balloo/settings';
+
+// Инициализация настроек (для web платформы)
+const settings = getSettings('web');
 
 export interface AppConfig {
   app: {
@@ -52,63 +57,55 @@ export interface AppConfig {
 }
 
 /**
- * Получение конфигурации из переменных окружения
+ * Получение конфигурации из общих настроек
  */
 export function getConfig(): AppConfig {
   return {
     app: {
-      name: process.env.NEXT_PUBLIC_APP_NAME || 'Balloo Messenger',
-      version: '1.0.0',
-      description: 'Безопасный мессенджер с шифрованием',
-      url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+      name: settings.app.appName,
+      version: settings.app.appVersion,
+      description: settings.app.description,
+      url: settings.app.appUrl,
     },
     auth: {
-      jwtSecret: process.env.JWT_SECRET || 'fallback-secret-key-change-in-production',
-      jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
-      bcryptRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10),
+      jwtSecret: settings.security.jwtSecret,
+      jwtExpiresIn: settings.security.jwtExpiresIn,
+      bcryptRounds: settings.security.bcryptRounds,
     },
     push: {
-      vapidPublicKey: process.env.VAPID_PUBLIC_KEY || '',
-      vapidPrivateKey: process.env.VAPID_PRIVATE_KEY || '',
-      vapidSubject: process.env.VAPID_SUBJECT || '',
+      vapidPublicKey: settings.push.vapidPublicKey,
+      vapidPrivateKey: settings.push.vapidPrivateKey,
+      vapidSubject: settings.push.subject,
     },
     yandexDisk: {
-      clientId: process.env.YANDEX_CLIENT_ID || '',
-      clientSecret: process.env.YANDEX_CLIENT_SECRET || '',
-      redirectUri: process.env.YANDEX_REDIRECT_URI || '',
+      clientId: settings.yandex.clientId,
+      clientSecret: settings.yandex.clientSecret,
+      redirectUri: settings.yandex.redirectUri,
     },
     database: {
-      name: 'balloo',
-      password: '',
-      multiInstance: true,
+      name: settings.database.name,
+      password: settings.database.path.includes(':') ? '' : '',
+      multiInstance: settings.database.multiInstance,
       ignoreDuplicate: true,
     },
     features: {
-      maxPinnedChats: parseInt(process.env.MAX_PINNED_CHATS || '15', 10),
-      maxPushTokensPerUser: parseInt(process.env.MAX_PUSH_TOKENS || '5', 10),
-      pushTokenExpiresDays: parseInt(process.env.PUSH_TOKEN_EXPIRES_DAYS || '30', 10),
-      invitationDefaultMaxUses: parseInt(process.env.INVITATION_DEFAULT_MAX_USES || '10', 10),
-      invitationDefaultExpiresDays: parseInt(process.env.INVITATION_DEFAULT_EXPIRES_DAYS || '7', 10),
+      maxPinnedChats: 15,
+      maxPushTokensPerUser: 5,
+      pushTokenExpiresDays: 30,
+      invitationDefaultMaxUses: 10,
+      invitationDefaultExpiresDays: 7,
     },
     admin: {
-      superAdminEmail: process.env.SUPER_ADMIN_EMAIL || 'admin@balloo.ru',
-      defaultAdminPassword: process.env.DEFAULT_ADMIN_PASSWORD || 'BallooAdmin2024!',
+      superAdminEmail: settings.admin.superAdminEmail,
+      defaultAdminPassword: settings.admin.defaultAdminPassword,
     },
-    testUsers: [
-      {
-        email: process.env.TEST_USER_1_EMAIL || 'admin@balloo.ru',
-        password: process.env.TEST_USER_1_PASSWORD || 'Admin123!',
-        displayName: 'Администратор',
-        isAdmin: true,
-        isSuperAdmin: true,
-      },
-      {
-        email: process.env.TEST_USER_2_EMAIL || 'user1@balloo.ru',
-        password: process.env.TEST_USER_2_PASSWORD || 'User123!',
-        displayName: 'Тестовый пользователь',
-        isAdmin: false,
-      },
-    ],
+    testUsers: settings.testUsers.map((u: any) => ({
+      email: u.email,
+      password: u.password,
+      displayName: u.displayName,
+      isAdmin: u.isAdmin,
+      isSuperAdmin: u.isSuperAdmin,
+    })),
   };
 }
 
@@ -116,7 +113,7 @@ export function getConfig(): AppConfig {
  * Получение JWT секрета
  */
 export function getJwtSecret(): string {
-  return process.env.JWT_SECRET || 'fallback-secret-key-change-in-production';
+  return settings.security.jwtSecret;
 }
 
 /**
@@ -124,9 +121,9 @@ export function getJwtSecret(): string {
  */
 export function getVapidKeys() {
   return {
-    publicKey: process.env.VAPID_PUBLIC_KEY || '',
-    privateKey: process.env.VAPID_PRIVATE_KEY || '',
-    subject: process.env.VAPID_SUBJECT || '',
+    publicKey: settings.push.vapidPublicKey,
+    privateKey: settings.push.vapidPrivateKey,
+    subject: settings.push.subject,
   };
 }
 
@@ -141,5 +138,30 @@ export function getTestUsers() {
  * Проверка, является ли пользователь супер-админом
  */
 export function isSuperAdminEmail(email: string): boolean {
-  return email === process.env.SUPER_ADMIN_EMAIL;
+  return email === settings.admin.superAdminEmail;
+}
+
+/**
+ * Проверка, включена ли регистрация
+ */
+export function isRegistrationEnabled(): boolean {
+  return settings.features.registrationEnabled;
+}
+
+/**
+ * Проверка, включен ли режим обслуживания
+ */
+export function isMaintenanceMode(): boolean {
+  return settings.features.maintenanceMode;
+}
+
+/**
+ * API URL для текущего окружения
+ */
+export function getApiBaseUrl(): string {
+  if (isDev()) {
+    return 'http://localhost:3000/api';
+  }
+  // В production API на том же домене
+  return `${settings.app.appUrl}/api`;
 }

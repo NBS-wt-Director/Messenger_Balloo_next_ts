@@ -1,0 +1,32 @@
+node_modules/
+.env
+.env.local
+*.log
+.DS_Store
+coverage/
+
+# Database (SQLite file - may be excluded or included based on preference)
+# data/
+data/*.db
+data/*.db-journal
+
+# Uploads (temporary files)
+uploads/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp

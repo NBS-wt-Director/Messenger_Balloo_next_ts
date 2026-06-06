@@ -399,3 +399,178 @@ select {
 
 .safe-area-top { padding-top: env(safe-area-inset-top); }
 .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* Large tablets and desktops */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 640px) {
+  html, body {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Header adjustments */
+  .header {
+    padding: 12px 16px;
+  }
+
+  .header-logo {
+    font-size: 18px;
+  }
+
+  /* Buttons */
+  .btn, .btn-primary, .btn-secondary {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  /* Cards */
+  .card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  /* Modals */
+  .modal-content {
+    max-width: 95vw;
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+  }
+
+  /* Forms */
+  .input-field {
+    padding: 12px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  /* Lists */
+  .list-item {
+    padding: 12px;
+  }
+
+  /* Safe areas for modern phones */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Touch-friendly targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 375px) {
+  html, body {
+    font-size: 13px;
+  }
+
+  .header {
+    padding: 10px 12px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+}
+
+/* Landscape orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* PWA - Full screen mode */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .header {
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+}
+
+/* Hover capability detection */
+@media (hover: none) {
+  /* Remove hover effects on touch devices */
+  .btn:hover, button:hover {
+    transform: none;
+  }
+
+  /* Active states for touch */
+  .btn:active, button:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Pointer type detection */
+@media (pointer: coarse) {
+  /* Larger touch targets */
+  button, a {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Custom checkboxes and radios */
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --border: #ffffff;
+    --muted-foreground: #ffffff;
+  }
+}

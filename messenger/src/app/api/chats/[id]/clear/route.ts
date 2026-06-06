@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database.js';
 import { logger } from '@/lib/logger';
+
+function getChatById(id: string): any {
+  return db.prepare('SELECT * FROM Chat WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/chats/[id]/clear - Очистить чат (удалить все сообщения)
@@ -18,46 +22,25 @@ export async function POST(
       return NextResponse.json({ error: 'userId обязателен' }, { status: 400 });
     }
 
-    // Подключаемся к RxDB
-    const db: any = await getDatabase();
-
-    const chat = await db.chats.findOne(chatId).exec();
+    const chat = getChatById(chatId);
 
     if (!chat) {
       logger.warn(`[API] Чат не найден: ${chatId}`);
       return NextResponse.json({ error: 'Чат не найден' }, { status: 404 });
     }
 
-    const messagesCollection = db.messages;
+    // Удалить все сообщения чата
+    const deleted = db.prepare('SELECT COUNT(*) as count FROM Message WHERE chatId = ?').get(chatId) as any;
+    db.prepare('DELETE FROM Message WHERE chatId = ?').run(chatId);
 
-    // Найти все сообщения чата
-    const messages = await messagesCollection.find({
-      selector: { chatId }
-    }).exec();
+    // Обновить чат
+    db.prepare('UPDATE Chat SET updatedAt = ? WHERE id = ?').run(new Date().toISOString(), chatId);
 
-    // Удалить все сообщения
-    let deletedCount = 0;
-    for (const msg of messages) {
-      await msg.remove();
-      deletedCount++;
-    }
-
-    // Обновить lastMessage в чате
-    await chat.patch({
-      lastMessage: {
-        id: '',
-        content: 'Чат очищен',
-        type: 'system',
-        createdAt: Date.now()
-      },
-      updatedAt: Date.now()
-    });
-
-    logger.info(`[API] Чат очищен: ${chatId}, удалено сообщений: ${deletedCount}`);
+    logger.info(`[API] Чат очищен: ${chatId}, удалено сообщений: ${deleted.count}`);
 
     return NextResponse.json({ 
       success: true,
-      deletedCount
+      deletedCount: deleted.count
     });
   } catch (error: any) {
     logger.error('[API] Error clearing chat:', error);

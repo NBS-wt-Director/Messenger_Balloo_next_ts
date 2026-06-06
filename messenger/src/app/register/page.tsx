@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { AuthPage } from '@/components/pages/AuthPage';
+import AuthPage from '@/components/pages/AuthPage';
 
 export default function RegisterPage() {
   const router = useRouter();

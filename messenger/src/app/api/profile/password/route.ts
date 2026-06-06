@@ -1,93 +1,82 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
-import { logger } from '@/lib/logger';
-import { hashPassword, verifyPassword, isPasswordStrong } from '@/lib/password';
+import { NextRequest, NextResponse } from 'next/server';
 
-/**
- * POST /api/profile/password - Смена пароля пользователя
- */
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { userId, currentPassword, newPassword } = body;
 
-    if (!userId || !currentPassword || !newPassword) {
-      return NextResponse.json(
-        { error: 'Необходимо указать userId, currentPassword и newPassword' },
-        { status: 400 }
-      );
-    }
-
-    // Проверка сложности пароля
-    const passwordCheck = isPasswordStrong(newPassword);
-    if (!passwordCheck.valid) {
+    // Валидация
+    if (!currentPassword || !newPassword) {
       return NextResponse.json(
         { 
-          error: 'Слабый пароль',
-          requirements: passwordCheck.errors
+          success: false, 
+          error: 'Все поля обязательны' 
         },
         { status: 400 }
       );
     }
 
-    // SQLite db уже доступен
-    const usersCollection = db.users;
-
-    // Находим пользователя
-    const user = await usersCollection.findOne({
-      selector: { id: userId }
-    }).exec();
-
-    if (!user) {
+    if (newPassword.length < 8) {
       return NextResponse.json(
-        { error: 'Пользователь не найден' },
-        { status: 404 }
+        { 
+          success: false, 
+          error: 'Пароль должен содержать минимум 8 символов' 
+        },
+        { status: 400 }
       );
     }
 
-    const userData = user.toJSON();
+    // Получаем токен из cookies
+    const authToken = request.cookies.get('auth_token')?.value;
 
-    // Проверяем текущий пароль с поддержкой миграции
-    let isValidCurrentPassword = false;
-    if (userData.passwordHash?.length === 64) {
-      // Старый SHA256 хеш
-      const crypto = require('crypto');
-      const encoder = new TextEncoder();
-      const passwordData = await crypto.subtle.digest('SHA-256', encoder.encode(currentPassword));
-      const currentPasswordHash = Array.from(new Uint8Array(passwordData))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-      isValidCurrentPassword = userData.passwordHash === currentPasswordHash;
-    } else {
-      // Новый bcrypt хеш
-      isValidCurrentPassword = await verifyPassword(currentPassword, userData.passwordHash);
-    }
-
-    if (!isValidCurrentPassword) {
+    if (!authToken) {
       return NextResponse.json(
-        { error: 'Неверный текущий пароль' },
+        { 
+          success: false, 
+          error: 'Необходима авторизация' 
+        },
         { status: 401 }
       );
     }
 
-    // Хешируем новый пароль с bcrypt
-    const newPasswordHash = await hashPassword(newPassword);
-
-    // Обновляем пароль
-    await user.patch({
-      passwordHash: newPasswordHash,
-      updatedAt: Date.now()
+    // Вызов backend API
+    const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({
+        oldPassword: currentPassword,
+        newPassword,
+      }),
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: data.error?.message || 'Ошибка при смене пароля' 
+        },
+        { status: response.status }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Пароль успешно изменён'
+      data: { message: 'Пароль успешно изменен' },
     });
-
   } catch (error: any) {
-    logger.error('[API] Error changing password:', error);
+    console.error('[Change Password API] Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Ошибка при смене пароля' },
+      { 
+        success: false, 
+        error: error.message || 'Внутренняя ошибка сервера' 
+      },
       { status: 500 }
     );
   }

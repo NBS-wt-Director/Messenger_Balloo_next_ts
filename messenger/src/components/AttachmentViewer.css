@@ -1,0 +1,348 @@
+/* Attachment Viewer Styles */
+
+.attachment-viewer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--background-secondary);
+  border-radius: 12px;
+  max-width: 100%;
+  margin: 10px 0;
+}
+
+.attachment-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s;
+  z-index: 10;
+}
+
+.attachment-close-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Loading & Error States */
+.attachment-loading,
+.attachment-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Image */
+.attachment-image-container {
+  max-width: 100%;
+  max-height: 600px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.attachment-image-container img {
+  max-width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Video */
+.attachment-video-container {
+  width: 100%;
+  max-width: 800px;
+  background: black;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.attachment-video-container video {
+  width: 100%;
+  max-height: 600px;
+  display: block;
+}
+
+/* Audio */
+.attachment-audio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--card);
+  border-radius: 12px;
+  min-width: 300px;
+}
+
+.audio-icon {
+  color: var(--primary);
+  padding: 16px;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: 50%;
+}
+
+.attachment-audio-container audio {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Document */
+.attachment-document-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: var(--card);
+  border-radius: 12px;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.document-icon {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--background-secondary);
+}
+
+.icon-pdf {
+  color: #dc2626;
+}
+
+.icon-office {
+  color: #2563eb;
+}
+
+.icon-document {
+  color: var(--muted-foreground);
+}
+
+.document-info {
+  text-align: center;
+}
+
+.document-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--foreground);
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.document-size,
+.document-type {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+.document-type {
+  margin-top: 4px;
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.download-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* File (generic) */
+.attachment-file-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+/* Download buttons */
+.download-media-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 16px;
+}
+
+.download-media-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Thumbnail */
+.attachment-thumbnail {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--card);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+  max-width: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.attachment-thumbnail:hover {
+  transform: scale(1.02);
+  background: var(--background-secondary);
+}
+
+.thumbnail-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.thumbnail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  background: var(--background-secondary);
+}
+
+.thumbnail-video {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail-audio {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.thumbnail-document {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.play-overlay {
+  position: absolute;
+  font-size: 24px;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.thumbnail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.thumbnail-filename {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thumbnail-size {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.download-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Message attachment inline */
+.message-attachment {
+  margin-top: 8px;
+}
+
+.message-attachment .attachment-thumbnail {
+  max-width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .attachment-video-container {
+    max-width: 100%;
+  }
+  
+  .attachment-document-container {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .attachment-audio-container {
+    min-width: auto;
+    width: 100%;
+  }
+}

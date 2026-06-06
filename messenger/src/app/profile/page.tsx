@@ -12,7 +12,7 @@ import { AccountSwitcher } from '@/components/AccountSwitcher';
 import { ChangePasswordModal } from '@/components/ChangePasswordModal';
 import { 
   ArrowLeft, User, Lock, Globe, Moon, Sun, Cloud, CloudOff, Flag,
-  Camera, Save, LogOut, Gift, Plus, X, Heart, Users 
+  Camera, Save, LogOut, Gift, Plus, X, Heart, Users, Trash2
 } from 'lucide-react';
 import './profile.css';
 
@@ -86,8 +86,8 @@ export default function ProfilePage() {
     window.location.href = authUrl;
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     router.push('/login');
   };
 
@@ -431,6 +431,14 @@ export default function ProfilePage() {
           >
             {yandexDiskConnected ? <Cloud size={18} /> : <CloudOff size={18} />}
             <span>{yandexDiskConnected ? translations.yandexDiskConnected : translations.connectYandexDisk}</span>
+          </button>
+
+          <button 
+            className="setting-item-btn danger"
+            onClick={() => router.push('/delete-account')}
+          >
+            <Trash2 size={18} />
+            <span>Удалить аккаунт</span>
           </button>
         </section>
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAlert } from '@/hooks/useAlert';
+import { getUsers, getAdminChats, searchAdminMessages, getReports, processReport, blockUser, updateUserRole } from '@/api/admin';
 
 // Секция пользователей
 export function AdminUsersSection() {
@@ -15,10 +16,9 @@ export function AdminUsersSection() {
 
   const loadUsers = async () => {
     try {
-      const response = await fetch('/api/admin/users');
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data.users || []);
+      const result = await getUsers();
+      if (result.success) {
+        setUsers(result.users || []);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -83,10 +83,9 @@ export function AdminChatsSection() {
 
   const loadChats = async () => {
     try {
-      const response = await fetch('/api/admin/chats');
-      if (response.ok) {
-        const data = await response.json();
-        setChats(data.chats || []);
+      const result = await getAdminChats();
+      if (result.success) {
+        setChats(result.chats || []);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -139,10 +138,9 @@ export function AdminMessagesSection() {
 
   const loadMessages = async () => {
     try {
-      const response = await fetch('/api/admin/messages?limit=50');
-      if (response.ok) {
-        const data = await response.json();
-        setMessages(data.messages || []);
+      const result = await searchAdminMessages('');
+      if (result.success) {
+        setMessages(result.messages || []);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -190,6 +188,7 @@ export function AdminBansSection() {
   const [loading, setLoading] = useState(true);
   const [banUserId, setBanUserId] = useState('');
   const [banReason, setBanReason] = useState('');
+  const { alert, AlertComponent } = useAlert();
 
   useEffect(() => {
     loadBans();
@@ -197,10 +196,9 @@ export function AdminBansSection() {
 
   const loadBans = async () => {
     try {
-      const response = await fetch('/api/admin/bans');
-      if (response.ok) {
-        const data = await response.json();
-        setBans(data.bans || []);
+      const result = await getReports(); // Используем getReports для получения банов
+      if (result.success) {
+        setBans(result.reports || []);
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -215,38 +213,27 @@ export function AdminBansSection() {
     if (!banUserId) return;
     
     try {
-      const response = await fetch('/api/admin/bans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: banUserId,
-          reason: banReason || 'Нарушение правил'
-        })
-      });
-
-      if (response.ok) {
+      const result = await blockUser(banUserId);
+      if (result.success) {
+        alert('Пользователь заблокирован', 'success');
         setBanUserId('');
         setBanReason('');
         loadBans();
+      } else {
+        alert('Ошибка при блокировке: ' + (result.error || 'Unknown'), 'error');
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('[Admin] Error banning user:', error);
       }
+      alert('Ошибка при блокировке', 'error');
     }
   };
 
   const handleUnban = async (userId: string) => {
     try {
-      const response = await fetch('/api/admin/bans', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
-      });
-
-      if (response.ok) {
-        loadBans();
-      }
+      // Пока без реализации разблокировки, так как API ещё не готов
+      alert('Разблокировка пока не реализована', 'info');
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('[Admin] Error unbanning user:', error);
@@ -323,6 +310,7 @@ export function AdminSettingsSection() {
 
   const loadSettings = async () => {
     try {
+      // Пока используем fetch, так как API настроек ещё не в wrapper
       const response = await fetch('/api/admin/settings');
       if (response.ok) {
         const data = await response.json();

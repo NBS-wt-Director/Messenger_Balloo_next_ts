@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: balloo
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-balloo_secret_password_change_in_production}
+      POSTGRES_DB: balloo_production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./api/scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - balloo-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U balloo -d balloo_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PgBouncer (Connection Pooler)
+  pgbouncer:
+    image: edoburu/pgbouncer
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: balloo
+      DB_PASSWORD: ${DB_PASSWORD:-balloo_secret_password_change_in_production}
+      POOL_MODE: transaction
+      MAX_DB_CONN: 100
+      MAX_CLIENT_CONN: 1000
+    ports:
+      - "6432:6432"
+    depends_on:
+      - postgres
+    networks:
+      - balloo-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - balloo-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # API Server
+  api:
+    build: ./api
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - JWT_SECRET=${JWT_SECRET}
+      - BCRYPT_ROUNDS=12
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - MAX_SERVER_URL=http://max-server:8080
+      - MAX_SERVER_API_KEY=${MAX_SERVER_API_KEY}
+      - SMS_SERVER_URL=http://max-server:8080
+      - SMS_SERVER_API_KEY=${MAX_SERVER_API_KEY}
+      - YANDEX_CLIENT_ID=${YANDEX_CLIENT_ID}
+      - YANDEX_CLIENT_SECRET=${YANDEX_CLIENT_SECRET}
+      - YANDEX_DISK_CLIENT_ID=${YANDEX_DISK_CLIENT_ID}
+      - YANDEX_DISK_CLIENT_SECRET=${YANDEX_DISK_CLIENT_SECRET}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DATABASE_URL=postgresql://balloo:${DB_PASSWORD:-balloo_secret_password_change_in_production}@pgbouncer:6432/balloo_production
+      - DB_POOL_SIZE=20
+      - DB_IDLE_TIMEOUT=30000
+      - DB_CONNECTION_TIMEOUT=5000
+      - STORAGE_PROVIDER=yandex
+      - MESSAGE_RETENTION_DAYS=90
+    volumes:
+      - api-data:/app/data
+      - api-logs:/app/logs
+      - api-uploads:/app/uploads
+    depends_on:
+      - postgres
+      - pgbouncer
+      - redis
+      - max-server
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Max SMS Server
+  max-server:
+    build: ./max-server
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - MAX_SERVER_PORT=8080
+      - MAX_SERVER_API_KEY=${MAX_SERVER_API_KEY}
+      - LOG_LEVEL=info
+    volumes:
+      - max-logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+volumes:
+  pgdata:
+  redis-data:
+  api-data:
+  api-logs:
+  api-uploads:
+  max-logs:
+
+networks:
+  balloo-network:
+    driver: bridge
+
+# Secrets (заполните в secrets/ директории)
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt

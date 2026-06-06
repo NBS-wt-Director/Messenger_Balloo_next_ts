@@ -37,7 +37,11 @@ export default function ForgotPasswordPage() {
       }
 
       setSuccess(true);
-      setEmail('');
+      
+      // Перенаправляем на страницу ввода кода через 2 секунды
+      setTimeout(() => {
+        router.push('/verify-code?email=' + encodeURIComponent(email));
+      }, 2000);
     } catch (err: any) {
       setError(err.message || 'Ошибка при отправке запроса');
     } finally {

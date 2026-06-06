@@ -102,9 +102,10 @@ export function Header() {
     document.title = `${title} | Balloo`;
   }, [pathname, translations]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setMenuOpen(false);
+    router.push('/login');
   };
 
   const handleLanguageChange = (lang: Language) => {

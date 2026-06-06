@@ -23,8 +23,8 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
     setError('');
     setSuccess(false);
 
-    if (newPassword.length < 6) {
-      setError('Пароль должен быть не менее 6 символов');
+    if (newPassword.length < 8) {
+      setError('Пароль должен быть не менее 8 символов');
       return;
     }
 
@@ -122,7 +122,7 @@ export function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProp
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               style={styles.input}
-              placeholder="Минимум 6 символов"
+              placeholder="Минимум 8 символов"
               required
             />
           </div>

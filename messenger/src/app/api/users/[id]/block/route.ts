@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/database';
+import db from '@/lib/database.js';
 import { logger } from '@/lib/logger';
+
+function getUserById(id: string): any {
+  return db.prepare('SELECT * FROM User WHERE id = ?').get(id) as any || null;
+}
 
 /**
  * POST /api/users/[id]/block - Заблокировать пользователя
@@ -28,26 +32,21 @@ export async function POST(
       );
     }
 
-    const db: any = await getDatabase();
-
-    const user = await db.users.findOne(userId).exec();
+    const user = getUserById(userId);
 
     if (!user) {
       logger.warn(`[API] Пользователь не найден: ${userId}`);
       return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
     }
 
-    const data = user.toJSON();
-    const blockedList = data.blockedUsers || [];
+    const blockedList = JSON.parse(user.blockedUsers || '[]');
     
     if (!blockedList.includes(blockedUserId)) {
       blockedList.push(blockedUserId);
     }
 
-    await user.patch({
-      blockedUsers: blockedList,
-      updatedAt: Date.now()
-    });
+    db.prepare('UPDATE User SET blockedUsers = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(blockedList), new Date().toISOString(), userId);
 
     logger.info(`[API] Пользователь заблокирован: ${blockedUserId} (заблокировал: ${userId})`);
 
@@ -65,7 +64,7 @@ export async function POST(
 }
 
 /**
- * POST /api/users/[id]/unblock - Разблокировать пользователя
+ * DELETE /api/users/[id]/block - Разблокировать пользователя
  */
 export async function DELETE(
   request: NextRequest,
@@ -83,22 +82,18 @@ export async function DELETE(
       );
     }
 
-    const db: any = await getDatabase();
-
-    const user = await db.users.findOne(userId).exec();
+    const user = getUserById(userId);
 
     if (!user) {
       logger.warn(`[API] Пользователь не найден: ${userId}`);
       return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
     }
 
-    const data = user.toJSON();
-    const blockedList = (data.blockedUsers || []).filter((id: string) => id !== unblockedUserId);
+    const blockedList = JSON.parse(user.blockedUsers || '[]')
+      .filter((b: string) => b !== unblockedUserId);
 
-    await user.patch({
-      blockedUsers: blockedList,
-      updatedAt: Date.now()
-    });
+    db.prepare('UPDATE User SET blockedUsers = ?, updatedAt = ? WHERE id = ?')
+      .run(JSON.stringify(blockedList), new Date().toISOString(), userId);
 
     logger.info(`[API] Пользователь разблокирован: ${unblockedUserId}`);
 
@@ -114,3 +109,4 @@ export async function DELETE(
     );
   }
 }
+

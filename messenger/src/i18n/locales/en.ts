@@ -251,4 +251,15 @@ export const en: Translation = {
   releaseDate: 'Release Date',
   changelog: 'Changelog',
   yourNotes: 'Your notes',
+  
+  // Audio messages
+  audioMessage: 'Audio message',
+  playAudio: 'Play audio',
+  pauseAudio: 'Pause audio',
+  recordingAudio: 'Recording audio...',
+  audioDuration: 'Duration',
+  audioSize: 'Size',
+  voiceMessage: 'Voice message',
+  tapToPlay: 'Tap to play',
+  swipeToDelete: 'Swipe to delete',
 };

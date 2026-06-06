@@ -1,0 +1,213 @@
+/* Call Interface */
+.call-interface {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  z-index: 3000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Video Container */
+.call-video-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.call-remote-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.call-local-video-container {
+  position: absolute;
+  bottom: 140px;
+  right: 20px;
+  width: 120px;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1a1a1a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.call-local-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.call-video-off-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
+/* Info Overlay */
+.call-info-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.call-peer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.call-peer-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.call-peer-avatar-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.call-peer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.call-peer-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.call-status {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Controls */
+.call-controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.call-control-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.call-control-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.call-control-btn:active {
+  transform: scale(0.95);
+}
+
+.call-control-btn.active {
+  background: rgba(255, 59, 59, 0.8);
+}
+
+.call-control-btn.end-call {
+  background: rgba(255, 59, 59, 0.9);
+  width: 64px;
+  height: 64px;
+}
+
+.call-control-btn.end-call:hover {
+  background: rgba(255, 59, 59, 1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .call-local-video-container {
+    width: 100px;
+    height: 133px;
+    bottom: 130px;
+    right: 16px;
+  }
+
+  .call-peer-avatar,
+  .call-peer-avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .call-peer-name {
+    font-size: 18px;
+  }
+
+  .call-controls {
+    gap: 12px;
+    padding: 20px 16px;
+  }
+
+  .call-control-btn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .call-control-btn.end-call {
+    width: 58px;
+    height: 58px;
+  }
+}
