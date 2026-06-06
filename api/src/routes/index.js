@@ -472,4 +472,16 @@ webrtcRouter.post('/answer', webrtcController.createAnswer);
 webrtcRouter.post('/ice-candidate', webrtcController.addIceCandidate);
 router.use('/webrtc', webrtcRouter);
 
+// ============================================
+// THEMES ROUTES
+// ============================================
+const themesRouter = require('./themes');
+router.use('/themes', themesRouter);
+
+// ============================================
+// ATTACHMENTS ROUTES
+// ============================================
+const attachmentsRouter = require('./attachments');
+router.use('/attachments', attachmentsRouter);
+
 module.exports = router;
