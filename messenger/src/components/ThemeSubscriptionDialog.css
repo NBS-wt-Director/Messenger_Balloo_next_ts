@@ -1,0 +1,269 @@
+/**
+ * ThemeSubscriptionDialog Styles
+ */
+
+.subscription-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.subscription-dialog {
+  background: var(--bg-primary, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 450px;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.subscription-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--text-primary, #212529);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: var(--text-secondary, #6c757d);
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.subscription-content {
+  padding: 20px;
+}
+
+.price-info {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.price-per-day {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.price {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--primary-color, #007bff);
+}
+
+.currency {
+  font-size: 16px;
+  color: var(--text-secondary, #6c757d);
+}
+
+.description {
+  margin: 0;
+  color: var(--text-secondary, #6c757d);
+  font-size: 14px;
+}
+
+.days-selector {
+  margin-bottom: 25px;
+}
+
+.days-selector label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--text-primary, #212529);
+}
+
+.days-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.days-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color, #e0e0e0);
+  background: var(--bg-primary, #ffffff);
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.days-btn:hover:not(:disabled) {
+  background: var(--bg-secondary, #f8f9fa);
+  border-color: var(--primary-color, #007bff);
+}
+
+.days-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.days-input {
+  width: 80px;
+  padding: 10px;
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 6px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.days-input:focus {
+  outline: none;
+  border-color: var(--primary-color, #007bff);
+}
+
+.cost-summary {
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.cost-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.cost-row:last-child {
+  margin-bottom: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.cost-value {
+  font-weight: 600;
+  color: var(--primary-color, #007bff);
+}
+
+.error-message {
+  background: #fff3f3;
+  border: 1px solid #ffcdd2;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  padding: 12px 20px;
+  border: 1px solid var(--border-color, #e0e0e0);
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-primary, #212529);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  border-color: var(--text-secondary, #6c757d);
+}
+
+.btn-activate {
+  padding: 12px 20px;
+  border: none;
+  background: var(--primary-color, #007bff);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-activate:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-activate:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .subscription-dialog {
+    width: 95%;
+  }
+
+  .price {
+    font-size: 36px;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-cancel,
+  .btn-activate {
+    width: 100%;
+  }
+}

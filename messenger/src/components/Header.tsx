@@ -5,10 +5,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations, Language } from '@/i18n';
-import { Settings, LogOut, User, Moon, Sun, Flag, Globe, Shield, Home, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Settings, LogOut, User, Moon, Sun, Flag, Globe, Shield, Home, ChevronDown, ArrowLeft, Palette } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Logo } from './ui/Logo';
 import { BurgerMenu } from './ui/BurgerMenu';
+import ThemeSelector from './ThemeSelector';
 import './layout/Header.css';
 
 // Карта путей к заголовкам страниц
@@ -71,6 +72,7 @@ export function Header() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [themeSelectorOpen, setThemeSelectorOpen] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
 
   const translations = getTranslations(language);
@@ -116,6 +118,11 @@ export function Header() {
 
   const handleThemeChange = (newTheme: any) => {
     setTheme(newTheme);
+    setMenuOpen(false);
+  };
+
+  const handleOpenThemeSelector = () => {
+    setThemeSelectorOpen(true);
     setMenuOpen(false);
   };
 
@@ -195,6 +202,13 @@ export function Header() {
                 {/* Темы оформления */}
                 <div className="header-menu-section">
                   <div className="header-menu-section-title">{translations.theme}</div>
+                  <button
+                    onClick={handleOpenThemeSelector}
+                    className="header-theme-selector-btn"
+                  >
+                    <Palette size={16} />
+                    <span>{translations.customThemes || 'Пользовательские темы'}</span>
+                  </button>
                   <div className="header-theme-grid">
                     {THEMES.map((t) => {
                       const ThemeIcon = t.icon;
@@ -407,6 +421,7 @@ export function Header() {
           </div>
       </div>
     </header>
+    <ThemeSelector isOpen={themeSelectorOpen} onClose={() => setThemeSelectorOpen(false)} />
   </>
 );
 }
