@@ -309,3 +309,129 @@ export interface PointTransaction {
   relatedInviteId?: string;
   relatedUserId?: string;
 }
+
+// ============================================
+// ВЛОЖЕНИЯ (Polls, Quizzes, Surveys, Lists)
+// ============================================
+
+export type AttachmentType = 
+  | 'image' | 'video' | 'file' | 'audio' | 'document'
+  | 'poll' | 'quiz' | 'survey' | 'list';
+
+// Голосование
+export interface PollOption {
+  id: string;
+  text: string;
+  votes: number;
+}
+
+export interface PollAttachment {
+  type: 'poll';
+  pollId: string;
+  question: string;
+  options: PollOption[];
+  multipleChoice: boolean;
+  allowsComments: boolean;
+  expiresAt?: number;
+  isAnonymous: boolean;
+  totalVotes: number;
+  userVote?: string[];
+  createdAt: number;
+  updatedAt: number;
+}
+
+// Тест
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswers: string[];
+  type: 'single' | 'multiple';
+  order: number;
+  points: number;
+}
+
+export interface QuizAttachment {
+  type: 'quiz';
+  quizId: string;
+  title: string;
+  description?: string;
+  questions: QuizQuestion[];
+  settings: {
+    maxAttempts?: number;
+    timeLimit?: number;
+    showCorrectAnswers: boolean;
+    passScore: number;
+  };
+  createdAt: number;
+  updatedAt: number;
+}
+
+// Опрос
+export interface SurveyQuestion {
+  id: string;
+  type: 'text' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'rating';
+  question: string;
+  options?: { id: string; text: string; value?: string }[];
+  required: boolean;
+  order: number;
+}
+
+export interface SurveySection {
+  id: string;
+  title: string;
+  description?: string;
+  questions: SurveyQuestion[];
+  order: number;
+}
+
+export interface SurveyAttachment {
+  type: 'survey';
+  surveyId: string;
+  title: string;
+  description?: string;
+  sections: SurveySection[];
+  settings: {
+    allowMultipleSubmissions: boolean;
+    showResults: boolean;
+    expiresAt?: number;
+    requireAuth: boolean;
+  };
+  createdAt: number;
+  updatedAt: number;
+}
+
+// Список
+export interface ListItem {
+  id: string;
+  text: string;
+  description?: string;
+  completed: boolean;
+  completedBy?: string[];
+  completedAt?: number;
+  assignedTo?: string;
+  order: number;
+}
+
+export interface ListAttachment {
+  type: 'list';
+  listId: string;
+  title: string;
+  description?: string;
+  items: ListItem[];
+  settings: {
+    allowReordering: boolean;
+    allowAssigning: boolean;
+    showCompleted: boolean;
+  };
+  createdAt: number;
+  updatedAt: number;
+}
+
+// Общее вложение в сообщение
+export interface MessageAttachment {
+  id: string;
+  type: AttachmentType;
+  data: PollAttachment | QuizAttachment | SurveyAttachment | ListAttachment | Attachment;
+  createdAt: number;
+}
