@@ -27,7 +27,7 @@
 
 .theme-selector-modal {
   background: var(--bg-primary, #ffffff);
-  border-radius: 12px;
+  border-radius: 0;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   width: 90%;
   max-width: 800px;
@@ -58,7 +58,7 @@
 
 .theme-selector-header h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
   color: var(--text-primary, #212529);
 }
 
@@ -74,7 +74,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 0;
   transition: background 0.2s;
 }
 
@@ -94,11 +94,12 @@
   border: none;
   background: none;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--text-secondary, #6c757d);
   transition: all 0.2s;
   border-bottom: 2px solid transparent;
+  border-radius: 0;
 }
 
 .theme-selector-tabs .tab:hover {
@@ -129,7 +130,7 @@
   text-align: center;
   color: var(--text-secondary, #6c757d);
   padding: 40px;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .no-themes a {
@@ -155,7 +156,7 @@
   border: 1px solid var(--border-color, #e0e0e0);
   background: var(--bg-primary, #ffffff);
   color: var(--text-primary, #212529);
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s;

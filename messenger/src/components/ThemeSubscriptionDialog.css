@@ -27,7 +27,7 @@
 
 .subscription-dialog {
   background: var(--bg-primary, #ffffff);
-  border-radius: 12px;
+  border-radius: 0;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   width: 90%;
   max-width: 450px;
@@ -55,7 +55,7 @@
 
 .subscription-header h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 26px;
   color: var(--text-primary, #212529);
 }
 
@@ -71,7 +71,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 0;
   transition: background 0.2s;
 }
 
@@ -110,7 +110,7 @@
 .description {
   margin: 0;
   color: var(--text-secondary, #6c757d);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .days-selector {
@@ -120,7 +120,8 @@
 .days-selector label {
   display: block;
   margin-bottom: 10px;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 16px;
   color: var(--text-primary, #212529);
 }
 
