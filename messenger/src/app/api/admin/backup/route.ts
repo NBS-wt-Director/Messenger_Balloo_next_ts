@@ -1,5 +1,6 @@
- import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/database.js';
+import { getDatabase } from '@/lib/database/index';
 
 interface BackupData {
   version: string;

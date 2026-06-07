@@ -216,7 +216,7 @@ export async function importKeyFromBase64(base64Key: string): Promise<CryptoKey>
 /**
  * Шифрование файла с использованием AES-GCM
  */
-export async function encryptFileAES(file: File, key: CryptoKey): Promise<{ encrypted: Buffer; iv: string }> {
+export async function encryptFileAES(file: File, key: CryptoKey): Promise<{ encrypted: Uint8Array; iv: string }> {
   const arrayBuffer = await file.arrayBuffer();
   const data = new Uint8Array(arrayBuffer);
   
@@ -231,7 +231,7 @@ export async function encryptFileAES(file: File, key: CryptoKey): Promise<{ encr
   );
   
   return {
-    encrypted: Buffer.from(encrypted),
+    encrypted: new Uint8Array(encrypted),
     iv: Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join(''),
   };
 }
@@ -239,18 +239,15 @@ export async function encryptFileAES(file: File, key: CryptoKey): Promise<{ encr
 /**
  * Расшифровка файла с использованием AES-GCM
  */
-export async function decryptFileAES(encrypted: Buffer, key: CryptoKey, ivHex: string): Promise<Uint8Array> {
+export async function decryptFileAES(encrypted: Uint8Array, key: CryptoKey, ivHex: string): Promise<Uint8Array> {
   // Преобразование hex IV обратно в байты
   const iv = new Uint8Array(ivHex.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
-  
-  // Конвертация Buffer в Uint8Array для Web Crypto API
-  const encryptedView = new Uint8Array(encrypted.buffer, encrypted.byteOffset, encrypted.byteLength);
   
   try {
     const decrypted = await crypto.subtle.decrypt(
       { name: 'AES-GCM', iv },
       key,
-      encryptedView as any as BufferSource
+      encrypted
     );
     
     return new Uint8Array(decrypted);
