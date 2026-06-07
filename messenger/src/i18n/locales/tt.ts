@@ -105,7 +105,6 @@ export const tt: Translation = {
   darkTheme: 'Kara',
   lightTheme: 'Ak',
   russiaTheme: 'Rossiä',
-  language: 'Tel',
   notifications: 'Beldermelar',
   privacy: 'Yasharenlek',
   security: 'Iminlek',
