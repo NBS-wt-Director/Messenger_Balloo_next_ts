@@ -18,6 +18,10 @@ import { messagesApi } from '@/api/client';
 import { createCall, endCall, updateCall } from '@/api/calls';
 import { AttachmentViewer, AttachmentThumbnail } from '@/components/AttachmentViewer';
 import { CallInterface } from '@/components/CallInterface';
+import PollAttachment from '@/components/PollAttachment';
+import QuizAttachment from '@/components/QuizAttachment';
+import SurveyAttachment from '@/components/SurveyAttachment';
+import ListAttachment from '@/components/ListAttachment';
 import type { Attachment } from '@/types';
 import './ChatPage.css';
 
@@ -515,10 +519,33 @@ export function ChatPage() {
               {/* Вложения */}
               {message.attachment && (
                 <div className="message-attachment">
-                  <AttachmentThumbnail 
-                    attachment={message.attachment}
-                    onClick={() => setSelectedAttachment(message.attachment!)}
-                  />
+                  {message.attachment.type === 'poll' ? (
+                    <PollAttachment 
+                      poll={message.attachment.data as any}
+                      onVote={(optionIds, text) => console.log('Vote:', optionIds, text)}
+                      onTextResponse={(text) => console.log('Text response:', text)}
+                    />
+                  ) : message.attachment.type === 'quiz' ? (
+                    <QuizAttachment 
+                      quiz={message.attachment.data as any}
+                      onSubmit={(answers) => console.log('Quiz answers:', answers)}
+                    />
+                  ) : message.attachment.type === 'survey' ? (
+                    <SurveyAttachment 
+                      survey={message.attachment.data as any}
+                      onSubmit={(answers) => console.log('Survey answers:', answers)}
+                    />
+                  ) : message.attachment.type === 'list' ? (
+                    <ListAttachment 
+                      list={message.attachment.data as any}
+                      onItemComplete={(itemId, completed) => console.log('Item complete:', itemId, completed)}
+                    />
+                  ) : (
+                    <AttachmentThumbnail 
+                      attachment={message.attachment}
+                      onClick={() => setSelectedAttachment(message.attachment!)}
+                    />
+                  )}
                 </div>
               )}
               
