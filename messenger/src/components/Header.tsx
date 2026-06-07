@@ -6,7 +6,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations, Language } from '@/i18n';
 import { Settings, LogOut, User, Moon, Sun, Flag, Globe, Shield, Home, ChevronDown, ArrowLeft, Palette } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Logo } from './ui/Logo';
 import { BurgerMenu } from './ui/BurgerMenu';
 import ThemeSelector from './ThemeSelector';
@@ -73,6 +73,7 @@ export function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [themeSelectorOpen, setThemeSelectorOpen] = useState(false);
+  const [questionBtnColor, setQuestionBtnColor] = useState('#007bff');
   const [pageTitle, setPageTitle] = useState('');
 
   const translations = getTranslations(language);
@@ -125,6 +126,24 @@ export function Header() {
     setThemeSelectorOpen(true);
     setMenuOpen(false);
   };
+
+  // Генерация случайного цвета для кнопки "?"
+  const generateRandomColor = useCallback(() => {
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 70%, 50%)`;
+  }, []);
+
+  // Таймер изменения цвета каждые 7 секунд
+  useEffect(() => {
+    // Установить начальный цвет
+    setQuestionBtnColor(generateRandomColor());
+    
+    const interval = setInterval(() => {
+      setQuestionBtnColor(generateRandomColor());
+    }, 7000);
+
+    return () => clearInterval(interval);
+  }, [generateRandomColor]);
 
   const handleBack = () => {
     router.back();
@@ -202,30 +221,51 @@ export function Header() {
                 {/* Темы оформления - всегда видны */}
                 <div className="header-menu-section">
                   <div className="header-menu-section-title">{translations.theme}</div>
-                  <div className="header-theme-buttons-row">
-                    {THEMES.map((t) => {
-                      const ThemeIcon = t.icon;
-                      return (
-                        <button
-                          key={t.value}
-                          onClick={() => handleThemeChange(t.value)}
-                          className={`header-theme-btn ${theme === t.value ? 'active' : ''}`}
-                          title={translations[t.label as keyof typeof translations] || t.label}
-                        >
-                          <div 
-                            className="header-theme-btn-color"
-                            style={{ background: t.color }}
-                          />
-                          <ThemeIcon size={16} />
-                        </button>
-                      );
-                    })}
+                  <div className="header-theme-rectangles">
+                    {/* Тёмная тема */}
                     <button 
-                      onClick={handleOpenThemeSelector}
-                      className="header-theme-selector-btn"
-                      title="Все темы"
+                      onClick={() => handleThemeChange('dark')}
+                      className={`theme-rect ${theme === 'dark' ? 'active' : ''}`}
+                      style={{ background: '#1a1a2e' }}
+                      title={translations.darkTheme}
                     >
-                      <Palette size={16} />
+                      <Moon size={20} color="white" />
+                      <span>{translations.darkTheme}</span>
+                    </button>
+
+                    {/* Светлая тема */}
+                    <button 
+                      onClick={() => handleThemeChange('light')}
+                      className={`theme-rect ${theme === 'light' ? 'active' : ''}`}
+                      style={{ background: '#f5f5f5' }}
+                      title={translations.lightTheme}
+                    >
+                      <Sun size={20} color="#333" />
+                      <span>{translations.lightTheme}</span>
+                    </button>
+
+                    {/* Россия тема */}
+                    <button
+                      onClick={() => handleThemeChange('russia')}
+                      className={`theme-rect ${theme === 'russia' ? 'active' : ''}`}
+                      style={{
+                        background: 'linear-gradient(to bottom, #fff 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%)'
+                      }}
+                      title={translations.russiaTheme}
+                    >
+                      <Flag size={20} color="#333" />
+                      <span>{translations.russiaTheme}</span>
+                    </button>
+
+                    {/* Кнопка "Все темы" с меняющимся цветом */}
+                    <button
+                      onClick={handleOpenThemeSelector}
+                      className={`theme-rect question-btn ${themeSelectorOpen ? 'active' : ''}`}
+                      style={{ background: theme === 'russia' ? 'linear-gradient(to bottom, #fff 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%)' : questionBtnColor }}
+                      title={translations.customThemes}
+                    >
+                      <span className="question-mark">?</span>
+                      <span>{translations.customThemes}</span>
                     </button>
                   </div>
                 </div>
