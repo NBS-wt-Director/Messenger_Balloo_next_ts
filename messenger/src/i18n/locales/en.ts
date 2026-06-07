@@ -101,8 +101,10 @@ export const en: Translation = {
   expiresIn: 'Expires in',
   statusExpired: 'Status Expired',
   theme: 'Theme',
+  customThemes: 'All Themes',
   darkTheme: 'Dark Theme',
   lightTheme: 'Light Theme',
+  russiaTheme: 'Russia Theme',
   language: 'Language',
   notifications: 'Notifications',
   privacy: 'Privacy',
@@ -263,3 +265,4 @@ export const en: Translation = {
   tapToPlay: 'Tap to play',
   swipeToDelete: 'Swipe to delete',
 };
+

@@ -199,34 +199,34 @@ export function Header() {
             {/* Полное меню */}
             {menuOpen && (
               <div className="header-full-menu">
-                {/* Темы оформления */}
+                {/* Темы оформления - всегда видны */}
                 <div className="header-menu-section">
                   <div className="header-menu-section-title">{translations.theme}</div>
-                  <button
-                    onClick={handleOpenThemeSelector}
-                    className="header-theme-selector-btn"
-                  >
-                    <Palette size={16} />
-                    <span>{translations.customThemes || 'Пользовательские темы'}</span>
-                  </button>
-                  <div className="header-theme-grid">
+                  <div className="header-theme-buttons-row">
                     {THEMES.map((t) => {
                       const ThemeIcon = t.icon;
                       return (
                         <button
                           key={t.value}
                           onClick={() => handleThemeChange(t.value)}
-                          className={`header-theme-option ${theme === t.value ? 'active' : ''}`}
+                          className={`header-theme-btn ${theme === t.value ? 'active' : ''}`}
+                          title={translations[t.label as keyof typeof translations] || t.label}
                         >
                           <div 
-                            className="header-theme-color"
+                            className="header-theme-btn-color"
                             style={{ background: t.color }}
                           />
                           <ThemeIcon size={16} />
-                          <span>{translations[t.label as keyof typeof translations] || t.label}</span>
                         </button>
                       );
                     })}
+                    <button 
+                      onClick={handleOpenThemeSelector}
+                      className="header-theme-selector-btn"
+                      title="Все темы"
+                    >
+                      <Palette size={16} />
+                    </button>
                   </div>
                 </div>
 

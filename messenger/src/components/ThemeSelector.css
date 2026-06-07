@@ -132,6 +132,16 @@
   font-size: 16px;
 }
 
+.no-themes a {
+  color: var(--primary-color, #007bff);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.no-themes a:hover {
+  text-decoration: underline;
+}
+
 .theme-selector-footer {
   display: flex;
   justify-content: flex-end;

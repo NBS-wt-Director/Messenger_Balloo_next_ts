@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSettingsStore } from '@/stores/settings-store';
+import { useAuthStore } from '@/stores/auth-store';
 import ThemeCard from './ThemeCard';
 import ThemeSubscriptionDialog from './ThemeSubscriptionDialog';
 import './ThemeSelector.css';
@@ -64,6 +65,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<TabType>('presets');
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [showSubscription, setShowSubscription] = useState(false);
+  const [wasAuthenticated, setWasAuthenticated] = useState(false);
   
   const {
     customThemes,
@@ -74,14 +76,25 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
     loadThemesFromServer
   } = useSettingsStore();
 
+  const { isAuthenticated } = useAuthStore();
+
   useEffect(() => {
     if (isOpen) {
-      loadThemesFromServer();
+      setWasAuthenticated(isAuthenticated);
+      if (isAuthenticated) {
+        loadThemesFromServer();
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, isAuthenticated]);
 
   const handleSelectTheme = (themeId: string) => {
     setSelectedTheme(themeId);
+    
+    if (!isAuthenticated) {
+      // Неавторизованный - применяем временно
+      setTheme(themeId as any);
+      return;
+    }
     
     if (subscription.isActive) {
       // Подписка активна - применяем тему
@@ -99,14 +112,23 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  // При закрытии окна, если пользователь не был авторизован
+  const handleClose = () => {
+    if (!wasAuthenticated && !isAuthenticated) {
+      // Сброс на светлую тему
+      setTheme('light');
+    }
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="theme-selector-overlay" onClick={onClose}>
+    <div className="theme-selector-overlay" onClick={handleClose}>
       <div className="theme-selector-modal" onClick={(e) => e.stopPropagation()}>
         <div className="theme-selector-header">
           <h2>Выбор темы</h2>
-          <button className="theme-selector-close" onClick={onClose}>×</button>
+          <button className="theme-selector-close" onClick={handleClose}>×</button>
         </div>
 
         <div className="theme-selector-tabs">
@@ -120,13 +142,13 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
             className={`tab ${activeTab === 'recent' ? 'active' : ''}`}
             onClick={() => setActiveTab('recent')}
           >
-            Последние ({recentThemes.length})
+            Последние {isAuthenticated ? `(${recentThemes.length})` : ''}
           </button>
           <button
             className={`tab ${activeTab === 'favorites' ? 'active' : ''}`}
             onClick={() => setActiveTab('favorites')}
           >
-            Избранное ({favorites.length})
+            Избранное {isAuthenticated ? `(${favorites.length})` : ''}
           </button>
         </div>
 
@@ -149,7 +171,11 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
 
           {activeTab === 'recent' && (
             <div className="theme-grid">
-              {recentThemes.length === 0 ? (
+              {!isAuthenticated ? (
+                <p className="no-themes">
+                  Пожалуйста, <a href="/login">войдите</a>, чтобы увидеть историю тем
+                </p>
+              ) : recentThemes.length === 0 ? (
                 <p className="no-themes">Нет последних использованных тем</p>
               ) : (
                 recentThemes.map((theme) => (
@@ -169,7 +195,11 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
 
           {activeTab === 'favorites' && (
             <div className="theme-grid">
-              {favorites.length === 0 ? (
+              {!isAuthenticated ? (
+                <p className="no-themes">
+                  Пожалуйста, <a href="/login">войдите</a>, чтобы увидеть избранное
+                </p>
+              ) : favorites.length === 0 ? (
                 <p className="no-themes">Нет избранных тем</p>
               ) : (
                 favorites.map((theme) => (
@@ -189,7 +219,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="theme-selector-footer">
-          <button className="btn-secondary" onClick={onClose}>
+          <button className="btn-secondary" onClick={handleClose}>
             Закрыть
           </button>
         </div>
