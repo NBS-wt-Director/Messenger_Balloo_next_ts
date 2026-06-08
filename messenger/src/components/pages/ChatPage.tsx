@@ -519,25 +519,25 @@ export function ChatPage() {
               {/* Вложения */}
               {message.attachment && (
                 <div className="message-attachment">
-                  {message.attachment.type === 'poll' ? (
+                  {(message.attachment as any).type === 'poll' ? (
                     <PollAttachment 
-                      poll={message.attachment.data as any}
+                      poll={(message.attachment as any).data || message.attachment}
                       onVote={(optionIds, text) => console.log('Vote:', optionIds, text)}
                       onTextResponse={(text) => console.log('Text response:', text)}
                     />
-                  ) : message.attachment.type === 'quiz' ? (
+                  ) : (message.attachment as any).type === 'quiz' ? (
                     <QuizAttachment 
-                      quiz={message.attachment.data as any}
+                      quiz={(message.attachment as any).data || message.attachment}
                       onSubmit={(answers) => console.log('Quiz answers:', answers)}
                     />
-                  ) : message.attachment.type === 'survey' ? (
+                  ) : (message.attachment as any).type === 'survey' ? (
                     <SurveyAttachment 
-                      survey={message.attachment.data as any}
+                      survey={(message.attachment as any).data || message.attachment}
                       onSubmit={(answers) => console.log('Survey answers:', answers)}
                     />
-                  ) : message.attachment.type === 'list' ? (
+                  ) : (message.attachment as any).type === 'list' ? (
                     <ListAttachment 
-                      list={message.attachment.data as any}
+                      list={(message.attachment as any).data || message.attachment}
                       onItemComplete={(itemId, completed) => console.log('Item complete:', itemId, completed)}
                     />
                   ) : (

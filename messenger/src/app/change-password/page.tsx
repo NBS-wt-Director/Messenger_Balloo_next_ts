@@ -49,7 +49,7 @@ export default function ChangePasswordPage() {
           router.push('/profile');
         }, 2000);
       } else {
-        setError(response.error || 'Ошибка при смене пароля');
+        setError(typeof response.error === 'string' ? response.error : 'Ошибка при смене пароля');
       }
     } catch (err: any) {
       setError(err.message || 'Ошибка при смене пароля');

@@ -1,11 +1,11 @@
-'use client';
+ 'use client';
 
 import React, { useState } from 'react';
-import { ListAttachment, ListItem } from '@/types/attachments';
+import type { ListAttachment as ListType, ListItem } from '@/types/attachments';
 import './ListAttachment.css';
 
 interface ListAttachmentProps {
-  list: ListAttachment;
+  list: ListType;
   onItemComplete: (itemId: string, completed: boolean) => void;
   isDisabled?: boolean;
 }
@@ -26,14 +26,14 @@ const ListAttachment: React.FC<ListAttachmentProps> = ({
     if (isDisabled) return;
 
     const item = items.find(i => i.id === itemId);
-    if (!item || item.completedBy?.length > 0) return;
+    if (!item || (item.completedBy && item.completedBy.length > 0)) return;
 
     const updated = items.map(i => 
       i.id === itemId 
         ? { 
             ...i, 
             completed: !i.completed,
-            completedBy: !i.completed ? [list.settings.notifyOnComplete ? 'user' : undefined].filter(Boolean) as string[] : [],
+            completedBy: !i.completed ? ['user'] : [],
             completedAt: !i.completed ? Date.now() : undefined
           }
         : i

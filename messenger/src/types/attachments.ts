@@ -111,25 +111,29 @@ export interface ListProgress {
 export type SurveyQuestionType = 
   | 'text' 
   | 'textarea' 
-  | 'single-choice' 
-  | 'multiple-choice' 
-  | 'rating' 
-  | 'scale'
-  | 'date'
-  | 'email';
+  | 'select' 
+  | 'radio' 
+  | 'checkbox' 
+  | 'rating';
+
+export interface SurveySection {
+  id: string;
+  surveyId?: string;
+  title: string;
+  description?: string;
+  questions: SurveyQuestion[];
+  order: number;
+}
 
 export interface SurveyAttachment {
   type: 'survey';
   surveyId: string;
   title: string;
   description?: string;
-  questions: SurveyQuestion[];
+  sections: SurveySection[];
   settings: SurveySettings;
-  results: SurveyResults;
-  userSubmission?: UserSurveySubmission;
   createdAt: number;
   updatedAt: number;
-  createdBy: string;
 }
 
 export interface SurveyQuestion {
@@ -137,6 +141,7 @@ export interface SurveyQuestion {
   type: SurveyQuestionType;
   question: string;
   description?: string;
+  placeholder?: string;
   options?: SurveyOption[];
   required: boolean;
   order: number;
@@ -263,6 +268,38 @@ export interface QuizAnswer {
   optionIds: string[];
   isCorrect: boolean;
   points?: number;
+}
+
+// ============================================
+// СПИСКИ (Lists)
+// ============================================
+
+export interface ListItem {
+  id: string;
+  text: string;
+  description?: string;
+  completed: boolean;
+  completedBy?: string[];
+  completedAt?: number;
+  assignedTo?: string;
+  order: number;
+}
+
+export interface ListSettings {
+  allowReordering: boolean;
+  allowAssigning: boolean;
+  showCompleted: boolean;
+}
+
+export interface ListAttachment {
+  type: 'list';
+  listId: string;
+  title: string;
+  description?: string;
+  items: ListItem[];
+  settings: ListSettings;
+  createdAt: number;
+  updatedAt: number;
 }
 
 // ============================================

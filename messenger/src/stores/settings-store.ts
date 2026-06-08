@@ -1,23 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Language, Theme } from '@/i18n/types';
+import type { ThemeColors } from '@/types';
 
 // Типы для пользовательских тем
 export interface CustomTheme {
   id: string;
   name: string;
-  colors: {
-    primary: string;
-    secondary: string;
-    background: string;
-    surface: string;
-    text: string;
-    textSecondary: string;
-    border: string;
-    accent: string;
-  };
+  colors: ThemeColors;
   isFavorite: boolean;
   createdAt: number;
+  updatedAt?: number;
+  createdBy?: string;
 }
 
 export interface ThemeSubscription {

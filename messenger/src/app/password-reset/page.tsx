@@ -8,7 +8,7 @@ import './password-reset.css';
 export default function PasswordResetPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const email = searchParams.get('email') || '';
+  const email = searchParams?.get('email') || '';
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

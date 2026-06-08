@@ -2,6 +2,8 @@
  * Страница управления подпиской на темы
  */
 
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { useSettingsStore } from '@/stores/settings-store';
 import './page.css';

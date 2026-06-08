@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { SurveyAttachment, SurveyQuestion, SurveyAnswer } from '@/types/attachments';
+import type { SurveyAttachment as SurveyType, SurveyQuestion, SurveyAnswer, SurveySection } from '@/types/attachments';
 import './SurveyAttachment.css';
 
 interface SurveyAttachmentProps {
-  survey: SurveyAttachment;
+  survey: SurveyType;
   onSubmit: (answers: SurveyAnswer[]) => void;
   isDisabled?: boolean;
 }
@@ -164,11 +164,11 @@ const SurveyAttachment: React.FC<SurveyAttachmentProps> = ({
   };
 
   const allQuestionsAnswered = () => {
-    const requiredQuestions = currentSection.questions.filter(q => q.required);
-    return requiredQuestions.every(q => {
+    const requiredQuestions = currentSection.questions.filter((q: SurveyQuestion) => q.required);
+    return requiredQuestions.every((q: SurveyQuestion) => {
       const answer = answers.find(a => a.questionId === q.id);
       if (!answer) return false;
-      if (Array.isArray(answer.value)) return answer.value.length > 0;
+      if (Array.isArray(answer.value)) return (answer.value as string[]).length > 0;
       return answer.value !== '';
     });
   };

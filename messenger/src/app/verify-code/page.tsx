@@ -8,7 +8,7 @@ import './verify-code.css';
 export default function VerifyCodePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const email = searchParams.get('email') || '';
+  const email = searchParams?.get('email') || '';
 
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);

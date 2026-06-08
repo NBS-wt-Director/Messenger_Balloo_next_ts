@@ -1,4 +1,4 @@
-
+ 
 import nacl from 'tweetnacl';
 import { encodeBase64, decodeBase64, encodeUTF8, decodeUTF8 } from 'tweetnacl-util';
 // fileLogger удалён — используется console для клиентской совместимости
@@ -247,7 +247,7 @@ export async function decryptFileAES(encrypted: Uint8Array, key: CryptoKey, ivHe
     const decrypted = await crypto.subtle.decrypt(
       { name: 'AES-GCM', iv },
       key,
-      encrypted
+      encrypted.buffer as ArrayBuffer
     );
     
     return new Uint8Array(decrypted);

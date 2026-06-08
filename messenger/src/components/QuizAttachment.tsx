@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { QuizAttachment, QuizQuestion, QuizOption, QuizAnswer } from '@/types/attachments';
+import type { QuizAttachment as QuizType, QuizQuestion, QuizOption, QuizAnswer } from '@/types/attachments';
 import './QuizAttachment.css';
 
 interface QuizAttachmentProps {
-  quiz: QuizAttachment;
+  quiz: QuizType;
   onSubmit: (answers: QuizAnswer[]) => void;
   isDisabled?: boolean;
 }

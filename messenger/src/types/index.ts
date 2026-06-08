@@ -372,13 +372,17 @@ export interface SurveyQuestion {
   id: string;
   type: 'text' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'rating';
   question: string;
+  description?: string;
   options?: { id: string; text: string; value?: string }[];
   required: boolean;
   order: number;
+  placeholder?: string;
+  validation?: { minLength?: number; maxLength?: number; pattern?: string; min?: number; max?: number };
 }
 
 export interface SurveySection {
   id: string;
+  surveyId?: string;
   title: string;
   description?: string;
   questions: SurveyQuestion[];
@@ -413,17 +417,19 @@ export interface ListItem {
   order: number;
 }
 
+export interface ListSettings {
+  allowReordering: boolean;
+  allowAssigning: boolean;
+  showCompleted: boolean;
+}
+
 export interface ListAttachment {
   type: 'list';
   listId: string;
   title: string;
   description?: string;
   items: ListItem[];
-  settings: {
-    allowReordering: boolean;
-    allowAssigning: boolean;
-    showCompleted: boolean;
-  };
+  settings: ListSettings;
   createdAt: number;
   updatedAt: number;
 }
@@ -434,4 +440,37 @@ export interface MessageAttachment {
   type: AttachmentType;
   data: PollAttachment | QuizAttachment | SurveyAttachment | ListAttachment | Attachment;
   createdAt: number;
+}
+
+// ============================================
+// ТЕМЫ ОФОРМЛЕНИЯ
+// ============================================
+
+export interface ThemeColors {
+  primary: string;
+  secondary: string;
+  background: string;
+  surface: string;
+  text: string;
+  textSecondary: string;
+  border: string;
+  accent: string;
+}
+
+export interface PresetTheme {
+  id: string;
+  name: string;
+  colors: ThemeColors;
+  isFavorite: boolean;
+  createdAt: number;
+}
+
+export interface CustomTheme {
+  id: string;
+  name: string;
+  colors: ThemeColors;
+  isFavorite: boolean;
+  createdAt: number;
+  updatedAt?: number;
+  createdBy?: string;
 }

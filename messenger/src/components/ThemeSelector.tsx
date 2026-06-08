@@ -29,7 +29,9 @@ const PRESET_THEMES = [
       textSecondary: '#6c757d',
       border: '#dee2e6',
       accent: '#007bff'
-    }
+    },
+    isFavorite: false,
+    createdAt: Date.now()
   },
   {
     id: 'dark',
@@ -43,7 +45,9 @@ const PRESET_THEMES = [
       textSecondary: '#b0b0b0',
       border: '#404040',
       accent: '#0d6efd'
-    }
+    },
+    isFavorite: false,
+    createdAt: Date.now()
   },
   {
     id: 'russia',
@@ -57,7 +61,9 @@ const PRESET_THEMES = [
       textSecondary: '#555555',
       border: '#cccccc',
       accent: '#D52B1E'
-    }
+    },
+    isFavorite: false,
+    createdAt: Date.now()
   }
 ];
 

@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PollAttachment, PollOption } from '@/types/attachments';
+import type { PollAttachment as PollType, PollOption } from '@/types/attachments';
 import './PollAttachment.css';
 
 interface PollAttachmentProps {
-  poll: PollAttachment;
+  poll: PollType;
   onVote: (optionIds: string[], textResponse?: string) => void;
   onTextResponse: (text: string) => void;
   isDisabled?: boolean;
