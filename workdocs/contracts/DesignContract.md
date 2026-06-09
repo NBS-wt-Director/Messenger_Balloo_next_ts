@@ -18,6 +18,7 @@ This contract defines the mandatory design rules for all platform UI across the 
 
 - **rounded corners are forbidden everywhere**
 - **Any `rounded*` utility classes are forbidden**
+- **Circles via `border-radius: 50%` are forbidden**
 - All containers, buttons, inputs, cards must have sharp corners (border-radius: 0)
 - Legacy rounded usage in donor repository is a known migration defect
 - Any found rounded corners must be treated as migration defects to be fixed
@@ -48,6 +49,7 @@ This contract defines the mandatory design rules for all platform UI across the 
 
 - **Must NOT use any border-radius > 0**
 - **Must NOT use rounded* utility classes**
+- **Must NOT use border-radius: 50% for circles**
 - **Must NOT create custom themes in admin/system nodes**
 - **Must NOT deviate from platform color palette**
 
@@ -61,10 +63,12 @@ Future machine-readable binding:
 ## Legacy Issues
 
 **Donor Repository Status:**
-The current donor repository contains legacy rounded corner usage in various UI components. These are known migration defects that must be identified and removed in future migration phases.
+The current donor repository contains legacy rounded corner usage in various UI components. These are known migration defects that must be identified and removed in Phase 12.
+
+**Audit Location:** `workdocs/legacy-audit/ROUNDING_VIOLATIONS.md`
 
 ## Version
 
-- **Contract Version**: 1.0.0
+- **Contract Version**: 2.0.0
 - **Last Updated**: 2026-06-09
 - **Status**: Active

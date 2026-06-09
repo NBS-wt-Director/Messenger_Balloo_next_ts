@@ -1,3 +1,4 @@
+ 
  // English locale
 import type { Translation } from '../types';
 

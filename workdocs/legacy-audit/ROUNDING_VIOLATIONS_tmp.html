@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ROUNDING_VIOLATIONS.md</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+html,footer,header{
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Custom MD PDF CSS
+ */
+html,footer,header{
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+
+ }
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///r%3A/2.Travail/1.Enseignement/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css"><link rel="stylesheet" href="file:///d%3A/rdaros/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css">
+</head>
+
+<body>
+    <h1 id="rounding-violations-audit">Rounding Violations Audit</h1>
+<h2 id="purpose">Purpose</h2>
+<p>This document catalogs all legacy rounded corner usage in the donor repository. These are migration defects that must be removed in Phase 12.</p>
+<h2 id="source">Source</h2>
+<p>Audit performed on: 2026-06-09<br>
+Search patterns: <code>border-radius</code>, <code>rounded-lg</code>, <code>rounded-full</code>, <code>rounded-md</code>, <code>rounded-xl</code></p>
+<hr>
+<h2 id="summary">Summary</h2>
+<p><strong>Total violations found:</strong> 200+ instances across messenger/ and admin-portal/</p>
+<p><strong>Categories:</strong></p>
+<ol>
+<li><strong>Inline style violations</strong> - <code>borderRadius</code> in JSX/TSX</li>
+<li><strong>Tailwind class violations</strong> - <code>rounded-*</code> classes</li>
+<li><strong>CSS border-radius violations</strong> - <code>border-radius</code> in CSS files</li>
+</ol>
+<hr>
+<h2 id="css-border-radius-violations">CSS Border-Radius Violations</h2>
+<h3 id="messengersrcappcss">messenger/src/app/*.css</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>email-verification.css</code></td>
+<td>1</td>
+<td><code>border-radius: 8px</code> (line 13)</td>
+</tr>
+<tr>
+<td><code>forgot-password.css</code></td>
+<td>5</td>
+<td><code>border-radius: 12px</code>, <code>50%</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>delete-account.css</code></td>
+<td>6</td>
+<td><code>border-radius: 12px</code>, <code>50%</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>globals.css</code></td>
+<td>3</td>
+<td><code>border-radius: 12px</code>, <code>16px</code>, <code>10px</code></td>
+</tr>
+<tr>
+<td><code>theme-subscription/page.css</code></td>
+<td>8</td>
+<td><code>border-radius: 8px</code>, <code>12px</code>, <code>20px</code></td>
+</tr>
+<tr>
+<td><code>statuses/page.css</code></td>
+<td>7</td>
+<td><code>border-radius: 50%</code>, <code>16px</code></td>
+</tr>
+<tr>
+<td><code>sessions/sessionsPage.css</code></td>
+<td>6</td>
+<td><code>border-radius: 50%</code>, <code>12px</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>profile/profile.css</code></td>
+<td>18</td>
+<td><code>border-radius: 50%</code>, <code>16px</code>, <code>10px</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>admin/page.css</code></td>
+<td>9</td>
+<td>Mostly <code>border-radius: 0</code> (correct)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="messengersrccomponentscss">messenger/src/components/*.css</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AccountSwitcher.css</code></td>
+<td>2</td>
+<td><code>border-radius: 8px</code> (lines 211, 226)</td>
+</tr>
+<tr>
+<td><code>AttachmentViewer.css</code></td>
+<td>15</td>
+<td><code>border-radius: 12px</code>, <code>50%</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>AudioPlayer.css</code></td>
+<td>8</td>
+<td><code>border-radius: 12px</code>, <code>50%</code>, <code>2px</code></td>
+</tr>
+<tr>
+<td><code>CallInterface.css</code></td>
+<td>5</td>
+<td><code>border-radius: 12px</code>, <code>50%</code></td>
+</tr>
+<tr>
+<td><code>DeleteAccountModal.css</code></td>
+<td>7</td>
+<td><code>border-radius: 16px</code>, <code>50%</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>InviteManager.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>ListAttachment.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>NotificationManager.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>PollAttachment.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>QuizAttachment.css</code></td>
+<td>1</td>
+<td><code>border-radius: 50%</code> (line 201)</td>
+</tr>
+<tr>
+<td><code>StatusUploader.css</code></td>
+<td>8</td>
+<td><code>border-radius: 16px</code>, <code>50%</code>, <code>12px</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>StatusViewer.css</code></td>
+<td>4</td>
+<td><code>border-radius: 50%</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>SurveyAttachment.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>ThemeCard.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>ThemeSelector.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>ThemeSubscriptionDialog.css</code></td>
+<td>5</td>
+<td><code>border-radius: 6px</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>TwoFASetup.css</code></td>
+<td>11</td>
+<td><code>border-radius: 16px</code>, <code>50%</code>, <code>12px</code>, <code>8px</code>, <code>4px</code></td>
+</tr>
+<tr>
+<td><code>ui/Alert.css</code></td>
+<td>6</td>
+<td><code>border-radius: 16px</code>, <code>50%</code>, <code>8px</code></td>
+</tr>
+<tr>
+<td><code>VerificationModal.css</code></td>
+<td>10</td>
+<td><code>border-radius: 16px</code>, <code>50%</code>, <code>8px</code>, <code>6px</code></td>
+</tr>
+<tr>
+<td><code>NotificationManager.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="messengersrccomponentspagescss">messenger/src/components/pages/*.css</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AuthPage.css</code></td>
+<td>12</td>
+<td><code>border-radius: 16px</code>, <code>8px</code>, <code>0</code></td>
+</tr>
+<tr>
+<td><code>ChatPage.css</code></td>
+<td>20+</td>
+<td><code>border-radius: 8px</code>, <code>12px</code>, <code>50%</code>, <code>3px</code></td>
+</tr>
+<tr>
+<td><code>ChatsPage.css</code></td>
+<td>10</td>
+<td><code>border-radius: 0.5rem</code>, <code>0</code></td>
+</tr>
+<tr>
+<td><code>ErrorPage.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+<tr>
+<td><code>HistoryPage.css</code></td>
+<td>4</td>
+<td><code>border-radius: 0.75rem</code>, <code>2rem</code>, <code>1rem</code></td>
+</tr>
+<tr>
+<td><code>InvitationsPage.css</code></td>
+<td>1</td>
+<td><code>border-radius: 50%</code> (line 122)</td>
+</tr>
+<tr>
+<td><code>ProfilePage.css</code></td>
+<td>0</td>
+<td>All <code>border-radius: 0</code> (correct)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="admin-portalsrcappglobalscss">admin-portal/src/app/globals.css</h3>
+<table>
+<thead>
+<tr>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td><code>border-radius: 0.75rem</code>, <code>0.5rem</code>, <code>9999px</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="messengersrccomponentsadminversionsadmincss">messenger/src/components/admin/VersionsAdmin.css</h3>
+<table>
+<thead>
+<tr>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td><code>border-radius: 0.5rem</code>, <code>0.25rem</code>, <code>0.375rem</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="tailwind-class-violations">Tailwind Class Violations</h2>
+<h3 id="messengersrcapptsx">messenger/src/app/*.tsx</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>about-balloo/page.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 187)</td>
+</tr>
+<tr>
+<td><code>error.tsx</code></td>
+<td>4</td>
+<td><code>rounded-full</code>, <code>rounded-lg</code></td>
+</tr>
+<tr>
+<td><code>forbidden.tsx</code></td>
+<td>3</td>
+<td><code>rounded-full</code>, <code>rounded-lg</code></td>
+</tr>
+<tr>
+<td><code>maintenance.tsx</code></td>
+<td>3</td>
+<td><code>rounded-full</code>, <code>rounded-lg</code></td>
+</tr>
+<tr>
+<td><code>profile/page.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 181)</td>
+</tr>
+<tr>
+<td><code>support/page.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 75)</td>
+</tr>
+<tr>
+<td><code>terms/page.tsx</code></td>
+<td>4</td>
+<td><code>rounded-xl</code>, <code>rounded-lg</code>, <code>rounded-full</code></td>
+</tr>
+<tr>
+<td><code>privacy/page.tsx</code></td>
+<td>4</td>
+<td><code>rounded-xl</code>, <code>rounded-lg</code>, <code>rounded-full</code></td>
+</tr>
+<tr>
+<td><code>loading.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 14)</td>
+</tr>
+<tr>
+<td><code>not-found.tsx</code></td>
+<td>3</td>
+<td><code>rounded-full</code>, <code>rounded-lg</code></td>
+</tr>
+<tr>
+<td><code>global-error.tsx</code></td>
+<td>2</td>
+<td><code>rounded-full</code>, <code>rounded-lg</code></td>
+</tr>
+<tr>
+<td><code>health/page.tsx</code></td>
+<td>8</td>
+<td><code>rounded-lg</code> (multiple)</td>
+</tr>
+<tr>
+<td><code>features/page.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 369)</td>
+</tr>
+<tr>
+<td><code>about-company/page.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 58)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="messengersrccomponentstsx">messenger/src/components/*.tsx</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InviteManager.tsx</code></td>
+<td>4</td>
+<td><code>rounded-xl</code>, <code>rounded-full</code></td>
+</tr>
+<tr>
+<td><code>ui/BurgerMenu.tsx</code></td>
+<td>2</td>
+<td><code>rounded-lg</code> (lines 47, 86)</td>
+</tr>
+<tr>
+<td><code>pages/ChatPage.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 467)</td>
+</tr>
+<tr>
+<td><code>pages/ChatsPage.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 631)</td>
+</tr>
+<tr>
+<td><code>pages/ProfilePage.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 106)</td>
+</tr>
+<tr>
+<td><code>pages/HistoryPage.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 66)</td>
+</tr>
+<tr>
+<td><code>admin/VersionsAdmin.tsx</code></td>
+<td>1</td>
+<td><code>rounded-full</code> (line 149)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="admin-portalsrccomponentstsx">admin-portal/src/components/*.tsx</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Versions.tsx</code></td>
+<td>1</td>
+<td><code>rounded-lg</code> (line 300)</td>
+</tr>
+<tr>
+<td><code>Users.tsx</code></td>
+<td>3</td>
+<td><code>rounded-full</code>, <code>rounded-lg</code></td>
+</tr>
+<tr>
+<td><code>Support.tsx</code></td>
+<td>1</td>
+<td><code>rounded-lg</code> (line 177)</td>
+</tr>
+<tr>
+<td><code>InternalChat.tsx</code></td>
+<td>2</td>
+<td><code>rounded-lg</code>, <code>rounded-full</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="admin-portalsrcappadminpagetsx">admin-portal/src/app/admin/page.tsx</h3>
+<table>
+<thead>
+<tr>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td><code>rounded-full</code>, <code>rounded-lg</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="messengerdocsmd">messenger/docs/*.md</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>YANDEX_OAUTH.md</code></td>
+<td>1</td>
+<td><code>rounded-lg</code> (line 249)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="inline-style-violations">Inline Style Violations</h2>
+<h3 id="messengersrclibemailjs">messenger/src/lib/email.js</h3>
+<table>
+<thead>
+<tr>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>borderRadius: 8px</code> (line 64)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apisrcservicesemailservicejs">api/src/services/email.service.js</h3>
+<table>
+<thead>
+<tr>
+<th>Violations</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>Inline <code>borderRadius</code> in email templates</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="files-with-correct-implementation-border-radius-0">Files with Correct Implementation (border-radius: 0)</h2>
+<p>These files already comply with the DesignContract:</p>
+<ul>
+<li><code>messenger/src/app/admin/page.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/InviteManager.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/ListAttachment.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/NotificationManager.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/PollAttachment.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/QuizAttachment.css</code> - Most correct, 1 violation</li>
+<li><code>messenger/src/components/SurveyAttachment.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/ThemeCard.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/ThemeSelector.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/pages/ErrorPage.css</code> - All <code>border-radius: 0</code></li>
+<li><code>messenger/src/components/pages/ProfilePage.css</code> - All <code>border-radius: 0</code></li>
+</ul>
+<hr>
+<h2 id="action-plan">Action Plan</h2>
+<h3 id="phase-12-legacy-design-cleanup">Phase 12: Legacy Design Cleanup</h3>
+<ol>
+<li>
+<p><strong>Priority 1</strong>: CSS files with &gt;10 violations</p>
+<ul>
+<li><code>profile/profile.css</code> (18 violations)</li>
+<li><code>ChatPage.css</code> (20+ violations)</li>
+</ul>
+</li>
+<li>
+<p><strong>Priority 2</strong>: CSS files with 5-10 violations</p>
+<ul>
+<li><code>theme-subscription/page.css</code></li>
+<li><code>TwoFASetup.css</code></li>
+<li><code>VerificationModal.css</code></li>
+<li><code>AttachmentViewer.css</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Priority 3</strong>: TSX files with Tailwind violations</p>
+<ul>
+<li><code>terms/page.tsx</code></li>
+<li><code>privacy/page.tsx</code></li>
+<li><code>health/page.tsx</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Priority 4</strong>: Email templates</p>
+<ul>
+<li><code>api/src/services/email.service.js</code></li>
+<li><code>messenger/src/lib/email.js</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>All violations must be fixed in Phase 12</li>
+<li>Do NOT fix these files in earlier phases</li>
+<li>Use <code>border-radius: 0</code> replacement</li>
+<li>Remove all <code>rounded-*</code> Tailwind classes</li>
+<li>Update CSS variables if needed</li>
+</ul>
+<hr>
+<h2 id="version">Version</h2>
+<ul>
+<li><strong>Audit Version</strong>: 1.0.0</li>
+<li><strong>Last Updated</strong>: 2026-06-09</li>
+<li><strong>Status</strong>: Pending cleanup (Phase 12)</li>
+</ul>
+
+</body>
+
+</html>
