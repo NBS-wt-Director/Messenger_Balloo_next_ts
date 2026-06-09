@@ -1,3 +1,4 @@
+
 # TranslationContract
 
 ## Purpose
@@ -19,6 +20,7 @@ packages/core-i18n/
 │   ├── en.ts
 │   ├── hi.ts
 │   └── ...
+
 ├── schema.json          # Schema for translations
 └── README.md
 ```
