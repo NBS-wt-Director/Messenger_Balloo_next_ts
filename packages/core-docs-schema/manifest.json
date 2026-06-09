@@ -1,0 +1,36 @@
+{
+  "$schema": "./schema.json",
+  "version": "1.0.0",
+  "title": "Balloo Platform Documentation Manifest",
+  "nodes": [
+    {
+      "id": "web-main",
+      "type": "app",
+      "path": "apps/web-main",
+      "source": "messenger",
+      "status": "active"
+    },
+    {
+      "id": "admin",
+      "type": "app",
+      "path": "apps/admin",
+      "source": "admin-portal",
+      "status": "active"
+    },
+    {
+      "id": "api",
+      "type": "app",
+      "path": "apps/api",
+      "source": "api",
+      "status": "active"
+    }
+  ],
+  "contracts": [
+    "workdocs/contracts/DesignContract.md",
+    "workdocs/contracts/LanguageContract.md",
+    "workdocs/contracts/ThemeContract.md",
+    "workdocs/contracts/TreeContract.md",
+    "workdocs/contracts/StatsContract.md",
+    "workdocs/contracts/TranslationContract.md"
+  ]
+}

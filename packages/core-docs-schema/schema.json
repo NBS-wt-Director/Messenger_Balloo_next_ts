@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Docs Schema",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string" },
+    "title": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string", "enum": ["app", "package", "contract", "doc", "tool"] },
+          "path": { "type": "string" },
+          "source": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "legacy", "planned"] }
+        },
+        "required": ["id", "type", "path", "status"]
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["version", "title", "nodes", "contracts"]
+}

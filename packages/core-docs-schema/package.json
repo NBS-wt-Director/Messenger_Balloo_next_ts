@@ -1,0 +1,16 @@
+{
+  "name": "@balloo/core-docs-schema",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Markdown-first documentation schema for Balloo platform",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "validate": "ajv validate -s schema.json -d manifest.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "ajv-cli": "^5.0.0"
+  }
+}

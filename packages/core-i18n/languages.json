@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "defaultLanguage": "ru",
+  "fallbackLanguage": "en",
+  "languages": [
+    { "code": "ru", "name": "Russian", "nativeName": "Русский", "priority": 1, "enabled": true },
+    { "code": "en", "name": "English", "nativeName": "English", "priority": 2, "enabled": true },
+    { "code": "hi", "name": "Hindi", "nativeName": "हिन्दी", "priority": 3, "enabled": true },
+    { "code": "zh", "name": "Chinese", "nativeName": "中文", "priority": 4, "enabled": true },
+    { "code": "tt", "name": "Tatar", "nativeName": "Татарча", "priority": 5, "enabled": true },
+    { "code": "be", "name": "Belarusian", "nativeName": "Беларуская", "priority": 6, "enabled": true },
+    { "code": "ba", "name": "Bashkir", "nativeName": "Башҡорт", "priority": 7, "enabled": true },
+    { "code": "cv", "name": "Chuvash", "nativeName": "Чӑваш", "priority": 8, "enabled": true },
+    { "code": "sah", "name": "Yakut", "nativeName": "Саха", "priority": 9, "enabled": true },
+    { "code": "udm", "name": "Udmurt", "nativeName": "Удмурт", "priority": 10, "enabled": true },
+    { "code": "ce", "name": "Chechen", "nativeName": "Нохчийн", "priority": 11, "enabled": true },
+    { "code": "os", "name": "Ossetian", "nativeName": "Ирон", "priority": 12, "enabled": true }
+  ]
+}
