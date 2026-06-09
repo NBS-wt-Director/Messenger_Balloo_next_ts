@@ -48,7 +48,7 @@ This document outlines the phased migration from the current donor repository to
 
 ## Phase 3: Shared → Core-Types
 
-**Status:** Pending
+**Status:** In Progress
 
 **Goals:**
 - Extract types from `shared/` to `packages/core-types/`
@@ -56,9 +56,12 @@ This document outlines the phased migration from the current donor repository to
 - Update imports gradually (node-by-node)
 
 **Deliverables:**
-- [ ] packages/core-types fully populated from shared/
-- [ ] Backward compatibility layer in shared/
+- [x] packages/core-types/package.json
+- [x] packages/core-types/src/index.ts (core types extracted)
+- [x] packages/core-types/README.md
+- [x] Backward compatibility layer in shared/
 - [ ] Migration completed for first node
+- [ ] Full import migration (Phase 10)
 
 ---
 

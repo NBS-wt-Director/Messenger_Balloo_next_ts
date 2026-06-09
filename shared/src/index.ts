@@ -1,13 +1,14 @@
 /**
  * Shared Package - Common types, utilities, and configurations
  * Used by all Balloo applications (Web, Mobile, Desktop, Android Service)
+ * 
+ * BACKWARD COMPATIBILITY LAYER
+ * ============================
+ * This package re-exports from @balloo/core-types during migration (Phase 3).
+ * Legacy applications continue to use @balloo/shared without changes.
  */
 
-// Types
-export * from './types';
-export * from './auth';
-export * from './api';
-export * from './utils';
+// Re-export from core-types for backward compatibility
+export * from '@balloo/core-types';
 
-// Config
-export * from './config';
+// TODO: After full migration, remove this file and update all imports
