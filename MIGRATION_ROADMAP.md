@@ -1,43 +1,54 @@
-# Migration Roadmap
+# Migration Roadmap v2
 
 ## Overview
 
 This document outlines the phased migration from the current donor repository to the target monorepo architecture.
 
-## Phase 1: Scaffold Creation ✅
+---
+
+## Phase 1: Scaffold + Workspace Bootstrap
 
 **Status:** In Progress
 
 **Goals:**
 - Create target directory structure (apps/, packages/, workdocs/, docs-content/, platform-state/, infra/, tools/)
+- Create pnpm workspace bootstrap (pnpm-workspace.yaml, .npmrc)
 - Create migration documentation (MIGRATION_REPO_MAP.md, MIGRATION_ROADMAP.md)
 - Create contract definitions (DesignContract, LanguageContract, ThemeContract, etc.)
 - Create stub packages for future core libraries
+- Create legacy audit (ROUNDING_VIOLATIONS.md, REPO_DISCOVERY.md)
 
 **Deliverables:**
 - [x] Directory structure created
+- [x] pnpm-workspace.yaml
+- [x] .npmrc
 - [x] MIGRATION_REPO_MAP.md
 - [x] MIGRATION_ROADMAP.md
 - [x] workdocs/contracts/*
-- [x] Stub packages (core-config, core-i18n, core-theme, core-docs-schema)
+- [x] workdocs/legacy-audit/*
+- [x] Stub packages (core-types, core-config, core-i18n, core-theme, core-brand, core-ui, core-docs-schema)
 
 ---
 
-## Phase 2: Workspace Setup
+## Phase 2: Repo Mapping + Legacy Audit
+
+**Status:** Pending
 
 **Goals:**
-- Create `pnpm-workspace.yaml`
-- Configure workspace package resolution
-- Add workspace-level scripts and tooling
+- Complete full mapping of all donor paths to target structure
+- Document all legacy design violations
+- Create migration checklist for each application
 
 **Deliverables:**
-- [ ] pnpm-workspace.yaml
-- [ ] Root package.json updates for workspace scripts
-- [ ] ESLint/Prettier workspace configuration
+- [ ] Complete repo mapping documentation
+- [ ] Full legacy audit report
+- [ ] Migration checklist per application
 
 ---
 
 ## Phase 3: Shared → Core-Types
+
+**Status:** Pending
 
 **Goals:**
 - Extract types from `shared/` to `packages/core-types/`
@@ -45,14 +56,15 @@ This document outlines the phased migration from the current donor repository to
 - Update imports gradually (node-by-node)
 
 **Deliverables:**
-- [ ] packages/core-types/package.json
-- [ ] packages/core-types/src/index.ts
-- [ ] Migration of shared types to core-types
+- [ ] packages/core-types fully populated from shared/
 - [ ] Backward compatibility layer in shared/
+- [ ] Migration completed for first node
 
 ---
 
 ## Phase 4: Settings → Core-Config
+
+**Status:** Pending
 
 **Goals:**
 - Extract settings from `settings/` to `packages/core-config/`
@@ -66,22 +78,9 @@ This document outlines the phased migration from the current donor repository to
 
 ---
 
-## Phase 5: Core-Brand
+## Phase 5: Messenger i18n Extraction → Core-I18n
 
-**Goals:**
-- Create `packages/core-brand/`
-- Extract Logo component and brand assets
-- Define brand guidelines contract
-
-**Deliverables:**
-- [ ] packages/core-brand/package.json
-- [ ] packages/core-brand/src/Logo component
-- [ ] Brand color palette
-- [ ] Typography definitions
-
----
-
-## Phase 6: Core-I18n
+**Status:** Pending
 
 **Goals:**
 - Create `packages/core-i18n/`
@@ -97,7 +96,9 @@ This document outlines the phased migration from the current donor repository to
 
 ---
 
-## Phase 7: Core-Theme
+## Phase 6: Messenger Theme Extraction → Core-Theme
+
+**Status:** Pending
 
 **Goals:**
 - Create `packages/core-theme/`
@@ -113,11 +114,30 @@ This document outlines the phased migration from the current donor repository to
 
 ---
 
-## Phase 8: Core-UI
+## Phase 7: Brand/Logo Extraction → Core-Brand
+
+**Status:** Pending
+
+**Goals:**
+- Create `packages/core-brand/`
+- Extract Logo component and brand assets from messenger/
+- Define brand guidelines contract
+
+**Deliverables:**
+- [ ] packages/core-brand/package.json
+- [ ] packages/core-brand/src/Logo component
+- [ ] Brand color palette
+- [ ] Typography definitions
+
+---
+
+## Phase 8: Shared UI Primitives → Core-UI
+
+**Status:** Pending
 
 **Goals:**
 - Create `packages/core-ui/`
-- Extract shared UI components
+- Extract shared UI components from messenger/
 - Enforce DesignContract (no rounded corners, zero border-radius)
 - Establish component API standards
 
@@ -126,52 +146,83 @@ This document outlines the phased migration from the current donor repository to
 - [ ] Core component library
 - [ ] Design system components
 - [ ] Accessibility compliance
+- [ ] No-rounding enforcement
 
 ---
 
-## Phase 9: Docs-Site
+## Phase 9: Docs Split → Docs-Content + Docs-Site
+
+**Status:** Pending
 
 **Goals:**
+- Split `docs/` into content and site
 - Create `apps/docs-site/`
-- Set up documentation infrastructure
-- Connect to docs-content/
+- Populate `docs-content/` with platform documentation
+- Connect docs-site to docs-content
 
 **Deliverables:**
+- [ ] docs-content/ populated
 - [ ] apps/docs-site/ scaffold
 - [ ] Documentation build pipeline
 - [ ] Search and navigation
 
 ---
 
-## Phase 10: Docs-Content + Platform-State Manifests
+## Phase 10: Node Apps Normalization
 
-**Goals:**
-- Populate `docs-content/` with platform documentation
-- Create `platform-state/manifests/` for deployment state
-- Establish docs-content schema
-
-**Deliverables:**
-- [ ] Platform documentation in docs-content/
-- [ ] Deployment manifests in platform-state/manifests/
-- [ ] docs-content schema validation
-
----
-
-## Phase 11: App Migration by Node
+**Status:** Pending
 
 **Goals:**
 - Migrate messenger/ → apps/web-main (node-by-node)
 - Migrate admin-portal/ → apps/admin (node-by-node)
 - Migrate api/ → apps/api (node-by-node)
-- Remove legacy rounded corner usage
+- Migrate other services (android-service, desktop, mobile, max-server)
 
 **Deliverables:**
 - [ ] apps/web-main fully functional
 - [ ] apps/admin fully functional
 - [ ] apps/api fully functional
-- [ ] All legacy rounded corners removed
+- [ ] apps/android-service fully functional
+- [ ] apps/desktop fully functional
+- [ ] apps/mobile fully functional
+- [ ] apps/max-server fully functional
 - [ ] All imports updated to new structure
-- [ ] Backward compatibility layers removed
+
+---
+
+## Phase 11: Infra Normalization
+
+**Status:** Pending
+
+**Goals:**
+- Normalize nginx configuration in infra/
+- Normalize docker configuration in infra/
+- Create deployment manifests in platform-state/manifests/
+
+**Deliverables:**
+- [ ] infra/nginx normalized
+- [ ] infra/docker normalized
+- [ ] platform-state/manifests/ populated
+- [ ] Deployment documentation
+
+---
+
+## Phase 12: Legacy Design Cleanup (No-Rounding Enforcement)
+
+**Status:** Pending
+
+**Goals:**
+- Remove ALL legacy rounded corner usage across all applications
+- Enforce border-radius: 0 everywhere
+- Remove all rounded* utility classes
+- Update all CSS files to comply with DesignContract
+
+**Deliverables:**
+- [ ] All CSS border-radius: 0
+- [ ] All Tailwind rounded* classes removed
+- [ ] All inline borderRadius styles removed
+- [ ] Linting rules for border-radius enforcement
+- [ ] Build-time validation against DesignContract
 
 ---
 
@@ -179,14 +230,15 @@ This document outlines the phased migration from the current donor repository to
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | Scaffold Creation | In Progress |
-| 2 | Workspace Setup | Pending |
+| 1 | Scaffold + Workspace Bootstrap | In Progress |
+| 2 | Repo Mapping + Legacy Audit | Pending |
 | 3 | Shared → Core-Types | Pending |
 | 4 | Settings → Core-Config | Pending |
-| 5 | Core-Brand | Pending |
-| 6 | Core-I18n | Pending |
-| 7 | Core-Theme | Pending |
-| 8 | Core-UI | Pending |
-| 9 | Docs-Site | Pending |
-| 10 | Docs-Content + Platform-State | Pending |
-| 11 | App Migration by Node | Pending |
+| 5 | Messenger i18n → Core-I18n | Pending |
+| 6 | Messenger Theme → Core-Theme | Pending |
+| 7 | Brand/Logo → Core-Brand | Pending |
+| 8 | Shared UI → Core-UI | Pending |
+| 9 | Docs Split → Docs-Content + Docs-Site | Pending |
+| 10 | Node Apps Normalization | Pending |
+| 11 | Infra Normalization | Pending |
+| 12 | Legacy Design Cleanup | Pending |

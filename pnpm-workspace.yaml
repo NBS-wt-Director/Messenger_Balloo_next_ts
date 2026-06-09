@@ -1,0 +1,22 @@
+packages:
+  # Legacy packages (will be migrated to packages/* in later phases)
+  - 'shared/'
+  - 'settings/'
+  
+  # Legacy applications (will be migrated to apps/* in later phases)
+  - 'messenger/'
+  - 'admin-portal/'
+  - 'api/'
+  - 'android-service/'
+  - 'desktop/'
+  - 'mobile/'
+  - 'max-server/'
+  
+  # New scaffold packages
+  - 'packages/*'
+  
+  # New scaffold apps
+  - 'apps/*'
+  
+  # Docs
+  - 'docs/'

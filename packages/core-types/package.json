@@ -1,0 +1,16 @@
+{
+  "name": "@balloo/core-types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Core types - Extraction target from shared/",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "keywords": ["balloo", "types", "core"]
+}
