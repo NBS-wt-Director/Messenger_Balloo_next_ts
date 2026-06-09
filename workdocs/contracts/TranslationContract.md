@@ -1,43 +1,46 @@
-# Translation Contract
+# TranslationContract
 
 ## Purpose
 
-Этот контракт определяет систему переводов для всей платформы Balloo.
+This contract defines the translation system for the Balloo platform.
+
+## Source of Truth
+
+- **Languages registry**: `packages/core-i18n/languages.json`
+- **Current implementation**: `messenger/src/i18n/` (to be migrated)
 
 ## Structure
 
 ```
 packages/core-i18n/
-├── languages.json       # Список языков (источник истины)
+├── languages.json       # Languages list (source of truth)
 ├── locales/
 │   ├── ru.ts
 │   ├── en.ts
 │   ├── hi.ts
 │   └── ...
-├── schema.json          # Schema для переводов
+├── schema.json          # Schema for translations
 └── README.md
 ```
 
-## Rules
+## Must Rules
 
-1. **Single source**: `languages.json` - авторитетный список
-2. **Markdown-first**: описания ключей в markdown
-3. **Machine-readable**: JSON schema для валидации
-4. **Fallback**: `en` для отсутствующих переводов
-5. **Default**: `ru` для платформы
+1. **Single Source**: `languages.json` is the authoritative language list
+2. **Markdown-first**: Description of keys in markdown
+3. **Machine-readable**: JSON schema for validation
+4. **Fallback**: `en` for missing translations
+5. **Default**: `ru` for the platform
 
-## Admin Feature (Future)
+## Should Rules
 
-В админке v3:
-- Web-инструмент для добавления/исправления переводов
-- Визуальное сравнение переводов между языками
-- Экспорт/импорт переводов
-- Статистика покрытия переводов
+- Admin UI should provide visual translation management
+- Translation coverage statistics should be displayed
 
-## Source
+## Machine-Binding Notes
 
-- **Current**: `messenger/src/i18n/`
-- **Future**: `packages/core-i18n/`
+Future machine-readable binding:
+- `packages/core-i18n/schema.json` will validate translation files
+- Build-time validation will ensure all 12 languages have translations
 
 ## Version
 

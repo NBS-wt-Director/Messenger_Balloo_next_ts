@@ -1,8 +1,13 @@
-# Tree Contract
+# TreeContract
 
 ## Purpose
 
-Этот контракт определяет модель дерева узлов платформы Balloo.
+This contract defines the tree model for the Balloo platform node structure.
+
+## Source of Truth
+
+- **Node definitions**: `packages/core-tree-model`
+- **Current structure**: Repository directory layout
 
 ## Node Structure
 
@@ -22,7 +27,7 @@ interface Node {
 }
 ```
 
-## Tree Structure (Current)
+## Tree Structure (Target)
 
 ```
 balloo-monorepo/
@@ -35,9 +40,9 @@ balloo-monorepo/
 │   ├── android-service [planned]
 │   └── max-server [planned]
 ├── packages/
-│   ├── shared [active]
-│   ├── settings [active]
-│   └── [core-* packages] [planned]
+│   ├── shared [active → legacy]
+│   ├── settings [active → legacy]
+│   └── [core-* packages] [planned → active]
 ├── workdocs/
 │   ├── contracts/ [active]
 │   ├── nodes/ [planned]
@@ -46,12 +51,18 @@ balloo-monorepo/
 └── infra/ [planned]
 ```
 
-## Rules
+## Must Rules
 
-1. **Unique IDs**: каждый узел имеет уникальный id
-2. **Path-based**: path определяет местоположение в репозитории
-3. **Status tracking**: active, legacy, planned
-4. **Dependencies**: явные зависимости между узлами
+1. **Unique IDs**: Each node MUST have a unique id
+2. **Path-based**: path defines the location in the repository
+3. **Status tracking**: status must be one of: active, legacy, planned
+4. **Explicit dependencies**: dependencies between nodes must be declared
+
+## Machine-Binding Notes
+
+Future machine-readable binding:
+- `packages/core-tree-model` will define the Node type
+- `platform-state/manifests/` will contain the current tree state
 
 ## Version
 

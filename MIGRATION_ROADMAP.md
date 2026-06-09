@@ -1,79 +1,192 @@
-# Migration Roadmap: Balloo Monorepo → Platform Structure
+# Migration Roadmap
 
-## Phase 1: Scaffold (Current - 2026-06-09)
+## Overview
 
-### Completed
-- ✅ Created `apps/` directory structure
-- ✅ Created `packages/` directory structure
-- ✅ Created `workdocs/contracts/` with 6 contracts
-- ✅ Created machine-readable manifests
-- ✅ Fixed TypeScript errors (0 errors)
-- ✅ Committed and pushed
+This document outlines the phased migration from the current donor repository to the target monorepo architecture.
 
-### Next Steps (Phase 2)
-1. Create pnpm workspace config
-2. Migrate `shared/` → `packages/core-types`
-3. Migrate `settings/` → `packages/core-config`
-4. Move `messenger/` → `apps/web-main` (symbolic link or rename)
-5. Move `admin-portal/` → `apps/admin`
-6. Move `api/` → `apps/api`
+## Phase 1: Scaffold Creation ✅
 
-## Phase 3: Core Packages
+**Status:** In Progress
 
-- [ ] `packages/core-brand` - Extract logo, colors from messenger
-- [ ] `packages/core-i18n` - Extract i18n from messenger
-- [ ] `packages/core-theme` - Extract theme system
-- [ ] `packages/core-ui` - Extract common UI components
-- [ ] `packages/core-api-client` - Extract API client
-- [ ] `packages/data-access` - Create data access layer
-- [ ] `packages/storage-adapters` - PostgreSQL adapter
+**Goals:**
+- Create target directory structure (apps/, packages/, workdocs/, docs-content/, platform-state/, infra/, tools/)
+- Create migration documentation (MIGRATION_REPO_MAP.md, MIGRATION_ROADMAP.md)
+- Create contract definitions (DesignContract, LanguageContract, ThemeContract, etc.)
+- Create stub packages for future core libraries
 
-## Phase 4: Apps Migration
+**Deliverables:**
+- [x] Directory structure created
+- [x] MIGRATION_REPO_MAP.md
+- [x] MIGRATION_ROADMAP.md
+- [x] workdocs/contracts/*
+- [x] Stub packages (core-config, core-i18n, core-theme, core-docs-schema)
 
-- [ ] `apps/web-main` - Full migration from messenger
-- [ ] `apps/admin` - Full migration from admin-portal
-- [ ] `apps/api` - Full migration from api
-- [ ] `apps/docs-site` - Create markdown-first docs
-- [ ] `apps/abaut` - Create abaut.balloo.su node
+---
 
-## Phase 5: WorkDocs System
+## Phase 2: Workspace Setup
 
-- [ ] `workdocs/nodes/` - Node definitions
-- [ ] `workdocs/trees/` - Tree structures
-- [ ] `workdocs/releases/` - Release tracking
-- [ ] `apps/nodes-switcher` - Node switcher UI
-- [ ] `apps/workdocs-ui` - WorkDocs UI
+**Goals:**
+- Create `pnpm-workspace.yaml`
+- Configure workspace package resolution
+- Add workspace-level scripts and tooling
 
-## Risks
+**Deliverables:**
+- [ ] pnpm-workspace.yaml
+- [ ] Root package.json updates for workspace scripts
+- [ ] ESLint/Prettier workspace configuration
 
-1. **Breaking imports**: при переносе файлов могут сломаться imports
-2. **Build pipeline**: нужно обновить CI/CD для новой структуры
-3. **Environment variables**: могут потребовать обновления
-4. **Database migrations**: PostgreSQL schema может потребовать изменений
+---
 
-## Open Questions
+## Phase 3: Shared → Core-Types
 
-1. Использовать pnpm или npm workspaces?
-2. Монолитная БД или микросервисы?
-3. Где хранить загрузочные файлы?
-4. Нужна ли поддержка SQLite кроме PostgreSQL?
+**Goals:**
+- Extract types from `shared/` to `packages/core-types/`
+- Establish core-types as the central type registry
+- Update imports gradually (node-by-node)
 
-## As-IS → Target Map
+**Deliverables:**
+- [ ] packages/core-types/package.json
+- [ ] packages/core-types/src/index.ts
+- [ ] Migration of shared types to core-types
+- [ ] Backward compatibility layer in shared/
 
-| As-IS | Target | Status |
-|-------|--------|--------|
-| `messenger/` | `apps/web-main` | Scaffolded |
-| `admin-portal/` | `apps/admin` | Scaffolded |
-| `api/` | `apps/api` | Scaffolded |
-| `shared/` | `packages/core-types` | Planned |
-| `settings/` | `packages/core-config` | Planned |
-| - | `packages/core-i18n` | Scaffolded |
-| - | `packages/core-theme` | Scaffolded |
-| - | `packages/core-brand` | Planned |
-| - | `packages/core-ui` | Planned |
+---
 
-## Version
+## Phase 4: Settings → Core-Config
 
-- **Roadmap Version**: 1.0.0
-- **Last Updated**: 2026-06-09
-- **Status**: Phase 1 Complete
+**Goals:**
+- Extract settings from `settings/` to `packages/core-config/`
+- Establish core-config as the central configuration registry
+- Update imports gradually (node-by-node)
+
+**Deliverables:**
+- [ ] packages/core-config fully populated from settings/
+- [ ] Backward compatibility layer in settings/
+- [ ] Configuration schema validation
+
+---
+
+## Phase 5: Core-Brand
+
+**Goals:**
+- Create `packages/core-brand/`
+- Extract Logo component and brand assets
+- Define brand guidelines contract
+
+**Deliverables:**
+- [ ] packages/core-brand/package.json
+- [ ] packages/core-brand/src/Logo component
+- [ ] Brand color palette
+- [ ] Typography definitions
+
+---
+
+## Phase 6: Core-I18n
+
+**Goals:**
+- Create `packages/core-i18n/`
+- Extract i18n infrastructure from messenger/
+- Implement platform-level language registry
+- Enforce 12-language contract
+
+**Deliverables:**
+- [ ] packages/core-i18n fully populated
+- [ ] Language registry implementation
+- [ ] Translation loading mechanism
+- [ ] Language switching utilities
+
+---
+
+## Phase 7: Core-Theme
+
+**Goals:**
+- Create `packages/core-theme/`
+- Extract theme-store from messenger/
+- Implement platform preset themes (dark, light, russia)
+- Enforce theme contract (custom themes = user apps only)
+
+**Deliverables:**
+- [ ] packages/core-theme fully populated
+- [ ] Theme store implementation
+- [ ] Theme switching utilities
+- [ ] Admin/system theme restrictions
+
+---
+
+## Phase 8: Core-UI
+
+**Goals:**
+- Create `packages/core-ui/`
+- Extract shared UI components
+- Enforce DesignContract (no rounded corners, zero border-radius)
+- Establish component API standards
+
+**Deliverables:**
+- [ ] packages/core-ui/package.json
+- [ ] Core component library
+- [ ] Design system components
+- [ ] Accessibility compliance
+
+---
+
+## Phase 9: Docs-Site
+
+**Goals:**
+- Create `apps/docs-site/`
+- Set up documentation infrastructure
+- Connect to docs-content/
+
+**Deliverables:**
+- [ ] apps/docs-site/ scaffold
+- [ ] Documentation build pipeline
+- [ ] Search and navigation
+
+---
+
+## Phase 10: Docs-Content + Platform-State Manifests
+
+**Goals:**
+- Populate `docs-content/` with platform documentation
+- Create `platform-state/manifests/` for deployment state
+- Establish docs-content schema
+
+**Deliverables:**
+- [ ] Platform documentation in docs-content/
+- [ ] Deployment manifests in platform-state/manifests/
+- [ ] docs-content schema validation
+
+---
+
+## Phase 11: App Migration by Node
+
+**Goals:**
+- Migrate messenger/ → apps/web-main (node-by-node)
+- Migrate admin-portal/ → apps/admin (node-by-node)
+- Migrate api/ → apps/api (node-by-node)
+- Remove legacy rounded corner usage
+
+**Deliverables:**
+- [ ] apps/web-main fully functional
+- [ ] apps/admin fully functional
+- [ ] apps/api fully functional
+- [ ] All legacy rounded corners removed
+- [ ] All imports updated to new structure
+- [ ] Backward compatibility layers removed
+
+---
+
+## Summary
+
+| Phase | Name | Status |
+|-------|------|--------|
+| 1 | Scaffold Creation | In Progress |
+| 2 | Workspace Setup | Pending |
+| 3 | Shared → Core-Types | Pending |
+| 4 | Settings → Core-Config | Pending |
+| 5 | Core-Brand | Pending |
+| 6 | Core-I18n | Pending |
+| 7 | Core-Theme | Pending |
+| 8 | Core-UI | Pending |
+| 9 | Docs-Site | Pending |
+| 10 | Docs-Content + Platform-State | Pending |
+| 11 | App Migration by Node | Pending |

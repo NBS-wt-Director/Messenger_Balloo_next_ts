@@ -1,93 +1,47 @@
-# Theme Contract
+# ThemeContract
 
 ## Purpose
 
-Этот контракт определяет систему тем оформления для всей платформы Balloo.
+This contract defines the mandatory theme system for the Balloo platform, including platform preset themes and rules for custom themes.
 
-## Preset Themes
+## Source of Truth
 
-### 1. Light Theme (`light`)
-```json
-{
-  "id": "light",
-  "name": "Светлая",
-  "colors": {
-    "primary": "#007bff",
-    "secondary": "#6c757d",
-    "background": "#ffffff",
-    "surface": "#f8f9fa",
-    "text": "#212529",
-    "textSecondary": "#6c757d",
-    "border": "#dee2e6",
-    "accent": "#007bff"
-  }
-}
-```
+- **Platform preset themes**: `packages/core-theme/src/index.ts`
+- **Current implementation**: `messenger/src/stores/settings-store.ts` (to be migrated)
 
-### 2. Dark Theme (`dark`)
-```json
-{
-  "id": "dark",
-  "name": "Тёмная",
-  "colors": {
-    "primary": "#0d6efd",
-    "secondary": "#6c757d",
-    "background": "#1a1a1a",
-    "surface": "#2d2d2d",
-    "text": "#ffffff",
-    "textSecondary": "#b0b0b0",
-    "border": "#404040",
-    "accent": "#0d6efd"
-  }
-}
-```
+## Platform Preset Themes (Current Stage)
 
-### 3. Russia Theme (`russia`)
-```json
-{
-  "id": "russia",
-  "name": "Россия",
-  "colors": {
-    "primary": "#0039A6",
-    "secondary": "#D52B1E",
-    "background": "#ffffff",
-    "surface": "#f0f0f0",
-    "text": "#000000",
-    "textSecondary": "#555555",
-    "border": "#cccccc",
-    "accent": "#D52B1E"
-  }
-}
-```
+**Exactly 3 preset themes are defined at the platform level:**
 
-## Rules
+1. `dark` - Dark theme
+2. `light` - Light theme
+3. `russia` - Russia flag theme
 
-### Allowed Apps (custom themes)
-- ✅ `apps/web-main` (messenger)
-- ✅ `apps/mobile`
-- ✅ `apps/desktop`
+## Must Rules
 
-### Forbidden Apps (custom themes)
-- ❌ `apps/admin` (admin-portal)
-- ❌ `apps/api`
-- ❌ `apps/docs-site`
-- ❌ `apps/abaut`
-- ❌ `apps/nodes-switcher`
+1. **Platform Presets**: All nodes MUST support the 3 platform preset themes
+2. **Source of Truth**: `packages/core-theme` is the single source for preset themes
+3. **Custom Themes**: Custom themes are **user-app-only**
 
-### Storage Rules
-- Custom themes сохраняются только после **2 дней использования**
-- Пользовательские темы доступны **без регистрации** (для всех)
-- Сохранение только для авторизованных пользователей
+## Should Rules
 
-## Source
+- Custom themes should be saved only after 2 days of usage
+- Custom themes should be available without registration
 
-- **Current implementation**: `messenger/src/stores/settings-store.ts`
-- **Future location**: `packages/core-theme`
-- **Preset themes source**: `messenger/src/components/ThemeSelector.tsx`
+## Must Not Rules
+
+- **Must NOT create custom themes in admin/system nodes** (admin, api, docs-site, abaut, nodes-switcher)
+- **Must NOT deviate from the 3 platform preset themes without separate contract**
+
+## Machine-Binding Notes
+
+Future machine-readable binding:
+- `packages/core-theme/src/index.ts` will export `PRESET_THEMES` with exactly 3 themes
+- Build-time validation will enforce theme contract
 
 ## Version
 
 - **Contract Version**: 1.0.0
 - **Last Updated**: 2026-06-09
 - **Status**: Active
-- **Total Presets**: 3
+- **Total Presets**: 3 (dark, light, russia)

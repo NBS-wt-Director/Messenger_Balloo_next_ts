@@ -1,40 +1,53 @@
-# Language Contract
+# LanguageContract
 
 ## Purpose
 
-Этот контракт определяет общий список поддерживаемых языков для всей платформы Balloo.
+This contract defines the mandatory 12-language support for the entire Balloo platform.
 
-## Supported Languages
+## Source of Truth
+
+- **Platform-level language registry**: `packages/core-i18n/languages.json`
+- **Current implementation**: `messenger/src/i18n/types.ts` (to be migrated)
+
+## Supported Languages (12 Total)
 
 | Code | Name | Native Name | Priority |
 |------|------|-------------|----------|
-| `ru` | Russian | Русский | 1 (primary) |
+| `ru` | Russian | Русский | 1 (primary/default) |
 | `en` | English | English | 2 (fallback) |
 | `hi` | Hindi | हिन्दी | 3 |
 | `zh` | Chinese | 中文 | 4 |
 | `tt` | Tatar | Татарча | 5 |
 | `be` | Belarusian | Беларуская | 6 |
 | `ba` | Bashkir | Башҡорт | 7 |
-| `cv` | Chuvash | Чӑваш | 8 |
+| `cv` | Chuvash | Чăваш | 8 |
 | `sah` | Yakut | Саха | 9 |
 | `udm` | Udmurt | Удмурт | 10 |
 | `ce` | Chechen | Нохчийн | 11 |
 | `os` | Ossetian | Ирон | 12 |
 
-## Rules
+## Must Rules
 
-1. **Общий список**: все узлы используют один список языков
-2. **Источник истины**: `packages/core-i18n/languages.json`
-3. **Текущая реализация**: `messenger/src/i18n/types.ts`
-4. **Fallback**: английский (en) для отсутствующих переводов
-5. **Default**: русский (ru) для платформы
+1. **Unified Language Registry**: All nodes MUST use the same language list
+2. **Source of Truth**: `platform-level language registry` in `packages/core-i18n` is the single source of truth
+3. **Default Language**: Russian (ru) for the platform
+4. **Fallback Language**: English (en) for missing translations
 
-## Adding New Languages
+## Should Rules
 
-1. Добавить в `Language` type
-2. Добавить в `LANGUAGES` array
-3. Создать файл переводов в `locales/{code}.ts`
-4. Обновить manifests в всех узлах
+- All platform UI must be translatable to all 12 languages
+- Translation files should follow markdown-first approach
+
+## Must Not Rules
+
+- **Must NOT add languages without updating the platform registry**
+- **Must NOT use different language sets in different nodes**
+
+## Machine-Binding Notes
+
+Future machine-readable binding:
+- `packages/core-i18n/languages.json` will be validated against this contract
+- Build-time validation will ensure all 12 languages are present
 
 ## Version
 

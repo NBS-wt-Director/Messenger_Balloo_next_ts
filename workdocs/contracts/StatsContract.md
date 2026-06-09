@@ -1,8 +1,13 @@
-# Stats Contract
+# StatsContract
 
 ## Purpose
 
-Этот контракт определяет систему сбора и отображения статистики платформы.
+This contract defines the statistics collection and display system for the Balloo platform.
+
+## Source of Truth
+
+- **Stats implementation**: `packages/core-stats`
+- **Primary display**: `apps/admin`
 
 ## Metrics
 
@@ -21,16 +26,18 @@
 - Build status
 - Deployment frequency
 
-### Display Rules
-- **Primary display**: apps/admin (admin-portal)
-- **Export formats**: JSON, CSV, PDF
-- **Update frequency**: real-time (WebSocket)
-- **Retention**: 90 days
+## Must Rules
 
-## Source
+1. **Primary Display**: Stats MUST be displayed in `apps/admin`
+2. **Export Formats**: Must support JSON, CSV, PDF
+3. **Update Frequency**: Real-time via WebSocket
+4. **Retention**: 90 days default retention
 
-- **Current**: `messenger/src/lib/stats` (if exists)
-- **Future**: `packages/core-stats`
+## Machine-Binding Notes
+
+Future machine-readable binding:
+- `packages/core-stats` will define the stats schema
+- Metrics will be collected via platform-wide instrumentation
 
 ## Version
 
