@@ -2,18 +2,21 @@
   "name": "@balloo/core-config",
   "version": "0.1.0",
   "private": true,
-  "description": "Core configuration - Extraction target from settings/",
+  "description": "Core configuration - Extraction from settings/",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/"
   },
-  "devDependencies": {
-    "typescript": "^5.7.0"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "eslint": "^9.0.0"
   },
   "keywords": ["balloo", "config", "core"]
 }

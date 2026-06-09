@@ -1,3 +1,4 @@
+
 # Migration Roadmap v2
 
 ## Overview
@@ -67,7 +68,7 @@ This document outlines the phased migration from the current donor repository to
 
 ## Phase 4: Settings → Core-Config
 
-**Status:** Pending
+**Status:** In Progress
 
 **Goals:**
 - Extract settings from `settings/` to `packages/core-config/`
@@ -75,9 +76,11 @@ This document outlines the phased migration from the current donor repository to
 - Update imports gradually (node-by-node)
 
 **Deliverables:**
-- [ ] packages/core-config fully populated from settings/
-- [ ] Backward compatibility layer in settings/
-- [ ] Configuration schema validation
+- [x] packages/core-config/package.json
+- [x] packages/core-config/src/index.ts (config types extracted)
+- [x] Backward compatibility layer in settings/
+- [ ] Migration completed for first node
+- [ ] Full import migration (Phase 10)
 
 ---
 
