@@ -29,7 +29,21 @@ export type {
   SettingsConfig,
 } from '@balloo/core-config';
 
-// Keep existing exports from environment.ts (not migrated yet)
+// Keep existing exports from environment.ts and config.ts (not migrated yet)
 export { getEnv, isDev, isProd, isTest, loadEnvFile, getEnvFilePath } from './environment';
+export { 
+  initSettings, 
+  getSettings, 
+  getEnvironment, 
+  isDevelopment, 
+  isProduction,
+  getApiUrl,
+  getWsUrl,
+  getApiBaseUrl,
+  getCorsOrigin,
+  getMaxFileSize,
+  isRegistrationEnabled,
+  isMaintenanceMode,
+} from './config';
 
 // TODO: After full migration, remove this file and update all imports
