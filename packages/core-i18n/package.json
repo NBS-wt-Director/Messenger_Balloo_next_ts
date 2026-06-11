@@ -2,15 +2,23 @@
   "name": "@balloo/core-i18n",
   "version": "0.1.0",
   "private": true,
-  "description": "Core i18n infrastructure - Future extraction from messenger/src/i18n",
+  "description": "Core i18n - Extraction from messenger/",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/"
   },
+  "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "eslint": "^9.0.0"
   },
-  "keywords": ["balloo", "i18n", "core", "languages"]
+  "keywords": ["balloo", "i18n", "core", "translations"],
+  "files": [
+    "src/",
+    "languages.json",
+    "schema.json"
+  ]
 }

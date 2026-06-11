@@ -1,24 +1,46 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Platform Languages Manifest",
-  "description": "Список поддерживаемых языков платформы Balloo",
+  "description": "Список поддерживаемых языков платформы Balloo - 12 языков",
   "type": "object",
   "properties": {
-    "version": { "type": "string" },
-    "defaultLanguage": { "type": "string" },
-    "fallbackLanguage": { "type": "string" },
+    "version": {
+      "type": "string",
+      "description": "Version of the languages manifest"
+    },
+    "defaultLanguage": {
+      "type": "string",
+      "description": "Default language code (ru)"
+    },
+    "fallbackLanguage": {
+      "type": "string",
+      "description": "Fallback language code (en)"
+    },
     "languages": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "code": { "type": "string" },
+          "code": {
+            "type": "string",
+            "enum": ["ru", "en", "hi", "zh", "tt", "be", "ba", "cv", "sah", "udm", "ce", "os"]
+          },
           "name": { "type": "string" },
           "nativeName": { "type": "string" },
-          "priority": { "type": "integer" },
+          "priority": { "type": "integer", "minimum": 1, "maximum": 12 },
           "enabled": { "type": "boolean" }
         },
         "required": ["code", "name", "nativeName"]
+      },
+      "minItems": 12,
+      "maxItems": 12
+    },
+    "_metadata": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string" },
+        "extractionPhase": { "type": "string" },
+        "lastUpdated": { "type": "string" }
       }
     }
   },

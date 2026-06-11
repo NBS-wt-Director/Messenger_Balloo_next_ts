@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MIGRATION_ROADMAP.md</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+html,footer,header{
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Custom MD PDF CSS
+ */
+html,footer,header{
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+
+ }
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///r%3A/2.Travail/1.Enseignement/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css"><link rel="stylesheet" href="file:///d%3A/rdaros/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css">
+</head>
+
+<body>
+    <h1 id="migration-roadmap-v2">Migration Roadmap v2</h1>
+<h2 id="overview">Overview</h2>
+<p>This document outlines the phased migration from the current donor repository to the target monorepo architecture.</p>
+<hr>
+<h2 id="phase-1-scaffold--workspace-bootstrap">Phase 1: Scaffold + Workspace Bootstrap</h2>
+<p><strong>Status:</strong> In Progress</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Create target directory structure (apps/, packages/, workdocs/, docs-content/, platform-state/, infra/, tools/)</li>
+<li>Create pnpm workspace bootstrap (pnpm-workspace.yaml, .npmrc)</li>
+<li>Create migration documentation (MIGRATION_REPO_MAP.md, MIGRATION_ROADMAP.md)</li>
+<li>Create contract definitions (DesignContract, LanguageContract, ThemeContract, etc.)</li>
+<li>Create stub packages for future core libraries</li>
+<li>Create legacy audit (ROUNDING_VIOLATIONS.md, REPO_DISCOVERY.md)</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox0" checked="true"><label for="checkbox0">Directory structure created</label></li>
+<li><input type="checkbox" id="checkbox1" checked="true"><label for="checkbox1">pnpm-workspace.yaml</label></li>
+<li><input type="checkbox" id="checkbox2" checked="true"><label for="checkbox2">.npmrc</label></li>
+<li><input type="checkbox" id="checkbox3" checked="true"><label for="checkbox3">MIGRATION_REPO_MAP.md</label></li>
+<li><input type="checkbox" id="checkbox4" checked="true"><label for="checkbox4">MIGRATION_ROADMAP.md</label></li>
+<li><input type="checkbox" id="checkbox5" checked="true"><label for="checkbox5">workdocs/contracts/*</label></li>
+<li><input type="checkbox" id="checkbox6" checked="true"><label for="checkbox6">workdocs/legacy-audit/*</label></li>
+<li><input type="checkbox" id="checkbox7" checked="true"><label for="checkbox7">Stub packages (core-types, core-config, core-i18n, core-theme, core-brand, core-ui, core-docs-schema)</label></li>
+</ul>
+<hr>
+<h2 id="phase-2-repo-mapping--legacy-audit">Phase 2: Repo Mapping + Legacy Audit</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Complete full mapping of all donor paths to target structure</li>
+<li>Document all legacy design violations</li>
+<li>Create migration checklist for each application</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox8"><label for="checkbox8">Complete repo mapping documentation</label></li>
+<li><input type="checkbox" id="checkbox9"><label for="checkbox9">Full legacy audit report</label></li>
+<li><input type="checkbox" id="checkbox10"><label for="checkbox10">Migration checklist per application</label></li>
+</ul>
+<hr>
+<h2 id="phase-3-shared-%E2%86%92-core-types">Phase 3: Shared → Core-Types</h2>
+<p><strong>Status:</strong> In Progress</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Extract types from <code>shared/</code> to <code>packages/core-types/</code></li>
+<li>Establish core-types as the central type registry</li>
+<li>Update imports gradually (node-by-node)</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox11" checked="true"><label for="checkbox11">packages/core-types/package.json</label></li>
+<li><input type="checkbox" id="checkbox12" checked="true"><label for="checkbox12">packages/core-types/src/index.ts (core types extracted)</label></li>
+<li><input type="checkbox" id="checkbox13" checked="true"><label for="checkbox13">packages/core-types/README.md</label></li>
+<li><input type="checkbox" id="checkbox14" checked="true"><label for="checkbox14">Backward compatibility layer in shared/</label></li>
+<li><input type="checkbox" id="checkbox15"><label for="checkbox15">Migration completed for first node</label></li>
+<li><input type="checkbox" id="checkbox16"><label for="checkbox16">Full import migration (Phase 10)</label></li>
+</ul>
+<hr>
+<h2 id="phase-4-settings-%E2%86%92-core-config">Phase 4: Settings → Core-Config</h2>
+<p><strong>Status:</strong> In Progress</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Extract settings from <code>settings/</code> to <code>packages/core-config/</code></li>
+<li>Establish core-config as the central configuration registry</li>
+<li>Update imports gradually (node-by-node)</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox17" checked="true"><label for="checkbox17">packages/core-config/package.json</label></li>
+<li><input type="checkbox" id="checkbox18" checked="true"><label for="checkbox18">packages/core-config/src/index.ts (config types extracted)</label></li>
+<li><input type="checkbox" id="checkbox19" checked="true"><label for="checkbox19">Backward compatibility layer in settings/</label></li>
+<li><input type="checkbox" id="checkbox20"><label for="checkbox20">Migration completed for first node</label></li>
+<li><input type="checkbox" id="checkbox21"><label for="checkbox21">Full import migration (Phase 10)</label></li>
+</ul>
+<hr>
+<h2 id="phase-5-messenger-i18n-extraction-%E2%86%92-core-i18n">Phase 5: Messenger i18n Extraction → Core-I18n</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Create <code>packages/core-i18n/</code></li>
+<li>Extract i18n infrastructure from messenger/</li>
+<li>Implement platform-level language registry</li>
+<li>Enforce 12-language contract</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox22"><label for="checkbox22">packages/core-i18n fully populated</label></li>
+<li><input type="checkbox" id="checkbox23"><label for="checkbox23">Language registry implementation</label></li>
+<li><input type="checkbox" id="checkbox24"><label for="checkbox24">Translation loading mechanism</label></li>
+<li><input type="checkbox" id="checkbox25"><label for="checkbox25">Language switching utilities</label></li>
+</ul>
+<hr>
+<h2 id="phase-6-messenger-theme-extraction-%E2%86%92-core-theme">Phase 6: Messenger Theme Extraction → Core-Theme</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Create <code>packages/core-theme/</code></li>
+<li>Extract theme-store from messenger/</li>
+<li>Implement platform preset themes (dark, light, russia)</li>
+<li>Enforce theme contract (custom themes = user apps only)</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox26"><label for="checkbox26">packages/core-theme fully populated</label></li>
+<li><input type="checkbox" id="checkbox27"><label for="checkbox27">Theme store implementation</label></li>
+<li><input type="checkbox" id="checkbox28"><label for="checkbox28">Theme switching utilities</label></li>
+<li><input type="checkbox" id="checkbox29"><label for="checkbox29">Admin/system theme restrictions</label></li>
+</ul>
+<hr>
+<h2 id="phase-7-brandlogo-extraction-%E2%86%92-core-brand">Phase 7: Brand/Logo Extraction → Core-Brand</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Create <code>packages/core-brand/</code></li>
+<li>Extract Logo component and brand assets from messenger/</li>
+<li>Define brand guidelines contract</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox30"><label for="checkbox30">packages/core-brand/package.json</label></li>
+<li><input type="checkbox" id="checkbox31"><label for="checkbox31">packages/core-brand/src/Logo component</label></li>
+<li><input type="checkbox" id="checkbox32"><label for="checkbox32">Brand color palette</label></li>
+<li><input type="checkbox" id="checkbox33"><label for="checkbox33">Typography definitions</label></li>
+</ul>
+<hr>
+<h2 id="phase-8-shared-ui-primitives-%E2%86%92-core-ui">Phase 8: Shared UI Primitives → Core-UI</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Create <code>packages/core-ui/</code></li>
+<li>Extract shared UI components from messenger/</li>
+<li>Enforce DesignContract (no rounded corners, zero border-radius)</li>
+<li>Establish component API standards</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox34"><label for="checkbox34">packages/core-ui/package.json</label></li>
+<li><input type="checkbox" id="checkbox35"><label for="checkbox35">Core component library</label></li>
+<li><input type="checkbox" id="checkbox36"><label for="checkbox36">Design system components</label></li>
+<li><input type="checkbox" id="checkbox37"><label for="checkbox37">Accessibility compliance</label></li>
+<li><input type="checkbox" id="checkbox38"><label for="checkbox38">No-rounding enforcement</label></li>
+</ul>
+<hr>
+<h2 id="phase-9-docs-split-%E2%86%92-docs-content--docs-site">Phase 9: Docs Split → Docs-Content + Docs-Site</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Split <code>docs/</code> into content and site</li>
+<li>Create <code>apps/docs-site/</code></li>
+<li>Populate <code>docs-content/</code> with platform documentation</li>
+<li>Connect docs-site to docs-content</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox39"><label for="checkbox39">docs-content/ populated</label></li>
+<li><input type="checkbox" id="checkbox40"><label for="checkbox40">apps/docs-site/ scaffold</label></li>
+<li><input type="checkbox" id="checkbox41"><label for="checkbox41">Documentation build pipeline</label></li>
+<li><input type="checkbox" id="checkbox42"><label for="checkbox42">Search and navigation</label></li>
+</ul>
+<hr>
+<h2 id="phase-10-node-apps-normalization">Phase 10: Node Apps Normalization</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Migrate messenger/ → apps/web-main (node-by-node)</li>
+<li>Migrate admin-portal/ → apps/admin (node-by-node)</li>
+<li>Migrate api/ → apps/api (node-by-node)</li>
+<li>Migrate other services (android-service, desktop, mobile, max-server)</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox43"><label for="checkbox43">apps/web-main fully functional</label></li>
+<li><input type="checkbox" id="checkbox44"><label for="checkbox44">apps/admin fully functional</label></li>
+<li><input type="checkbox" id="checkbox45"><label for="checkbox45">apps/api fully functional</label></li>
+<li><input type="checkbox" id="checkbox46"><label for="checkbox46">apps/android-service fully functional</label></li>
+<li><input type="checkbox" id="checkbox47"><label for="checkbox47">apps/desktop fully functional</label></li>
+<li><input type="checkbox" id="checkbox48"><label for="checkbox48">apps/mobile fully functional</label></li>
+<li><input type="checkbox" id="checkbox49"><label for="checkbox49">apps/max-server fully functional</label></li>
+<li><input type="checkbox" id="checkbox50"><label for="checkbox50">All imports updated to new structure</label></li>
+</ul>
+<hr>
+<h2 id="phase-11-infra-normalization">Phase 11: Infra Normalization</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Normalize nginx configuration in infra/</li>
+<li>Normalize docker configuration in infra/</li>
+<li>Create deployment manifests in platform-state/manifests/</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox51"><label for="checkbox51">infra/nginx normalized</label></li>
+<li><input type="checkbox" id="checkbox52"><label for="checkbox52">infra/docker normalized</label></li>
+<li><input type="checkbox" id="checkbox53"><label for="checkbox53">platform-state/manifests/ populated</label></li>
+<li><input type="checkbox" id="checkbox54"><label for="checkbox54">Deployment documentation</label></li>
+</ul>
+<hr>
+<h2 id="phase-12-legacy-design-cleanup-no-rounding-enforcement">Phase 12: Legacy Design Cleanup (No-Rounding Enforcement)</h2>
+<p><strong>Status:</strong> Pending</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Remove ALL legacy rounded corner usage across all applications</li>
+<li>Enforce border-radius: 0 everywhere</li>
+<li>Remove all rounded* utility classes</li>
+<li>Update all CSS files to comply with DesignContract</li>
+</ul>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li><input type="checkbox" id="checkbox55"><label for="checkbox55">All CSS border-radius: 0</label></li>
+<li><input type="checkbox" id="checkbox56"><label for="checkbox56">All Tailwind rounded* classes removed</label></li>
+<li><input type="checkbox" id="checkbox57"><label for="checkbox57">All inline borderRadius styles removed</label></li>
+<li><input type="checkbox" id="checkbox58"><label for="checkbox58">Linting rules for border-radius enforcement</label></li>
+<li><input type="checkbox" id="checkbox59"><label for="checkbox59">Build-time validation against DesignContract</label></li>
+</ul>
+<hr>
+<h2 id="summary">Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Name</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Scaffold + Workspace Bootstrap</td>
+<td>In Progress</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Repo Mapping + Legacy Audit</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Shared → Core-Types</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Settings → Core-Config</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Messenger i18n → Core-I18n</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Messenger Theme → Core-Theme</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Brand/Logo → Core-Brand</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Shared UI → Core-UI</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Docs Split → Docs-Content + Docs-Site</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Node Apps Normalization</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Infra Normalization</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Legacy Design Cleanup</td>
+<td>Pending</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+
+</html>

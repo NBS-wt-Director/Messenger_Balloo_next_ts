@@ -86,7 +86,7 @@ This document outlines the phased migration from the current donor repository to
 
 ## Phase 5: Messenger i18n Extraction → Core-I18n
 
-**Status:** Pending
+**Status:** In Progress
 
 **Goals:**
 - Create `packages/core-i18n/`
@@ -95,10 +95,13 @@ This document outlines the phased migration from the current donor repository to
 - Enforce 12-language contract
 
 **Deliverables:**
-- [ ] packages/core-i18n fully populated
-- [ ] Language registry implementation
-- [ ] Translation loading mechanism
-- [ ] Language switching utilities
+- [x] packages/core-i18n/package.json
+- [x] packages/core-i18n/src/index.ts (i18n types extracted)
+- [x] packages/core-i18n/languages.json (12 languages)
+- [x] packages/core-i18n/schema.json
+- [x] packages/core-i18n/README.md
+- [ ] Migration completed for first node
+- [ ] Full import migration (Phase 10)
 
 ---
 
