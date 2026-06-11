@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@balloo/core-types": "0.1.0",
+    "@balloo/core-types": "workspace:*",
     "zod": "^3.23.8",
     "jose": "^5.9.0"
   },

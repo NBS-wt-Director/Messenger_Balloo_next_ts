@@ -2,21 +2,28 @@ packages:
   # Legacy packages (will be migrated to packages/* in later phases)
   - 'shared/'
   - 'settings/'
-  
+
   # Legacy applications (will be migrated to apps/* in later phases)
   - 'messenger/'
   - 'admin-portal/'
   - 'api/'
   - 'android-service/'
   - 'desktop/'
-  - 'mobile/'
+  # - 'mobile/'  # Temporarily excluded - expo-device version issue
   - 'max-server/'
-  
+
   # New scaffold packages
   - 'packages/*'
-  
+
   # New scaffold apps
   - 'apps/*'
-  
+
   # Docs
   - 'docs/'
+allowBuilds:
+  '@firebase/util': set this to true or false
+  electron: set this to true or false
+  msgpackr-extract: set this to true or false
+  protobufjs: set this to true or false
+  sharp: set this to true or false
+  unrs-resolver: set this to true or false

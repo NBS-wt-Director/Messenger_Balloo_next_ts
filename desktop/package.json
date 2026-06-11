@@ -55,7 +55,7 @@
     "electron-updater": "^6.3.0",
     "axios": "^1.7.0",
     "jose": "^5.9.0",
-    "@balloo/shared": "*"
+    "@balloo/shared": "workspace:*"
   },
   "devDependencies": {
     "electron": "^33.0.0",

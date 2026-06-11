@@ -13,7 +13,7 @@
   "author": "NLP-Core-Team",
   "license": "MIT",
   "dependencies": {
-    "@balloo/core-config": "0.1.0"
+    "@balloo/core-config": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
