@@ -54,7 +54,7 @@ interface InviteManagerProps {
 }
 
 export function InviteManager({ userId }: InviteManagerProps) {
-  const { language, theme } = useSettingsStore();
+  const { language } = useSettingsStore();
   const translations = getTranslations(language);
   
   const [invites, setInvites] = useState<Invite[]>(demoInvites);

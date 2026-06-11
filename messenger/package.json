@@ -20,6 +20,9 @@
   },
   "dependencies": {
     "@app-balloo/settings": "file:../settings",
+    "@balloo/core-brand": "file:../packages/core-brand",
+    "@balloo/core-theme": "file:../packages/core-theme",
+    "@balloo/core-ui": "file:../packages/core-ui",
     "axios": "^1.16.1",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
@@ -34,7 +37,7 @@
     "react-dom": "^19.0.0",
     "rxdb": "^17.1.0",
     "rxdb-hooks": "^2.0.0",
-    "sql.js": "^1.11.0",
+    "sql.js": "^1.1.0",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "web-push": "^3.6.7",

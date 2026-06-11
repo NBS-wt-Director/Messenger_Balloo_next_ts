@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
-import { Logo } from './ui/Logo';
+import { Logo } from '@balloo/core-brand';
 import './layout/Footer.css';
 
 interface VersionsData {

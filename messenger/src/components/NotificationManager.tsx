@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 import { useNotifications } from '@/lib/notifications';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@balloo/core-ui';
 import { useAlert } from '@/hooks/useAlert';
 import './NotificationManager.css';
 

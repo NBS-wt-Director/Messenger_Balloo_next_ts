@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { useAccountsStore } from '@/stores/accounts-store';
 import { useSettingsStore } from '@/stores/settings-store';
+import { useThemeStore, type ThemePresetId } from '@balloo/core-theme';
 import { getTranslations } from '@/i18n';
 import { User, LogOut, Plus, ChevronRight, Moon, Sun, Flag, Globe } from 'lucide-react';
 import './AccountSwitcher.css';
@@ -13,7 +14,8 @@ export function AccountSwitcher() {
   const router = useRouter();
   const { user, login, logout } = useAuthStore();
   const { accounts, currentAccountId, setCurrentAccount, removeAccount, addAccount } = useAccountsStore();
-  const { language, setLanguage, theme, setTheme } = useSettingsStore();
+  const { language, setLanguage } = useSettingsStore();
+  const { theme, setTheme } = useThemeStore();
   const translations = getTranslations(language);
   
   const [showAccounts, setShowAccounts] = useState(false);
@@ -171,76 +173,6 @@ export function AccountSwitcher() {
                     className={`theme-btn-icon ${theme === 'russia' ? 'active' : ''}`}
                     onClick={() => setTheme('russia')}
                     title={translations.russiaTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'india' ? 'active' : ''}`}
-                    onClick={() => setTheme('india')}
-                    title={translations.indiaTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'china' ? 'active' : ''}`}
-                    onClick={() => setTheme('china')}
-                    title={translations.chinaTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'tatarstan' ? 'active' : ''}`}
-                    onClick={() => setTheme('tatarstan')}
-                    title={translations.tatarstanTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'belarus' ? 'active' : ''}`}
-                    onClick={() => setTheme('belarus')}
-                    title={translations.belarusTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'bashkortostan' ? 'active' : ''}`}
-                    onClick={() => setTheme('bashkortostan')}
-                    title={translations.bashkortostanTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'chuvashia' ? 'active' : ''}`}
-                    onClick={() => setTheme('chuvashia')}
-                    title={translations.chuvashiaTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'yakutia' ? 'active' : ''}`}
-                    onClick={() => setTheme('yakutia')}
-                    title={translations.yakutiaTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'udmurtia' ? 'active' : ''}`}
-                    onClick={() => setTheme('udmurtia')}
-                    title={translations.udmurtiaTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'chechnya' ? 'active' : ''}`}
-                    onClick={() => setTheme('chechnya')}
-                    title={translations.chechnyaTheme}
-                  >
-                    <Flag size={18} />
-                  </button>
-                  <button
-                    className={`theme-btn-icon ${theme === 'ossetia' ? 'active' : ''}`}
-                    onClick={() => setTheme('ossetia')}
-                    title={translations.ossetiaTheme}
                   >
                     <Flag size={18} />
                   </button>

@@ -3,11 +3,11 @@
  */
 
 import React from 'react';
-import { CustomTheme } from '@/stores/settings-store';
+import type { PresetTheme } from '@balloo/core-theme';
 import './ThemeCard.css';
 
 interface ThemeCardProps {
-  theme: CustomTheme;
+  theme: PresetTheme;
   selected: boolean;
   onSelect: () => void;
   onFavorite: () => void;

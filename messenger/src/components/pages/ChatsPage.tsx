@@ -12,7 +12,7 @@ import {
   Pin, PinOff, Heart, Trash2, ShieldBan, AlertTriangle,
   ArrowLeft, Image as ImageIcon
 } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@balloo/core-ui';
 import { useAlert } from '@/hooks/useAlert';
 import { getChats, togglePin, toggleFavorite, clearChat, chatsApi } from '@/api/chats';
 import { contactsApi, invitationsApi, pagesApi, featuresApi } from '@/api/client';

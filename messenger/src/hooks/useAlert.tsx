@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, ReactNode } from 'react';
-import { Alert, AlertType } from '../components/ui/Alert';
-import { Confirm, ConfirmType } from '../components/ui/Confirm';
+import { Alert, type AlertType } from '@balloo/core-ui';
+import { Confirm, type ConfirmType } from '../components/ui/Confirm';
 
 interface AlertState {
   visible: boolean;

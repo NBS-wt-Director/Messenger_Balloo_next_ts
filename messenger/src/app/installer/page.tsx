@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAlert } from '@/hooks/useAlert';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@balloo/core-ui';
 import { 
   Shield, Key, Database, Cloud, Bell, Check, X, Loader2, 
   Info, RefreshCw, Trash2, Users, MessageCircle, AlertTriangle,

@@ -22,7 +22,8 @@ This document outlines the phased migration from the current donor repository to
 **Deliverables:**
 - [x] Directory structure created
 - [x] pnpm-workspace.yaml
-- [x] .npmrc
+- [x] .npmrc 
+- 
 - [x] MIGRATION_REPO_MAP.md
 - [x] MIGRATION_ROADMAP.md
 - [x] workdocs/contracts/*
@@ -33,7 +34,7 @@ This document outlines the phased migration from the current donor repository to
 
 ## Phase 2: Repo Mapping + Legacy Audit
 
-**Status:** Pending
+**Status:** Completed
 
 **Goals:**
 - Complete full mapping of all donor paths to target structure
@@ -41,9 +42,9 @@ This document outlines the phased migration from the current donor repository to
 - Create migration checklist for each application
 
 **Deliverables:**
-- [ ] Complete repo mapping documentation
-- [ ] Full legacy audit report
-- [ ] Migration checklist per application
+- [x] Complete repo mapping documentation
+- [x] Full legacy audit report
+- [x] Migration checklist per application
 
 ---
 
@@ -107,7 +108,7 @@ This document outlines the phased migration from the current donor repository to
 
 ## Phase 6: Messenger Theme Extraction → Core-Theme
 
-**Status:** Pending
+**Status:** Completed
 
 **Goals:**
 - Create `packages/core-theme/`
@@ -116,16 +117,22 @@ This document outlines the phased migration from the current donor repository to
 - Enforce theme contract (custom themes = user apps only)
 
 **Deliverables:**
-- [ ] packages/core-theme fully populated
-- [ ] Theme store implementation
-- [ ] Theme switching utilities
-- [ ] Admin/system theme restrictions
+- [x] packages/core-theme/package.json
+- [x] packages/core-theme/src/types.ts (theme types)
+- [x] packages/core-theme/src/presets.ts (3 platform presets)
+- [x] packages/core-theme/src/theme-store.ts (Zustand store)
+- [x] packages/core-theme/src/index.ts (exports)
+- [x] packages/core-theme/README.md
+- [x] packages/core-theme/tsconfig.json
+- [x] messenger updated to use @balloo/core-theme
+- [x] Theme types removed from messenger/src/i18n/types.ts
+- [x] Theme delegation in messenger/src/stores/settings-store.ts
 
 ---
 
 ## Phase 7: Brand/Logo Extraction → Core-Brand
 
-**Status:** Pending
+**Status:** Completed
 
 **Goals:**
 - Create `packages/core-brand/`
@@ -133,16 +140,23 @@ This document outlines the phased migration from the current donor repository to
 - Define brand guidelines contract
 
 **Deliverables:**
-- [ ] packages/core-brand/package.json
-- [ ] packages/core-brand/src/Logo component
-- [ ] Brand color palette
-- [ ] Typography definitions
+- [x] packages/core-brand/package.json (updated with dependencies)
+- [x] packages/core-brand/src/types.ts (brand types)
+- [x] packages/core-brand/src/Logo.tsx (Logo component)
+- [x] packages/core-brand/src/brand.ts (brand constants)
+- [x] packages/core-brand/src/index.ts (exports)
+- [x] packages/core-brand/tsconfig.json
+- [x] packages/core-brand/README.md
+- [x] messenger updated to use @balloo/core-brand
+- [x] Header.tsx and Footer.tsx imports updated
+- [x] BrandContract.md created (workdocs/contracts/BrandContract.md)
+- [x] Phase 7 completion report (workdocs/migrations/BRAND_MIGRATION.md)
 
 ---
 
 ## Phase 8: Shared UI Primitives → Core-UI
 
-**Status:** Pending
+**Status:** Completed
 
 **Goals:**
 - Create `packages/core-ui/`
@@ -151,11 +165,20 @@ This document outlines the phased migration from the current donor repository to
 - Establish component API standards
 
 **Deliverables:**
-- [ ] packages/core-ui/package.json
-- [ ] Core component library
-- [ ] Design system components
-- [ ] Accessibility compliance
-- [ ] No-rounding enforcement
+- [x] packages/core-ui/package.json
+- [x] packages/core-ui/src/types.ts
+- [x] packages/core-ui/src/design-tokens.ts
+- [x] packages/core-ui/src/components/Modal.tsx
+- [x] packages/core-ui/src/components/Alert.tsx
+- [x] packages/core-ui/src/components/Button.tsx
+- [x] packages/core-ui/src/components/Card.tsx
+- [x] packages/core-ui/src/index.ts
+- [x] packages/core-ui/README.md
+- [x] packages/core-ui/tsconfig.json
+- [x] messenger/package.json updated with @balloo/core-ui
+- [x] messenger components wired to @balloo/core-ui
+- [x] UI_MIGRATION.md created
+- [x] Phase 8 completion report
 
 ---
 
@@ -239,15 +262,40 @@ This document outlines the phased migration from the current donor repository to
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | Scaffold + Workspace Bootstrap | In Progress |
-| 2 | Repo Mapping + Legacy Audit | Pending |
-| 3 | Shared → Core-Types | Pending |
-| 4 | Settings → Core-Config | Pending |
-| 5 | Messenger i18n → Core-I18n | Pending |
-| 6 | Messenger Theme → Core-Theme | Pending |
-| 7 | Brand/Logo → Core-Brand | Pending |
-| 8 | Shared UI → Core-UI | Pending |
+| 1 | Scaffold + Workspace Bootstrap | Done |
+| 2 | Repo Mapping + Legacy Audit | Done |
+| 3 | Shared → Core-Types | In Progress |
+| 4 | Settings → Core-Config | In Progress |
+| 5 | Messenger i18n → Core-I18n | In Progress |
+| 6 | Messenger Theme → Core-Theme | Completed |
+| 7 | Brand/Logo → Core-Brand | Completed |
+| 8 | Shared UI → Core-UI | Completed |
 | 9 | Docs Split → Docs-Content + Docs-Site | Pending |
 | 10 | Node Apps Normalization | Pending |
 | 11 | Infra Normalization | Pending |
 | 12 | Legacy Design Cleanup | Pending |
+
+---
+
+## Autopilot Mode
+
+**Status:** Active (since 2026-06-11)
+
+Autopilot mode enables command-driven migration:
+
+| Command | Description |
+|---------|-------------|
+| `дальше` | Execute next migration step automatically |
+| `проведи полный аудит` | Generate full technical audit |
+
+**State Files:**
+- `platform-state/autopilot/STATE.json` - Current migration state
+- `platform-state/autopilot/NEXT_ACTION.md` - Next executable task
+- `platform-state/autopilot/COMMANDS.md` - Command documentation
+
+**Contract:** `workdocs/contracts/AutopilotContract.md`
+
+**Progress:**
+- Completed Phases: 5 (Scaffold, Repo Mapping, Theme, Brand, UI)
+- In Progress: 3 (Core-Types, Core-Config, Core-I18n)
+- Next: Phase 9 (Docs Split) OR Phase 3-5 completion

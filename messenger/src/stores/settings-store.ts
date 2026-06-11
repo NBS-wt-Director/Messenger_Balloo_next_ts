@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Language, Theme } from '@/i18n/types';
+import { Language } from '@/i18n/types';
+import type { ThemePresetId } from '@balloo/core-theme';
+import { useThemeStore } from '@balloo/core-theme';
 import type { ThemeColors } from '@/types';
 
-// Типы для пользовательских тем
+// Типы для пользовательских тем (экспортируются для обратной совместимости)
 export interface CustomTheme {
   id: string;
   name: string;
@@ -21,7 +23,6 @@ export interface ThemeSubscription {
 }
 
 interface SettingsState {
-  theme: Theme;
   language: Language;
   customThemes: CustomTheme[];
   recentThemes: CustomTheme[];
@@ -29,8 +30,6 @@ interface SettingsState {
   subscription: ThemeSubscription;
   
   // Действия
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
   setLanguage: (language: Language) => void;
   setCustomThemes: (themes: CustomTheme[]) => void;
   addCustomTheme: (theme: CustomTheme) => void;
@@ -42,27 +41,11 @@ interface SettingsState {
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
-      theme: 'dark',
       language: 'ru',
       customThemes: [],
       recentThemes: [],
       favorites: [],
       subscription: { isActive: false },
-
-      setTheme: (theme) => {
-        set({ theme });
-        if (typeof document !== 'undefined') {
-          document.documentElement.setAttribute('data-theme', theme);
-          localStorage.setItem('messenger-theme', theme);
-        }
-      },
-
-      toggleTheme: () => {
-        const themes: Theme[] = ['dark', 'light', 'russia'];
-        const currentIndex = themes.indexOf(get().theme);
-        const newTheme = themes[(currentIndex + 1) % themes.length];
-        get().setTheme(newTheme);
-      },
 
       setLanguage: (language) => set({ language }),
       
@@ -105,3 +88,30 @@ export const useSettingsStore = create<SettingsState>()(
     }
   )
 );
+
+// ============================================================================
+// Theme delegation to @balloo/core-theme
+// ============================================================================
+
+/**
+ * Get current theme from core-theme store
+ * Use this instead of settings-store for theme access
+ */
+export function getCurrentTheme(): ThemePresetId {
+  return useThemeStore.getState().theme;
+}
+
+/**
+ * Set theme via core-theme store
+ * Use this instead of settings-store for theme changes
+ */
+export function setTheme(theme: ThemePresetId): void {
+  useThemeStore.getState().setTheme(theme);
+}
+
+/**
+ * Toggle theme via core-theme store
+ */
+export function toggleTheme(): void {
+  useThemeStore.getState().toggleTheme();
+}

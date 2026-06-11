@@ -24,17 +24,6 @@ export const LANGUAGES: LanguageOption[] = [
   { code: 'os', name: 'Ossetian', nativeName: 'Ирон' },
 ];
 
-export type Theme = 
-  | 'dark' 
-  | 'light' 
-  | 'russia'
-  | 'india'
-  | 'china'
-  | 'tatarstan'
-  | 'belarus'
-  | 'bashkortostan'
-  | 'chuvashia'
-  | 'yakutia'
-  | 'udmurtia'
-  | 'chechnya'
-  | 'ossetia';
+// Theme type has been migrated to @balloo/core-theme
+// Use ThemePresetId from '@balloo/core-theme' instead
+// export type Theme = 'dark' | 'light' | 'russia';

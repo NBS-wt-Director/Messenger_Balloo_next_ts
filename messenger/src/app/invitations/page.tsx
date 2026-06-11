@@ -9,7 +9,7 @@ import {
   Link, Copy, Check, Plus, Trash2, ExternalLink, 
   Clock, Users, AlertCircle, ArrowLeft 
 } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@balloo/core-ui';
 import { useAlert } from '@/hooks/useAlert';
 import { invitationsApi } from '@/api/client';
 import './InvitationsPage.css';

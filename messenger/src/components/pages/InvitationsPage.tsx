@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { Link as LinkIcon, Copy, ExternalLink, Trash2, Check, Plus, Clock, Users } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@balloo/core-ui';
 import './InvitationsPage.css';
 
 interface Invitation {

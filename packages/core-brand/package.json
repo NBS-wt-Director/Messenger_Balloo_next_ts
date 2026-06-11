@@ -2,14 +2,20 @@
   "name": "@balloo/core-brand",
   "version": "0.1.0",
   "private": true,
-  "description": "Brand assets and Logo - Source candidate includes messenger Logo",
+  "description": "Core brand assets for Balloo platform (Logo, colors, typography)",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/"
   },
+  "dependencies": {
+    "lucide-react": "^0.460.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0"
+  },
   "devDependencies": {
+    "@types/react": "^19.0.0",
     "typescript": "^5.7.0"
   },
   "keywords": ["balloo", "brand", "logo", "core"]

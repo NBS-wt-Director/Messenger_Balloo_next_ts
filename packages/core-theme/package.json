@@ -9,6 +9,9 @@
     "build": "tsc",
     "lint": "eslint src/"
   },
+  "dependencies": {
+    "zustand": "^5.0.14"
+  },
   "devDependencies": {
     "typescript": "^5.7.0"
   }

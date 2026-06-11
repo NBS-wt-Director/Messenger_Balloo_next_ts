@@ -5,9 +5,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations, Language } from '@/i18n';
+import { useThemeStore, type ThemePresetId } from '@balloo/core-theme';
+import { Logo } from '@balloo/core-brand';
 import { Settings, LogOut, User, Moon, Sun, Flag, Globe, Shield, Home, ChevronDown, ArrowLeft, Palette } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
-import { Logo } from './ui/Logo';
 import { BurgerMenu } from './ui/BurgerMenu';
 import ThemeSelector from './ThemeSelector';
 import './layout/Header.css';
@@ -67,7 +68,7 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuthStore();
-  const { theme, setTheme } = useSettingsStore();
+  const { theme, setTheme } = useThemeStore();
   const { language, setLanguage } = useSettingsStore();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -117,7 +118,7 @@ export function Header() {
     setMenuOpen(false);
   };
 
-  const handleThemeChange = (newTheme: any) => {
+  const handleThemeChange = (newTheme: ThemePresetId) => {
     setTheme(newTheme);
     setMenuOpen(false);
   };

@@ -2,9 +2,11 @@
  * ThemeSelector - Модальное окно выбора тем
  */
 
+import type { ThemePresetId } from '@balloo/core-theme';
 import React, { useState, useEffect } from 'react';
 import { useSettingsStore } from '@/stores/settings-store';
 import { useAuthStore } from '@/stores/auth-store';
+import { useThemeStore, PRESET_THEMES, type PresetTheme } from '@balloo/core-theme';
 import ThemeCard from './ThemeCard';
 import ThemeSubscriptionDialog from './ThemeSubscriptionDialog';
 import './ThemeSelector.css';
@@ -15,57 +17,6 @@ interface ThemeSelectorProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const PRESET_THEMES = [
-  {
-    id: 'light',
-    name: 'Светлая',
-    colors: {
-      primary: '#007bff',
-      secondary: '#6c757d',
-      background: '#ffffff',
-      surface: '#f8f9fa',
-      text: '#212529',
-      textSecondary: '#6c757d',
-      border: '#dee2e6',
-      accent: '#007bff'
-    },
-    isFavorite: false,
-    createdAt: Date.now()
-  },
-  {
-    id: 'dark',
-    name: 'Тёмная',
-    colors: {
-      primary: '#0d6efd',
-      secondary: '#6c757d',
-      background: '#1a1a1a',
-      surface: '#2d2d2d',
-      text: '#ffffff',
-      textSecondary: '#b0b0b0',
-      border: '#404040',
-      accent: '#0d6efd'
-    },
-    isFavorite: false,
-    createdAt: Date.now()
-  },
-  {
-    id: 'russia',
-    name: 'Россия',
-    colors: {
-      primary: '#0039A6',
-      secondary: '#D52B1E',
-      background: '#ffffff',
-      surface: '#f0f0f0',
-      text: '#000000',
-      textSecondary: '#555555',
-      border: '#cccccc',
-      accent: '#D52B1E'
-    },
-    isFavorite: false,
-    createdAt: Date.now()
-  }
-];
 
 const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<TabType>('presets');
@@ -78,9 +29,10 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
     recentThemes,
     favorites,
     subscription,
-    setTheme,
     loadThemesFromServer
   } = useSettingsStore();
+
+  const { setTheme } = useThemeStore();
 
   const { isAuthenticated } = useAuthStore();
 
@@ -93,18 +45,18 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen, isAuthenticated]);
 
-  const handleSelectTheme = (themeId: string) => {
+  const handleSelectTheme = (themeId: ThemePresetId) => {
     setSelectedTheme(themeId);
     
     if (!isAuthenticated) {
       // Неавторизованный - применяем временно
-      setTheme(themeId as any);
+      setTheme(themeId);
       return;
     }
     
     if (subscription.isActive) {
       // Подписка активна - применяем тему
-      setTheme(themeId as any);
+      setTheme(themeId);
       onClose();
     } else {
       // Нет подписки - показываем диалог
@@ -114,7 +66,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
 
   const handleSubscriptionSuccess = () => {
     setShowSubscription(false);
-    setTheme(selectedTheme as any);
+    setTheme(selectedTheme as ThemePresetId);
     onClose();
   };
 
@@ -161,12 +113,12 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
         <div className="theme-selector-content">
           {activeTab === 'presets' && (
             <div className="theme-grid">
-              {PRESET_THEMES.map((theme) => (
+              {(PRESET_THEMES as unknown as PresetTheme[]).map((theme) => (
                 <ThemeCard
                   key={theme.id}
                   theme={theme}
                   selected={selectedTheme === theme.id}
-                  onSelect={() => handleSelectTheme(theme.id)}
+                  onSelect={() => handleSelectTheme(theme.id as ThemePresetId)}
                   onFavorite={() => {}}
                   isFavorite={false}
                   locked={false}
@@ -189,7 +141,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
                     key={theme.id}
                     theme={theme}
                     selected={selectedTheme === theme.id}
-                    onSelect={() => handleSelectTheme(theme.id)}
+                    onSelect={() => handleSelectTheme(theme.id as ThemePresetId)}
                     onFavorite={() => {}}
                     isFavorite={false}
                     locked={!subscription.isActive}
@@ -213,7 +165,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ isOpen, onClose }) => {
                     key={theme.id}
                     theme={theme}
                     selected={selectedTheme === theme.id}
-                    onSelect={() => handleSelectTheme(theme.id)}
+                    onSelect={() => handleSelectTheme(theme.id as ThemePresetId)}
                     onFavorite={() => {}}
                     isFavorite={true}
                     locked={!subscription.isActive}

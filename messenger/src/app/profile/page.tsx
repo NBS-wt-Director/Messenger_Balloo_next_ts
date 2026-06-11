@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { useSettingsStore } from '@/stores/settings-store';
+import { useThemeStore, type ThemePresetId } from '@balloo/core-theme';
 import { useAccountsStore } from '@/stores/accounts-store';
 import { getTranslations, Language } from '@/i18n';
 import { FamilyRelation, FamilyRelationType } from '@/types';
@@ -19,7 +20,8 @@ import './profile.css';
 export default function ProfilePage() {
   const router = useRouter();
   const { user, logout, isAuthenticated, updateProfile } = useAuthStore();
-  const { theme, setTheme, language, setLanguage } = useSettingsStore();
+  const { language, setLanguage } = useSettingsStore();
+  const { theme, setTheme } = useThemeStore();
   const { accounts, addAccount } = useAccountsStore();
   
   const [displayName, setDisplayName] = useState(user?.displayName || '');
@@ -156,16 +158,6 @@ export default function ProfilePage() {
     { value: 'dark', label: translations.darkTheme, icon: Moon },
     { value: 'light', label: translations.lightTheme, icon: Sun },
     { value: 'russia', label: translations.russiaTheme, icon: Flag },
-    { value: 'india', label: translations.indiaTheme, icon: Flag },
-    { value: 'china', label: translations.chinaTheme, icon: Flag },
-    { value: 'tatarstan', label: translations.tatarstanTheme, icon: Flag },
-    { value: 'belarus', label: translations.belarusTheme, icon: Flag },
-    { value: 'bashkortostan', label: translations.bashkortostanTheme, icon: Flag },
-    { value: 'chuvashia', label: translations.chuvashiaTheme, icon: Flag },
-    { value: 'yakutia', label: translations.yakutiaTheme, icon: Flag },
-    { value: 'udmurtia', label: translations.udmurtiaTheme, icon: Flag },
-    { value: 'chechnya', label: translations.chechnyaTheme, icon: Flag },
-    { value: 'ossetia', label: translations.ossetiaTheme, icon: Flag },
   ];
 
   const relationTypes: { value: FamilyRelationType; label: string }[] = [
@@ -405,7 +397,7 @@ export default function ProfilePage() {
                   return (
                     <button
                       key={option.value}
-                      onClick={() => theme !== option.value && setTheme(option.value as any)}
+                      onClick={() => theme !== option.value && setTheme(option.value as ThemePresetId)}
                       className={`theme-option ${theme === option.value ? 'active' : ''}`}
                       title={option.label}
                     >

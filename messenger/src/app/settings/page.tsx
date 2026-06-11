@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { useSettingsStore } from '@/stores/settings-store';
+import { useThemeStore, type ThemePresetId } from '@balloo/core-theme';
 import { getTranslations, Language } from '@/i18n';
 import { 
-  ArrowLeft, Globe, Moon, Sun, Flag, Bell, Shield, HardDrive, 
+  ArrowLeft, Globe, Moon, Sun, Flag, Bell, HardDrive, 
   User, MessageCircle, Download, Check, X, Smartphone, BellRing, 
   BellOff, TestTube
 } from 'lucide-react';
@@ -30,7 +31,8 @@ interface NotificationSettings {
 export default function SettingsPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
-  const { theme, setTheme, language, setLanguage } = useSettingsStore();
+  const { language, setLanguage } = useSettingsStore();
+  const { theme, setTheme } = useThemeStore();
   const translations = getTranslations(language);
 
   // PWA State
@@ -241,7 +243,7 @@ export default function SettingsPage() {
           <div className="settings-card">
             <select
               value={theme}
-              onChange={(e) => setTheme(e.target.value as any)}
+              onChange={(e) => setTheme(e.target.value as ThemePresetId)}
               className="settings-select"
             >
               {themeOptions.map((t) => (

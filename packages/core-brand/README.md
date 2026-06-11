@@ -1,22 +1,70 @@
-# Core Brand
+# @balloo/core-brand
 
-## Purpose
+Core brand assets for Balloo platform. Provides Logo component, brand colors, and typography guidelines.
 
-Brand assets, logo, and design tokens for the Balloo platform.
+## Installation
 
-## Source
+```bash
+pnpm add @balloo/core-brand
+```
 
-- **Logo**: Source candidate includes `messenger/src/components/ui/Logo.tsx`
-- **Colors**: Defined in platform themes
-- **Typography**: Platform-wide typography settings
+## Usage
 
-## Migration Status
+### Logo Component
 
-- **Phase 7**: Brand extraction from messenger/
-- **Current**: Stub package
+```tsx
+import { Logo } from '@balloo/core-brand';
 
-## Rules
+// With image
+<Logo src="/logo.jpg" alt="Balloo" size="md" />
 
-1. **Single source**: All brand assets in one place
-2. **Versioned**: Brand changes versioned
-3. **Documented**: Brand guidelines documented
+// Fallback (Russia flag gradient)
+<Logo size="lg" showText={true} />
+```
+
+### Brand Colors
+
+```tsx
+import { BRAND_COLORS } from '@balloo/core-brand';
+
+console.log(BRAND_COLORS.primary);    // '#0039A6'
+console.log(BRAND_COLORS.secondary);  // '#D52B1E'
+```
+
+## Components
+
+### Logo
+
+Official Balloo logo component with Russia flag gradient fallback.
+
+**Props:**
+- `src?: string` - Logo image URL
+- `alt?: string` - Alt text (default: 'Balloo')
+- `size?: 'sm' | 'md' | 'lg'` - Size (default: 'md')
+- `showText?: boolean` - Show text (default: true)
+- `className?: string` - Additional CSS classes
+
+## Brand Guidelines
+
+### Colors
+- **Primary**: `#0039A6` (Russia blue)
+- **Secondary**: `#D52B1E` (Russia red)
+- **Accent**: `#007bff`
+
+### Logo
+- **Minimum Size**: 32px
+- **Clear Space**: 8px
+
+## API Reference
+
+| Export | Type | Description |
+|--------|------|-------------|
+| `Logo` | Component | Logo component |
+| `BRAND_COLORS` | `BrandColors` | Color palette |
+| `BRAND_TYPOGRAPHY` | `BrandTypography` | Typography |
+| `BRAND_GUIDELINES` | `BrandGuidelines` | Guidelines |
+| `LOGO_GRADIENT` | `string` | Fallback gradient |
+
+## Migration
+
+**Phase 7** - Extracted from `messenger/src/components/ui/Logo.tsx`

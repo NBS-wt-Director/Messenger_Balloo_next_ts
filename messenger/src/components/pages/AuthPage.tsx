@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import * as authApi from '@/api/auth';
 import { getYandexAuthUrl } from '@/api/auth';
-import { Alert } from '@/components/ui/Alert';
+import { Alert } from '@balloo/core-ui';
 import { Loader2, Mail, Lock, User, Smartphone } from 'lucide-react';
 import './AuthPage.css';
 
