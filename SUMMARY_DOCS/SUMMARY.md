@@ -206,11 +206,29 @@ priority: high
 
 ---
 
+## 🚨 КРИТИЧЕСКИЕ ИЗМЕНЕНИЯ
+
+### База данных: PostgreSQL вместо SQLite
+
+**Проблема:** В монерепо использовался SQLite, но мы договорились о production-ready PostgreSQL.
+
+**Решение:** Создана полная миграция на PostgreSQL 15+:
+- ✅ Создан документ: `MIGRATION_TO_POSTGRESQL.md`
+- ✅ SQL миграции для 30+ таблиц
+- ✅ Docker Compose с PostgreSQL + pgAdmin
+- ✅ Обновлённый database.js для API
+- ✅ Connection pooling через pg
+- ✅ UUID вместо INTEGER Primary Keys
+- ✅ JSONB вместо TEXT для JSON
+- ✅ Асинхронные запросы async/await
+
+---
+
 ## 📊 СТАТИСТИКА ВЫПОЛНЕНИЯ
 
 ### Документы создано:
-- 5 новых документов
-- ~3000 строк документации
+- 6 новых документов
+- ~3500 строк документации
 - 4 коммита в git
 
 ### Функции задокументировано:
@@ -325,6 +343,7 @@ priority: high
 - [Незавершённые задачи](./PENDING_TASKS_FROM_TICKET_012.md)
 - [План переноса настроек](./Owner_tickets/PLAN-001_settings_migration.md)
 - [Инструкция для PR](./PR_INSTRUCTIONS_2026-06-13.md)
+- **🆕 Миграция на PostgreSQL](./MIGRATION_TO_POSTGRESQL.md)
 
 ### Реестр функций:
 - [INDEX - FUNCTIONS_REGISTRY](./FUNCTIONS_REGISTRY/INDEX.md)
@@ -346,9 +365,10 @@ priority: high
 
 ### Код:
 - [x] Выявлены все критические ошибки
-- [x] Создана миграция БД
+- [x] Создана миграция БД 002 (SQLite)
 - [x] Создан SettingsService (план)
 - [x] Созданы API endpoints
+- [x] **Создана миграция PostgreSQL**
 
 ### Git:
 - [x] Создана ветка
