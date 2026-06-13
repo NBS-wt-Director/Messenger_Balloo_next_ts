@@ -1,0 +1,30 @@
+{
+  "name": "@balloo/docs-site",
+  "version": "1.0.0",
+  "description": "Balloo Platform Documentation Site",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start -p 3100",
+    "lint": "next lint",
+    "update-docs": "tsx scripts/auto-update.ts"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "next": "13.5.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-markdown": "^9.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.0",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "eslint": "8.56.0",
+    "eslint-config-next": "13.5.6",
+    "tsx": "^4.22.4",
+    "typescript": "5.2.2"
+  }
+}
