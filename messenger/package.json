@@ -63,6 +63,9 @@
     "jest-environment-jsdom": "^30.0.0",
     "postcss": "^8.5.10",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "@balloo/eslint-config": "1.0.0",
+    "@balloo/prettier-config": "1.0.0",
+    "@balloo/tsconfig": "1.0.0"
   }
 }

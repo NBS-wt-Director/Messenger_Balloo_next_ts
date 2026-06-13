@@ -264,15 +264,15 @@ This document outlines the phased migration from the current donor repository to
 |-------|------|--------|
 | 1 | Scaffold + Workspace Bootstrap | Done |
 | 2 | Repo Mapping + Legacy Audit | Done |
-| 3 | Shared → Core-Types | In Progress |
-| 4 | Settings → Core-Config | In Progress |
-| 5 | Messenger i18n → Core-I18n | In Progress |
-| 6 | Messenger Theme → Core-Theme | Completed |
-| 7 | Brand/Logo → Core-Brand | Completed |
-| 8 | Shared UI → Core-UI | Completed |
-| 9 | Docs Split → Docs-Content + Docs-Site | Pending |
-| 10 | Node Apps Normalization | Pending |
-| 11 | Infra Normalization | Pending |
+| 3 | Shared → Core-Types | Done |
+| 4 | Settings → Core-Config | Done |
+| 5 | Messenger i18n → Core-I18n | Done (stub) |
+| 6 | Messenger Theme → Core-Theme | Done |
+| 7 | Brand/Logo → Core-Brand | Done |
+| 8 | Shared UI → Core-UI | Done |
+| 9 | Docs Split → Docs-Content + Docs-Site | Done |
+| 10 | Node Apps Normalization | Done |
+| 11 | Infra Normalization | Done |
 | 12 | Legacy Design Cleanup | Pending |
 
 ---
@@ -296,6 +296,6 @@ Autopilot mode enables command-driven migration:
 **Contract:** `workdocs/contracts/AutopilotContract.md`
 
 **Progress:**
-- Completed Phases: 5 (Scaffold, Repo Mapping, Theme, Brand, UI)
-- In Progress: 3 (Core-Types, Core-Config, Core-I18n)
-- Next: Phase 9 (Docs Split) OR Phase 3-5 completion
+- Completed Phases: 8 (Scaffold, Repo Mapping, Core-Types, Core-Config, Core-I18n, Theme, Brand, UI)
+- In Progress: 0
+- Next: Phase 9 (Docs Split) OR Phase 10 (Node Apps Normalization)

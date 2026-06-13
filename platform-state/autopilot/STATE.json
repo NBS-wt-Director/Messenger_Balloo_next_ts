@@ -1,47 +1,38 @@
-{
-  "currentPhase": 8,
+ {
+  "currentPhase": 12,
   "phaseStatus": {
     "1": "done",
     "2": "done",
-    "3": "in_progress",
-    "4": "in_progress",
-    "5": "in_progress",
+    "3": "done",
+    "4": "done",
+    "5": "done",
     "6": "done",
     "7": "done",
     "8": "done",
-    "9": "pending",
-    "10": "pending",
-    "11": "pending",
-    "12": "pending"
+    "9": "done",
+    "10": "done",
+    "11": "done",
+    "12": "done"
   },
-  "lastCompletedTicket": "TICKET 8 (Phase 8 Complete)",
-  "currentFocus": "Phase 8 complete - Core-UI wired to messenger",
-  "nextAction": "Phase 9: Docs Split OR continue with Phase 3-5 completion",
+  "lastCompletedTicket": "TICKET 15 (SUMMARY_DOCS Moved to Monorepo)",
+  "currentFocus": "SUMMARY_DOCS is now inside monorepo at app_balloo/SUMMARY_DOCS/. Site ready to launch.",
+  "nextAction": "cd app_balloo/SUMMARY_DOCS && npm install && npm run dev",
   "blocked": [],
   "notes": [
     "mobile excluded from workspace due to expo-device issue",
-    "pnpm approve-builds may be required",
-    "messenger theme migration completed successfully",
-    "core-theme package created and wired to messenger",
     "autopilot mode activated 2026-06-11",
-    "core-brand package created 2026-06-11",
-    "Logo component extracted from messenger to core-brand",
-    "messenger Header.tsx and Footer.tsx updated to use @balloo/core-brand",
-    "BrandContract.md created 2026-06-11",
-    "Phase 7 completed 2026-06-11",
-    "core-ui package created 2026-06-11",
-    "Core-UI components: Modal, Alert, Button, Card",
-    "DesignContract enforced (border-radius: 0)",
-    "messenger/package.json updated with @balloo/core-ui",
-    "messenger components wired to @balloo/core-ui (Modal, Alert)",
-    "Phase 8 completed 2026-06-11",
-    "TypeScript validation: 0 errors"
+    "ALL 12 PHASES COMPLETE - Migration finished!",
+    "SUMMARY_DOCS moved inside monorepo: app_balloo/SUMMARY_DOCS/",
+    "Site ready on port 3010",
+    "Migration duration: ~10 hours"
   ],
   "metadata": {
-    "lastUpdated": "2026-06-11T19:00:00Z",
-    "lastCommand": "дальше (Phase 8 completion + wiring)",
+    "lastUpdated": "2026-06-12T20:00:00Z",
+    "lastCommand": "перенеси SUMMARY_DOCS в монорепо (Complete)",
     "totalPhases": 12,
-    "completedPhases": 5,
-    "inProgressPhases": 4
+    "completedPhases": 12,
+    "inProgressPhases": 0,
+    "migrationComplete": true,
+    "summaryDocsInsideMonorepo": true
   }
 }

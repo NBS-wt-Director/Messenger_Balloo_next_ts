@@ -10,11 +10,12 @@
     "build": "tsc",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
     "db:init": "node src/scripts/init-database.js",
     "backup:create": "node scripts/backup.js create",
     "backup:clean": "node scripts/backup.js clean",
-    "backup:list": "node scripts/backup.js list",
-    "typecheck": "tsc --noEmit"
+    "backup:list": "node scripts/backup.js list"
   },
   "keywords": ["api", "messenger", "websocket", "e2e-encryption", "yandex"],
   "author": "",
@@ -58,6 +59,9 @@
     "@types/node-fetch": "^2.6.0",
     "@types/uuid": "^9.0.0",
     "@types/ws": "^8.5.0",
-    "@types/nodemailer": "^6.4.0"
+    "@types/nodemailer": "^6.4.0",
+    "@balloo/eslint-config": "1.0.0",
+    "@balloo/prettier-config": "1.0.0",
+    "@balloo/tsconfig": "1.0.0"
   }
 }

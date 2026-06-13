@@ -353,6 +353,15 @@ importers:
       '@app-balloo/settings':
         specifier: file:../settings
         version: file:settings(dotenv@16.6.1)
+      '@balloo/core-brand':
+        specifier: file:../packages/core-brand
+        version: file:packages/core-brand(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))
+      '@balloo/core-theme':
+        specifier: file:../packages/core-theme
+        version: link:../packages/core-theme
+      '@balloo/core-ui':
+        specifier: file:../packages/core-ui
+        version: file:packages/core-ui(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)
       axios:
         specifier: ^1.16.1
         version: 1.17.0(supports-color@5.5.0)
@@ -396,7 +405,7 @@ importers:
         specifier: ^2.0.0
         version: 2.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxdb@17.3.0(react@19.2.7)(rxjs@7.8.2)(supports-color@5.5.0))
       sql.js:
-        specifier: ^1.11.0
+        specifier: ^1.1.0
         version: 1.14.1
       tweetnacl:
         specifier: ^1.0.3
@@ -473,7 +482,20 @@ importers:
         version: 5.9.3
 
   packages/core-brand:
+    dependencies:
+      lucide-react:
+        specifier: ^0.460.0
+        version: 0.460.0(react@19.2.7)
+      next:
+        specifier: ^15.1.0
+        version: 15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
     devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.17
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
@@ -516,6 +538,10 @@ importers:
         version: 5.9.3
 
   packages/core-theme:
+    dependencies:
+      zustand:
+        specifier: ^5.0.14
+        version: 5.0.14(@types/react@19.2.17)(react@19.2.7)
     devDependencies:
       typescript:
         specifier: ^5.7.0
@@ -538,7 +564,26 @@ importers:
         version: 5.9.3
 
   packages/core-ui:
+    dependencies:
+      lucide-react:
+        specifier: ^0.460.0
+        version: 0.460.0(react@19.2.7)
+      next:
+        specifier: ^15.1.0
+        version: 15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.7(react@19.2.7)
     devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.17)
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
@@ -780,6 +825,12 @@ packages:
   '@babel/types@7.29.7':
     resolution: {integrity: sha512-4zBIxpPzowiZpusoFkyGVwakdRJUyuH5PxQ/PrqghfdFWWasvnCdPfQXHrenDai+gyLARulZjZowCOj6fjT4pA==}
     engines: {node: '>=6.9.0'}
+
+  '@balloo/core-brand@file:packages/core-brand':
+    resolution: {directory: packages/core-brand, type: directory}
+
+  '@balloo/core-ui@file:packages/core-ui':
+    resolution: {directory: packages/core-ui, type: directory}
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
@@ -7057,6 +7108,34 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
+
+  '@balloo/core-brand@file:packages/core-brand(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))':
+    dependencies:
+      lucide-react: 0.460.0(react@19.2.7)
+      next: 15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react: 19.2.7
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@opentelemetry/api'
+      - '@playwright/test'
+      - babel-plugin-macros
+      - babel-plugin-react-compiler
+      - react-dom
+      - sass
+
+  '@balloo/core-ui@file:packages/core-ui(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)':
+    dependencies:
+      lucide-react: 0.460.0(react@19.2.7)
+      next: 15.5.19(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react: 19.2.7
+      react-dom: 19.2.7(react@19.2.7)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@opentelemetry/api'
+      - '@playwright/test'
+      - babel-plugin-macros
+      - babel-plugin-react-compiler
+      - sass
 
   '@bcoe/v8-coverage@0.2.3': {}
 

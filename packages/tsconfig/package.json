@@ -1,0 +1,9 @@
+{
+  "name": "@balloo/tsconfig",
+  "version": "1.0.0",
+  "description": "Shared TypeScript configuration for Balloo platform",
+  "main": "index.json",
+  "keywords": ["typescript", "tsconfig", "balloo", "config"],
+  "author": "NLP-Core-Team",
+  "license": "MIT"
+}
