@@ -1,0 +1,90 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "author": "Koda (NLP-Core-Team)",
+  "description": "Привязка доменов к узлам и проектам",
+  "domains": [
+    {
+      "name": "balloo.su",
+      "owner_role": "Messenger Ecosystem",
+      "project_binding": "Balloo Messenger",
+      "scope": "public",
+      "target_node": "work-server",
+      "routing_policy": {
+        "root": "Redirect to /app или serve SPA",
+        "api": "Reverse proxy to API Server",
+        "app": "Serve Messenger static files",
+        "admin": "Reverse proxy to Admin Portal"
+      },
+      "allowed_subdomains": [
+        "balloo.su",
+        "api.balloo.su",
+        "admin.balloo.su",
+        "docs.balloo.su",
+        "*.balloo.su (previews)"
+      ],
+      "public_endpoints": [
+        "/",
+        "/api/* (public)",
+        "/socket.io/*",
+        "/health"
+      ],
+      "internal_endpoints_must_not_be_public": [
+        "/api/admin/*",
+        "/api/internal/*",
+        "/metrics",
+        "/debug/*"
+      ],
+      "tls_expectation": {
+        "https_required": true,
+        "provider": "Cloudflare/TLS termination",
+        "hsts_enabled": true
+      }
+    },
+    {
+      "name": "центр-фр.рф",
+      "owner_role": "CFR Ecosystem",
+      "project_binding": "ЦФР Official Website",
+      "scope": "public",
+      "target_node": "work-server",
+      "routing_policy": {
+        "root": "Serve official website",
+        "admin": "Protected admin panel",
+        "api": "ЦФР API services"
+      },
+      "allowed_subdomains": [
+        "центр-фр.рф",
+        "admin.центр-фр.рф",
+        "api.центр-фр.рф"
+      ],
+      "public_endpoints": [
+        "/",
+        "/about",
+        "/services",
+        "/contact"
+      ],
+      "internal_endpoints_must_not_be_public": [
+        "/admin/* (requires auth)",
+        "/api/internal/*",
+        "/dashboard"
+      ],
+      "tls_expectation": {
+        "https_required": true,
+        "provider": "Cloudflare/TLS termination",
+        "admin_auth_required": true
+      }
+    }
+  ],
+  "networking": {
+    "private_overlay": "Tailscale",
+    "public_ingress": "Cloudflare Tunnel",
+    "reverse_proxy": "Nginx/Caddy on work-server",
+    "internal_services": "Docker network + Tailscale IPs"
+  },
+  "security_policies": {
+    "all_domains_https": true,
+    "admin_authentication_required": true,
+    "rate_limiting_enabled": true,
+    "waf_protection": true
+  }
+}

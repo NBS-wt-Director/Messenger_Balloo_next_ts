@@ -1,0 +1,191 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "author": "Koda (NLP-Core-Team)",
+  "description": "Привязка сервисов к узлам",
+  "node_services": {
+    "laptop_control": {
+      "services": [
+        {
+          "name": "VS Code / Koda",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Git Client",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "SSH Client",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Tailscale Client",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All"
+        }
+      ]
+    },
+    "work-server": {
+      "services": [
+        {
+          "name": "API Server (Express.js)",
+          "criticality": "CRITICAL",
+          "public": true,
+          "project_ownership": "Balloo Messenger",
+          "port": 3001
+        },
+        {
+          "name": "PostgreSQL",
+          "criticality": "CRITICAL",
+          "public": false,
+          "project_ownership": "All",
+          "port": 5432
+        },
+        {
+          "name": "Redis",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All",
+          "port": 6379
+        },
+        {
+          "name": "WebSocket Server",
+          "criticality": "CRITICAL",
+          "public": true,
+          "project_ownership": "Balloo Messenger"
+        },
+        {
+          "name": "Reverse Proxy (Nginx/Caddy)",
+          "criticality": "CRITICAL",
+          "public": true,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Messenger App",
+          "criticality": "CRITICAL",
+          "public": true,
+          "project_ownership": "Balloo Messenger",
+          "port": 3000
+        },
+        {
+          "name": "Admin Portal",
+          "criticality": "HIGH",
+          "public": true,
+          "project_ownership": "Balloo Messenger",
+          "port": 3002
+        },
+        {
+          "name": "Ollama",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All",
+          "optional": true
+        },
+        {
+          "name": "Open WebUI",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All",
+          "optional": true
+        }
+      ]
+    },
+    "home_aio": {
+      "services": [
+        {
+          "name": "Docker",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Node.js (dev)",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "PostgreSQL (dev)",
+          "criticality": "LOW",
+          "public": false,
+          "project_ownership": "All",
+          "note": "Dev/staging only"
+        },
+        {
+          "name": "Preview Environments",
+          "criticality": "LOW",
+          "public": true,
+          "project_ownership": "All",
+          "optional": true
+        }
+      ]
+    },
+    "home_nas": {
+      "services": [
+        {
+          "name": "SMB/NFS File Sharing",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Backup Scripts",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "rsync",
+          "criticality": "HIGH",
+          "public": false,
+          "project_ownership": "All"
+        }
+      ]
+    },
+    "phone_personal": {
+      "services": [
+        {
+          "name": "2FA App",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Notifications",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Browser (access)",
+          "criticality": "LOW",
+          "public": true,
+          "project_ownership": "All"
+        }
+      ]
+    },
+    "phone_service": {
+      "services": [
+        {
+          "name": "2FA App (Admin)",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All"
+        },
+        {
+          "name": "Admin Access",
+          "criticality": "MEDIUM",
+          "public": false,
+          "project_ownership": "All"
+        }
+      ]
+    }
+  }
+}

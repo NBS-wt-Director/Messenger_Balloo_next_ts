@@ -1,0 +1,149 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "author": "Koda (NLP-Core-Team)",
+  "description": "Каноническая структура дерева узлов экосистемы Balloo",
+  "root_groups": {
+    "control-plane": {
+      "description": "Управление и оркестрация",
+      "purpose": "Узлы управления, НЕ execution nodes",
+      "criticality": "HIGH (для управления)",
+      "nodes": [
+        {
+          "name": "laptop_control",
+          "aliases": ["laptop", "control-node", "operator-device"],
+          "physical_device": "Основной ноутбук пользователя",
+          "os_target": "Windows 11 Pro / Linux",
+          "role_class": "control-node",
+          "status": "active",
+          "criticality": "HIGH",
+          "always_on": false,
+          "prod_dev_stage": {
+            "dev": true,
+            "stage": false,
+            "prod": false
+          },
+          "dependencies": []
+        },
+        {
+          "name": "phone_personal",
+          "aliases": ["personal-phone", "user-phone"],
+          "physical_device": "Личный телефон пользователя",
+          "os_target": "Android / iOS",
+          "role_class": "access-node",
+          "status": "active",
+          "criticality": "MEDIUM",
+          "always_on": false,
+          "prod_dev_stage": {
+            "dev": false,
+            "stage": false,
+            "prod": false
+          },
+          "dependencies": []
+        },
+        {
+          "name": "phone_service",
+          "aliases": ["service-phone", "admin-phone"],
+          "physical_device": "Служебный телефон",
+          "os_target": "Android / iOS",
+          "role_class": "access-node",
+          "status": "active",
+          "criticality": "MEDIUM",
+          "always_on": false,
+          "prod_dev_stage": {
+            "dev": false,
+            "stage": false,
+            "prod": false
+          },
+          "dependencies": []
+        },
+        {
+          "name": "phone_recovery_optional",
+          "aliases": ["recovery-phone", "rugged-phone"],
+          "physical_device": "Сломанный/восстанавливаемый телефон",
+          "os_target": "Android / iOS",
+          "role_class": "recovery-node",
+          "status": "inactive",
+          "criticality": "LOW",
+          "always_on": false,
+          "optional": true,
+          "prod_dev_stage": {
+            "dev": false,
+            "stage": false,
+            "prod": false
+          },
+          "dependencies": []
+        }
+      ]
+    },
+    "work-plane": {
+      "description": "Production рабочая нагрузка",
+      "purpose": "Primary production host",
+      "criticality": "CRITICAL",
+      "nodes": [
+        {
+          "name": "work-server",
+          "aliases": ["work", "production-server", "main-server"],
+          "physical_device": "Рабочий сервер (132 GB RAM)",
+          "os_target": "Linux (Ubuntu 22.04 LTS / Debian 12)",
+          "role_class": "production-node",
+          "status": "active",
+          "criticality": "CRITICAL",
+          "always_on": true,
+          "prod_dev_stage": {
+            "dev": false,
+            "stage": true,
+            "prod": true
+          },
+          "dependencies": ["home_nas"]
+        }
+      ]
+    },
+    "home-plane": {
+      "description": "Домашняя инфраструктура",
+      "purpose": "Dev/staging/backup",
+      "criticality": "LOW (для production)",
+      "nodes": [
+        {
+          "name": "home_aio",
+          "aliases": ["home", "aio", "secondary-dev"],
+          "physical_device": "Домашний моноблок Linux",
+          "os_target": "Linux (Ubuntu 22.04 LTS)",
+          "role_class": "dev-node",
+          "status": "active",
+          "criticality": "LOW",
+          "always_on": false,
+          "prod_dev_stage": {
+            "dev": true,
+            "stage": true,
+            "prod": false
+          },
+          "dependencies": ["work-server"]
+        },
+        {
+          "name": "home_nas",
+          "aliases": ["nas", "backup-server", "storage"],
+          "physical_device": "Mac mini 2014 или замена",
+          "os_target": "macOS / Linux (NETATALK/SMB)",
+          "role_class": "backup-node",
+          "status": "active",
+          "criticality": "HIGH",
+          "always_on": true,
+          "prod_dev_stage": {
+            "dev": false,
+            "stage": false,
+            "prod": false
+          },
+          "dependencies": []
+        }
+      ]
+    }
+  },
+  "invariants": {
+    "control_plane": "MUST иметь хотя бы один active control node",
+    "work_plane": "work-server MUST быть always-on с backup на home_nas",
+    "home_plane": "home_nas MUST хранить актуальные бэкапы",
+    "network": "ВСЕ узлы MUST иметь Tailscale",
+    "domains": "balloo.su и центр-фр.рф MUST указывать на work-server"
+  }
+}

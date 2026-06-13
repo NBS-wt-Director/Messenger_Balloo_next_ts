@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "author": "Koda (NLP-Core-Team)",
+  "description": "Порядок восстановления узлов",
+  "recovery_tiers": {
+    "tier_1_critical": {
+      "priority": 1,
+      "description": "Критичные узлы для работы системы",
+      "nodes": [
+        {
+          "name": "laptop_control",
+          "reason": "Главный control point для управления",
+          "prerequisites": [],
+          "fallback": "Временный laptop + восстановление SSH keys"
+        },
+        {
+          "name": "work-server",
+          "reason": "Production среда",
+          "prerequisites": ["laptop_control"],
+          "fallback": "Новый сервер + восстановление из backup"
+        },
+        {
+          "name": "home_nas",
+          "reason": "Хранилище бэкапов",
+          "prerequisites": ["laptop_control"],
+          "fallback": "Remote backup + encrypted cloud storage"
+        }
+      ]
+    },
+    "tier_2_important": {
+      "priority": 2,
+      "description": "Важные узлы для full functionality",
+      "nodes": [
+        {
+          "name": "phone_personal",
+          "reason": "2FA access для пользователя",
+          "prerequisites": [],
+          "fallback": "Recovery codes + новый телефон"
+        },
+        {
+          "name": "home_aio",
+          "reason": "Dev/staging среда",
+          "prerequisites": ["work-server", "home_nas"],
+          "fallback": "Не критично для production"
+        }
+      ]
+    },
+    "tier_3_optional": {
+      "priority": 3,
+      "description": "Опциональные узлы",
+      "nodes": [
+        {
+          "name": "phone_service",
+          "reason": "Admin 2FA access",
+          "prerequisites": [],
+          "fallback": "Использовать phone_personal временно"
+        },
+        {
+          "name": "phone_recovery_optional",
+          "reason": "Emergency access",
+          "prerequisites": [],
+          "fallback": "Не обязателен"
+        }
+      ]
+    }
+  },
+  "minimal_viable_architecture": {
+    "required_nodes": [
+      "laptop_control",
+      "work-server",
+      "phone_personal",
+      "home_nas"
+    ],
+    "optional_nodes": [
+      "home_aio",
+      "phone_service",
+      "phone_recovery_optional"
+    ],
+    "minimum_services": [
+      "PostgreSQL",
+      "Redis",
+      "API Server",
+      "Reverse Proxy",
+      "Messenger App",
+      "Admin Portal"
+    ]
+  },
+  "recovery_procedures": {
+    "loss_of_work_server": {
+      "impact": "Production DOWN",
+      "steps": [
+        "1. Provision new server (Linux)",
+        "2. Install Docker, Docker Compose, Tailscale",
+        "3. Clone git repositories",
+        "4. Restore .env from encrypted backup",
+        "5. Restore PostgreSQL from home_nas backup",
+        "6. Run docker-compose up",
+        "7. Verify health endpoints",
+        "8. Update DNS if IP changed"
+      ]
+    },
+    "loss_of_home_nas": {
+      "impact": "No backups, risk of data loss",
+      "steps": [
+        "1. Provision new NAS/storage",
+        "2. Configure SMB/NFS sharing",
+        "3. Set up Tailscale",
+        "4. Restore from remote backup if available",
+        "5. Reconfigure backup sync from work-server"
+      ]
+    },
+    "loss_of_laptop_control": {
+      "impact": "Cannot manage system",
+      "steps": [
+        "1. New laptop setup",
+        "2. Install VS Code/Koda, Git, SSH",
+        "3. Install Tailscale",
+        "4. Restore SSH keys from password manager",
+        "5. Clone git repositories",
+        "6. Configure access to all nodes"
+      ]
+    }
+  },
+  "required_documents_for_recovery": [
+    "NodeTreeContract.md",
+    "NodeRecoveryContract.md",
+    "docker-compose.yml",
+    "database schema",
+    ".env template",
+    "SSH keys backup",
+    "Recovery codes"
+  ],
+  "document_locations": {
+    "primary": "work-server:/path/to/docs",
+    "backup": "home_nas:/backups/docs",
+    "offsite": "encrypted cloud storage"
+  }
+}
