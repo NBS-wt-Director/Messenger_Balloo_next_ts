@@ -35,7 +35,6 @@ date: 2026-06-13
 
 ### Project Bindings:
 - **Balloo Messenger:** balloo.su ecosystem
-- **ЦФР:** центр-фр.рф ecosystem
 
 ### Services Expected:
 - API Server (Express.js)
@@ -72,11 +71,11 @@ date: 2026-06-13
 
 ### Public Exposure:
 - ONLY через reverse proxy
-- ONLY необходимые сервисы (balloo.su, центр-фр.рф)
-- ALL через Cloudflare Tunnel
+- ONLY необходимые сервисы (balloo.su)
+- ALL через self-hosted reverse proxy
 
 ### Ingress/Egress:
-- Ingress: HTTP/HTTPS от Cloudflare
+- Ingress: HTTP/HTTPS через reverse proxy
 - Egress: Internet (npm, Docker Hub, APIs)
 
 ---

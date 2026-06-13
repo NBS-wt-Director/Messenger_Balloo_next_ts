@@ -34,7 +34,6 @@ date: 2026-06-13
 
 ### Project Bindings:
 - **Balloo Messenger:** Dev/Staging
-- **ЦФР:** Dev/Staging
 
 ### Services Expected:
 - Docker + Docker Compose

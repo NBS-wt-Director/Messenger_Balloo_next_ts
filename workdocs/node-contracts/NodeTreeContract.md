@@ -207,7 +207,6 @@ ROOT
 
 **Domain Binding:**
 - `balloo.su` - messenger ecosystem (ПУБЛИЧНЫЙ)
-- `центр-фр.рф` - служебный сайт ЦФР (ПУБЛИЧНЫЙ)
 
 **Services MUST live here:**
 - API Server (Express.js)
@@ -232,7 +231,7 @@ ROOT
 **Network & Access:**
 - Private access: Tailscale, internal network
 - Public exposure: Через reverse proxy только нужные сервисы
-- Ingress: HTTP/HTTPS от Cloudflare Tunnel
+- Ingress: HTTP/HTTPS через reverse proxy
 - Egress: Internet для API, npm, Docker Hub
 
 **Deployment Role:**
@@ -498,7 +497,6 @@ ROOT
 
 5. **Domain Invariant:**
    - `balloo.su` MUST указывать на work-server
-   - `центр-фр.рф` MUST указывать на work-server
    - Internal сервисы MUST НЕ быть публично доступны
 
 ---

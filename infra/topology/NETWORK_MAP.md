@@ -33,23 +33,20 @@
 
 ---
 
-## 🌍 PUBLIC INGRESS: Cloudflare Tunnel
+## 🌍 PUBLIC INGRESS: Nginx/Caddy Reverse Proxy
 
 ```
 Internet
     ↓
-Cloudflare (WAF + DNS)
+Nginx/Caddy Reverse Proxy
     ↓
-Cloudflare Tunnel (encrypted)
-    ↓
-work-server (Reverse Proxy)
+work-server (Routing Layer)
     ↓
 ┌────────────────────────────────────┐
 │  Routing:                          │
 │  - balloo.su → Messenger:3000      │
 │  - api.balloo.su → API:3001        │
 │  - admin.balloo.su → Admin:3002    │
-│  - центр-фр.рф → ЦФР Website       │
 └────────────────────────────────────┘
 ```
 
@@ -122,8 +119,8 @@ work-server (repositories mirror)
 - Metrics: 9090 ❌ (internal only)
 
 ### MAY be Public (via proxy):
-- HTTP: 80 ✅ (Cloudflare → Nginx)
-- HTTPS: 443 ✅ (Cloudflare → Nginx)
+- HTTP: 80 ✅ (reverse proxy)
+- HTTPS: 443 ✅ (reverse proxy)
 - WebSocket ✅ (via proxy)
 
 ---

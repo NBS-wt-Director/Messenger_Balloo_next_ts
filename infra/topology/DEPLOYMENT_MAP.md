@@ -65,15 +65,6 @@ Production rollout complete
 - postgres (shared)
 - redis (shared)
 
-### ЦФР Ecosystem
-**Domain:** центр-фр.рф  
-**Node:** work-server  
-**Containers:**
-- cfr-website (port 8080)
-- cfr-api (port 8081)
-- postgres (separate database)
-- redis (shared)
-
 ---
 
 ## 🔧 DEPLOYMENT COMMANDS
@@ -113,9 +104,7 @@ docker-compose logs -f
 - Artifacts: home_nas backup
 
 **Separation:**
-- Messenger: Separate Docker network
-- ЦФР: Separate Docker network
-- NO shared state between projects
+- Separate Docker networks per environment
 
 ---
 

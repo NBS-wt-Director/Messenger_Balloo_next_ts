@@ -31,11 +31,11 @@ date: 2026-06-13
 
 ## 🌍 PUBLIC INGRESS
 
-**Technology:** Cloudflare Tunnel  
+**Technology:** Nginx/Caddy Reverse Proxy  
 **Purpose:** Secure public access  
 **Rules:**
 - ONLY reverse proxy exposed publicly
-- ALL public traffic MUST go through Cloudflare
+- ALL public traffic MUST go through reverse proxy
 - NO direct port forwarding
 
 ---
@@ -53,7 +53,7 @@ date: 2026-06-13
 ## 📝 DNS EXPECTATIONS
 
 - Internal: Tailscale DNS
-- External: Cloudflare DNS
+- External: Self-hosted DNS
 - Services: Internal DNS names only
 
 ---

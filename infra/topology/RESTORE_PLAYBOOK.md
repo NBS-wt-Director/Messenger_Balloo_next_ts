@@ -75,8 +75,8 @@
 
 6. **Update DNS (if IP changed)**
    ```bash
-   # Update Cloudflare DNS records
-   # balloo.su → new work-server Tailscale IP via Cloudflare Tunnel
+   # Update DNS records
+   # balloo.su → new work-server IP via reverse proxy
    ```
 
 ---
@@ -151,7 +151,7 @@ After any restoration:
 - [ ] Docker containers running on work-server
 - [ ] Database accessible
 - [ ] DNS records pointing correctly
-- [ ] Cloudflare Tunnel active
+- [ ] Reverse proxy active
 - [ ] Health endpoints responding
 - [ ] 2FA working on phones
 - [ ] Backup sync configured

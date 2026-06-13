@@ -58,9 +58,7 @@ date: 2026-06-13
 - Artifacts: home_nas backup
 
 **Separation:**
-- Messenger: balloo.su ecosystem
-- ЦФР: центр-фр.рф ecosystem
-- NO shared resources between projects
+- Messenger: Separate Docker network per environment
 
 ---
 

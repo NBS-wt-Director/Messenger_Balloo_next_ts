@@ -96,7 +96,7 @@
 
 ### Public Endpoints (balloo.su):
 ```
-Internet → Cloudflare → work-server (nginx)
+Internet → Reverse Proxy → work-server (nginx)
   ↓
   ├── / → Messenger:3000
   ├── /api → API:3001

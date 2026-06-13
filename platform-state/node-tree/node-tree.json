@@ -144,6 +144,6 @@
     "work_plane": "work-server MUST быть always-on с backup на home_nas",
     "home_plane": "home_nas MUST хранить актуальные бэкапы",
     "network": "ВСЕ узлы MUST иметь Tailscale",
-    "domains": "balloo.su и центр-фр.рф MUST указывать на work-server"
+    "domains": "balloo.su MUST указывать на work-server"
   }
 }

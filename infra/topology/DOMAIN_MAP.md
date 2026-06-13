@@ -31,28 +31,6 @@ Protected Endpoints:
 
 ---
 
-### центр-фр.рф (CFR Ecosystem)
-
-```
-центр-фр.рф
-├── Root → Official website
-├── admin.центр-фр.рф → Admin panel (protected)
-└── api.центр-фр.рф → ЦФР API
-
-Public Endpoints:
-├── / → Official website
-├── /about → About ЦФР
-├── /services → Services
-└── /contact → Contact
-
-Protected Endpoints:
-├── /admin/* → Admin (auth required)
-├── /dashboard → Internal dashboard
-└── /api/internal/* → Internal (NOT public)
-```
-
----
-
 ## 🎯 TARGET NODE: work-server
 
 **ALL domains point to:** work-server
@@ -79,22 +57,15 @@ server {
     server_name admin.balloo.su;
     location / { proxy_pass http://admin-portal:3002; }
 }
-
-# центр-фр.рф
-server {
-    listen 80;
-    server_name центр-фр.рф www.центр-фр.рф;
-    location / { proxy_pass http://cfr-website:8080; }
-}
 ```
 
 ---
 
 ## 🔐 TLS/SSL
 
-**Provider:** Cloudflare SSL/TLS  
+**Provider:** Let's Encrypt / Self-hosted CA  
 **Mode:** Full (encrypted end-to-end)  
-**Certificate:** Auto-renew via Cloudflare
+**Certificate:** Auto-renew via certbot or Caddy
 
 **Requirements:**
 - HTTPS everywhere

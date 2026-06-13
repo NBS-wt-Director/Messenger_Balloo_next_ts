@@ -60,47 +60,8 @@ date: 2026-06-13
 
 **TLS Expectation:**
 - MUST use HTTPS everywhere
-- Certificate via Cloudflare/TLS termination
+- Certificate via self-hosted CA or Let's Encrypt
 - HSTS MUST be enabled
-
----
-
-### 2. центр-фр.рф
-
-**Domain Owner:** CFR Ecosystem  
-**Project Binding:** ЦФР Official Website  
-**Scope:** PUBLIC
-
-**Root Domain Semantics:**
-- Root domain = official public website
-- MUST serve ЦФР informational content
-- MUST NOT expose internal admin services
-
-**Allowed Hostnames/Subdomains:**
-- `центр-фр.рф` - Official website root
-- `admin.центр-фр.рф` - Admin panel (protected)
-- `api.центр-фр.рф` - API for ЦФР services
-
-**Public Endpoints:**
-- `/` - Official website
-- `/about` - About ЦФР
-- `/services` - Services information
-- `/contact` - Contact information
-
-**Internal Endpoints (MUST NOT be public):**
-- `/admin/*` - Admin services (should require auth)
-- `/api/internal/*` - Internal APIs
-- `/dashboard` - Internal dashboard
-
-**Routing Policy:**
-- Root: Serve static website or CMS
-- `/admin/*`: Protected admin panel
-- `/api/*`: ЦФР API services
-
-**TLS Expectation:**
-- MUST use HTTPS
-- Certificate via Cloudflare/TLS termination
-- Admin endpoints MUST require authentication
 
 ---
 
@@ -109,7 +70,7 @@ date: 2026-06-13
 ### Public Endpoints (MAY be exposed)
 
 **MUST pass through reverse proxy:**
-- Cloudflare Tunnel → Reverse Proxy → Service
+- Reverse Proxy → Service
 
 **Allowed for public access:**
 - Messenger web app
@@ -146,13 +107,12 @@ date: 2026-06-13
 
 ### Layer 1: DNS
 ```
-balloo.su NS → Cloudflare
-центр-фр.рф NS → Cloudflare
+balloo.su NS → Self-hosted DNS
 ```
 
 ### Layer 2: Tunnel/Proxy
 ```
-Internet → Cloudflare Tunnel → Nginx/Caddy Reverse Proxy
+Internet → Nginx/Caddy Reverse Proxy
 ```
 
 ### Layer 3: Routing
@@ -197,8 +157,8 @@ All other ports internal only
 - Certificate auto-renewal
 
 **Certificate Authority:**
-- Cloudflare SSL/TLS
-- Or Let's Encrypt via Caddy/Nginx
+- Let's Encrypt via Caddy/Nginx
+- Or self-hosted CA
 
 ---
 
@@ -222,13 +182,7 @@ All other ports internal only
 
 ## 🔄 TUNNEL/PROXY POLICY
 
-**Cloudflare Tunnel:**
-- Primary external ingress
-- No open ports on firewall
-- End-to-end encryption
-- WAF protection
-
-**Reverse Proxy:**
+**Reverse Proxy (Primary):**
 - Single entry point on work-server
 - Route by hostname/path
 - SSL termination

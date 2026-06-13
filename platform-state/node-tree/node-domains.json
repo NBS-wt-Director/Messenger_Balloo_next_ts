@@ -37,47 +37,14 @@
       ],
       "tls_expectation": {
         "https_required": true,
-        "provider": "Cloudflare/TLS termination",
+        "provider": "Let's Encrypt / Self-hosted CA",
         "hsts_enabled": true
-      }
-    },
-    {
-      "name": "центр-фр.рф",
-      "owner_role": "CFR Ecosystem",
-      "project_binding": "ЦФР Official Website",
-      "scope": "public",
-      "target_node": "work-server",
-      "routing_policy": {
-        "root": "Serve official website",
-        "admin": "Protected admin panel",
-        "api": "ЦФР API services"
-      },
-      "allowed_subdomains": [
-        "центр-фр.рф",
-        "admin.центр-фр.рф",
-        "api.центр-фр.рф"
-      ],
-      "public_endpoints": [
-        "/",
-        "/about",
-        "/services",
-        "/contact"
-      ],
-      "internal_endpoints_must_not_be_public": [
-        "/admin/* (requires auth)",
-        "/api/internal/*",
-        "/dashboard"
-      ],
-      "tls_expectation": {
-        "https_required": true,
-        "provider": "Cloudflare/TLS termination",
-        "admin_auth_required": true
       }
     }
   ],
   "networking": {
     "private_overlay": "Tailscale",
-    "public_ingress": "Cloudflare Tunnel",
+    "public_ingress": "Self-hosted reverse proxy",
     "reverse_proxy": "Nginx/Caddy on work-server",
     "internal_services": "Docker network + Tailscale IPs"
   },
