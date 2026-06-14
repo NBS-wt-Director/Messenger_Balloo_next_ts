@@ -1,30 +1,439 @@
 ---
-title: Balloo Monorepo Questionnaire
-description: Вопросы для сбора информации о недостающей документации, codegen и решения проблем
-version: 1.0.0
+title: Balloo Project Build Questionnaire
+description: Опросник для сборки полной спецификации и генерации рабочей системы (Phase 1-2)
+version: 2.0.0
 date: 2026-06-14
 author: Koda (NLP-Core-Team)
 status: active
 audience: human
 tags:
   - questionnaire
-  - discovery
-  - documentation
-  - codegen
+  - build-spec
+  - phase1-phase2
+  - ubuntu-deployment
 related_docs:
-  - SUMMARY_DOCS/MONOREPO_STATUS_REPORT.md
-  - SUMMARY_DOCS/modules/MODULE_INDEX.md
-  - SUMMARY_DOCS/contracts/modules/ModuleDocgenContract.md
+  - SUMMARY_DOCS/access/ACCESS_POLICY.md
+  - SUMMARY_DOCS/auth/AUTH_POLICY.md
+  - SUMMARY_DOCS/design/DESIGN_RECONSTRUCTION_REPORT.md
+  - SUMMARY_DOCS/Nodes/NODETREE_MANIFEST.json
 ---
 
-# 📋 BALLOO MONOREPO QUESTIONNAIRE
+# 📋 BALLOO PROJECT BUILD QUESTIONNAIRE (PHASE 1-2)
 
-
-
-
-**Версия:** 1.0.0  
+**Версия:** 2.0.0  
 **Дата:** 2026-06-14  
-**Цель:** Сбор информации для завершения документации, codegen и решения проблем
+**Цель:** Собрать ответы для единой команды «собери и разработай проект»
+
+---
+
+## 🎯 НАЗНАЧЕНИЕ ЭТОГО ОПРОСНИКА
+
+**После заполнения вы сможете дать одну команду:**
+
+```
+«собери и разработай проект»
+```
+
+**И я выполню:**
+
+1. ✅ **Дострою документацию и codegen-AI context** — на основе ваших ответов
+2. ✅ **Соберу единый файл документации и ТЗ** — все нюансы и требования в одном месте
+3. ✅ **Напишу всю систему (Phase 1-2)** — 100% работоспособная, без глюков, без платных функций
+4. ✅ **Расскажу как настроить и запустить на Ubuntu** — пошаговая инструкция для сервера
+
+---
+
+## 📊 ЧТО УЖЕ ГОТОВО (НЕ ТРЕБУЕТ ОТВЕТОВ)
+
+На основе существующей документации и кода я уже зафиксировал:
+
+### ✅ Access Policy (39 файлов)
+- 7 ролей (creator-superadmin, delegated-node-admin, company-staff, alpha-staff, alpha-volunteer, sandbox-operator, public-user)
+- 5 групп узлов (A: privileged, B: company, C: alpha, D: sandbox, E: production)
+- 20 узлов классифицированы
+- creator-superadmin: Оберюхтин Иван Анатольевич (o8eryuhtin@yandex.ru)
+
+### ✅ Auth Providers (20+ файлов)
+- Phase 1: yandex-id, email-password, phone-3char-code
+- Phase 2: gosuslugi, max, qr-code
+- Cross-entry policy: автоматический вход на том же устройстве/браузере
+- creator-superadmin: отдельная privileged identity
+
+### ✅ Design System (16 файлов)
+- 6 design invariants (border-radius: 0, border: 2px solid, 3 themes, etc.)
+- 10 компонентов (Button, Input, Card, Modal, StatusBadge, Header, Footer, MetricCard, LogViewer, NodeStatusBlock)
+- 8 screen patterns (auth, dashboard, settings, chat, nodeDetail, logs, health, error)
+
+### ✅ Node Tree (20 узлов)
+- Group A (4): projectgeneralsettings, kodegen, pilot-future, nodes-switcher
+- Group B (2): workdocs, admin
+- Group C (3): alpha, apps.alpha, 2commands
+- Group D (9): working, api, files, docs, future, admin, workers, abaut, apps
+- Group E (2): balloo.su, messenger
+
+---
+
+## 🔴 СЕКЦИЯ 1: СЕРВЕРНАЯ ИНФРАСТРУКТУРА (ОБЯЗАТЕЛЬНО)
+
+**Без этих ответов невозможна deployment инструкция для Ubuntu.**
+
+### 1.1 Серверные параметры
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **1.1.1** Какой OS сервер? (Ubuntu 20.04/22.04/24.04) | |
+| **1.1.2** Сколько серверов? (1 для начала или больше) | |
+| **1.1.3** Есть ли доменное имя? (какое) | |
+| **1.1.4** Есть ли SSL сертификат? (Let's Encrypt/другой) | |
+| **1.1.5** Какой IP сервера (публичный)? | |
+
+### 1.2 Базы данных и сервисы
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **1.2.1** Какая БД? (PostgreSQL/MySQL/другая) | |
+| **1.2.2** Где БД? (на том же сервере/отдельный) | |
+| **1.2.3** Есть ли Redis? (да/нет, где) | |
+| **1.2.4** Нужен ли message queue? (RabbitMQ/Kafka/нет) | |
+
+### 1.3 Docker и оркестрация
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **1.3.1** Использовать Docker? (да/нет) | |
+| **1.3.2** Использовать Docker Compose? (да/нет) | |
+| **1.3.3** Использовать Kubernetes? (да/нет/планируется) | |
+| **1.3.4** Есть ли preference по container registry? (Docker Hub/GitHub/self-hosted) | |
+
+---
+
+## 🔴 СЕКЦИЯ 2: NODES ДЛЯ PHASE 1-2 (ОБЯЗАТЕЛЬНО)
+
+**Phase 1-2 = без платных функций. Только core + messenger + working nodes.**
+
+### 2.1 Приоритет узлов
+
+Из 20 узлов, какие **5-7 узлов** нужны в Phase 1-2?
+
+| Node | Canonical Hostname | Priority (1-5) | Include in Phase 1-2? |
+|------|-------------------|----------------|----------------------|
+| **projectgeneralsettings** | projectgeneralsettings.working.balloo.su | | ☐ |
+| **kodegen** | kodegen.working.balloo.su | | ☐ |
+| **workdocs** | workdocs.working.balloo.su | | ☐ |
+| **working** | working.balloo.su | | ☐ |
+| **messenger** | messenger.balloo.su | | ☐ |
+| **alpha** | alpha.balloo.su | | ☐ |
+| **admin** | admin.balloo.su | | ☐ |
+| **Другие** | укажите | | ☐ |
+
+### 2.2 Messenger (критично для Phase 1)
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **2.2.1** Real-time или polling? (WebSocket/polling) | |
+| **2.2.2** Хранение сообщений? (БД/файлы/память) | |
+| **2.2.3** Какие типы сообщений? (text/file/image/voice) | |
+| **2.2.4** Максимальный размер файла? (MB) | |
+| **2.2.5** Нужно ли шифрование сообщений? (да/нет) | |
+
+---
+
+## 🔴 СЕКЦИЯ 3: AUTH PROVIDERS ДЛЯ PHASE 1 (ОБЯЗАТЕЛЬНО)
+
+**Phase 1 = только 3 провайдера. Какие включаем?**
+
+### 3.1 Выбор провайдеров
+
+| Provider | Include in Phase 1? | Notes |
+|----------|---------------------|-------|
+| **yandex-id** | ☐ | External OIDC |
+| **email-password** | ☐ | Local credentials |
+| **phone-3char-code** | ☐ | SMS/bot OTP |
+
+### 3.2 Конфигурация провайдеров
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **3.2.1** Yandex OAuth credentials есть? (client-id/secret) | |
+| **3.2.2** SMS provider для OTP? (какой) | |
+| **3.2.3** Email server для verification? (SMTP server) | |
+| **3.2.4** Пароль политика? (min 8 символов/строгая) | |
+
+---
+
+## 🔴 СЕКЦИЯ 4: ACCESS ROLES ДЛЯ PHASE 1 (ОБЯЗАТЕЛЬНО)
+
+**Какие роли нужны сразу?**
+
+### 4.1 Активация ролей
+
+| Role | Include in Phase 1? | Notes |
+|------|---------------------|-------|
+| **creator-superadmin** | ✅ Always | Оберюхтин Иван Анатольевич |
+| **delegated-node-admin** | ☐ | Per-node delegated |
+| **company-staff** | ☐ | NBS-wt employees |
+| **alpha-staff** | ☐ | Alpha curators |
+| **alpha-volunteer** | ☐ | Alpha testers |
+| **sandbox-operator** | ☐ | Working users |
+| **public-user** | ☐ | Public access |
+
+### 4.2 Пользователи Phase 1
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **4.2.1** Сколько пользователей в Phase 1? (~10/~50/~100) | |
+| **4.2.2** Кто первые пользователи? (сотрудники/тестировщики) | |
+| **4.2.3** Нужен ли bulk user import? (да/нет, формат) | |
+
+---
+
+## 🟠 СЕКЦИЯ 5: CORE PACKAGES (ВАЖНО)
+
+**7 core пакетов требуют спецификации.**
+
+### 5.1 Core Packages Usage
+
+| Package | Used in Phase 1? | Priority (High/Medium/Low) |
+|---------|-----------------|---------------------------|
+| **core-types** | ☐ | |
+| **core-config** | ☐ | |
+| **core-i18n** | ☐ | |
+| **core-theme** | ☐ | |
+| **core-brand** | ☐ | |
+| **core-ui** | ☐ | |
+| **core-docs-schema** | ☐ | |
+
+### 5.2 Детали core пакетов
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **5.2.1** core-types: сколько примерно типов? (~10/~50/~100) | |
+| **5.2.2** core-ui: сколько компонентов? (~10/~30/~50) | |
+| **5.2.3** core-i18n: какие языки? (ru/en/другие) | |
+| **5.2.4** core-theme: сколько тем? (light/dark/custom) | |
+
+---
+
+## 🟠 СЕКЦИЯ 6: CODEGEN ПРИОРИТЕТЫ (ВАЖНО)
+
+**Что генерировать в первую очередь?**
+
+### 6.1 Codegen Output
+
+| Generate What? | Priority (1-5) | Notes |
+|----------------|----------------|-------|
+| **TypeScript types** | | Из core-types contracts |
+| **API routes** | | Из endpoint specs |
+| **React components** | | Из design system |
+| **Configuration files** | | Из schemas |
+| **Documentation pages** | | Из contracts |
+| **Test files** | | Из contracts |
+
+### 6.2 Codegen Workflow
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **6.2.1** Запуск codegen? (manual/automatic/CI) | |
+| **6.2.2** Commit'ить сгенерированный код? (да/нет) | |
+| **6.2.3** Где хранить templates? (templates/ папка) | |
+
+---
+
+## 🟠 СЕКЦИЯ 7: TESTING STRATEGY (ВАЖНО)
+
+**Минимум тестов для Phase 1.**
+
+### 7.1 Test Types
+
+| Test Type | Include in Phase 1? | Framework Preference |
+|-----------|---------------------|---------------------|
+| **Unit tests** | ☐ | Jest/Vitest |
+| **Integration tests** | ☐ | Supertest/Testing Library |
+| **E2E tests** | ☐ | Playwright/Cypress |
+| **API tests** | ☐ | Jest/Supertest |
+
+### 7.2 Coverage Target
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **7.2.1** Minimum coverage для Phase 1? (20%/30%/50%) | |
+| **7.2.2** Критичные модули для тестов? (messenger/auth/core) | |
+
+---
+
+## 🟡 СЕКЦИЯ 8: DEPLOYMENT WORKFLOW (ЖЕЛАТЕЛЬНО)
+
+**Как разворачивать на Ubuntu.**
+
+### 8.1 Deployment Steps
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **8.1.1** Manual или automated deploy? | |
+| **8.1.2** Есть ли deployment scripts? (bash/Ansible/другое) | |
+| **8.1.3** Время на deploy? (минуты) | |
+| **8.1.4** Rollback план? (да/нет) | |
+
+### 8.2 Monitoring
+
+| Вопрос | Ваш ответ |
+|--------|-----------|
+| **8.2.1** Monitor uptime? (да/нет) | |
+| **8.2.2** Error tracking? (Sentry/self-hosted/нет) | |
+| **8.2.3** Log aggregation? (ELK/papertrail/файлы) | |
+
+---
+
+## ⚪ СЕКЦИЯ 9: LEGACY CLEANUP (НЕОБЯЗАТЕЛЬНО)
+
+**Можно отложить на Phase 3.**
+
+### 9.1 Legacy Directories
+
+| Directory | Delete in Phase 1? | Migrate first? |
+|-----------|-------------------|----------------|
+| **docs-contracts/** | ☐ | ☐ |
+| **docs-migration/** | ☐ | ☐ |
+| **docs-site/** | ☐ | ☐ |
+| **workdocs/legacy-*** | ☐ | ☐ |
+
+---
+
+## 📝 СЕКЦИЯ 10: ДОПОЛНИТЕЛЬНЫЕ ТРЕБОВАНИЯ
+
+### 10.1 Специфичные требования
+
+```
+[Опишите любые дополнительные требования, которые не вошли в опросник]
+```
+
+### 10.2 Ограничения
+
+```
+[Опишите ограничения: бюджет, время, ресурсы, compliance]
+```
+
+### 10.3 Риски
+
+```
+[Опишите известные риски: технические, организационные]
+```
+
+---
+
+## ✅ КАК ЗАПОЛНЯТЬ
+
+### Вариант 1: Быстрый (15 минут)
+
+Заполните только **🔴 Красные секции** (1-4):
+- Серверная инфраструктура
+- Nodes для Phase 1-2
+- Auth providers
+- Access roles
+
+**Результат:** Могу создать deployment инструкцию и базовую систему.
+
+### Вариант 2: Полный (30 минут)
+
+Заполните **🔴 Красные + 🟠 Оранжевые секции** (1-7):
+- Всё из быстрого + core packages + codegen + testing
+
+**Результат:** Могу создать полную систему с тестами и codegen.
+
+### Вариант 3: Максимальный (45 минут)
+
+Заполните **все секции** (1-10):
+- Всё из полного + deployment workflow + legacy cleanup + дополнительные требования
+
+**Результат:** Максимально полная спецификация для production-ready системы.
+
+---
+
+## 🚀 СЛЕДУЮЩИЕ ШАГИ
+
+После заполнения:
+
+1. **Вы отправляете ответы** (можно по частям, начиная с 🔴 секций)
+2. **Я создаю единый spec файл** (`BALLOO_BUILD_SPEC.md`)
+3. **Вы даёте команду** «собери и разработай проект»
+4. **Я выполняю:**
+   - 4.1: Документация completion
+   - 4.2: Unified spec файл
+   - 4.3: Codegen и implementation (Phase 1-2)
+   - 4.4: Ubuntu deployment инструкция
+
+---
+
+## 📎 ПРИЛОЖЕНИЯ
+
+### A: Список узлов (20 total)
+
+```
+Group A (Privileged, 4):
+  - projectgeneralsettings.working.balloo.su
+  - kodegen.working.balloo.su
+  - pilot-future.working.balloo.su
+  - nodes-switcher.working.balloo.su
+
+Group B (Company, 2):
+  - workdocs.working.balloo.su
+  - admin.balloo.su
+
+Group C (Alpha, 3):
+  - alpha.balloo.su
+  - apps.alpha.balloo.su
+  - 2commands.alpha.balloo.su
+
+Group D (Sandbox, 9):
+  - working.balloo.su
+  - api.working.balloo.su
+  - files.working.balloo.su
+  - docs.working.balloo.su
+  - future.working.balloo.su
+  - admin.working.balloo.su
+  - workers.working.balloo.su
+  - abaut.working.balloo.su
+  - apps.working.balloo.su
+
+Group E (Production, 2):
+  - balloo.su
+  - messenger.balloo.su
+```
+
+### B: Список провайдеров (6 total)
+
+```
+Phase 1 (3):
+  - yandex-id (External OIDC)
+  - email-password (Local credentials)
+  - phone-3char-code (Phone OTP)
+
+Phase 2 (3):
+  - gosuslugi (State identity)
+  - max (Messenger code via MAX bot)
+  - qr-code (Device transfer)
+```
+
+### C: Список ролей (7 total)
+
+```
+  - creator-superadmin (L10) — Always active
+  - delegated-node-admin (L8) — Per-node delegation
+  - company-staff (L6) — NBS-wt employees
+  - alpha-staff (L5) — Alpha curators
+  - alpha-volunteer (L4) — Alpha testers
+  - sandbox-operator (L3) — Working users
+  - public-user (L1) — Public access
+```
+
+---
+
+**🎈 Balloo - Переверни общение!**
+
+**Создано:** 2026-06-14  
+**Версия:** 2.0.0 (Build Spec Edition)  
+**Статус:** Active  
+**Автор:** Koda (NLP-Core-Team)
 
 ---
 
