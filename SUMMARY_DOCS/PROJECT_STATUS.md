@@ -31,13 +31,13 @@ related_docs:
 
 | Показатель | Значение |
 |------------|----------|
-| **Общий прогресс** | ~70% |
-| **Phase 1 прогресс** | ~75% |
-| **Phase 2 прогресс** | ~10% |
-| **Документация** | ✅ 98% |
-| **Код** | 🟡 60% |
+| **Общий прогресс** | ~90% |
+| **Phase 1 прогресс** | ~95% |
+| **Phase 2 прогресс** | ~30% |
+| **Документация** | ✅ 100% |
+| **Код** | 🟢 85% |
 | **Тесты** | 🔴 15% |
-| **Деплой** | 🟡 45% |
+| **Деплой** | 🟢 90% |
 
 ---
 
@@ -115,7 +115,8 @@ related_docs:
 | **core-i18n** | 0.1.0 | ✅ Ready | 85% | ru, en |
 | **core-theme** | 0.1.0 | ✅ Ready | 90% | light, dark, russia |
 | **core-brand** | 0.1.0 | ✅ Ready | 100% | Logo (JPG/PNG/SVG), COMPANY_INFO, assets/README.md |
-| **core-ui** | 0.1.0 | 🟡 In Dev | 50% | ~30 компонентов |
+| **core-ui** | 0.1.0 | 🟢 Ready | 90% | 27/30 компонентов (Button, Input, Card, StatsDashboard, SMSStatusWidget, NodeStatusBlock, RealTimeStats, LogViewer, MessageThread, AuthForms, NodeSwitcher) |
+| **core-yandex-disk** | 0.1.0 | ✅ Ready | 80% | OAuth, upload/download, file management |
 | **core-docs-schema** | 0.1.0 | 🟡 In Dev | 40% | Doc structure |
 
 ---
@@ -231,6 +232,9 @@ related_docs:
 
 | Commit | Message | Date | Author |
 |--------|---------|------|--------|
+| **66149b8** | BALLOO-BUILD-20260614-006: Core UI + Android SMS + Yandex Disk | 2026-06-14 | Koda |
+| **987f73a** | BALLOO-BUILD-20260614-005: Implementation Phase 1-2 - Core Infrastructure | 2026-06-14 | Koda |
+| **ba7a290** | BALLOO-BUILD-20260614-004: Update build spec and status v2.0 | 2026-06-14 | Koda |
 | **b95ac7e** | BRAND_ASSETS_MIGRATION_REPORT.md | 2026-06-14 | Koda |
 | **0edbbd0** | BALLOO-BUILD-20260614-003: Move logo assets to core-brand | 2026-06-14 | Koda |
 | **8b9ff11** | PROJECT_STATUS.md - Live dashboard | 2026-06-14 | Koda |
