@@ -1,0 +1,261 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "moduleDependencies": [
+    {
+      "from": "core-config",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "core-config использует типы из core-types"
+    },
+    {
+      "from": "core-i18n",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "core-i18n использует типы из core-types"
+    },
+    {
+      "from": "core-i18n",
+      "to": "core-config",
+      "type": "code",
+      "strength": "required",
+      "description": "core-i18n использует конфигурацию из core-config"
+    },
+    {
+      "from": "core-theme",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "core-theme использует типы из core-types"
+    },
+    {
+      "from": "core-theme",
+      "to": "core-brand",
+      "type": "code",
+      "strength": "required",
+      "description": "core-theme использует бренд из core-brand"
+    },
+    {
+      "from": "core-brand",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "core-brand использует типы из core-types"
+    },
+    {
+      "from": "core-ui",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "core-ui использует типы из core-types"
+    },
+    {
+      "from": "core-ui",
+      "to": "core-theme",
+      "type": "code",
+      "strength": "required",
+      "description": "core-ui использует темы из core-theme"
+    },
+    {
+      "from": "core-ui",
+      "to": "core-brand",
+      "type": "code",
+      "strength": "required",
+      "description": "core-ui использует бренд из core-brand"
+    },
+    {
+      "from": "core-docs-schema",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "core-docs-schema использует типы из core-types"
+    },
+    {
+      "from": "messenger",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "messenger использует типы из core-types"
+    },
+    {
+      "from": "messenger",
+      "to": "core-theme",
+      "type": "code",
+      "strength": "required",
+      "description": "messenger использует темы из core-theme"
+    },
+    {
+      "from": "messenger",
+      "to": "core-i18n",
+      "type": "code",
+      "strength": "required",
+      "description": "messenger использует i18n из core-i18n"
+    },
+    {
+      "from": "messenger",
+      "to": "core-ui",
+      "type": "code",
+      "strength": "required",
+      "description": "messenger использует UI компоненты из core-ui"
+    },
+    {
+      "from": "admin-portal",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "admin-portal использует типы из core-types"
+    },
+    {
+      "from": "admin-portal",
+      "to": "core-theme",
+      "type": "code",
+      "strength": "required",
+      "description": "admin-portal использует темы из core-theme"
+    },
+    {
+      "from": "admin-portal",
+      "to": "core-ui",
+      "type": "code",
+      "strength": "required",
+      "description": "admin-portal использует UI компоненты из core-ui"
+    },
+    {
+      "from": "desktop",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "desktop использует типы из core-types"
+    },
+    {
+      "from": "desktop",
+      "to": "core-theme",
+      "type": "code",
+      "strength": "required",
+      "description": "desktop использует темы из core-theme"
+    },
+    {
+      "from": "desktop",
+      "to": "core-ui",
+      "type": "code",
+      "strength": "required",
+      "description": "desktop использует UI компоненты из core-ui"
+    },
+    {
+      "from": "mobile",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "mobile использует типы из core-types"
+    },
+    {
+      "from": "mobile",
+      "to": "core-theme",
+      "type": "code",
+      "strength": "required",
+      "description": "mobile использует темы из core-theme"
+    },
+    {
+      "from": "mobile",
+      "to": "core-ui",
+      "type": "code",
+      "strength": "required",
+      "description": "mobile использует UI компоненты из core-ui"
+    },
+    {
+      "from": "mobile",
+      "to": "core-i18n",
+      "type": "code",
+      "strength": "required",
+      "description": "mobile использует i18n из core-i18n"
+    },
+    {
+      "from": "android-service",
+      "to": "core-types",
+      "type": "code",
+      "strength": "required",
+      "description": "android-service использует типы из core-types"
+    },
+    {
+      "from": "android-service",
+      "to": "core-config",
+      "type": "code",
+      "strength": "required",
+      "description": "android-service использует конфигурацию из core-config"
+    },
+    {
+      "from": "node-system",
+      "to": "summary-docs",
+      "type": "doc",
+      "strength": "required",
+      "description": "node-system документирован в summary-docs"
+    },
+    {
+      "from": "summary-docs",
+      "to": "node-system",
+      "type": "doc",
+      "strength": "required",
+      "description": "summary-docs включает документацию node-system"
+    },
+    {
+      "from": "summary-docs",
+      "to": "core-docs-schema",
+      "type": "code",
+      "strength": "required",
+      "description": "summary-docs использует схему из core-docs-schema"
+    }
+  ],
+  "moduleNodeMap": {
+    "core-types": ["laptop_control", "work_server"],
+    "core-config": ["laptop_control", "work_server"],
+    "core-i18n": ["laptop_control", "work_server"],
+    "core-theme": ["laptop_control", "work_server"],
+    "core-brand": ["laptop_control", "work_server"],
+    "core-ui": ["laptop_control", "work_server"],
+    "core-docs-schema": ["laptop_control", "work_server"],
+    "messenger": ["work_server", "laptop_control"],
+    "admin-portal": ["work_server", "laptop_control"],
+    "desktop": ["laptop_control"],
+    "mobile": ["laptop_control"],
+    "android-service": ["work_server"],
+    "node-system": ["laptop_control", "work_server", "home_aio", "home_nas"],
+    "summary-docs": ["laptop_control", "work_server"]
+  },
+  "moduleDomainMap": {
+    "core-types": null,
+    "core-config": null,
+    "core-i18n": null,
+    "core-theme": null,
+    "core-brand": null,
+    "core-ui": null,
+    "core-docs-schema": null,
+    "messenger": "messenger.balloo.su",
+    "admin-portal": "admin.balloo.su",
+    "desktop": null,
+    "mobile": null,
+    "android-service": "api.balloo.su",
+    "node-system": null,
+    "summary-docs": "docs.balloo.su"
+  },
+  "modulePackageMap": {
+    "core-types": "@balloo/core-types",
+    "core-config": "@balloo/core-config",
+    "core-i18n": "@balloo/core-i18n",
+    "core-theme": "@balloo/core-theme",
+    "core-brand": "@balloo/core-brand",
+    "core-ui": "@balloo/core-ui",
+    "core-docs-schema": "@balloo/core-docs-schema"
+  },
+  "moduleAppMap": {
+    "messenger": "messenger/",
+    "admin-portal": "admin-portal/",
+    "desktop": "desktop/",
+    "mobile": "mobile/",
+    "android-service": "android-service/"
+  },
+  "moduleDocMap": {
+    "node-system": "SUMMARY_DOCS/contracts/node-contracts/",
+    "summary-docs": "SUMMARY_DOCS/"
+  }
+}

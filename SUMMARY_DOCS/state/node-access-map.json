@@ -1,0 +1,311 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node access map for Balloo node registry",
+  "accessLevels": ["public", "private", "restricted", "creator-only", "staff-only", "internal"],
+  "nodeAccessMap": {
+    "workdocs-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "ai-agents", "internal-team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": true,
+      "settingsScopes": ["docs-settings"],
+      "auditRequired": true
+    },
+    "nodes-switcher-working": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["developers", "devops", "admin"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": true,
+      "settingsScopes": ["version-registry", "rollout-control"],
+      "auditRequired": true
+    },
+    "kpdegen-working": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["developers", "ai-agents", "system"],
+      "accessMethod": "api",
+      "secretBearing": false,
+      "settingsAuthority": true,
+      "settingsScopes": ["codegen-settings"],
+      "auditRequired": true
+    },
+    "projectgeneralsettings-working": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["admin", "owner", "product-owner"],
+      "accessMethod": "web",
+      "secretBearing": true,
+      "settingsAuthority": true,
+      "settingsScopes": ["project-global", "branch-level", "node-level", "feature-level"],
+      "auditRequired": true
+    },
+    "database-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["system", "api-working", "workers-working"],
+      "accessMethod": "internal",
+      "secretBearing": true,
+      "settingsAuthority": true,
+      "settingsScopes": ["database-settings"],
+      "auditRequired": true
+    },
+    "balloo-production-root": {
+      "accessLevel": "public",
+      "authRequired": false,
+      "roleClasses": [],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false
+    },
+    "api-production": {
+      "accessLevel": "private",
+      "authRequired": true,
+      "roleClasses": ["authenticated_users"],
+      "accessMethod": "api",
+      "secretBearing": true,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "ai-api-production": {
+      "accessLevel": "private",
+      "authRequired": true,
+      "roleClasses": ["authenticated_users"],
+      "accessMethod": "api",
+      "secretBearing": true,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true,
+      "versionScoped": "4.*",
+      "status": "planned"
+    },
+    "files-production": {
+      "accessLevel": "private",
+      "authRequired": true,
+      "roleClasses": ["authenticated_users"],
+      "accessMethod": "api",
+      "secretBearing": true,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "docs-production": {
+      "accessLevel": "public",
+      "authRequired": false,
+      "roleClasses": [],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false
+    },
+    "future-production": {
+      "accessLevel": "public",
+      "authRequired": false,
+      "roleClasses": [],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false,
+      "status": "planned"
+    },
+    "admin-production": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["admin", "staff"],
+      "accessMethod": "web",
+      "secretBearing": true,
+      "settingsAuthority": true,
+      "settingsScopes": ["admin-settings"],
+      "auditRequired": true
+    },
+    "workers-production": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["system", "admin"],
+      "accessMethod": "internal",
+      "secretBearing": true,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "abaut-production": {
+      "accessLevel": "public",
+      "authRequired": false,
+      "roleClasses": [],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false
+    },
+    "apps-production": {
+      "accessLevel": "public",
+      "authRequired": false,
+      "roleClasses": [],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false
+    },
+    "client-apps-family": {
+      "accessLevel": "public",
+      "authRequired": false,
+      "roleClasses": [],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false
+    },
+    "alpha-root": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["testers", "qa", "early_adopters"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "apps-alpha": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["testers", "qa"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "2commands-alpha": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["testers", "qa", "product_team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": true,
+      "settingsScopes": ["feature-level"],
+      "auditRequired": true
+    },
+    "working-root": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "internal-team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "api-working": {
+      "accessLevel": "private",
+      "authRequired": true,
+      "roleClasses": ["developers", "authenticated"],
+      "accessMethod": "api",
+      "secretBearing": true,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "files-working": {
+      "accessLevel": "private",
+      "authRequired": true,
+      "roleClasses": ["developers", "authenticated"],
+      "accessMethod": "api",
+      "secretBearing": true,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "docs-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "internal-team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": true,
+      "settingsScopes": ["docs-settings"],
+      "auditRequired": false
+    },
+    "future-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "product_team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": true,
+      "settingsScopes": ["feature-level"],
+      "auditRequired": false
+    },
+    "pilot-future-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "product_team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": true,
+      "settingsScopes": ["feature-level"],
+      "auditRequired": false
+    },
+    "admin-working": {
+      "accessLevel": "restricted",
+      "authRequired": true,
+      "roleClasses": ["admin", "developers"],
+      "accessMethod": "web",
+      "secretBearing": true,
+      "settingsAuthority": true,
+      "settingsScopes": ["admin-settings"],
+      "auditRequired": true
+    },
+    "workers-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "system"],
+      "accessMethod": "internal",
+      "secretBearing": true,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": true
+    },
+    "abaut-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "internal-team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false
+    },
+    "apps-working": {
+      "accessLevel": "internal",
+      "authRequired": true,
+      "roleClasses": ["developers", "internal-team"],
+      "accessMethod": "web",
+      "secretBearing": false,
+      "settingsAuthority": false,
+      "settingsScopes": [],
+      "auditRequired": false
+    }
+  },
+  "securitySummary": {
+    "secretBearingNodes": 11,
+    "settingsAuthorityNodes": 9,
+    "auditRequiredNodes": 16,
+    "publicNodes": 6,
+    "privateNodes": 5,
+    "restrictedNodes": 7,
+    "internalNodes": 11
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node priority map for Balloo node registry",
+  "priorityLevels": {
+    "1": {
+      "name": "Priority 1 - Technical Core (Working)",
+      "description": "Технические узлы working-ветки, наивысший приоритет для codegen",
+      "automationFocus": "Full codegen, all environments, IaC, docs"
+    },
+    "2": {
+      "name": "Priority 2 - Other Working Nodes",
+      "description": "Остальные узлы working-ветки",
+      "automationFocus": "Codegen, working/prod config, basic docs"
+    },
+    "3": {
+      "name": "Priority 3 - Alpha Nodes",
+      "description": "Узлы alpha-ветки",
+      "automationFocus": "Config from working, minimal code, testing docs"
+    },
+    "4": {
+      "name": "Priority 4 - Production Public Nodes",
+      "description": "Публичные узлы production-ветки",
+      "automationFocus": "Stable code, prod config, full docs, prod IaC"
+    }
+  },
+  "priority1TechnicalNodes": [
+    {
+      "nodeId": "workdocs-working",
+      "canonicalName": "workdocs.working.balloo.su",
+      "type": "technical-docs",
+      "purpose": "Рабочая документация, SUMMARY_DOCS web presentation",
+      "codegenPriority": 1,
+      "rationale": "Ядро документации для AI и разработчиков"
+    },
+    {
+      "nodeId": "nodes-switcher-working",
+      "canonicalName": "nodes-switcher.working.balloo.su",
+      "type": "technical-orchestration",
+      "purpose": "Менеджер версий узлов, rollout control",
+      "codegenPriority": 1,
+      "rationale": "Оркестрация обновлений и версий"
+    },
+    {
+      "nodeId": "kpdegen-working",
+      "canonicalName": "kpdegen.working.balloo.su",
+      "type": "technical-codegen",
+      "purpose": "Серверный кодогенератор",
+      "codegenPriority": 1,
+      "rationale": "Система кодогенерации (codegen itself)"
+    },
+    {
+      "nodeId": "projectgeneralsettings-working",
+      "canonicalName": "projectgeneralsettings.working.balloo.su",
+      "type": "technical-settings",
+      "purpose": "Управление настройками проекта",
+      "codegenPriority": 1,
+      "rationale": "Центральное управление настройками"
+    },
+    {
+      "nodeId": "database-working",
+      "canonicalName": "database-working",
+      "type": "technical-runtime",
+      "purpose": "База данных working environment",
+      "codegenPriority": 1,
+      "rationale": "Технический runtime узел, no domain"
+    }
+  ],
+  "priority2WorkingNodes": [
+    {
+      "nodeId": "api-working",
+      "canonicalName": "api.working.balloo.su",
+      "type": "api",
+      "codegenPriority": 2
+    },
+    {
+      "nodeId": "files-working",
+      "canonicalName": "files.working.balloo.su",
+      "type": "storage",
+      "codegenPriority": 2
+    },
+    {
+      "nodeId": "docs-working",
+      "canonicalName": "docs.working.balloo.su",
+      "type": "docs",
+      "codegenPriority": 2
+    },
+    {
+      "nodeId": "future-working",
+      "canonicalName": "future.working.balloo.su",
+      "type": "experimental",
+      "codegenPriority": 2
+    },
+    {
+      "nodeId": "pilot-future-working",
+      "canonicalName": "pilot-future.working.balloo.su",
+      "type": "experimental",
+      "codegenPriority": 2
+    },
+    {
+      "nodeId": "admin-working",
+      "canonicalName": "admin.working.balloo.su",
+      "type": "admin",
+      "codegenPriority": 2,
+      "technical": true
+    },
+    {
+      "nodeId": "workers-working",
+      "canonicalName": "workers.working.balloo.su",
+      "type": "workers",
+      "codegenPriority": 2,
+      "technical": true
+    },
+    {
+      "nodeId": "abaut-working",
+      "canonicalName": "abaut.working.balloo.su",
+      "type": "info",
+      "codegenPriority": 2
+    },
+    {
+      "nodeId": "apps-working",
+      "canonicalName": "apps.working.balloo.su",
+      "type": "apps-portal",
+      "codegenPriority": 2
+    },
+    {
+      "nodeId": "working-root",
+      "canonicalName": "working.balloo.su",
+      "type": "public-root",
+      "codegenPriority": 2
+    }
+  ],
+  "priority3AlphaNodes": [
+    {
+      "nodeId": "alpha-root",
+      "canonicalName": "alpha.balloo.su",
+      "type": "public-root",
+      "codegenPriority": 3
+    },
+    {
+      "nodeId": "apps-alpha",
+      "canonicalName": "apps.alpha.balloo.su",
+      "type": "apps-portal",
+      "codegenPriority": 3
+    },
+    {
+      "nodeId": "2commands-alpha",
+      "canonicalName": "2commands.alpha.balloo.su",
+      "type": "experimental",
+      "codegenPriority": 3
+    }
+  ],
+  "priority4ProductionNodes": [
+    {
+      "nodeId": "balloo-production-root",
+      "canonicalName": "balloo.su",
+      "type": "public-root",
+      "codegenPriority": 4
+    },
+    {
+      "nodeId": "api-production",
+      "canonicalName": "api.balloo.su",
+      "type": "api",
+      "codegenPriority": 4
+    },
+    {
+      "nodeId": "ai-api-production",
+      "canonicalName": "ai.api.balloo.su",
+      "type": "api-ai",
+      "codegenPriority": 4,
+      "versionScoped": "4.*",
+      "status": "planned"
+    },
+    {
+      "nodeId": "files-production",
+      "canonicalName": "files.balloo.su",
+      "type": "storage",
+      "codegenPriority": 4
+    },
+    {
+      "nodeId": "docs-production",
+      "canonicalName": "docs.balloo.su",
+      "type": "docs",
+      "codegenPriority": 4
+    },
+    {
+      "nodeId": "future-production",
+      "canonicalName": "future.balloo.su",
+      "type": "experimental",
+      "codegenPriority": 4,
+      "status": "planned"
+    },
+    {
+      "nodeId": "admin-production",
+      "canonicalName": "admin.balloo.su",
+      "type": "admin",
+      "codegenPriority": 4,
+      "technical": true
+    },
+    {
+      "nodeId": "workers-production",
+      "canonicalName": "workers.balloo.su",
+      "type": "workers",
+      "codegenPriority": 4,
+      "technical": true
+    },
+    {
+      "nodeId": "abaut-production",
+      "canonicalName": "abaut.balloo.su",
+      "type": "info",
+      "codegenPriority": 4
+    },
+    {
+      "nodeId": "apps-production",
+      "canonicalName": "apps.balloo.su",
+      "type": "apps-portal",
+      "codegenPriority": 4
+    },
+    {
+      "nodeId": "client-apps-family",
+      "canonicalName": "client-apps",
+      "type": "family",
+      "codegenPriority": 4,
+      "platforms": ["android", "ios", "windows", "linux", "macos"]
+    }
+  ],
+  "totalNodesByPriority": {
+    "priority_1": 5,
+    "priority_2": 10,
+    "priority_3": 3,
+    "priority_4": 11
+  },
+  "codegenOrder": [
+    "priority_1_technical_nodes",
+    "priority_2_working_nodes",
+    "priority_3_alpha_nodes",
+    "priority_4_production_nodes"
+  ]
+}

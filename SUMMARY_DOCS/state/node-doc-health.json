@@ -1,0 +1,67 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node documentation health metrics for Balloo node registry",
+  "totalNodes": 29,
+  "documentedNodes": 29,
+  "undocumentedNodes": 0,
+  "nodesWithContracts": 29,
+  "nodesWithSummaries": 29,
+  "nodesWithSettingsModel": 29,
+  "nodesWithRuntimeMap": 29,
+  "nodesWithCodegenMap": 29,
+  "nodesWithAccessRules": 29,
+  "nodesWithDependencies": 29,
+  "nodesWithVersionCapabilities": 29,
+  "nodesWithReleaseRole": 29,
+  "nodesWithManifestEntry": 29,
+  "nodesWithBranchBinding": 29,
+  "nodesWithDomainBinding": 29,
+  "coverageByBranch": {
+    "production": {
+      "totalNodes": 11,
+      "documentedNodes": 11,
+      "coveragePercent": 100
+    },
+    "alpha": {
+      "totalNodes": 3,
+      "documentedNodes": 3,
+      "coveragePercent": 100
+    },
+    "working": {
+      "totalNodes": 15,
+      "documentedNodes": 15,
+      "coveragePercent": 100
+    }
+  },
+  "coverageByPriority": {
+    "priority_1": {
+      "totalNodes": 5,
+      "documentedNodes": 5,
+      "coveragePercent": 100,
+      "nodes": ["workdocs-working", "nodes-switcher-working", "kpdegen-working", "projectgeneralsettings-working", "database-working"]
+    },
+    "priority_2": {
+      "totalNodes": 10,
+      "documentedNodes": 10,
+      "coveragePercent": 100
+    },
+    "priority_3": {
+      "totalNodes": 3,
+      "documentedNodes": 3,
+      "coveragePercent": 100
+    },
+    "priority_4": {
+      "totalNodes": 11,
+      "documentedNodes": 11,
+      "coveragePercent": 100
+    }
+  },
+  "driftWarnings": [],
+  "lastAuditAt": "2026-06-13T00:00:00Z",
+  "nextAuditScheduled": "2026-06-20T00:00:00Z",
+  "auditFrequency": "weekly",
+  "healthScore": 100,
+  "healthStatus": "excellent"
+}

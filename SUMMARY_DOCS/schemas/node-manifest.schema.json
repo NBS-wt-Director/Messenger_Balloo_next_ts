@@ -1,0 +1,182 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/node-manifest.schema.json",
+  "title": "Node Manifest Schema",
+  "description": "Schema for NODETREE_MANIFEST.json - node registry for Balloo",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "version",
+    "date",
+    "status",
+    "description",
+    "nodes"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Manifest version (semver)"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Manifest creation/update date"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "deprecated", "draft"],
+      "description": "Manifest status"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Manifest description"
+    },
+    "nodes": {
+      "type": "object",
+      "description": "Node registry",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "nodeId",
+          "canonicalName",
+          "branch",
+          "nodeType",
+          "localDevIdentity",
+          "localDevRequiredDomain",
+          "productionDomainRequired",
+          "summaryDoc",
+          "contractDoc",
+          "codegenPriority",
+          "technical",
+          "publicFacing",
+          "authRequired",
+          "status"
+        ],
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Unique node identifier"
+          },
+          "canonicalName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Full domain or canonical name"
+          },
+          "branch": {
+            "type": "string",
+            "enum": ["production", "alpha", "working"],
+            "description": "Branch binding"
+          },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "public-root",
+              "api",
+              "api-ai",
+              "storage",
+              "docs",
+              "experimental",
+              "admin",
+              "workers",
+              "info",
+              "apps-portal",
+              "family",
+              "technical-docs",
+              "technical-orchestration",
+              "technical-codegen",
+              "technical-settings",
+              "technical-runtime"
+            ],
+            "description": "Node type classification"
+          },
+          "domain": {
+            "type": ["string", "null"],
+            "description": "Production domain (null if no domain)"
+          },
+          "localDevIdentity": {
+            "type": "string",
+            "pattern": "^(localhost:\\d+|no-domain)$",
+            "description": "Local development identity"
+          },
+          "localDevRequiredDomain": {
+            "type": "boolean",
+            "const": false,
+            "description": "Always false - dev works without domains"
+          },
+          "productionDomainRequired": {
+            "type": "boolean",
+            "description": "True if production requires domain"
+          },
+          "summaryDoc": {
+            "type": "string",
+            "pattern": "^SUMMARY_DOCS/.*\\.md$",
+            "description": "Path to summary document"
+          },
+          "contractDoc": {
+            "type": "string",
+            "pattern": "^SUMMARY_DOCS/.*\\.md$",
+            "description": "Path to contract document"
+          },
+          "settingsScope": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Settings scopes for this node"
+          },
+          "codegenPriority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Codegen priority (1=highest)"
+          },
+          "technical": {
+            "type": "boolean",
+            "description": "True if technical node"
+          },
+          "publicFacing": {
+            "type": "boolean",
+            "description": "True if public-facing node"
+          },
+          "authRequired": {
+            "type": "boolean",
+            "description": "True if authentication required"
+          },
+          "relatedModules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Related module IDs"
+          },
+          "relatedNodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Related node IDs"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "planned", "deprecated"],
+            "description": "Node status"
+          },
+          "versionScoped": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\*$",
+            "description": "Version scope (e.g., '4.*')"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

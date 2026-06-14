@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/node-settings.schema.json",
+  "title": "Node Settings Schema",
+  "description": "Schema for node settings configuration",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "nodeId",
+    "settingsScopes"
+  ],
+  "properties": {
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Node identifier"
+    },
+    "settingsScopes": {
+      "type": "object",
+      "description": "Settings by scope",
+      "properties": {
+        "project-global": {
+          "type": "object",
+          "description": "Project-global settings",
+          "properties": {
+            "projectName": {"type": "string"},
+            "projectVersion": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+            "projectBranch": {"type": "string", "enum": ["production", "alpha", "working"]},
+            "timezone": {"type": "string"},
+            "locale": {"type": "string"}
+          }
+        },
+        "branch-level": {
+          "type": "object",
+          "description": "Branch-level settings",
+          "properties": {
+            "branchId": {"type": "string", "enum": ["production", "alpha", "working"]},
+            "domainRoot": {"type": "string"},
+            "accessLevel": {"type": "string", "enum": ["public", "limited", "internal"]},
+            "debugEnabled": {"type": "boolean"},
+            "loggingLevel": {"type": "string", "enum": ["debug", "info", "warn", "error"]}
+          }
+        },
+        "node-level": {
+          "type": "object",
+          "description": "Node-level settings",
+          "properties": {
+            "nodeId": {"type": "string"},
+            "domain": {"type": ["string", "null"]},
+            "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+            "enabled": {"type": "boolean"},
+            "authRequired": {"type": "boolean"},
+            "rateLimit": {"type": "integer"},
+            "timeoutMs": {"type": "integer"},
+            "maxConnections": {"type": "integer"}
+          }
+        },
+        "feature-level": {
+          "type": "object",
+          "description": "Feature-level settings",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "enabled": {"type": "boolean"},
+              "rolloutPercentage": {"type": "integer", "minimum": 0, "maximum": 100}
+            }
+          }
+        },
+        "runtime-local": {
+          "type": "object",
+          "description": "Runtime-local settings",
+          "additionalProperties": true
+        },
+        "secret": {
+          "type": "object",
+          "description": "Secret settings (encrypted)",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "generated": {
+          "type": "object",
+          "description": "Generated settings",
+          "properties": {
+            "configVersion": {"type": "string"},
+            "codegenTimestamp": {"type": "string", "format": "date-time"},
+            "manifestHash": {"type": "string"}
+          }
+        },
+        "derived": {
+          "type": "object",
+          "description": "Derived settings",
+          "additionalProperties": true
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,156 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node dependency map for Balloo node registry",
+  "dependencyTypes": ["hard", "optional", "planned", "environment-specific"],
+  "nodeDependencyMap": {
+    "workdocs-working": {
+      "dependsOnNodes": ["docs-working", "kpdegen-working"],
+      "dependsOnModules": ["docs-core"],
+      "dependsOnSettingsScopes": ["docs-settings"],
+      "dependsOnRuntimeTargets": ["localhost:3210", "workdocs.working.balloo.su"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "nodes-switcher-working": {
+      "dependsOnNodes": ["kpdegen-working", "projectgeneralsettings-working"],
+      "dependsOnModules": ["orchestration-core"],
+      "dependsOnSettingsScopes": ["version-registry", "rollout-control"],
+      "dependsOnRuntimeTargets": ["localhost:3211"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "kpdegen-working": {
+      "dependsOnNodes": ["workdocs-working", "nodes-switcher-working"],
+      "dependsOnModules": ["codegen-core"],
+      "dependsOnSettingsScopes": ["codegen-settings"],
+      "dependsOnRuntimeTargets": ["localhost:4200"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "projectgeneralsettings-working": {
+      "dependsOnNodes": ["nodes-switcher-working", "admin-working"],
+      "dependsOnModules": ["settings-core"],
+      "dependsOnSettingsScopes": ["project-global", "branch-level", "node-level", "feature-level"],
+      "dependsOnRuntimeTargets": ["localhost:3212"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "database-working": {
+      "dependsOnNodes": ["api-working", "workers-working"],
+      "dependsOnModules": ["database-core"],
+      "dependsOnSettingsScopes": ["database-settings"],
+      "dependsOnRuntimeTargets": ["localhost:5432"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": true,
+      "dependencyType": "hard"
+    },
+    "balloo-production-root": {
+      "dependsOnNodes": ["api-production", "docs-production"],
+      "dependsOnModules": ["core-types", "messenger"],
+      "dependsOnSettingsScopes": ["project-global", "node-level"],
+      "dependsOnRuntimeTargets": ["balloo.su"],
+      "dependsOnAuthLayer": false,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "api-production": {
+      "dependsOnNodes": ["balloo-production-root"],
+      "dependsOnModules": ["core-types", "api-gateway"],
+      "dependsOnSettingsScopes": ["node-level", "feature-level"],
+      "dependsOnRuntimeTargets": ["api.balloo.su"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "ai-api-production": {
+      "dependsOnNodes": ["api-production"],
+      "dependsOnModules": ["ai-core"],
+      "dependsOnSettingsScopes": ["node-level", "feature-level"],
+      "dependsOnRuntimeTargets": ["ai.api.balloo.su"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "planned",
+      "versionScoped": "4.*"
+    },
+    "files-production": {
+      "dependsOnNodes": ["balloo-production-root"],
+      "dependsOnModules": ["storage-core"],
+      "dependsOnSettingsScopes": ["node-level", "storage-strategy"],
+      "dependsOnRuntimeTargets": ["files.balloo.su"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": true,
+      "dependencyType": "hard"
+    },
+    "docs-production": {
+      "dependsOnNodes": ["balloo-production-root"],
+      "dependsOnModules": ["docs-core"],
+      "dependsOnSettingsScopes": ["node-level"],
+      "dependsOnRuntimeTargets": ["docs.balloo.su"],
+      "dependsOnAuthLayer": false,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "admin-production": {
+      "dependsOnNodes": ["balloo-production-root", "workers-production"],
+      "dependsOnModules": ["admin-core"],
+      "dependsOnSettingsScopes": ["node-level", "admin-settings"],
+      "dependsOnRuntimeTargets": ["admin.balloo.su"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "workers-production": {
+      "dependsOnNodes": ["admin-production"],
+      "dependsOnModules": ["workers-core"],
+      "dependsOnSettingsScopes": ["node-level"],
+      "dependsOnRuntimeTargets": ["workers.balloo.su"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "api-working": {
+      "dependsOnNodes": ["working-root", "database-working"],
+      "dependsOnModules": ["core-types", "api-gateway"],
+      "dependsOnSettingsScopes": ["node-level", "feature-level"],
+      "dependsOnRuntimeTargets": ["localhost:4100", "api.working.balloo.su"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    },
+    "workers-working": {
+      "dependsOnNodes": ["admin-working", "database-working"],
+      "dependsOnModules": ["workers-core"],
+      "dependsOnSettingsScopes": ["node-level"],
+      "dependsOnRuntimeTargets": ["localhost:4102"],
+      "dependsOnAuthLayer": true,
+      "dependsOnStorageLayer": false,
+      "dependencyType": "hard"
+    }
+  },
+  "criticalDependencies": [
+    {
+      "node": "database-working",
+      "dependentNodes": ["api-working", "workers-working"],
+      "type": "hard",
+      "note": "Database is critical for working API and workers"
+    },
+    {
+      "node": "kpdegen-working",
+      "dependentNodes": ["workdocs-working", "nodes-switcher-working"],
+      "type": "hard",
+      "note": "Codegen is critical for docs and orchestration"
+    },
+    {
+      "node": "nodes-switcher-working",
+      "dependentNodes": ["projectgeneralsettings-working"],
+      "type": "hard",
+      "note": "Version registry is critical for settings management"
+    }
+  ]
+}

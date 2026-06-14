@@ -1,0 +1,160 @@
+{
+  "$schema": "../schemas/access-policy-manifest.schema.json",
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Access policy manifest - main entry point for access control configuration",
+  "policy": {
+    "name": "Balloo Access Policy",
+    "version": "1.0.0",
+    "status": "active",
+    "authority": "creator-superadmin",
+    "managementNode": "projectgeneralsettings.working.balloo.su"
+  },
+  "creatorSuperadmin": {
+    "name": "Оберюхтин Иван Анатольевич",
+    "email": "o8eryuhtin@yandex.ru",
+    "role": "creator-superadmin",
+    "authorityLevel": "L10",
+    "immutable": true
+  },
+  "references": {
+    "policyDocument": "SUMMARY_DOCS/access/ACCESS_POLICY.md",
+    "roleModel": "SUMMARY_DOCS/access/ACCESS_ROLE_MODEL.md",
+    "scopeModel": "SUMMARY_DOCS/access/ACCESS_SCOPE_MODEL.md",
+    "delegationModel": "SUMMARY_DOCS/access/ACCESS_DELEGATION_MODEL.md",
+    "environmentPolicy": "SUMMARY_DOCS/access/ACCESS_ENVIRONMENT_POLICY.md",
+    "rolesState": "SUMMARY_DOCS/state/access-roles.json",
+    "scopesState": "SUMMARY_DOCS/state/access-scopes.json",
+    "nodeMapState": "SUMMARY_DOCS/state/access-node-map.json",
+    "environmentMapState": "SUMMARY_DOCS/state/access-environment-map.json",
+    "delegationMapState": "SUMMARY_DOCS/state/access-delegation-map.json",
+    "userClassesState": "SUMMARY_DOCS/state/access-user-classes.json",
+    "legacyAliasesState": "SUMMARY_DOCS/state/access-legacy-aliases.json"
+  },
+  "contracts": {
+    "policyContract": "SUMMARY_DOCS/contracts/access/AccessPolicyContract.md",
+    "roleContract": "SUMMARY_DOCS/contracts/access/AccessRoleContract.md",
+    "scopeContract": "SUMMARY_DOCS/contracts/access/AccessScopeContract.md",
+    "delegationContract": "SUMMARY_DOCS/contracts/access/AccessDelegationContract.md",
+    "nodeBindingContract": "SUMMARY_DOCS/contracts/access/AccessNodeBindingContract.md",
+    "codegenContract": "SUMMARY_DOCS/contracts/access/AccessCodegenContract.md",
+    "privilegedNodeContract": "SUMMARY_DOCS/contracts/access/PrivilegedNodeAccessContract.md"
+  },
+  "matrices": {
+    "accessMatrix": "SUMMARY_DOCS/access/ACCESS_MATRIX.md",
+    "nodeAccessMatrix": "SUMMARY_DOCS/access/NODE_ACCESS_MATRIX.md",
+    "roleNodeMatrix": "SUMMARY_DOCS/access/ROLE_NODE_MATRIX.md",
+    "environmentAccessMatrix": "SUMMARY_DOCS/access/ENVIRONMENT_ACCESS_MATRIX.md",
+    "privilegedActionsMatrix": "SUMMARY_DOCS/access/PRIVILEGED_ACTIONS_MATRIX.md"
+  },
+  "playbooks": {
+    "accessGrant": "SUMMARY_DOCS/playbooks/access-grant-playbook.md",
+    "accessRevoke": "SUMMARY_DOCS/playbooks/access-revoke-playbook.md",
+    "privilegedNodeAccess": "SUMMARY_DOCS/playbooks/privileged-node-access-playbook.md",
+    "accessAudit": "SUMMARY_DOCS/playbooks/access-audit-playbook.md",
+    "breakGlassAccess": "SUMMARY_DOCS/playbooks/break-glass-access-playbook.md",
+    "accessCodegen": "SUMMARY_DOCS/playbooks/access-codegen-playbook.md"
+  },
+  "schemas": {
+    "accessPolicy": "SUMMARY_DOCS/schemas/access-policy.schema.json",
+    "accessRole": "SUMMARY_DOCS/schemas/access-role.schema.json",
+    "accessNodeBinding": "SUMMARY_DOCS/schemas/access-node-binding.schema.json",
+    "accessDelegation": "SUMMARY_DOCS/schemas/access-delegation.schema.json"
+  },
+  "invariants": [
+    "least-privilege",
+    "creator-superadmin-authority",
+    "centralized-management",
+    "no-implicit-admin",
+    "environment-separation",
+    "audit-trail",
+    "deny-by-default"
+  ],
+  "nodeGroups": {
+    "A": {
+      "name": "Privileged Technical Nodes",
+      "access": "creator-superadmin + explicit delegated",
+      "nodes": [
+        "projectgeneralsettings.working.balloo.su",
+        "kodegen.working.balloo.su",
+        "pilot-future.working.balloo.su",
+        "nodes-switcher.working.balloo.su"
+      ]
+    },
+    "B": {
+      "name": "Company Internal Nodes",
+      "access": "company-staff",
+      "nodes": [
+        "workdocs.working.balloo.su",
+        "admin.balloo.su"
+      ]
+    },
+    "C": {
+      "name": "Alpha Access Nodes",
+      "access": "alpha-volunteer + alpha-staff",
+      "nodes": [
+        "alpha.balloo.su",
+        "apps.alpha.balloo.su",
+        "2commands.alpha.balloo.su"
+      ]
+    },
+    "D": {
+      "name": "Sandbox / Pre-Prod Nodes",
+      "access": "sandbox-operator",
+      "nodes": [
+        "working.balloo.su",
+        "api.working.balloo.su",
+        "files.working.balloo.su",
+        "docs.working.balloo.su",
+        "future.working.balloo.su",
+        "admin.working.balloo.su",
+        "workers.working.balloo.su",
+        "abaut.working.balloo.su",
+        "apps.working.balloo.su"
+      ]
+    },
+    "E": {
+      "name": "Production Public Nodes",
+      "access": "public-user",
+      "nodes": [
+        "balloo.su",
+        "messenger.balloo.su"
+      ]
+    }
+  },
+  "roles": [
+    { "id": "creator-superadmin", "level": 10 },
+    { "id": "delegated-node-admin", "level": 8 },
+    { "id": "company-staff", "level": 6 },
+    { "id": "alpha-staff", "level": 5 },
+    { "id": "alpha-volunteer", "level": 4 },
+    { "id": "sandbox-operator", "level": 3 },
+    { "id": "public-user", "level": 1 }
+  ],
+  "environments": [
+    { "id": "production", "riskLevel": "critical" },
+    { "id": "alpha", "riskLevel": "medium" },
+    { "id": "working", "riskLevel": "medium" }
+  ],
+  "legacyAliases": {
+    "kpdegen.working.balloo.su": {
+      "canonical": "kodegen.working.balloo.su",
+      "status": "deprecated-alias",
+      "usage": "docs-migration-only"
+    }
+  },
+  "codegenInstructions": {
+    "document": "SUMMARY_DOCS/access/ACCESS_CODEGEN_INSTRUCTIONS.md",
+    "playbook": "SUMMARY_DOCS/playbooks/access-codegen-playbook.md"
+  },
+  "metadata": {
+    "totalRoles": 7,
+    "totalNodeGroups": 5,
+    "totalEnvironments": 3,
+    "totalNodes": 20,
+    "privilegedNodes": 4,
+    "legacyAliases": 1,
+    "lastUpdated": "2026-06-13"
+  }
+}

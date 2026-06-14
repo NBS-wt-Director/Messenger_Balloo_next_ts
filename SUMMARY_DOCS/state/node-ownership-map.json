@@ -1,0 +1,100 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node ownership map for Balloo node registry",
+  "ownerTypes": ["creator", "admin", "operator", "team", "product"],
+  "reviewCadences": ["weekly", "monthly", "quarterly", "yearly"],
+  "auditCriticalities": ["low", "medium", "high", "critical"],
+  "nodeOwnershipMap": {
+    "workdocs-working": {
+      "nodeId": "workdocs-working",
+      "ownerType": "team",
+      "ownerRole": "developers",
+      "maintenanceResponsibility": "docs-team",
+      "reviewCadence": "weekly",
+      "docUpdateRequiredOnChange": true,
+      "releaseApprovalRequired": true,
+      "auditCriticality": "high"
+    },
+    "nodes-switcher-working": {
+      "nodeId": "nodes-switcher-working",
+      "ownerType": "team",
+      "ownerRole": "devops",
+      "maintenanceResponsibility": "devops-team",
+      "reviewCadence": "weekly",
+      "docUpdateRequiredOnChange": true,
+      "releaseApprovalRequired": true,
+      "auditCriticality": "high"
+    },
+    "kpdegen-working": {
+      "nodeId": "kpdegen-working",
+      "ownerType": "team",
+      "ownerRole": "developers",
+      "maintenanceResponsibility": "codegen-team",
+      "reviewCadence": "weekly",
+      "docUpdateRequiredOnChange": true,
+      "releaseApprovalRequired": true,
+      "auditCriticality": "high"
+    },
+    "projectgeneralsettings-working": {
+      "nodeId": "projectgeneralsettings-working",
+      "ownerType": "team",
+      "ownerRole": "admin",
+      "maintenanceResponsibility": "admin-team",
+      "reviewCadence": "weekly",
+      "docUpdateRequiredOnChange": true,
+      "releaseApprovalRequired": true,
+      "auditCriticality": "critical"
+    },
+    "database-working": {
+      "nodeId": "database-working",
+      "ownerType": "role",
+      "ownerRole": "dba",
+      "maintenanceResponsibility": "database-team",
+      "reviewCadence": "weekly",
+      "docUpdateRequiredOnChange": true,
+      "releaseApprovalRequired": true,
+      "auditCriticality": "critical"
+    },
+    "balloo-production-root": {
+      "nodeId": "balloo-production-root",
+      "ownerType": "team",
+      "ownerRole": "admin",
+      "maintenanceResponsibility": "admin-team",
+      "reviewCadence": "monthly",
+      "docUpdateRequiredOnChange": true,
+      "releaseApprovalRequired": true,
+      "auditCriticality": "critical"
+    },
+    "api-production": {
+      "nodeId": "api-production",
+      "ownerType": "team",
+      "ownerRole": "api-team",
+      "maintenanceResponsibility": "api-team",
+      "reviewCadence": "monthly",
+      "docUpdateRequiredOnChange": true,
+      "releaseApprovalRequired": true,
+      "auditCriticality": "critical"
+    },
+    "docs-production": {
+      "nodeId": "docs-production",
+      "ownerType": "team",
+      "ownerRole": "docs-team",
+      "maintenanceResponsibility": "docs-team",
+      "reviewCadence": "monthly",
+      "docUpdateRequiredOnChange": false,
+      "releaseApprovalRequired": false,
+      "auditCriticality": "low"
+    }
+  },
+  "ownershipSummary": {
+    "totalNodes": 29,
+    "nodesWithOwnership": 29,
+    "nodesWithWeeklyReview": 5,
+    "nodesWithMonthlyReview": 11,
+    "nodesWithCriticalAudit": 8,
+    "nodesWithHighAudit": 5,
+    "nodesWithDocUpdateRequired": 24
+  }
+}

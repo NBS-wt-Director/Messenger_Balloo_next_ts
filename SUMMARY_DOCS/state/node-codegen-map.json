@@ -1,0 +1,338 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node codegen relevance map for Balloo node registry",
+  "codegenClasses": {
+    "class_1_technical_core": {
+      "description": "Technical core nodes (Priority 1)",
+      "characteristics": [
+        "Full codegen support",
+        "Config generation for all environments",
+        "Docs generation required",
+        "Infrastructure as code",
+        "Safety checks mandatory"
+      ]
+    },
+    "class_2_working_nodes": {
+      "description": "Working nodes (Priority 2)",
+      "characteristics": [
+        "Code generation",
+        "Config generation",
+        "Basic docs",
+        "Optional IaC"
+      ]
+    },
+    "class_3_alpha_nodes": {
+      "description": "Alpha nodes (Priority 3)",
+      "characteristics": [
+        "Config generation from working",
+        "Minimal code changes",
+        "Testing-focused docs"
+      ]
+    },
+    "class_4_production_nodes": {
+      "description": "Production nodes (Priority 4)",
+      "characteristics": [
+        "Stable code (no generation unless update)",
+        "Production config generation",
+        "Full docs",
+        "Production IaC"
+      ]
+    }
+  },
+  "nodeCodegenMap": {
+    "workdocs-working": {
+      "codegenClass": "class_1_technical_core",
+      "priority": 1,
+      "requiredInputs": [
+        "NODE_CONTRACT_workdocs_working.md",
+        "NODE_SUMMARY_workdocs_working.md",
+        "NODE_SETTINGS_MODEL.md",
+        "NODE_RUNTIME_MODEL.md"
+      ],
+      "outputTargets": [
+        "src/nodes/workdocs-working/",
+        "config/nodes/workdocs-working.*.json",
+        "docs/nodes/workdocs-working-*.md",
+        "infra/nodes/workdocs-working.*"
+      ],
+      "riskLevel": "low",
+      "technical": true
+    },
+    "nodes-switcher-working": {
+      "codegenClass": "class_1_technical_core",
+      "priority": 1,
+      "requiredInputs": [
+        "NODE_CONTRACT_nodes_switcher_working.md",
+        "NODE_SUMMARY_nodes_switcher_working.md",
+        "NODE_SETTINGS_MODEL.md",
+        "NODE_RUNTIME_MODEL.md",
+        "NODE_RELEASE_CONTRACT.md"
+      ],
+      "outputTargets": [
+        "src/nodes/nodes-switcher-working/",
+        "config/nodes/nodes-switcher-working.*.json",
+        "docs/nodes/nodes-switcher-working-*.md",
+        "infra/nodes/nodes-switcher-working.*"
+      ],
+      "riskLevel": "medium",
+      "technical": true
+    },
+    "kpdegen-working": {
+      "codegenClass": "class_1_technical_core",
+      "priority": 1,
+      "requiredInputs": [
+        "NODE_CONTRACT_kpdegen_working.md",
+        "NODE_SUMMARY_kpdegen_working.md",
+        "NODE_CODEGEN_MODEL.md",
+        "NODE_SETTINGS_MODEL.md"
+      ],
+      "outputTargets": [
+        "src/nodes/kpdegen-working/",
+        "config/nodes/kpdegen-working.*.json",
+        "docs/nodes/kpdegen-working-*.md",
+        "infra/nodes/kpdegen-working.*"
+      ],
+      "riskLevel": "high",
+      "technical": true,
+      "note": "This IS the codegen system"
+    },
+    "projectgeneralsettings-working": {
+      "codegenClass": "class_1_technical_core",
+      "priority": 1,
+      "requiredInputs": [
+        "NODE_CONTRACT_projectgeneralsettings_working.md",
+        "NODE_SUMMARY_projectgeneralsettings_working.md",
+        "NODE_SETTINGS_MODEL.md",
+        "NODE_SETTINGS_CONTRACT.md"
+      ],
+      "outputTargets": [
+        "src/nodes/projectgeneralsettings-working/",
+        "config/nodes/projectgeneralsettings-working.*.json",
+        "docs/nodes/projectgeneralsettings-working-*.md",
+        "infra/nodes/projectgeneralsettings-working.*"
+      ],
+      "riskLevel": "high",
+      "technical": true
+    },
+    "database-working": {
+      "codegenClass": "class_1_technical_core",
+      "priority": 1,
+      "requiredInputs": [
+        "NODE_CONTRACT_database_working.md",
+        "NODE_SUMMARY_database_working.md",
+        "NODE_SETTINGS_MODEL.md"
+      ],
+      "outputTargets": [
+        "src/nodes/database-working/",
+        "config/nodes/database-working.*.json",
+        "docs/nodes/database-working-*.md",
+        "infra/nodes/database-working.*",
+        "migrations/"
+      ],
+      "riskLevel": "high",
+      "technical": true
+    },
+    "api-working": {
+      "codegenClass": "class_2_working_nodes",
+      "priority": 2,
+      "requiredInputs": [
+        "NODE_CONTRACT_api_working.md",
+        "NODE_SUMMARY_api_working.md",
+        "NODE_RUNTIME_MODEL.md"
+      ],
+      "outputTargets": [
+        "src/nodes/api-working/",
+        "config/nodes/api-working.*.json"
+      ],
+      "riskLevel": "medium",
+      "technical": false
+    },
+    "files-working": {
+      "codegenClass": "class_2_working_nodes",
+      "priority": 2,
+      "requiredInputs": [
+        "NODE_CONTRACT_files_working.md",
+        "NODE_SUMMARY_files_working.md",
+        "NODE_SETTINGS_MODEL.md"
+      ],
+      "outputTargets": [
+        "src/nodes/files-working/",
+        "config/nodes/files-working.*.json"
+      ],
+      "riskLevel": "medium",
+      "technical": false
+    },
+    "docs-working": {
+      "codegenClass": "class_2_working_nodes",
+      "priority": 2,
+      "requiredInputs": [
+        "NODE_CONTRACT_docs_working.md",
+        "NODE_SUMMARY_docs_working.md"
+      ],
+      "outputTargets": [
+        "src/nodes/docs-working/",
+        "config/nodes/docs-working.*.json"
+      ],
+      "riskLevel": "low",
+      "technical": false
+    },
+    "admin-working": {
+      "codegenClass": "class_2_working_nodes",
+      "priority": 2,
+      "requiredInputs": [
+        "NODE_CONTRACT_admin_working.md",
+        "NODE_SUMMARY_admin_working.md"
+      ],
+      "outputTargets": [
+        "src/nodes/admin-working/",
+        "config/nodes/admin-working.*.json"
+      ],
+      "riskLevel": "medium",
+      "technical": true
+    },
+    "workers-working": {
+      "codegenClass": "class_2_working_nodes",
+      "priority": 2,
+      "requiredInputs": [
+        "NODE_CONTRACT_workers_working.md",
+        "NODE_SUMMARY_workers_working.md"
+      ],
+      "outputTargets": [
+        "src/nodes/workers-working/",
+        "config/nodes/workers-working.*.json"
+      ],
+      "riskLevel": "medium",
+      "technical": true
+    },
+    "apps-working": {
+      "codegenClass": "class_2_working_nodes",
+      "priority": 2,
+      "requiredInputs": [
+        "NODE_CONTRACT_apps_working.md",
+        "NODE_SUMMARY_apps_working.md"
+      ],
+      "outputTargets": [
+        "src/nodes/apps-working/",
+        "config/nodes/apps-working.*.json"
+      ],
+      "riskLevel": "low",
+      "technical": false
+    },
+    "alpha-root": {
+      "codegenClass": "class_3_alpha_nodes",
+      "priority": 3,
+      "requiredInputs": [
+        "NODE_CONTRACT_alpha_root.md",
+        "NODE_SUMMARY_alpha_root.md"
+      ],
+      "outputTargets": [
+        "config/nodes/alpha-root.*.json"
+      ],
+      "riskLevel": "low",
+      "technical": false
+    },
+    "apps-alpha": {
+      "codegenClass": "class_3_alpha_nodes",
+      "priority": 3,
+      "requiredInputs": [
+        "NODE_CONTRACT_apps_alpha.md",
+        "NODE_SUMMARY_apps_alpha.md"
+      ],
+      "outputTargets": [
+        "config/nodes/apps-alpha.*.json"
+      ],
+      "riskLevel": "low",
+      "technical": false
+    },
+    "2commands-alpha": {
+      "codegenClass": "class_3_alpha_nodes",
+      "priority": 3,
+      "requiredInputs": [
+        "NODE_CONTRACT_2commands_alpha.md",
+        "NODE_SUMMARY_2commands_alpha.md"
+      ],
+      "outputTargets": [
+        "config/nodes/2commands-alpha.*.json"
+      ],
+      "riskLevel": "low",
+      "technical": false
+    },
+    "balloo-production-root": {
+      "codegenClass": "class_4_production_nodes",
+      "priority": 4,
+      "requiredInputs": [
+        "NODE_CONTRACT_balloo_production.md",
+        "NODE_SUMMARY_balloo_production.md"
+      ],
+      "outputTargets": [
+        "config/nodes/balloo-production.prod.json",
+        "docs/nodes/balloo-production-*.md",
+        "infra/nodes/balloo-production.*"
+      ],
+      "riskLevel": "high",
+      "technical": false
+    },
+    "api-production": {
+      "codegenClass": "class_4_production_nodes",
+      "priority": 4,
+      "requiredInputs": [
+        "NODE_CONTRACT_api_production.md",
+        "NODE_SUMMARY_api_production.md"
+      ],
+      "outputTargets": [
+        "config/nodes/api-production.prod.json",
+        "infra/nodes/api-production.*"
+      ],
+      "riskLevel": "high",
+      "technical": false
+    },
+    "files-production": {
+      "codegenClass": "class_4_production_nodes",
+      "priority": 4,
+      "requiredInputs": [
+        "NODE_CONTRACT_files_production.md",
+        "NODE_SUMMARY_files_production.md"
+      ],
+      "outputTargets": [
+        "config/nodes/files-production.prod.json",
+        "infra/nodes/files-production.*"
+      ],
+      "riskLevel": "medium",
+      "technical": false
+    }
+  },
+  "safetyChecks": {
+    "preGeneration": [
+      "validate_node_id_unique",
+      "validate_branch_exists",
+      "validate_domain_available",
+      "validate_port_available",
+      "validate_dependencies_exist",
+      "check_conflicts"
+    ],
+    "postGeneration": [
+      "validate_generated_code_syntax",
+      "validate_config_json",
+      "validate_docs_links",
+      "run_linter",
+      "run_type_check",
+      "run_tests"
+    ],
+    "deployment": [
+      "validate_environment_match",
+      "validate_secrets_present",
+      "validate_routing_config",
+      "health_check_ready",
+      "rollback_plan_exists"
+    ]
+  },
+  "scopeRestrictions": {
+    "canCreate": true,
+    "canUpdate": true,
+    "canDelete": false,
+    "canDeployProduction": false,
+    "requiresApprovalFor": ["production_deploy", "breaking_changes"]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Client platform map for Balloo client-apps family",
+  "familyId": "client-apps-family",
+  "familyType": "family",
+  "branch": "production",
+  "domain": null,
+  "publicFacing": true,
+  "platforms": [
+    {
+      "platformId": "android",
+      "type": "mobile",
+      "deliverySurface": "Google Play Store",
+      "releaseStageCompatibility": ["production", "alpha", "working"],
+      "downloadSurfaceMapping": "apps.balloo.su",
+      "relationToAppsNodes": ["apps-production", "apps-working"],
+      "status": "active"
+    },
+    {
+      "platformId": "ios",
+      "type": "mobile",
+      "deliverySurface": "Apple App Store",
+      "releaseStageCompatibility": ["production", "alpha", "working"],
+      "downloadSurfaceMapping": "apps.balloo.su",
+      "relationToAppsNodes": ["apps-production", "apps-working"],
+      "status": "active"
+    },
+    {
+      "platformId": "windows",
+      "type": "desktop",
+      "deliverySurface": "Direct Download",
+      "releaseStageCompatibility": ["production", "alpha", "working"],
+      "downloadSurfaceMapping": "apps.balloo.su",
+      "relationToAppsNodes": ["apps-production", "apps-working"],
+      "status": "active"
+    },
+    {
+      "platformId": "linux",
+      "type": "desktop",
+      "deliverySurface": "Download / Package Manager",
+      "releaseStageCompatibility": ["production", "alpha", "working"],
+      "downloadSurfaceMapping": "apps.balloo.su",
+      "relationToAppsNodes": ["apps-production", "apps-working"],
+      "status": "active"
+    },
+    {
+      "platformId": "macos",
+      "type": "desktop",
+      "deliverySurface": "Download / App Store",
+      "releaseStageCompatibility": ["production", "alpha", "working"],
+      "downloadSurfaceMapping": "apps.balloo.su",
+      "relationToAppsNodes": ["apps-production", "apps-working"],
+      "status": "active"
+    }
+  ],
+  "relations": {
+    "appsProduction": {
+      "nodeId": "apps-production",
+      "domain": "apps.balloo.su",
+      "relation": "download_portal",
+      "provides": "download_links_for_all_platforms"
+    },
+    "appsWorking": {
+      "nodeId": "apps-working",
+      "domain": "apps.working.balloo.su",
+      "relation": "working_download_portal",
+      "provides": "working_builds_links"
+    }
+  },
+  "invariants": {
+    "noSeparateDomain": "client-apps family has no separate domain",
+    "platformCount": 5,
+    "appsPortalIsDownloadSurface": "apps.balloo.su is download portal for all platforms",
+    "productionReleaseStage": "all platforms are production-ready",
+    "workingBuildsAvailable": "working builds available via apps.working.balloo.su"
+  }
+}

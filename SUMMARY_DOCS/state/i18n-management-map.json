@@ -1,0 +1,171 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Management mapping for i18n languages in Balloo platform",
+  "sources": {
+    "primary": "SUMMARY_DOCS/i18n/I18N_MANAGEMENT_MODEL.md",
+    "contract": "SUMMARY_DOCS/contracts/i18n/I18nLanguageManagementContract.md"
+  },
+  "roles": {
+    "admin": {
+      "description": "Full access to language management",
+      "members": ["cto", "tech-lead"],
+      "permissions": [
+        "language.add",
+        "language.update",
+        "language.delete",
+        "language.enable",
+        "language.disable",
+        "language.priority.change",
+        "translation.update",
+        "translation.approve",
+        "audit.view"
+      ]
+    },
+    "i18n-team": {
+      "description": "Internationalization team",
+      "members": ["i18n-lead", "i18n-dev"],
+      "permissions": [
+        "language.add",
+        "language.update",
+        "language.enable",
+        "language.disable",
+        "translation.update",
+        "translation.approve",
+        "audit.view"
+      ]
+    },
+    "translator": {
+      "description": "Professional translators",
+      "members": ["translator-ru", "translator-en", "translator-tt"],
+      "permissions": [
+        "translation.update",
+        "translation.submit"
+      ]
+    },
+    "reviewer": {
+      "description": "Native speaker reviewers",
+      "members": ["reviewer-hi", "reviewer-zh", "reviewer-tt"],
+      "permissions": [
+        "translation.review",
+        "translation.approve",
+        "translation.reject"
+      ]
+    },
+    "user": {
+      "description": "End users",
+      "members": ["all"],
+      "permissions": [
+        "language.select",
+        "language.view"
+      ]
+    }
+  },
+  "permissionMatrix": {
+    "language.add": ["admin", "i18n-team"],
+    "language.update": ["admin", "i18n-team"],
+    "language.delete": ["admin"],
+    "language.enable": ["admin", "i18n-team"],
+    "language.disable": ["admin", "i18n-team"],
+    "language.priority.change": ["admin"],
+    "translation.update": ["admin", "i18n-team", "translator"],
+    "translation.submit": ["translator", "i18n-team"],
+    "translation.review": ["reviewer", "i18n-team", "admin"],
+    "translation.approve": ["reviewer", "i18n-team", "admin"],
+    "translation.reject": ["reviewer", "i18n-team", "admin"],
+    "audit.view": ["admin", "i18n-team"],
+    "language.select": ["user"],
+    "language.view": ["user"]
+  },
+  "processes": {
+    "addLanguage": {
+      "steps": [
+        { "step": 1, "action": "create-metadata", "actor": "i18n-team" },
+        { "step": 2, "action": "prepare-translations", "actor": "translator" },
+        { "step": 3, "action": "validate-coverage", "actor": "automated" },
+        { "step": 4, "action": "review-translations", "actor": "reviewer" },
+        { "step": 5, "action": "approve-activation", "actor": "admin" },
+        { "step": 6, "action": "activate-language", "actor": "i18n-team" },
+        { "step": 7, "action": "deploy", "actor": "devops" }
+      ],
+      "estimatedDuration": "7-12 days"
+    },
+    "updateTranslations": {
+      "steps": [
+        { "step": 1, "action": "edit-translations", "actor": "translator" },
+        { "step": 2, "action": "validate-changes", "actor": "automated" },
+        { "step": 3, "action": "review-changes", "actor": "reviewer" },
+        { "step": 4, "action": "approve", "actor": "i18n-team" },
+        { "step": 5, "action": "deploy", "actor": "automated" }
+      ],
+      "estimatedDuration": "1-3 days"
+    },
+    "enableDisableLanguage": {
+      "steps": [
+        { "step": 1, "action": "request-change", "actor": "i18n-team" },
+        { "step": 2, "action": "validate-impact", "actor": "automated" },
+        { "step": 3, "action": "approve", "actor": "admin" },
+        { "step": 4, "action": "update-state", "actor": "i18n-team" },
+        { "step": 5, "action": "deploy", "actor": "automated" }
+      ],
+      "estimatedDuration": "1-2 days"
+    }
+  },
+  "validationRules": {
+    "languageAddition": {
+      "required": [
+        "hasValidId",
+        "hasCanonicalName",
+        "hasNativeName",
+        "hasTranslationFile",
+        "coverageAboveThreshold"
+      ],
+      "thresholds": {
+        "minCoverage": 80,
+        "maxMissingStrings": 50
+      }
+    },
+    "translationUpdate": {
+      "required": [
+        "allKeysPresent",
+        "noExtraKeys",
+        "noEmptyValues",
+        "noHtmlInjection",
+        "variablesMatch"
+      ]
+    }
+  },
+  "auditConfig": {
+    "enabled": true,
+    "retention": "90 days",
+    "storage": "database",
+    "events": [
+      "language.add",
+      "language.update",
+      "language.enable",
+      "language.disable",
+      "translation.update",
+      "translation.approve",
+      "translation.reject"
+    ]
+  },
+  "technicalZoneCapabilities": {
+    "canViewLanguages": true,
+    "canViewCoverage": true,
+    "canAddLanguages": true,
+    "canEnableDisable": true,
+    "canUpdatePriority": true,
+    "canUploadTranslations": true,
+    "canValidateTranslations": true,
+    "canViewAuditLog": true,
+    "canExportReports": true
+  },
+  "summary": {
+    "totalRoles": 5,
+    "totalPermissions": 15,
+    "totalProcesses": 3,
+    "auditEnabled": true,
+    "technicalZoneManaged": true
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Device and browser context mappings for Balloo cross-entry",
+  "deviceContextTypes": [
+    {
+      "deviceContextType": "standard",
+      "trustStates": ["trusted", "untrusted", "revoked"],
+      "fingerprintFactors": [
+        "screenResolution",
+        "platform",
+        "hardwareConcurrency",
+        "deviceMemory",
+        "timezone",
+        "language"
+      ],
+      "lifetime": "1 year",
+      "crossEntryEnabled": true,
+      "notes": "Standard device context for common users"
+    },
+    {
+      "deviceContextType": "privileged",
+      "trustStates": ["trusted", "revoked"],
+      "fingerprintFactors": [
+        "screenResolution",
+        "platform",
+        "hardwareConcurrency",
+        "deviceMemory",
+        "timezone",
+        "language",
+        "ipAddress",
+        "macAddress"
+      ],
+      "lifetime": "6 months",
+      "crossEntryEnabled": false,
+      "notes": "Privileged device context with enhanced fingerprinting"
+    }
+  ],
+  "browserContextTypes": [
+    {
+      "browserContextType": "standard",
+      "fingerprintFactors": [
+        "userAgent",
+        "languages",
+        "platform",
+        "plugins",
+        "timezone",
+        "webdriver"
+      ],
+      "trustCarrier": {
+        "cookieToken": true,
+        "fingerprintHash": true
+      },
+      "lifetime": "30 days",
+      "crossEntryEnabled": true
+    }
+  ],
+  "trustTransitions": [
+    { "from": "untrusted", "to": "trusted", "trigger": "successful-auth" },
+    { "from": "trusted", "to": "revoked", "trigger": "security-incident" },
+    { "from": "untrusted", "to": "revoked", "trigger": "failed-auth-attempts" }
+  ],
+  "cookieStrategy": {
+    "domain": ".balloo.su",
+    "cookies": [
+      { "name": "balloo_device", "lifetime": "1 year", "purpose": "Device context ID" },
+      { "name": "balloo_browser", "lifetime": "30 days", "purpose": "Browser context ID" },
+      { "name": "balloo_session", "lifetime": "30 days", "purpose": "Session token" }
+    ],
+    "secure": true,
+    "httpOnly": true,
+    "sameSite": "lax"
+  },
+  "creatorSuperadminIsolation": {
+    "isolatedSessions": true,
+    "separateDeviceContext": true,
+    "crossEntryBypass": true,
+    "enhancedFingerprinting": true
+  },
+  "metadata": {
+    "totalDeviceContextTypes": 2,
+    "totalBrowserContextTypes": 1,
+    "standardDeviceLifetime": "1 year",
+    "privilegedDeviceLifetime": "6 months",
+    "browserLifetime": "30 days"
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "$schema": "../schemas/access-user-class.schema.json",
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "User class definitions for Balloo access control",
+  "userClasses": [
+    {
+      "classId": "creator",
+      "displayName": "Creator",
+      "description": "Канонический создатель платформы",
+      "canonicalUser": {
+        "name": "Оберюхтин Иван Анатольевич",
+        "email": "o8eryuhtin@yandex.ru"
+      },
+      "assignedRole": "creator-superadmin",
+      "immutable": true,
+      "revocable": false,
+      "notes": "Single canonical creator. Cannot be changed or revoked."
+    },
+    {
+      "classId": "internal-staff",
+      "displayName": "Internal Staff",
+      "description": "Сотрудники компании NBS-wt",
+      "canonicalUser": null,
+      "assignedRole": "company-staff",
+      "immutable": false,
+      "revocable": true,
+      "organization": "NBS-wt",
+      "verificationRequired": true,
+      "verificationMethod": "employment_verification",
+      "notes": "Company employees with internal access."
+    },
+    {
+      "classId": "alpha-curator",
+      "displayName": "Alpha Curator",
+      "description": "Кураторы alpha-зоны",
+      "canonicalUser": null,
+      "assignedRole": "alpha-staff",
+      "immutable": false,
+      "revocable": true,
+      "organization": "NBS-wt",
+      "verificationRequired": true,
+      "verificationMethod": "appointment",
+      "notes": "Alpha zone curators and coordinators."
+    },
+    {
+      "classId": "alpha-volunteer",
+      "displayName": "Alpha Volunteer",
+      "description": "Волонтёры alpha-тестирования",
+      "canonicalUser": null,
+      "assignedRole": "alpha-volunteer",
+      "immutable": false,
+      "revocable": true,
+      "organization": null,
+      "verificationRequired": true,
+      "verificationMethod": "volunteer_agreement",
+      "notes": "Alpha testing volunteers."
+    },
+    {
+      "classId": "sandbox-user",
+      "displayName": "Sandbox User",
+      "description": "Пользователи sandbox среды",
+      "canonicalUser": null,
+      "assignedRole": "sandbox-operator",
+      "immutable": false,
+      "revocable": true,
+      "organization": null,
+      "verificationRequired": true,
+      "verificationMethod": "sandbox_agreement",
+      "notes": "Sandbox/pre-prod environment users."
+    },
+    {
+      "classId": "public-user",
+      "displayName": "Public User",
+      "description": "Публичные пользователи production",
+      "canonicalUser": null,
+      "assignedRole": "public-user",
+      "immutable": false,
+      "revocable": true,
+      "organization": null,
+      "verificationRequired": false,
+      "verificationMethod": null,
+      "notes": "Public production users. Minimal verification required."
+    },
+    {
+      "classId": "delegated-admin",
+      "displayName": "Delegated Admin",
+      "description": "Делегированные администраторы узлов",
+      "canonicalUser": null,
+      "assignedRole": "delegated-node-admin",
+      "immutable": false,
+      "revocable": true,
+      "organization": null,
+      "verificationRequired": true,
+      "verificationMethod": "creator-superadmin-delegation",
+      "notes": "Per-node delegated administrators. Appointed by creator-superadmin."
+    }
+  ],
+  "classHierarchy": {
+    "creator": {
+      "parent": null,
+      "children": ["delegated-admin", "internal-staff"]
+    },
+    "delegated-admin": {
+      "parent": "creator",
+      "children": []
+    },
+    "internal-staff": {
+      "parent": "creator",
+      "children": ["alpha-curator"]
+    },
+    "alpha-curator": {
+      "parent": "internal-staff",
+      "children": ["alpha-volunteer"]
+    },
+    "alpha-volunteer": {
+      "parent": "alpha-curator",
+      "children": []
+    },
+    "sandbox-user": {
+      "parent": null,
+      "children": []
+    },
+    "public-user": {
+      "parent": null,
+      "children": []
+    }
+  },
+  "verificationMethods": {
+    "employment_verification": {
+      "description": "HR system verification",
+      "validityPeriod": "indefinite",
+      "renewalRequired": false,
+      "revocationTriggers": ["employment_termination"]
+    },
+    "appointment": {
+      "description": "Formal appointment by authority",
+      "validityPeriod": "indefinite",
+      "renewalRequired": false,
+      "revocationTriggers": ["appointment_revoked"]
+    },
+    "volunteer_agreement": {
+      "description": "Volunteer agreement signed",
+      "validityPeriod": "alpha_program_duration",
+      "renewalRequired": false,
+      "revocationTriggers": ["alpha_program_end", "agreement_violation"]
+    },
+    "sandbox_agreement": {
+      "description": "Sandbox usage agreement signed",
+      "validityPeriod": "1y",
+      "renewalRequired": true,
+      "revocationTriggers": ["agreement_violation", "expiry"]
+    },
+    "creator-superadmin-delegation": {
+      "description": "Delegated by creator-superadmin",
+      "validityPeriod": "until_revoked",
+      "renewalRequired": false,
+      "revocationTriggers": ["creator-superadmin_revocation"]
+    }
+  },
+  "metadata": {
+    "totalUserClasses": 7,
+    "immutableClasses": 1,
+    "revocableClasses": 6,
+    "verificationRequiredClasses": 6,
+    "canonicalCreator": "Оберюхтин Иван Анатольевич",
+    "canonicalCreatorEmail": "o8eryuhtin@yandex.ru",
+    "lastUpdated": "2026-06-13"
+  }
+}

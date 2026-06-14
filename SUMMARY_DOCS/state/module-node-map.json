@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "moduleNodeMap": {
+    "core-types": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "import"
+    },
+    "core-config": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "import"
+    },
+    "core-i18n": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "import"
+    },
+    "core-theme": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "import"
+    },
+    "core-brand": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "import"
+    },
+    "core-ui": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "import"
+    },
+    "core-docs-schema": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "import"
+    },
+    "messenger": {
+      "nodes": ["work_server", "laptop_control"],
+      "presence": "execution"
+    },
+    "admin-portal": {
+      "nodes": ["work_server", "laptop_control"],
+      "presence": "execution"
+    },
+    "desktop": {
+      "nodes": ["laptop_control"],
+      "presence": "execution"
+    },
+    "mobile": {
+      "nodes": ["laptop_control"],
+      "presence": "build"
+    },
+    "android-service": {
+      "nodes": ["work_server"],
+      "presence": "execution"
+    },
+    "node-system": {
+      "nodes": ["laptop_control", "work_server", "home_aio", "home_nas"],
+      "presence": "docs"
+    },
+    "summary-docs": {
+      "nodes": ["laptop_control", "work_server"],
+      "presence": "execution"
+    }
+  }
+}

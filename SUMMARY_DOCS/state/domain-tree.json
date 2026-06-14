@@ -1,0 +1,307 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Domain tree state for Balloo node registry",
+  "domains": {
+    "production": [
+      {
+        "domain": "balloo.su",
+        "nodeId": "balloo-production-root",
+        "type": "root",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:3000",
+        "public": true,
+        "requiredRuntimeMode": "production"
+      },
+      {
+        "domain": "api.balloo.su",
+        "nodeId": "api-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:4000",
+        "public": false,
+        "requiredRuntimeMode": "production"
+      },
+      {
+        "domain": "ai.api.balloo.su",
+        "nodeId": "ai-api-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:4001",
+        "public": false,
+        "requiredRuntimeMode": "production",
+        "versionScoped": "4.*",
+        "status": "planned"
+      },
+      {
+        "domain": "files.balloo.su",
+        "nodeId": "files-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:4002",
+        "public": false,
+        "requiredRuntimeMode": "production"
+      },
+      {
+        "domain": "docs.balloo.su",
+        "nodeId": "docs-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:3001",
+        "public": true,
+        "requiredRuntimeMode": "production"
+      },
+      {
+        "domain": "future.balloo.su",
+        "nodeId": "future-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:3002",
+        "public": true,
+        "requiredRuntimeMode": "production",
+        "status": "planned"
+      },
+      {
+        "domain": "admin.balloo.su",
+        "nodeId": "admin-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:3003",
+        "public": false,
+        "requiredRuntimeMode": "production"
+      },
+      {
+        "domain": "workers.balloo.su",
+        "nodeId": "workers-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:4003",
+        "public": false,
+        "requiredRuntimeMode": "production"
+      },
+      {
+        "domain": "abaut.balloo.su",
+        "nodeId": "abaut-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:3004",
+        "public": true,
+        "requiredRuntimeMode": "production"
+      },
+      {
+        "domain": "apps.balloo.su",
+        "nodeId": "apps-production",
+        "type": "subdomain",
+        "branchOwnership": "production",
+        "localDevEquivalent": "localhost:3005",
+        "public": true,
+        "requiredRuntimeMode": "production"
+      }
+    ],
+    "alpha": [
+      {
+        "domain": "alpha.balloo.su",
+        "nodeId": "alpha-root",
+        "type": "root",
+        "branchOwnership": "alpha",
+        "localDevEquivalent": "localhost:3100",
+        "public": false,
+        "requiredRuntimeMode": "alpha"
+      },
+      {
+        "domain": "apps.alpha.balloo.su",
+        "nodeId": "apps-alpha",
+        "type": "subdomain",
+        "branchOwnership": "alpha",
+        "localDevEquivalent": "localhost:3101",
+        "public": false,
+        "requiredRuntimeMode": "alpha"
+      },
+      {
+        "domain": "2commands.alpha.balloo.su",
+        "nodeId": "2commands-alpha",
+        "type": "subdomain",
+        "branchOwnership": "alpha",
+        "localDevEquivalent": "localhost:3102",
+        "public": false,
+        "requiredRuntimeMode": "alpha"
+      }
+    ],
+    "working": [
+      {
+        "domain": "working.balloo.su",
+        "nodeId": "working-root",
+        "type": "root",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3200",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "api.working.balloo.su",
+        "nodeId": "api-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:4100",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "files.working.balloo.su",
+        "nodeId": "files-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:4101",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "docs.working.balloo.su",
+        "nodeId": "docs-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3201",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "future.working.balloo.su",
+        "nodeId": "future-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3202",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "pilot-future.working.balloo.su",
+        "nodeId": "pilot-future-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3203",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "admin.working.balloo.su",
+        "nodeId": "admin-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3204",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "workers.working.balloo.su",
+        "nodeId": "workers-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:4102",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "abaut.working.balloo.su",
+        "nodeId": "abaut-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3205",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "apps.working.balloo.su",
+        "nodeId": "apps-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3206",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false
+      },
+      {
+        "domain": "workdocs.working.balloo.su",
+        "nodeId": "workdocs-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3210",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false,
+        "priority": 1,
+        "technical": true
+      },
+      {
+        "domain": "nodes-switcher.working.balloo.su",
+        "nodeId": "nodes-switcher-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3211",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false,
+        "priority": 1,
+        "technical": true
+      },
+      {
+        "domain": "kpdegen.working.balloo.su",
+        "nodeId": "kpdegen-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:4200",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false,
+        "priority": 1,
+        "technical": true
+      },
+      {
+        "domain": "projectgeneralsettings.working.balloo.su",
+        "nodeId": "projectgeneralsettings-working",
+        "type": "subdomain",
+        "branchOwnership": "working",
+        "localDevEquivalent": "localhost:3212",
+        "public": false,
+        "requiredRuntimeMode": "working",
+        "domainRequired": false,
+        "priority": 1,
+        "technical": true
+      }
+    ]
+  },
+  "noDomainNodes": [
+    {
+      "nodeId": "client-apps-family",
+      "branch": "production",
+      "type": "family",
+      "platforms": ["android", "ios", "windows", "linux", "macos"],
+      "note": "Client apps family, no separate domain required"
+    },
+    {
+      "nodeId": "database-working",
+      "branch": "working",
+      "type": "technical-runtime",
+      "localDevEquivalent": "localhost:5432",
+      "priority": 1,
+      "technical": true,
+      "note": "Technical runtime node, no public domain"
+    }
+  ],
+  "invariants": [
+    "dev mode MUST NOT require real public domains",
+    "prod mode MUST use canonical assigned production domains",
+    "alpha SHOULD use assigned alpha domains",
+    "working MAY run via localhost, ports, local host aliases",
+    "production identity узла не теряется при local dev"
+  ]
+}

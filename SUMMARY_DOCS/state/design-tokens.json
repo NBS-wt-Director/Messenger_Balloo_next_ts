@@ -1,0 +1,274 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Machine-readable design tokens for Balloo platform — reconstructed from messenger and SUMMARY_DOCS",
+  "sources": {
+    "userEnvironment": "messenger/src/app/globals.css",
+    "brandContract": "SUMMARY_DOCS/BrandContract.md",
+    "themeContract": "SUMMARY_DOCS/ThemeContract.md",
+    "designContract": "SUMMARY_DOCS/DesignContract.md"
+  },
+  "invariants": {
+    "borderRadius": {
+      "value": 0,
+      "unit": "px",
+      "rule": "CRITICAL: border-radius must be 0 everywhere",
+      "forbidden": ["rounded-* classes", "border-radius: 50%", "any value > 0"]
+    },
+    "borderWidth": {
+      "value": 2,
+      "unit": "px",
+      "rule": "Default border width for all UI elements"
+    },
+    "touchTarget": {
+      "value": 44,
+      "unit": "px",
+      "rule": "Minimum touch target size on mobile"
+    }
+  },
+  "themes": {
+    "dark": {
+      "id": "dark",
+      "name": "Dark Theme",
+      "isDefault": true,
+      "tokens": {
+        "background": "#000000",
+        "backgroundPlain": "#000000",
+        "foreground": "#ffffff",
+        "card": "#1c1c1c",
+        "cardSolid": "#1c1c1c",
+        "cardForeground": "#ffffff",
+        "popover": "#1c1c1c",
+        "popoverSolid": "#1c1c1c",
+        "popoverForeground": "#ffffff",
+        "primary": "#3b82f6",
+        "primaryPlain": "#3b82f6",
+        "primaryForeground": "#ffffff",
+        "secondary": "#2c2c2c",
+        "secondarySolid": "#2c2c2c",
+        "secondaryForeground": "#ffffff",
+        "muted": "#2c2c2c",
+        "mutedSolid": "#2c2c2c",
+        "mutedForeground": "#b0b0b0",
+        "accent": "#3b82f6",
+        "accentForeground": "#ffffff",
+        "destructive": "#dc2626",
+        "destructiveForeground": "#ffffff",
+        "border": "#404040",
+        "borderSolid": "#404040",
+        "borderPlain": "#404040",
+        "input": "#2c2c2c",
+        "inputSolid": "#2c2c2c",
+        "ring": "#3b82f6",
+        "scrollbarThumb": "#555555",
+        "scrollbarThumbHover": "#777777"
+      }
+    },
+    "light": {
+      "id": "light",
+      "name": "Light Theme",
+      "isDefault": false,
+      "tokens": {
+        "background": "#ffffff",
+        "backgroundPlain": "#ffffff",
+        "foreground": "#000000",
+        "card": "#f5f5f5",
+        "cardSolid": "#f5f5f5",
+        "cardForeground": "#000000",
+        "popover": "#ffffff",
+        "popoverSolid": "#ffffff",
+        "popoverForeground": "#000000",
+        "primary": "#2563eb",
+        "primaryPlain": "#2563eb",
+        "primaryForeground": "#ffffff",
+        "secondary": "#e5e5e5",
+        "secondarySolid": "#e5e5e5",
+        "secondaryForeground": "#000000",
+        "muted": "#e5e5e5",
+        "mutedSolid": "#e5e5e5",
+        "mutedForeground": "#525252",
+        "accent": "#e5e5e5",
+        "accentForeground": "#000000",
+        "destructive": "#dc2626",
+        "destructiveForeground": "#ffffff",
+        "border": "#d4d4d4",
+        "borderSolid": "#d4d4d4",
+        "borderPlain": "#d4d4d4",
+        "input": "#e5e5e5",
+        "inputSolid": "#e5e5e5",
+        "ring": "#2563eb",
+        "scrollbarThumb": "#999999",
+        "scrollbarThumbHover": "#777777"
+      }
+    },
+    "russia": {
+      "id": "russia",
+      "name": "Russia Theme",
+      "isDefault": false,
+      "isGradient": true,
+      "tokens": {
+        "background": "transparent",
+        "backgroundPlain": "transparent",
+        "foreground": "#000000",
+        "card": "linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%)",
+        "cardSolid": "#d3d3d3",
+        "cardForeground": "#000000",
+        "popover": "linear-gradient(135deg, #95a5a6 0%, #bdc3c7 50%, #95a5a6 100%)",
+        "popoverSolid": "#7f8c8d",
+        "popoverForeground": "#000000",
+        "primary": "#0039a6",
+        "primaryPlain": "#0039a6",
+        "primaryForeground": "#ffffff",
+        "secondary": "rgba(0, 57, 166, 0.15)",
+        "secondarySolid": "rgba(0, 57, 166, 0.15)",
+        "secondaryForeground": "#000000",
+        "muted": "rgba(213, 43, 30, 0.1)",
+        "mutedSolid": "rgba(213, 43, 30, 0.1)",
+        "mutedForeground": "#000000",
+        "accent": "#0039a6",
+        "accentForeground": "#ffffff",
+        "destructive": "#d52b1e",
+        "destructiveForeground": "#ffffff",
+        "border": "linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%)",
+        "borderSolid": "#d4af37",
+        "borderPlain": "#0039a6",
+        "input": "linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%)",
+        "inputSolid": "#c0c0c0",
+        "ring": "linear-gradient(135deg, #71797E 0%, #c0c0c0 25%, #FFD700 50%, #e5e4e2 75%, #c0c0c0 100%)",
+        "scrollbarThumb": "linear-gradient(135deg, #95a5a6 0%, #bdc3c7 100%)",
+        "scrollbarThumbHover": "linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%)",
+        "bodyBackground": "linear-gradient(45deg, #ffffff 0%, #ffffff 30%, #0039a6 30%, #0039a6 60%, #d52b1e 60%, #d52b1e 100%)"
+      }
+    }
+  },
+  "brandColors": {
+    "primary": {
+      "name": "Russia Blue",
+      "hex": "#0039A6",
+      "usage": "Main brand color, headers, primary actions"
+    },
+    "secondary": {
+      "name": "Russia Red",
+      "hex": "#D52B1E",
+      "usage": "Accent color, highlights, secondary actions"
+    },
+    "accent": {
+      "name": "Modern Blue",
+      "hex": "#007bff",
+      "usage": "Interactive elements, links, buttons"
+    },
+    "white": {
+      "name": "White",
+      "hex": "#ffffff",
+      "usage": "Backgrounds, light text"
+    }
+  },
+  "statusColors": {
+    "healthy": {
+      "hex": "#10b981",
+      "usage": "Health status, success states"
+    },
+    "degraded": {
+      "hex": "#f59e0b",
+      "usage": "Degraded status, warnings"
+    },
+    "failed": {
+      "hex": "#dc2626",
+      "usage": "Failed status, errors"
+    },
+    "startup": {
+      "hex": "#3b82f6",
+      "usage": "Startup status, in progress"
+    },
+    "maintenance": {
+      "hex": "#6b7280",
+      "usage": "Maintenance status, disabled"
+    }
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      "monospace": "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace"
+    },
+    "fontSizes": {
+      "xs": { "value": "12px", "rem": "0.75rem", "usage": "Captions, footnotes" },
+      "sm": { "value": "14px", "rem": "0.875rem", "usage": "Secondary text" },
+      "base": { "value": "16px", "rem": "1rem", "usage": "Body text" },
+      "lg": { "value": "18px", "rem": "1.125rem", "usage": "Subheadings" },
+      "xl": { "value": "20px", "rem": "1.25rem", "usage": "Section titles" },
+      "2xl": { "value": "24px", "rem": "1.5rem", "usage": "Page titles" },
+      "3xl": { "value": "30px", "rem": "1.875rem", "usage": "Hero text" }
+    },
+    "fontWeights": {
+      "normal": { "value": 400, "usage": "Body text" },
+      "medium": { "value": 500, "usage": "Emphasis, buttons" },
+      "bold": { "value": 700, "usage": "Headings, strong emphasis" }
+    }
+  },
+  "spacing": {
+    "scale": {
+      "1": { "value": "4px", "usage": "Micro spacing" },
+      "2": { "value": "8px", "usage": "Tight spacing" },
+      "3": { "value": "12px", "usage": "Component padding" },
+      "4": { "value": "16px", "usage": "Base spacing" },
+      "5": { "value": "20px", "usage": "Section spacing" },
+      "6": { "value": "24px", "usage": "Card padding" },
+      "8": { "value": "32px", "usage": "Large spacing" },
+      "12": { "value": "48px", "usage": "Page sections" }
+    },
+    "logoClearSpace": {
+      "value": "8px",
+      "rule": "Minimum clear space around logo on all sides"
+    }
+  },
+  "breakpoints": {
+    "mobile": {
+      "max": "640px",
+      "fontSize": "14px",
+      "touchTarget": "44px"
+    },
+    "tablet": {
+      "min": "641px",
+      "max": "1024px",
+      "fontSize": "16px"
+    },
+    "desktop": {
+      "min": "1024px",
+      "max": "1200px",
+      "fontSize": "16px"
+    }
+  },
+  "shadows": {
+    "modal": {
+      "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+      "usage": "Modal dialogs"
+    },
+    "card": {
+      "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      "usage": "Cards (when needed)"
+    }
+  },
+  "animations": {
+    "fadeIn": {
+      "keyframes": "from { opacity: 0; } to { opacity: 1; }",
+      "duration": "0.2s",
+      "easing": "ease-out"
+    },
+    "slideIn": {
+      "keyframes": "from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; }",
+      "duration": "0.2s",
+      "easing": "ease-out"
+    },
+    "slideUp": {
+      "keyframes": "from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); }",
+      "duration": "0.3s",
+      "easing": "ease-out"
+    },
+    "pulse": {
+      "keyframes": "0%, 100% { opacity: 1; } 50% { opacity: 0.5; }",
+      "duration": "2s",
+      "iteration": "infinite"
+    }
+  }
+}

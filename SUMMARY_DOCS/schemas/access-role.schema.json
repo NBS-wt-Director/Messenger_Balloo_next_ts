@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/access-role.schema.json",
+  "title": "Balloo Access Role Schema",
+  "description": "JSON Schema for Balloo access role validation",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["version", "dateCreated", "status", "roles"],
+  "properties": {
+    "version": { "type": "string" },
+    "dateCreated": { "type": "string", "format": "date" },
+    "status": { "type": "string", "enum": ["active", "draft", "deprecated"] },
+    "description": { "type": "string" },
+    "roles": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "required": ["roleId", "displayName", "authorityLevel", "delegable"],
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "enum": [
+              "creator-superadmin",
+              "delegated-node-admin",
+              "company-staff",
+              "alpha-staff",
+              "alpha-volunteer",
+              "sandbox-operator",
+              "public-user"
+            ]
+          },
+          "displayName": { "type": "string" },
+          "description": { "type": "string" },
+          "authorityLevel": {
+            "type": "string",
+            "enum": ["L1", "L3", "L4", "L5", "L6", "L8", "L10"]
+          },
+          "authorityLevelNumeric": {
+            "type": "integer",
+            "enum": [1, 3, 4, 5, 6, 8, 10]
+          },
+          "canonicalHolder": {
+            "type": ["object", "null"],
+            "properties": {
+              "name": { "type": "string" },
+              "email": { "type": "string", "format": "email" }
+            }
+          },
+          "defaultScopes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "allowedNodeGroups": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["A", "B", "C", "D", "E"]
+            }
+          },
+          "forbiddenNodeGroups": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["A", "B", "C", "D", "E"]
+            }
+          },
+          "delegable": { "type": "boolean" },
+          "canDelegateTo": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "escalationPath": {
+            "type": ["string", "null"]
+          },
+          "revocable": { "type": "boolean" },
+          "notes": { "type": "string" }
+        },
+        "if": {
+          "properties": {
+            "roleId": { "const": "creator-superadmin" }
+          }
+        },
+        "then": {
+          "properties": {
+            "authorityLevel": { "const": "L10" },
+            "authorityLevelNumeric": { "const": 10 },
+            "delegable": { "const": true },
+            "revocable": { "const": false },
+            "canonicalHolder": {
+              "type": "object",
+              "required": ["name", "email"],
+              "properties": {
+                "name": { "const": "Оберюхтин Иван Анатольевич" },
+                "email": { "const": "o8eryuhtin@yandex.ru" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "totalRoles": { "type": "integer", "const": 7 },
+        "maxAuthorityLevel": { "type": "integer", "const": 10 },
+        "minAuthorityLevel": { "type": "integer", "const": 1 },
+        "delegableRoles": { "type": "integer" },
+        "revocableRoles": { "type": "integer" },
+        "canonicalCreator": { "type": "string" },
+        "canonicalCreatorEmail": { "type": "string", "format": "email" }
+      }
+    }
+  }
+}

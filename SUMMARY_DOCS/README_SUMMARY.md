@@ -161,4 +161,4 @@ grep -r "поисковый запрос" SUMMARY_DOCS/Contracts/
 
 ---
 
-**🎈 Balloo - Share your moments safely!**
+**🎈 Balloo - Переверни общение!**

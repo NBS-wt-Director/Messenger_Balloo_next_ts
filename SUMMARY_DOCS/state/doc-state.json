@@ -1,0 +1,105 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "canonical_root": "SUMMARY_DOCS",
+  "primary_index": "SUMMARY_DOCS/INDEX.md",
+  "primary_manifest": "SUMMARY_DOCS/MANIFEST.json",
+  "total_docs": 24,
+  "active_docs": 24,
+  "deprecated_docs": 0,
+  "generated_docs": 0,
+  "canonical_docs": 24,
+  "categories": {
+    "root": {
+      "count": 6,
+      "docs": [
+        "README.md",
+        "INDEX.md",
+        "MANIFEST.json",
+        "ROUTING.json",
+        "DOC_SOURCE_POLICY.md",
+        "DOC_GENERATION_POLICY.md",
+        "DOC_CODEGEN_POLICY.md",
+        "DOC_WEB_READER_POLICY.md"
+      ]
+    },
+    "contracts": {
+      "count": 9,
+      "docs": [
+        "contracts/node-contracts/NodeTreeContract.md",
+        "contracts/node-contracts/NodeRolesContract.md",
+        "contracts/node-contracts/NodeDomainsContract.md",
+        "contracts/node-contracts/NodeNetworkingContract.md",
+        "contracts/node-contracts/NodeSecurityContract.md",
+        "contracts/node-contracts/NodeDeploymentContract.md",
+        "contracts/node-contracts/NodeRecoveryContract.md",
+        "contracts/project-contracts/ErrorPageContract.md",
+        "contracts/NODE_DESCRIPTION_POLICY.md"
+      ]
+    },
+    "summary": {
+      "count": 7,
+      "docs": [
+        "summary/ROOT_SUMMARY_DOCS.md",
+        "summary/ROOT_NODE_SUMMARY.md",
+        "summary/NODE_SUMMARY_laptop_control.md",
+        "summary/NODE_SUMMARY_work_server.md",
+        "summary/NODE_SUMMARY_home_aio.md",
+        "summary/NODE_SUMMARY_home_nas.md",
+        "summary/NODE_SUMMARY_phones.md"
+      ]
+    },
+    "topology": {
+      "count": 5,
+      "docs": [
+        "topology/DOMAIN_MAP.md",
+        "topology/NETWORK_MAP.md",
+        "topology/DEPLOYMENT_MAP.md",
+        "topology/RESTORE_PLAYBOOK.md",
+        "topology/MESSENGER_NODE_BINDING.md"
+      ]
+    },
+    "state": {
+      "count": 5,
+      "docs": [
+        "state/node-tree.json",
+        "state/node-domains.json",
+        "state/node-services.json",
+        "state/node-recovery-order.json",
+        "state/doc-state.json"
+      ]
+    },
+    "architecture": {
+      "count": 0,
+      "docs": []
+    },
+    "playbooks": {
+      "count": 1,
+      "docs": [
+        "playbooks/codegen-playbook.md"
+      ]
+    },
+    "appendix": {
+      "count": 1,
+      "docs": [
+        "appendix/AI_ENTRYPOINTS.md"
+      ]
+    },
+    "migrations": {
+      "count": 0,
+      "docs": []
+    },
+    "audits": {
+      "count": 0,
+      "docs": []
+    },
+    "deprecated": {
+      "count": 0,
+      "docs": []
+    }
+  },
+  "last_normalized_at": "2026-06-13T00:00:00Z",
+  "last_updated_at": "2026-06-13T00:00:00Z",
+  "maintained_by": "NLP-Core-Team",
+  "ai_agent": "Koda"
+}

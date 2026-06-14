@@ -1,0 +1,178 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "moduleEndpoints": {
+    "messenger": {
+      "httpEndpoints": [
+        {
+          "method": "GET",
+          "path": "/api/messages",
+          "description": "List messages"
+        },
+        {
+          "method": "POST",
+          "path": "/api/messages",
+          "description": "Send message"
+        },
+        {
+          "method": "GET",
+          "path": "/api/conversations",
+          "description": "List conversations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/conversations/:id",
+          "description": "Get conversation"
+        },
+        {
+          "method": "POST",
+          "path": "/api/conversations",
+          "description": "Create conversation"
+        }
+      ],
+      "uiRoutes": [
+        {
+          "path": "/",
+          "description": "Main chat view"
+        },
+        {
+          "path": "/conversations/:id",
+          "description": "Specific conversation"
+        },
+        {
+          "path": "/settings",
+          "description": "Settings page"
+        }
+      ],
+      "totalEndpoints": 5
+    },
+    "admin-portal": {
+      "httpEndpoints": [
+        {
+          "method": "GET",
+          "path": "/api/users",
+          "description": "List users"
+        },
+        {
+          "method": "POST",
+          "path": "/api/users",
+          "description": "Create user"
+        },
+        {
+          "method": "GET",
+          "path": "/api/users/:id",
+          "description": "Get user"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/users/:id",
+          "description": "Update user"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/users/:id",
+          "description": "Delete user"
+        },
+        {
+          "method": "GET",
+          "path": "/api/nodes",
+          "description": "List nodes"
+        },
+        {
+          "method": "GET",
+          "path": "/api/services",
+          "description": "List services"
+        },
+        {
+          "method": "POST",
+          "path": "/api/deploy",
+          "description": "Deploy service"
+        },
+        {
+          "method": "GET",
+          "path": "/api/logs",
+          "description": "Get logs"
+        },
+        {
+          "method": "GET",
+          "path": "/api/metrics",
+          "description": "Get metrics"
+        }
+      ],
+      "uiRoutes": [
+        {
+          "path": "/",
+          "description": "Dashboard"
+        },
+        {
+          "path": "/users",
+          "description": "User management"
+        },
+        {
+          "path": "/nodes",
+          "description": "Node management"
+        },
+        {
+          "path": "/services",
+          "description": "Service management"
+        },
+        {
+          "path": "/deployments",
+          "description": "Deployments"
+        }
+      ],
+      "totalEndpoints": 10
+    },
+    "android-service": {
+      "httpEndpoints": [
+        {
+          "method": "GET",
+          "path": "/api/android/status",
+          "description": "Get service status"
+        },
+        {
+          "method": "POST",
+          "path": "/api/android/sync",
+          "description": "Sync data"
+        },
+        {
+          "method": "GET",
+          "path": "/api/android/config",
+          "description": "Get configuration"
+        }
+      ],
+      "totalEndpoints": 3
+    },
+    "summary-docs": {
+      "httpEndpoints": [],
+      "uiRoutes": [
+        {
+          "path": "/",
+          "description": "Documentation home"
+        },
+        {
+          "path": "/page/[slug]",
+          "description": "Document page"
+        },
+        {
+          "path": "/category/[name]",
+          "description": "Category page"
+        },
+        {
+          "path": "/modules",
+          "description": "Module layer"
+        }
+      ],
+      "totalEndpoints": 1
+    }
+  },
+  "summary": {
+    "totalEndpoints": 19,
+    "byModule": {
+      "messenger": 5,
+      "admin-portal": 10,
+      "android-service": 3,
+      "summary-docs": 1
+    }
+  }
+}

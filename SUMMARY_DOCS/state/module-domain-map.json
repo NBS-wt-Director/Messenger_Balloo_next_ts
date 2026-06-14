@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "moduleDomainMap": {
+    "core-types": null,
+    "core-config": null,
+    "core-i18n": null,
+    "core-theme": null,
+    "core-brand": null,
+    "core-ui": null,
+    "core-docs-schema": null,
+    "messenger": {
+      "domain": "messenger.balloo.su",
+      "type": "subdomain",
+      "parent": "balloo.su",
+      "routing": "direct"
+    },
+    "admin-portal": {
+      "domain": "admin.balloo.su",
+      "type": "subdomain",
+      "parent": "balloo.su",
+      "routing": "direct"
+    },
+    "desktop": null,
+    "mobile": null,
+    "android-service": {
+      "domain": "api.balloo.su",
+      "type": "subdomain",
+      "parent": "balloo.su",
+      "routing": "path-based"
+    },
+    "node-system": null,
+    "summary-docs": {
+      "domain": "docs.balloo.su",
+      "type": "subdomain",
+      "parent": "balloo.su",
+      "routing": "direct"
+    }
+  },
+  "domainSummary": {
+    "totalDomains": 4,
+    "subdomains": 4,
+    "pathBased": 1,
+    "directRouting": 3
+  }
+}

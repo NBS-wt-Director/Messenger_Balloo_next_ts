@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "User class definitions for Balloo authentication",
+  "userClasses": [
+    {
+      "classId": "creator-superadmin",
+      "displayName": "Creator Superadmin",
+      "authorityLevel": "L10",
+      "authMethods": ["dedicated-login-password"],
+      "allowedProviders": ["creator-superadmin"],
+      "excludedProviders": ["yandex-id", "email-password", "phone-3char-code", "gosuslugi", "max", "qr-code"],
+      "mandatoryBindings": ["email", "phone"],
+      "sessionType": "privileged",
+      "crossEntryAllowed": false,
+      "notes": "Single canonical creator, isolated from common providers"
+    },
+    {
+      "classId": "company-staff",
+      "displayName": "Company Staff",
+      "authorityLevel": "L6",
+      "authMethods": ["yandex-id", "email-password", "phone-3char-code"],
+      "allowedProviders": ["yandex-id", "email-password", "phone-3char-code"],
+      "excludedProviders": [],
+      "mandatoryBindings": [],
+      "sessionType": "standard",
+      "crossEntryAllowed": true,
+      "notes": "NBS-wt employees"
+    },
+    {
+      "classId": "alpha-staff",
+      "displayName": "Alpha Staff",
+      "authorityLevel": "L5",
+      "authMethods": ["yandex-id", "email-password", "phone-3char-code"],
+      "allowedProviders": ["yandex-id", "email-password", "phone-3char-code"],
+      "excludedProviders": [],
+      "mandatoryBindings": [],
+      "sessionType": "standard",
+      "crossEntryAllowed": true,
+      "notes": "Alpha zone curators"
+    },
+    {
+      "classId": "alpha-volunteer",
+      "displayName": "Alpha Volunteer",
+      "authorityLevel": "L4",
+      "authMethods": ["yandex-id", "email-password", "phone-3char-code"],
+      "allowedProviders": ["yandex-id", "email-password", "phone-3char-code"],
+      "excludedProviders": [],
+      "mandatoryBindings": [],
+      "sessionType": "standard",
+      "crossEntryAllowed": true,
+      "notes": "Alpha testing volunteers"
+    },
+    {
+      "classId": "sandbox-operator",
+      "displayName": "Sandbox Operator",
+      "authorityLevel": "L3",
+      "authMethods": ["yandex-id", "email-password", "phone-3char-code"],
+      "allowedProviders": ["yandex-id", "email-password", "phone-3char-code"],
+      "excludedProviders": [],
+      "mandatoryBindings": [],
+      "sessionType": "standard",
+      "crossEntryAllowed": true,
+      "notes": "Working/sandbox users"
+    },
+    {
+      "classId": "public-user",
+      "displayName": "Public User",
+      "authorityLevel": "L1",
+      "authMethods": ["yandex-id", "email-password", "phone-3char-code"],
+      "allowedProviders": ["yandex-id", "email-password", "phone-3char-code"],
+      "excludedProviders": [],
+      "mandatoryBindings": [],
+      "sessionType": "standard",
+      "crossEntryAllowed": true,
+      "notes": "Production public users"
+    }
+  ],
+  "metadata": {
+    "totalUserClasses": 6,
+    "privilegedClasses": 1,
+    "standardClasses": 5
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Translation package registry for Balloo platform",
+  "sources": {
+    "primary": "messenger/src/i18n/locales/",
+    "contract": "SUMMARY_DOCS/contracts/i18n/I18nTranslationContract.md"
+  },
+  "packages": [
+    {
+      "packageId": "ui",
+      "packageName": "UI Components",
+      "packageType": "user-facing",
+      "description": "User interface strings (buttons, labels, messages)",
+      "translatableSurface": {
+        "components": ["Button", "Input", "Modal", "Header", "Footer", "Card"],
+        "elements": ["labels", "placeholders", "tooltips", "error-messages"]
+      },
+      "owner": "frontend-team",
+      "fallbackLanguage": "ru",
+      "coverageStatus": {
+        "ru": 100,
+        "en": 100,
+        "tt": 100,
+        "hi": 80,
+        "zh": 80,
+        "be": 100,
+        "ba": 100,
+        "cv": 100,
+        "sah": 100,
+        "udm": 100,
+        "ce": 100,
+        "os": 100
+      },
+      "stringCount": 150,
+      "releaseDependency": true,
+      "runtimeDependency": true,
+      "codegenDependency": true
+    },
+    {
+      "packageId": "system",
+      "packageName": "System Messages",
+      "packageType": "system",
+      "description": "System messages (errors, notifications, status)",
+      "translatableSurface": {
+        "components": ["Notification", "Alert", "Toast", "ErrorBoundary"],
+        "elements": ["error-messages", "success-messages", "warnings", "loading-text"]
+      },
+      "owner": "backend-team",
+      "fallbackLanguage": "ru",
+      "coverageStatus": {
+        "ru": 100,
+        "en": 100,
+        "tt": 100,
+        "hi": 80,
+        "zh": 80,
+        "be": 100,
+        "ba": 100,
+        "cv": 100,
+        "sah": 100,
+        "udm": 100,
+        "ce": 100,
+        "os": 100
+      },
+      "stringCount": 50,
+      "releaseDependency": true,
+      "runtimeDependency": true,
+      "codegenDependency": true
+    },
+    {
+      "packageId": "public",
+      "packageName": "Public Pages",
+      "packageType": "content",
+      "description": "Public pages content (about, downloads, terms, privacy)",
+      "translatableSurface": {
+        "pages": ["about-balloo", "downloads", "privacy", "terms", "support"],
+        "elements": ["headings", "paragraphs", "links", "cta-buttons"]
+      },
+      "owner": "content-team",
+      "fallbackLanguage": "ru",
+      "coverageStatus": {
+        "ru": 100,
+        "en": 100,
+        "tt": 100,
+        "hi": 75,
+        "zh": 75,
+        "be": 100,
+        "ba": 100,
+        "cv": 100,
+        "sah": 100,
+        "udm": 100,
+        "ce": 100,
+        "os": 100
+      },
+      "stringCount": 50,
+      "releaseDependency": false,
+      "runtimeDependency": true,
+      "codegenDependency": false
+    }
+  ],
+  "summary": {
+    "totalPackages": 3,
+    "byType": {
+      "user-facing": 1,
+      "system": 1,
+      "content": 1
+    },
+    "totalStrings": 250,
+    "averageCoverage": 96.7,
+    "packagesWithFullCoverage": 3
+  },
+  "coverageByLanguage": {
+    "ru": { "total": 250, "translated": 250, "coverage": 100 },
+    "en": { "total": 250, "translated": 250, "coverage": 100 },
+    "tt": { "total": 250, "translated": 250, "coverage": 100 },
+    "hi": { "total": 250, "translated": 200, "coverage": 80 },
+    "zh": { "total": 250, "translated": 200, "coverage": 80 },
+    "be": { "total": 250, "translated": 250, "coverage": 100 },
+    "ba": { "total": 250, "translated": 250, "coverage": 100 },
+    "cv": { "total": 250, "translated": 250, "coverage": 100 },
+    "sah": { "total": 250, "translated": 250, "coverage": 100 },
+    "udm": { "total": 250, "translated": 250, "coverage": 100 },
+    "ce": { "total": 250, "translated": 250, "coverage": 100 },
+    "os": { "total": 250, "translated": 250, "coverage": 100 }
+  }
+}

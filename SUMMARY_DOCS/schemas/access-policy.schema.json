@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/access-policy.schema.json",
+  "title": "Balloo Access Policy Schema",
+  "description": "JSON Schema for Balloo access policy validation",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "policy",
+    "creatorSuperadmin",
+    "accessManagementAuthority",
+    "roles",
+    "nodeGroups",
+    "environments",
+    "invariants"
+  ],
+  "properties": {
+    "policy": {
+      "type": "object",
+      "required": ["name", "version", "status", "authority", "managementNode"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "draft", "deprecated"] },
+        "authority": { "type": "string", "const": "creator-superadmin" },
+        "managementNode": { "type": "string", "const": "projectgeneralsettings.working.balloo.su" }
+      }
+    },
+    "creatorSuperadmin": {
+      "type": "object",
+      "required": ["name", "email", "role", "authorityLevel", "immutable"],
+      "properties": {
+        "name": { "type": "string", "const": "Оберюхтин Иван Анатольевич" },
+        "email": { "type": "string", "const": "o8eryuhtin@yandex.ru" },
+        "role": { "type": "string", "const": "creator-superadmin" },
+        "authorityLevel": { "type": "string", "const": "L10" },
+        "immutable": { "type": "boolean", "const": true },
+        "revocable": { "type": "boolean", "const": false }
+      }
+    },
+    "accessManagementAuthority": {
+      "type": "object",
+      "required": ["node", "responsibilities"],
+      "properties": {
+        "node": { "type": "string", "const": "projectgeneralsettings.working.balloo.su" },
+        "responsibilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "node-access-assignments",
+              "role-binding",
+              "environment-restrictions",
+              "node-visibility",
+              "delegated-access-policies",
+              "revocation-rules"
+            ]
+          }
+        }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["roleId", "authorityLevel", "delegable"],
+        "properties": {
+          "roleId": { "type": "string" },
+          "authorityLevel": { "type": "string", "enum": ["L1", "L3", "L4", "L5", "L6", "L8", "L10"] },
+          "delegable": { "type": "boolean" }
+        }
+      },
+      "contains": {
+        "properties": {
+          "roleId": { "const": "creator-superadmin" },
+          "authorityLevel": { "const": "L10" }
+        }
+      }
+    },
+    "nodeGroups": {
+      "type": "object",
+      "required": ["A", "B", "C", "D", "E"],
+      "properties": {
+        "A": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Privileged Technical Nodes" },
+            "access": { "type": "string", "const": "creator-superadmin + explicit delegated" },
+            "nodes": {
+              "type": "array",
+              "items": { "type": "string" },
+              "contains": { "const": "projectgeneralsettings.working.balloo.su" }
+            }
+          }
+        },
+        "B": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Company Internal Nodes" },
+            "access": { "type": "string", "const": "company-staff" }
+          }
+        },
+        "C": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Alpha Access Nodes" },
+            "access": { "type": "string", "const": "alpha-volunteer + alpha-staff" }
+          }
+        },
+        "D": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Sandbox / Pre-Prod Nodes" },
+            "access": { "type": "string", "const": "sandbox-operator" }
+          }
+        },
+        "E": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Production Public Nodes" },
+            "access": { "type": "string", "const": "public-user" }
+          }
+        }
+      }
+    },
+    "environments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["environmentId", "riskLevel"],
+        "properties": {
+          "environmentId": { "type": "string", "enum": ["production", "alpha", "working"] },
+          "riskLevel": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "least-privilege",
+          "creator-superadmin-authority",
+          "centralized-management",
+          "no-implicit-admin",
+          "environment-separation",
+          "audit-trail",
+          "deny-by-default"
+        ]
+      },
+      "contains": { "const": "least-privilege" },
+      "contains": { "const": "creator-superadmin-authority" },
+      "contains": { "const": "centralized-management" }
+    },
+    "legacyAliases": {
+      "type": "object",
+      "properties": {
+        "kpdegen.working.balloo.su": {
+          "type": "object",
+          "properties": {
+            "canonical": { "type": "string", "const": "kodegen.working.balloo.su" },
+            "status": { "type": "string", "const": "deprecated-alias" },
+            "usage": { "type": "string", "const": "docs-migration-only" }
+          }
+        }
+      }
+    }
+  }
+}

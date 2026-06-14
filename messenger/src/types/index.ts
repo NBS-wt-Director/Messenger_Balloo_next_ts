@@ -81,7 +81,8 @@ export type AdminRole =
   | 'settings'        // Управление настройками
   | 'analytics'       // Просмотр аналитики
   | 'bans'            // Блокировка пользователей
-  | 'content'         // Модерация контента;
+  | 'content'         // Модерация контента
+  | 'sheikh';        // Шейх (премиум-доступ)
 
 // Расширенный профиль (дополнительные поля)
 export interface ExtendedProfile {
@@ -117,6 +118,12 @@ export interface User {
   isSuperAdmin?: boolean;    // Супер-админ
   adminRoles?: AdminRole[];  // Роли админа
   adminSince?: number;       // Дата назначения админом
+  
+  // Премиум-статус
+  isSheikh?: boolean;        // Роль шейха (премиум)
+  sheikhSince?: number;      // Дата получения роли шейха
+  sheikhExpiresAt?: number;  // Дата истечения роли шейха
+  premiumFeatures?: PremiumFeature[]; // Доступные премиум-функции
 }
 
 // Участник группы с ролью

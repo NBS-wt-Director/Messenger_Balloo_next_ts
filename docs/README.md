@@ -99,7 +99,7 @@
 
 ---
 
-**🎈 Balloo - Share your moments safely!**
+**🎈 Balloo - Переверни общение!**
 
 **NLP-Core-Team** - App Balloo Project
 

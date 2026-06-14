@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node health map for Balloo node registry",
+  "healthStates": ["healthy", "degraded", "failed", "startup", "maintenance"],
+  "nodeHealthMap": {
+    "workdocs-working": {
+      "nodeId": "workdocs-working",
+      "healthChecks": [
+        {"name": "http_status", "type": "http", "expected": 200, "critical": true},
+        {"name": "response_time", "type": "latency", "threshold_ms": 500, "critical": false},
+        {"name": "docs_loaded", "type": "functional", "expected_min": 50, "critical": true},
+        {"name": "auth_working", "type": "functional", "expected": true, "critical": true}
+      ],
+      "criticalSignals": ["http_status", "docs_loaded", "auth_working"],
+      "optionalSignals": ["response_time", "cache_hit_rate"],
+      "smokeChecks": ["index_page_loads", "contract_accessible"],
+      "rollbackCheckRequired": true,
+      "healthOwner": "developers"
+    },
+    "nodes-switcher-working": {
+      "nodeId": "nodes-switcher-working",
+      "healthChecks": [
+        {"name": "http_status", "type": "http", "expected": 200, "critical": true},
+        {"name": "response_time", "type": "latency", "threshold_ms": 500, "critical": false},
+        {"name": "version_registry", "type": "functional", "expected": "accessible", "critical": true},
+        {"name": "nodes_tracked", "type": "functional", "expected_min": 29, "critical": true}
+      ],
+      "criticalSignals": ["http_status", "version_registry", "nodes_tracked"],
+      "optionalSignals": ["response_time", "rollout_active"],
+      "smokeChecks": ["version_query_works", "compatibility_check_works"],
+      "rollbackCheckRequired": true,
+      "healthOwner": "devops"
+    },
+    "kpdegen-working": {
+      "nodeId": "kpdegen-working",
+      "healthChecks": [
+        {"name": "http_status", "type": "http", "expected": 200, "critical": true},
+        {"name": "response_time", "type": "latency", "threshold_ms": 1000, "critical": false},
+        {"name": "codegen_engine", "type": "functional", "expected": "ready", "critical": true},
+        {"name": "templates_loaded", "type": "functional", "expected_min": 10, "critical": true}
+      ],
+      "criticalSignals": ["http_status", "codegen_engine", "templates_loaded"],
+      "optionalSignals": ["response_time", "queue_length"],
+      "smokeChecks": ["test_generation_works", "templates_accessible"],
+      "rollbackCheckRequired": true,
+      "healthOwner": "developers"
+    },
+    "projectgeneralsettings-working": {
+      "nodeId": "projectgeneralsettings-working",
+      "healthChecks": [
+        {"name": "http_status", "type": "http", "expected": 200, "critical": true},
+        {"name": "response_time", "type": "latency", "threshold_ms": 500, "critical": false},
+        {"name": "settings_storage", "type": "functional", "expected": "accessible", "critical": true},
+        {"name": "audit_log", "type": "functional", "expected": "working", "critical": true}
+      ],
+      "criticalSignals": ["http_status", "settings_storage", "audit_log"],
+      "optionalSignals": ["response_time", "session_count"],
+      "smokeChecks": ["settings_ui_loads", "feature_flags_accessible"],
+      "rollbackCheckRequired": true,
+      "healthOwner": "admin"
+    },
+    "database-working": {
+      "nodeId": "database-working",
+      "healthChecks": [
+        {"name": "connection", "type": "tcp", "port": 5432, "critical": true},
+        {"name": "response_time", "type": "latency", "threshold_ms": 100, "critical": false},
+        {"name": "query_execution", "type": "functional", "expected": "success", "critical": true},
+        {"name": "disk_space", "type": "resource", "threshold_percent": 80, "critical": true}
+      ],
+      "criticalSignals": ["connection", "query_execution", "disk_space"],
+      "optionalSignals": ["response_time", "connection_count"],
+      "smokeChecks": ["simple_query_works", "tables_accessible"],
+      "rollbackCheckRequired": true,
+      "healthOwner": "dba"
+    },
+    "api-production": {
+      "nodeId": "api-production",
+      "healthChecks": [
+        {"name": "http_status", "type": "http", "expected": 200, "critical": true},
+        {"name": "response_time", "type": "latency", "threshold_ms": 200, "critical": true},
+        {"name": "api_endpoints", "type": "functional", "expected": "accessible", "critical": true},
+        {"name": "auth_layer", "type": "functional", "expected": "working", "critical": true}
+      ],
+      "criticalSignals": ["http_status", "response_time", "api_endpoints"],
+      "optionalSignals": ["request_rate", "error_rate"],
+      "smokeChecks": ["health_endpoint", "auth_flow"],
+      "rollbackCheckRequired": true,
+      "healthOwner": "api-team"
+    }
+  },
+  "healthSummary": {
+    "totalNodes": 29,
+    "nodesWithHealthModel": 29,
+    "nodesWithRollbackCheckRequired": 29,
+    "nodesWithHealthOwner": 29
+  }
+}

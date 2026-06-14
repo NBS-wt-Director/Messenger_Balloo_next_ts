@@ -1,0 +1,228 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node settings map for Balloo node registry",
+  "settingsLevels": [
+    "project-global",
+    "branch-level",
+    "node-level",
+    "feature-level",
+    "runtime-local",
+    "secret",
+    "generated",
+    "derived"
+  ],
+  "nodeSettingsMap": {
+    "balloo-production-root": {
+      "settingsScopes": ["project-global", "node-level"],
+      "inheritedSettings": ["project.name", "project.version"],
+      "mutableSettings": ["node.enabled", "node.auth_required"],
+      "protectedSettings": ["secrets.*"]
+    },
+    "api-production": {
+      "settingsScopes": ["node-level", "feature-level"],
+      "inheritedSettings": ["branch.rate_limits", "branch.logging_level"],
+      "mutableSettings": ["node.rate_limit", "node.timeout_ms"],
+      "protectedSettings": ["secrets.api.keys.*"]
+    },
+    "ai-api-production": {
+      "settingsScopes": ["node-level", "feature-level"],
+      "inheritedSettings": ["branch.rate_limits"],
+      "mutableSettings": ["node.enabled"],
+      "protectedSettings": ["secrets.api.keys.*"],
+      "versionScoped": "4.*",
+      "status": "planned"
+    },
+    "files-production": {
+      "settingsScopes": ["node-level", "storage-strategy"],
+      "inheritedSettings": ["branch.rate_limits"],
+      "mutableSettings": ["node.max_connections", "storage.strategy"],
+      "protectedSettings": ["secrets.storage.*"],
+      "storageStrategies": ["yandex-disk-3.1", "local", "s3-planned"]
+    },
+    "docs-production": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": ["branch.logging_level"],
+      "mutableSettings": ["node.enabled"],
+      "protectedSettings": []
+    },
+    "future-production": {
+      "settingsScopes": ["node-level", "feature-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["features.*"],
+      "protectedSettings": [],
+      "status": "planned"
+    },
+    "admin-production": {
+      "settingsScopes": ["node-level", "admin-settings"],
+      "inheritedSettings": ["branch.access_level"],
+      "mutableSettings": ["admin.features.*"],
+      "protectedSettings": ["secrets.admin.*"]
+    },
+    "workers-production": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": ["branch.logging_level"],
+      "mutableSettings": ["workers.concurrency", "workers.queue_size"],
+      "protectedSettings": ["secrets.workers.*"]
+    },
+    "abaut-production": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["content.*"],
+      "protectedSettings": []
+    },
+    "apps-production": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["apps.list", "apps.featured"],
+      "protectedSettings": []
+    },
+    "client-apps-family": {
+      "settingsScopes": ["platform-level"],
+      "inheritedSettings": ["project.version"],
+      "mutableSettings": ["platforms.*.version"],
+      "protectedSettings": ["secrets.signing.*"],
+      "platforms": ["android", "ios", "windows", "linux", "macos"]
+    },
+    "alpha-root": {
+      "settingsScopes": ["branch-level", "node-level"],
+      "inheritedSettings": ["project.name"],
+      "mutableSettings": ["branch.debug_enabled", "branch.feature_flags"],
+      "protectedSettings": ["secrets.alpha.*"]
+    },
+    "apps-alpha": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": ["branch.feature_flags"],
+      "mutableSettings": ["apps.alpha.list"],
+      "protectedSettings": []
+    },
+    "2commands-alpha": {
+      "settingsScopes": ["node-level", "feature-level"],
+      "inheritedSettings": ["branch.feature_flags"],
+      "mutableSettings": ["features.2commands.*"],
+      "protectedSettings": []
+    },
+    "working-root": {
+      "settingsScopes": ["branch-level", "node-level"],
+      "inheritedSettings": ["project.name"],
+      "mutableSettings": ["branch.debug_enabled", "branch.logging_level"],
+      "protectedSettings": ["secrets.working.*"]
+    },
+    "api-working": {
+      "settingsScopes": ["node-level", "feature-level"],
+      "inheritedSettings": ["branch.debug_enabled"],
+      "mutableSettings": ["node.rate_limit", "node.timeout_ms", "features.*"],
+      "protectedSettings": ["secrets.api.working.*"]
+    },
+    "files-working": {
+      "settingsScopes": ["node-level", "storage-strategy"],
+      "inheritedSettings": [],
+      "mutableSettings": ["storage.strategy", "storage.local_path"],
+      "protectedSettings": ["secrets.storage.working.*"],
+      "storageStrategies": ["local", "yandex-disk-3.1"]
+    },
+    "docs-working": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["docs.theme", "docs.navigation"],
+      "protectedSettings": []
+    },
+    "future-working": {
+      "settingsScopes": ["node-level", "feature-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["features.future.*"],
+      "protectedSettings": []
+    },
+    "pilot-future-working": {
+      "settingsScopes": ["node-level", "feature-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["features.pilot.*"],
+      "protectedSettings": []
+    },
+    "admin-working": {
+      "settingsScopes": ["node-level", "admin-settings"],
+      "inheritedSettings": [],
+      "mutableSettings": ["admin.features.*", "admin.users"],
+      "protectedSettings": ["secrets.admin.working.*"]
+    },
+    "workers-working": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["workers.concurrency"],
+      "protectedSettings": []
+    },
+    "abaut-working": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["content.*"],
+      "protectedSettings": []
+    },
+    "apps-working": {
+      "settingsScopes": ["node-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["apps.list"],
+      "protectedSettings": []
+    },
+    "workdocs-working": {
+      "settingsScopes": ["node-level", "docs-settings"],
+      "inheritedSettings": [],
+      "mutableSettings": ["docs.theme", "docs.navigation", "docs.access_control", "docs.ai_reading"],
+      "protectedSettings": ["secrets.docs.password"],
+      "priority": 1,
+      "technical": true
+    },
+    "nodes-switcher-working": {
+      "settingsScopes": ["node-level", "version-registry", "rollout-control"],
+      "inheritedSettings": [],
+      "mutableSettings": ["version.registry", "rollout.strategy", "compatibility.checks"],
+      "protectedSettings": ["secrets.rollout.*"],
+      "priority": 1,
+      "technical": true
+    },
+    "kpdegen-working": {
+      "settingsScopes": ["node-level", "codegen-settings"],
+      "inheritedSettings": [],
+      "mutableSettings": ["codegen.templates", "codegen.output_targets", "codegen.safety_checks"],
+      "protectedSettings": ["secrets.codegen.*"],
+      "priority": 1,
+      "technical": true
+    },
+    "projectgeneralsettings-working": {
+      "settingsScopes": ["project-global", "branch-level", "node-level", "feature-level"],
+      "inheritedSettings": [],
+      "mutableSettings": ["project.*", "branch.*", "node.*", "features.*", "releases.*"],
+      "protectedSettings": ["secrets.project.*"],
+      "priority": 1,
+      "technical": true
+    },
+    "database-working": {
+      "settingsScopes": ["node-level", "database-settings"],
+      "inheritedSettings": [],
+      "mutableSettings": ["database.connection_pool", "database.migrations"],
+      "protectedSettings": ["secrets.database.password"],
+      "priority": 1,
+      "technical": true
+    }
+  },
+  "inheritanceRules": {
+    "direction": "top-down",
+    "overrideDirection": "bottom-up",
+    "conflictResolution": "lowest-level-wins",
+    "exceptions": [
+      "secrets_always_injected",
+      "generated_always_recomputed",
+      "derived_always_recalculated"
+    ]
+  },
+  "auditRequirements": {
+    "project-global": true,
+    "branch-level": true,
+    "node-level": false,
+    "feature-level": true,
+    "runtime-local": false,
+    "secret": true,
+    "generated": true,
+    "derived": false
+  }
+}

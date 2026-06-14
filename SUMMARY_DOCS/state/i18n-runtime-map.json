@@ -1,0 +1,170 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Runtime language mapping for Balloo platform",
+  "sources": {
+    "primary": "messenger/src/i18n/",
+    "contract": "SUMMARY_DOCS/contracts/i18n/I18nLanguageManagementContract.md"
+  },
+  "runtimeConfig": {
+    "defaultLanguage": "ru",
+    "selectionPriority": ["user-preference", "browser-language", "default"],
+    "persistenceLocations": ["profile", "local-storage", "session"],
+    "missingStringMarker": "[MISSING: {key}]",
+    "logMissingStrings": true
+  },
+  "languages": {
+    "ru": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "en": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["en", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "tt": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["tt", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "hi": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 80,
+      "fallbackChain": ["hi", "en", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 200,
+      "missingStrings": 50,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "zh": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 80,
+      "fallbackChain": ["zh", "en", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 200,
+      "missingStrings": 50,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "be": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["be", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "ba": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["ba", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "cv": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["cv", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "sah": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["sah", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "udm": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["udm", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "ce": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["ce", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    },
+    "os": {
+      "enabled": true,
+      "loaded": true,
+      "coverage": 100,
+      "fallbackChain": ["os", "ru"],
+      "loadedAt": "2026-06-13T00:00:00Z",
+      "version": "1.0.0",
+      "stringCount": 250,
+      "loadTime": 0,
+      "status": "available"
+    }
+  },
+  "summary": {
+    "totalLanguages": 12,
+    "enabledLanguages": 12,
+    "loadedLanguages": 12,
+    "availableLanguages": 12,
+    "loadingLanguages": 0,
+    "errorLanguages": 0,
+    "unavailableLanguages": 0,
+    "averageCoverage": 96.7,
+    "averageLoadTime": 0
+  },
+  "technicalZoneOverrides": {
+    "canEnableDisable": true,
+    "canOverrideFallback": true,
+    "canForceReload": true,
+    "requiresRestart": false
+  }
+}

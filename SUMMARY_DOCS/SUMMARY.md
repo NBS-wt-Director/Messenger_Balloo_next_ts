@@ -418,4 +418,4 @@ priority: high
 
 ---
 
-**🎈 Balloo - Share your moments safely!**
+**🎈 Balloo - Переверни общение!**

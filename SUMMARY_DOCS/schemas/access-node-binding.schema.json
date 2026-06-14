@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/access-node-binding.schema.json",
+  "title": "Balloo Access Node Binding Schema",
+  "description": "JSON Schema for Balloo node access binding validation",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["version", "dateCreated", "status", "nodes"],
+  "properties": {
+    "version": { "type": "string" },
+    "dateCreated": { "type": "string", "format": "date" },
+    "status": { "type": "string", "enum": ["active", "draft", "deprecated"] },
+    "description": { "type": "string" },
+    "nodeGroups": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Privileged Technical Nodes" },
+            "accessClass": { "type": "string", "const": "privileged" },
+            "defaultAccess": { "type": "string", "const": "creator-superadmin-only" }
+          }
+        },
+        "B": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Company Internal Nodes" },
+            "accessClass": { "type": "string", "const": "internal" },
+            "defaultAccess": { "type": "string", "const": "company-staff" }
+          }
+        },
+        "C": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Alpha Access Nodes" },
+            "accessClass": { "type": "string", "const": "alpha" },
+            "defaultAccess": { "type": "string", "const": "alpha-volunteer" }
+          }
+        },
+        "D": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Sandbox / Pre-Prod Nodes" },
+            "accessClass": { "type": "string", "const": "sandbox" },
+            "defaultAccess": { "type": "string", "const": "sandbox-operator" }
+          }
+        },
+        "E": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "const": "Production Public Nodes" },
+            "accessClass": { "type": "string", "const": "public" },
+            "defaultAccess": { "type": "string", "const": "public-user" }
+          }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "nodeId",
+          "canonicalHostname",
+          "environment",
+          "nodeGroup",
+          "accessClass",
+          "defaultAllowedRoles",
+          "accessManagedBy",
+          "authRequired",
+          "publicVisible"
+        ],
+        "properties": {
+          "nodeId": { "type": "string" },
+          "canonicalHostname": { "type": "string" },
+          "legacyAliases": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "environment": {
+            "type": "string",
+            "enum": ["production", "alpha", "working"]
+          },
+          "nodeGroup": {
+            "type": "string",
+            "enum": ["A", "B", "C", "D", "E"]
+          },
+          "accessClass": {
+            "type": "string",
+            "enum": ["privileged", "internal", "alpha", "sandbox", "public"]
+          },
+          "defaultAllowedRoles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "delegatedAllowedRoles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "privilegedActions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "delegatedAccessAllowed": { "type": "boolean" },
+          "accessManagedBy": {
+            "type": "string",
+            "const": "projectgeneralsettings.working.balloo.su"
+          },
+          "authRequired": { "type": "boolean" },
+          "authLevel": {
+            "type": "string",
+            "enum": ["optional", "standard", "maximum"]
+          },
+          "publicVisible": { "type": "boolean" },
+          "auditLevel": {
+            "type": "string",
+            "enum": ["standard", "maximum"]
+          },
+          "notes": { "type": "string" }
+        },
+        "if": {
+          "properties": {
+            "nodeGroup": { "const": "A" }
+          }
+        },
+        "then": {
+          "properties": {
+            "authLevel": { "const": "maximum" },
+            "auditLevel": { "const": "maximum" },
+            "publicVisible": { "const": false },
+            "defaultAllowedRoles": {
+              "type": "array",
+              "contains": { "const": "creator-superadmin" }
+            }
+          }
+        }
+      }
+    },
+    "legacyAliases": {
+      "type": "object",
+      "properties": {
+        "kpdegen.working.balloo.su": {
+          "type": "object",
+          "required": ["canonicalNodeId", "status", "usage"],
+          "properties": {
+            "canonicalNodeId": { "type": "string", "const": "kodegen.working.balloo.su" },
+            "status": { "type": "string", "const": "deprecated-alias" },
+            "usage": { "type": "string", "const": "docs-migration-only" },
+            "redirectRecommended": { "type": "boolean", "const": true }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "totalNodes": { "type": "integer" },
+        "groupANodes": { "type": "integer" },
+        "groupBNodes": { "type": "integer" },
+        "groupCNodes": { "type": "integer" },
+        "groupDNodes": { "type": "integer" },
+        "groupENodes": { "type": "integer" },
+        "privilegedNodes": { "type": "integer" },
+        "legacyAliasesCount": { "type": "integer" },
+        "accessManagementAuthority": {
+          "type": "string",
+          "const": "projectgeneralsettings.working.balloo.su"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Session lifecycle mappings for Balloo authentication",
+  "sessionTypes": [
+    {
+      "sessionType": "standard",
+      "providerOrigins": ["yandex-id", "email-password", "phone-3char-code", "gosuslugi", "max", "qr-code"],
+      "expiryRules": {
+        "idleTimeoutMinutes": 60,
+        "absoluteTimeoutDays": 30,
+        "refreshOnActivity": true
+      },
+      "revocationRules": {
+        "onLogout": true,
+        "onPasswordChange": true,
+        "onSecurityIncident": true,
+        "onAccountSuspension": true
+      },
+      "deviceBindingRequired": true,
+      "notes": "Standard session for common users"
+    },
+    {
+      "sessionType": "privileged",
+      "providerOrigins": ["creator-superadmin", "delegated-node-admin"],
+      "expiryRules": {
+        "idleTimeoutMinutes": 15,
+        "absoluteTimeoutHours": 8,
+        "refreshOnActivity": true
+      },
+      "revocationRules": {
+        "onLogout": true,
+        "onPasswordChange": true,
+        "onSecurityIncident": true,
+        "onAccountSuspension": true,
+        "onPrivilegedActionComplete": false
+      },
+      "deviceBindingRequired": true,
+      "notes": "Privileged session with shorter timeout"
+    }
+  ],
+  "lifecycleStates": ["created", "active", "expired", "revoked"],
+  "transitions": [
+    { "from": "created", "to": "active", "trigger": "first-successful-request" },
+    { "from": "active", "to": "active", "trigger": "session-refresh" },
+    { "from": "active", "to": "expired", "trigger": "timeout-reached" },
+    { "from": "active", "to": "revoked", "trigger": "manual-revocation" }
+  ],
+  "storage": {
+    "encrypted": true,
+    "indexBy": ["sessionId", "userId", "deviceContextId"],
+    "cleanupPolicy": "automatic-expiry-removal"
+  },
+  "metadata": {
+    "totalSessionTypes": 2,
+    "standardIdleMinutes": 60,
+    "privilegedIdleMinutes": 15,
+    "absoluteTimeoutDays": 30
+  }
+}

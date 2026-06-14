@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Language priority mapping for Balloo platform",
+  "sources": {
+    "primary": "messenger/src/i18n/types.ts",
+    "contract": "SUMMARY_DOCS/contracts/i18n/I18nLanguageContract.md"
+  },
+  "priorityConfig": {
+    "scale": "1-12",
+    "description": "Lower number = higher priority",
+    "uiDisplayOrder": "ascending"
+  },
+  "priorities": {
+    "1": {
+      "languageId": "ru",
+      "canonicalName": "Russian",
+      "nativeName": "Русский",
+      "category": "primary",
+      "reason": "Source of truth, default language",
+      "uiDisplay": "first",
+      "fallbackTarget": true
+    },
+    "2": {
+      "languageId": "en",
+      "canonicalName": "English",
+      "nativeName": "English",
+      "category": "international",
+      "reason": "Global lingua franca",
+      "uiDisplay": "second",
+      "fallbackTarget": false
+    },
+    "3": {
+      "languageId": "tt",
+      "canonicalName": "Tatar",
+      "nativeName": "Татарча",
+      "category": "regional",
+      "reason": "Primary regional language (Tatarstan)",
+      "uiDisplay": "third",
+      "fallbackTarget": false
+    },
+    "4": {
+      "languageId": "hi",
+      "canonicalName": "Hindi",
+      "nativeName": "हिंदी",
+      "category": "international",
+      "reason": "Large user base (India)",
+      "uiDisplay": "fourth",
+      "fallbackTarget": false
+    },
+    "5": {
+      "languageId": "zh",
+      "canonicalName": "Chinese",
+      "nativeName": "中文",
+      "category": "international",
+      "reason": "Large user base (China)",
+      "uiDisplay": "fifth",
+      "fallbackTarget": false
+    },
+    "6": {
+      "languageId": "be",
+      "canonicalName": "Belarusian",
+      "nativeName": "Беларуская",
+      "category": "regional",
+      "reason": "Regional language (Belarus)",
+      "uiDisplay": "sixth",
+      "fallbackTarget": false
+    },
+    "7": {
+      "languageId": "ba",
+      "canonicalName": "Bashkir",
+      "nativeName": "Башҡорт",
+      "category": "regional",
+      "reason": "Regional language (Bashkortostan)",
+      "uiDisplay": "seventh",
+      "fallbackTarget": false
+    },
+    "8": {
+      "languageId": "cv",
+      "canonicalName": "Chuvash",
+      "nativeName": "Чăваш",
+      "category": "regional",
+      "reason": "Regional language (Chuvashia)",
+      "uiDisplay": "eighth",
+      "fallbackTarget": false
+    },
+    "9": {
+      "languageId": "sah",
+      "canonicalName": "Yakut",
+      "nativeName": "Саха",
+      "category": "regional",
+      "reason": "Regional language (Sakha)",
+      "uiDisplay": "ninth",
+      "fallbackTarget": false
+    },
+    "10": {
+      "languageId": "udm",
+      "canonicalName": "Udmurt",
+      "nativeName": "Удмурт",
+      "category": "regional",
+      "reason": "Regional language (Udmurtia)",
+      "uiDisplay": "tenth",
+      "fallbackTarget": false
+    },
+    "11": {
+      "languageId": "ce",
+      "canonicalName": "Chechen",
+      "nativeName": "Нохчийн",
+      "category": "regional",
+      "reason": "Regional language (Chechnya)",
+      "uiDisplay": "eleventh",
+      "fallbackTarget": false
+    },
+    "12": {
+      "languageId": "os",
+      "canonicalName": "Ossetian",
+      "nativeName": "Ирон",
+      "category": "regional",
+      "reason": "Regional language (North Ossetia)",
+      "uiDisplay": "twelfth",
+      "fallbackTarget": false
+    }
+  },
+  "byCategory": {
+    "primary": ["ru"],
+    "international": ["en", "hi", "zh"],
+    "regional": ["tt", "be", "ba", "cv", "sah", "udm", "ce", "os"]
+  },
+  "uiDisplayOrder": ["ru", "en", "tt", "hi", "zh", "be", "ba", "cv", "sah", "udm", "ce", "os"],
+  "summary": {
+    "totalLanguages": 12,
+    "primaryLanguages": 1,
+    "internationalLanguages": 3,
+    "regionalLanguages": 8,
+    "highestPriority": "ru",
+    "lowestPriority": "os"
+  }
+}

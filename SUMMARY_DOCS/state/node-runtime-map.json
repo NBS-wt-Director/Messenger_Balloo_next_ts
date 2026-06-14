@@ -1,0 +1,268 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node runtime mapping for Balloo node registry",
+  "runtimeMappings": {
+    "balloo-production-root": {
+      "localDev": {
+        "identity": "localhost:3000",
+        "domainRequired": false,
+        "url": "http://localhost:3000"
+      },
+      "working": {
+        "identity": "working.balloo.su",
+        "domainRequired": false,
+        "url": "https://working.balloo.su"
+      },
+      "alpha": {
+        "identity": "alpha.balloo.su",
+        "domainRequired": true,
+        "url": "https://alpha.balloo.su"
+      },
+      "production": {
+        "identity": "balloo.su",
+        "domainRequired": true,
+        "url": "https://balloo.su"
+      }
+    },
+    "api-production": {
+      "localDev": {
+        "identity": "localhost:4000",
+        "domainRequired": false,
+        "url": "http://localhost:4000"
+      },
+      "working": {
+        "identity": "api.working.balloo.su",
+        "domainRequired": false,
+        "url": "https://api.working.balloo.su"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Node not available in alpha"
+      },
+      "production": {
+        "identity": "api.balloo.su",
+        "domainRequired": true,
+        "url": "https://api.balloo.su"
+      }
+    },
+    "ai-api-production": {
+      "localDev": {
+        "identity": "localhost:4001",
+        "domainRequired": false,
+        "url": "http://localhost:4001"
+      },
+      "working": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Node not available in working"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Node not available in alpha"
+      },
+      "production": {
+        "identity": "ai.api.balloo.su",
+        "domainRequired": true,
+        "url": "https://ai.api.balloo.su",
+        "versionScoped": "4.*",
+        "status": "planned"
+      }
+    },
+    "files-production": {
+      "localDev": {
+        "identity": "localhost:4002",
+        "domainRequired": false,
+        "url": "http://localhost:4002"
+      },
+      "working": {
+        "identity": "files.working.balloo.su",
+        "domainRequired": false,
+        "url": "https://files.working.balloo.su"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Node not available in alpha"
+      },
+      "production": {
+        "identity": "files.balloo.su",
+        "domainRequired": true,
+        "url": "https://files.balloo.su"
+      }
+    },
+    "docs-production": {
+      "localDev": {
+        "identity": "localhost:3001",
+        "domainRequired": false,
+        "url": "http://localhost:3001"
+      },
+      "working": {
+        "identity": "docs.working.balloo.su",
+        "domainRequired": false,
+        "url": "https://docs.working.balloo.su"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Node not available in alpha"
+      },
+      "production": {
+        "identity": "docs.balloo.su",
+        "domainRequired": true,
+        "url": "https://docs.balloo.su"
+      }
+    },
+    "workdocs-working": {
+      "localDev": {
+        "identity": "localhost:3210",
+        "domainRequired": false,
+        "url": "http://localhost:3210"
+      },
+      "working": {
+        "identity": "workdocs.working.balloo.su",
+        "domainRequired": false,
+        "url": "https://workdocs.working.balloo.su"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      },
+      "production": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      }
+    },
+    "nodes-switcher-working": {
+      "localDev": {
+        "identity": "localhost:3211",
+        "domainRequired": false,
+        "url": "http://localhost:3211"
+      },
+      "working": {
+        "identity": "nodes-switcher.working.balloo.su",
+        "domainRequired": false,
+        "url": "https://nodes-switcher.working.balloo.su"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      },
+      "production": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      }
+    },
+    "kpdegen-working": {
+      "localDev": {
+        "identity": "localhost:4200",
+        "domainRequired": false,
+        "url": "http://localhost:4200"
+      },
+      "working": {
+        "identity": "kpdegen.working.balloo.su",
+        "domainRequired": false,
+        "url": "https://kpdegen.working.balloo.su"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      },
+      "production": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      }
+    },
+    "projectgeneralsettings-working": {
+      "localDev": {
+        "identity": "localhost:3212",
+        "domainRequired": false,
+        "url": "http://localhost:3212"
+      },
+      "working": {
+        "identity": "projectgeneralsettings.working.balloo.su",
+        "domainRequired": false,
+        "url": "https://projectgeneralsettings.working.balloo.su"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      },
+      "production": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Technical node, working only"
+      }
+    },
+    "database-working": {
+      "localDev": {
+        "identity": "localhost:5432",
+        "domainRequired": false,
+        "url": "postgresql://localhost:5432",
+        "note": "No public domain, technical runtime node"
+      },
+      "working": {
+        "identity": "database-working",
+        "domainRequired": false,
+        "url": "postgresql://database-working:5432",
+        "note": "No public domain, technical runtime node"
+      },
+      "alpha": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Working database only"
+      },
+      "production": {
+        "identity": "N/A",
+        "domainRequired": false,
+        "url": "N/A",
+        "note": "Working database only"
+      }
+    }
+  },
+  "portAllocation": {
+    "production_local": {"range": "3000-3099", "examples": [3000, 3001, 3002, 3003, 3004, 3005]},
+    "alpha_local": {"range": "3100-3199", "examples": [3100, 3101, 3102]},
+    "working_local": {"range": "3200-3299", "examples": [3200, 3201, 3202, 3203, 3204, 3205, 3206, 3210, 3211, 3212]},
+    "api_all": {"range": "4000-4199", "examples": [4000, 4001, 4002, 4003, 4100, 4101, 4102]},
+    "codegen": {"range": "4200-4299", "examples": [4200]},
+    "database": {"range": "5400-5499", "examples": [5432]}
+  },
+  "routingNotes": {
+    "localDev": "localhost:PORT routing, no domains required",
+    "working": "localhost or working.balloo.su, domains optional",
+    "alpha": "alpha.balloo.su required, limited access",
+    "production": "balloo.su required, public access"
+  },
+  "invariants": [
+    "local/dev mode runs without real domains",
+    "production mode runs with canonical production domains",
+    "узлы должны иметь logical identity",
+    "узлы должны иметь environment-specific runtime mapping",
+    "production identity не теряется при local dev"
+  ]
+}

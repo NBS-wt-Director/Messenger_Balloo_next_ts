@@ -1,0 +1,267 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Machine-readable interaction patterns for Balloo platform — reconstructed from messenger and SUMMARY_DOCS",
+  "sources": {
+    "userEnvironment": "messenger/src/components/",
+    "technicalNodes": "SUMMARY_DOCS/nodes/technical/",
+    "globalsCss": "messenger/src/app/globals.css"
+  },
+  "invariants": {
+    "transitionDuration": "0.2s",
+    "transitionEasing": "ease-out",
+    "focusRingWidth": 2,
+    "touchTargetMin": "44px"
+  },
+  "interactionPatterns": {
+    "hover": {
+      "id": "hover",
+      "name": "Hover State",
+      "category": "pointer",
+      "appliesTo": ["Button", "Card", "Link", "MenuItem"],
+      "behavior": {
+        "background": "var(--secondary)",
+        "borderColor": "var(--primary)",
+        "transform": "none",
+        "transition": "background-color 0.2s ease-out"
+      },
+      "css": {
+        "&:hover": {
+          "backgroundColor": "var(--secondary)",
+          "borderColor": "var(--primary)"
+        }
+      },
+      "usage": "Interactive elements feedback"
+    },
+    "focus": {
+      "id": "focus",
+      "name": "Focus State",
+      "category": "keyboard",
+      "appliesTo": ["Button", "Input", "Select", "Link", "MenuItem"],
+      "behavior": {
+        "outline": "none",
+        "ring": "2px solid var(--ring)",
+        "ringOffset": "2px"
+      },
+      "css": {
+        "&:focus-visible": {
+          "outline": "none",
+          "boxShadow": "0 0 0 2px var(--ring)"
+        }
+      },
+      "usage": "Keyboard navigation feedback",
+      "accessibility": "Required for WCAG compliance"
+    },
+    "active": {
+      "id": "active",
+      "name": "Active/Pressed State",
+      "category": "pointer",
+      "appliesTo": ["Button", "MenuItem", "Toggle"],
+      "behavior": {
+        "background": "var(--primary)",
+        "color": "var(--primary-foreground)",
+        "transform": "scale(0.98)"
+      },
+      "css": {
+        "&:active": {
+          "backgroundColor": "var(--primary)",
+          "color": "var(--primary-foreground)",
+          "transform": "scale(0.98)"
+        }
+      },
+      "usage": "Pressed state feedback"
+    },
+    "disabled": {
+      "id": "disabled",
+      "name": "Disabled State",
+      "category": "state",
+      "appliesTo": ["Button", "Input", "Select", "Link"],
+      "behavior": {
+        "opacity": 0.5,
+        "pointerEvents": "none",
+        "cursor": "not-allowed"
+      },
+      "css": {
+        "&:disabled": {
+          "opacity": 0.5,
+          "pointerEvents": "none",
+          "cursor": "not-allowed"
+        }
+      },
+      "usage": "Non-interactive state"
+    },
+    "loading": {
+      "id": "loading",
+      "name": "Loading State",
+      "category": "state",
+      "appliesTo": ["Button", "Card", "Page"],
+      "behavior": {
+        "opacity": 0.7,
+        "pointerEvents": "none",
+        "spinner": true
+      },
+      "css": {
+        "&[data-loading]": {
+          "opacity": 0.7,
+          "pointerEvents": "none"
+        }
+      },
+      "usage": "Async operation feedback"
+    },
+    "error": {
+      "id": "error",
+      "name": "Error State",
+      "category": "feedback",
+      "appliesTo": ["Input", "Form", "Alert"],
+      "behavior": {
+        "borderColor": "var(--destructive)",
+        "color": "var(--destructive)",
+        "shake": false
+      },
+      "css": {
+        "&[data-error]": {
+          "borderColor": "var(--destructive)",
+          "color": "var(--destructive)"
+        }
+      },
+      "usage": "Validation error feedback"
+    },
+    "success": {
+      "id": "success",
+      "name": "Success State",
+      "category": "feedback",
+      "appliesTo": ["Button", "Alert", "Toast"],
+      "behavior": {
+        "background": "var(--healthy)",
+        "color": "white",
+        "checkmark": true
+      },
+      "css": {
+        "&[data-success]": {
+          "backgroundColor": "var(--healthy)",
+          "color": "white"
+        }
+      },
+      "usage": "Success confirmation"
+    }
+  },
+  "animations": {
+    "fadeIn": {
+      "name": "Fade In",
+      "type": "enter",
+      "keyframes": "from { opacity: 0; } to { opacity: 1; }",
+      "duration": "0.2s",
+      "easing": "ease-out",
+      "usage": "Modal enter, content fade in"
+    },
+    "fadeOut": {
+      "name": "Fade Out",
+      "type": "exit",
+      "keyframes": "from { opacity: 1; } to { opacity: 0; }",
+      "duration": "0.2s",
+      "easing": "ease-in",
+      "usage": "Modal exit, content fade out"
+    },
+    "slideIn": {
+      "name": "Slide In",
+      "type": "enter",
+      "keyframes": "from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; }",
+      "duration": "0.2s",
+      "easing": "ease-out",
+      "usage": "Dropdown enter, toast enter"
+    },
+    "slideUp": {
+      "name": "Slide Up",
+      "type": "enter",
+      "keyframes": "from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); }",
+      "duration": "0.3s",
+      "easing": "ease-out",
+      "usage": "Page transitions, content reveal"
+    },
+    "pulse": {
+      "name": "Pulse",
+      "type": "continuous",
+      "keyframes": "0%, 100% { opacity: 1; } 50% { opacity: 0.5; }",
+      "duration": "2s",
+      "iteration": "infinite",
+      "usage": "Loading indicators, status breathing"
+    },
+    "spin": {
+      "name": "Spin",
+      "type": "continuous",
+      "keyframes": "from { transform: rotate(0deg); } to { transform: rotate(360deg); }",
+      "duration": "1s",
+      "iteration": "infinite",
+      "easing": "linear",
+      "usage": "Loading spinners"
+    }
+  },
+  "gestures": {
+    "tap": {
+      "name": "Tap",
+      "device": "touch",
+      "action": "Single tap",
+      "response": "Activate/click",
+      "minTargetSize": "44px"
+    },
+    "doubleTap": {
+      "name": "Double Tap",
+      "device": "touch",
+      "action": "Double tap",
+      "response": "Zoom/select (if implemented)",
+      "minTargetSize": "44px"
+    },
+    "swipe": {
+      "name": "Swipe",
+      "device": "touch",
+      "action": "Horizontal swipe",
+      "response": "Navigate/delete (if implemented)",
+      "threshold": "50px"
+    },
+    "longPress": {
+      "name": "Long Press",
+      "device": "touch",
+      "action": "Press and hold",
+      "response": "Context menu (if implemented)",
+      "duration": "500ms"
+    }
+  },
+  "transitions": {
+    "default": {
+      "duration": "0.2s",
+      "easing": "ease-out",
+      "properties": ["background-color", "border-color", "color", "opacity"]
+    },
+    "slow": {
+      "duration": "0.3s",
+      "easing": "ease-out",
+      "properties": ["transform", "opacity"]
+    },
+    "instant": {
+      "duration": "0s",
+      "easing": "linear",
+      "properties": ["all"]
+    }
+  },
+  "accessibility": {
+    "focusIndicators": {
+      "required": true,
+      "style": "2px solid var(--ring)",
+      "offset": "2px"
+    },
+    "reducedMotion": {
+      "supported": true,
+      "mediaQuery": "@media (prefers-reduced-motion: reduce)",
+      "behavior": "Disable all animations except essential"
+    },
+    "touchTargets": {
+      "minSize": "44px",
+      "spacing": "8px"
+    }
+  },
+  "usage": {
+    "clientApps": ["hover", "focus", "active", "disabled", "loading", "error", "success"],
+    "technicalNodes": ["hover", "focus", "active", "disabled", "loading", "error"]
+  }
+}

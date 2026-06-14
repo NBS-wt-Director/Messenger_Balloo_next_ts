@@ -317,4 +317,4 @@ npm run update-docs
 
 ---
 
-**🎈 Balloo - Share your moments safely!**
+**🎈 Balloo - Переверни общение!**

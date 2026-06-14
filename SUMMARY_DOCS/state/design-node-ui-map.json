@@ -1,0 +1,182 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node-to-UI mapping for Balloo platform — which nodes use which UI patterns",
+  "sources": {
+    "nodeTopology": "SUMMARY_DOCS/topology/",
+    "designContract": "SUMMARY_DOCS/DesignContract.md",
+    "messenger": "messenger/src/"
+  },
+  "nodeCategories": {
+    "client": {
+      "description": "User-facing client applications",
+      "nodes": ["web-main", "mobile", "desktop", "messenger"],
+      "uiComplexity": "high",
+      "themeSupport": ["dark", "light", "russia"],
+      "customThemesAllowed": true
+    },
+    "service": {
+      "description": "Backend service nodes",
+      "nodes": ["api", "auth", "storage", "notification"],
+      "uiComplexity": "low",
+      "themeSupport": ["dark"],
+      "customThemesAllowed": false
+    },
+    "technical": {
+      "description": "Technical/operational nodes",
+      "nodes": ["admin", "workdocs", "monitoring", "logging"],
+      "uiComplexity": "medium",
+      "themeSupport": ["dark", "light"],
+      "customThemesAllowed": false
+    },
+    "infra": {
+      "description": "Infrastructure nodes",
+      "nodes": ["postgres", "redis", "nginx"],
+      "uiComplexity": "minimal",
+      "themeSupport": ["dark"],
+      "customThemesAllowed": false
+    }
+  },
+  "nodeUIMapping": {
+    "messenger": {
+      "category": "client",
+      "uiComponents": ["Button", "Input", "Card", "Modal", "Header", "Footer", "StatusBadge"],
+      "screenPatterns": ["auth", "chat", "dashboard", "settings", "error"],
+      "themes": ["dark", "light", "russia"],
+      "customThemesAllowed": true,
+      "source": "messenger/src/"
+    },
+    "web-main": {
+      "category": "client",
+      "uiComponents": ["Button", "Input", "Card", "Header", "Footer"],
+      "screenPatterns": ["auth", "dashboard", "settings"],
+      "themes": ["dark", "light", "russia"],
+      "customThemesAllowed": true,
+      "source": "packages/web-main/"
+    },
+    "mobile": {
+      "category": "client",
+      "uiComponents": ["Button", "Input", "Card", "Header", "Footer"],
+      "screenPatterns": ["auth", "dashboard", "chat", "settings"],
+      "themes": ["dark", "light", "russia"],
+      "customThemesAllowed": true,
+      "source": "packages/mobile/"
+    },
+    "desktop": {
+      "category": "client",
+      "uiComponents": ["Button", "Input", "Card", "Modal", "Header", "Footer"],
+      "screenPatterns": ["auth", "dashboard", "chat", "settings"],
+      "themes": ["dark", "light", "russia"],
+      "customThemesAllowed": true,
+      "source": "packages/desktop/"
+    },
+    "admin": {
+      "category": "technical",
+      "uiComponents": ["Button", "Input", "Card", "MetricCard", "NodeStatusBlock", "StatusBadge", "LogViewer"],
+      "screenPatterns": ["dashboard", "nodeDetail", "logs", "health", "settings"],
+      "themes": ["dark", "light"],
+      "customThemesAllowed": false,
+      "source": "nodes/admin/"
+    },
+    "workdocs": {
+      "category": "technical",
+      "uiComponents": ["Button", "Input", "Card", "NodeStatusBlock", "StatusBadge"],
+      "screenPatterns": ["dashboard", "nodeDetail", "health"],
+      "themes": ["dark", "light"],
+      "customThemesAllowed": false,
+      "source": "nodes/workdocs/"
+    },
+    "monitoring": {
+      "category": "technical",
+      "uiComponents": ["MetricCard", "NodeStatusBlock", "StatusBadge", "LogViewer", "Button"],
+      "screenPatterns": ["dashboard", "health", "logs"],
+      "themes": ["dark", "light"],
+      "customThemesAllowed": false,
+      "source": "nodes/monitoring/"
+    },
+    "api": {
+      "category": "service",
+      "uiComponents": ["StatusBadge", "NodeStatusBlock"],
+      "screenPatterns": ["health"],
+      "themes": ["dark"],
+      "customThemesAllowed": false,
+      "source": "nodes/api/"
+    },
+    "auth": {
+      "category": "service",
+      "uiComponents": ["StatusBadge", "NodeStatusBlock"],
+      "screenPatterns": ["health"],
+      "themes": ["dark"],
+      "customThemesAllowed": false,
+      "source": "nodes/auth/"
+    }
+  },
+  "uiComplexityLevels": {
+    "high": {
+      "description": "Full UI with all components and patterns",
+      "nodes": ["messenger", "web-main", "mobile", "desktop"],
+      "components": "all",
+      "screenPatterns": "all",
+      "themes": "all"
+    },
+    "medium": {
+      "description": "Technical UI with monitoring components",
+      "nodes": ["admin", "workdocs", "monitoring"],
+      "components": ["Button", "Input", "Card", "MetricCard", "NodeStatusBlock", "StatusBadge", "LogViewer"],
+      "screenPatterns": ["dashboard", "nodeDetail", "logs", "health"],
+      "themes": ["dark", "light"]
+    },
+    "low": {
+      "description": "Minimal UI for status display",
+      "nodes": ["api", "auth", "storage"],
+      "components": ["StatusBadge", "NodeStatusBlock"],
+      "screenPatterns": ["health"],
+      "themes": ["dark"]
+    },
+    "minimal": {
+      "description": "No UI, health endpoint only",
+      "nodes": ["postgres", "redis", "nginx"],
+      "components": [],
+      "screenPatterns": [],
+      "themes": []
+    }
+  },
+  "themePolicy": {
+    "client": {
+      "presetThemes": ["dark", "light", "russia"],
+      "customThemesAllowed": true,
+      "themeSwitcher": true,
+      "persistPreference": true
+    },
+    "technical": {
+      "presetThemes": ["dark", "light"],
+      "customThemesAllowed": false,
+      "themeSwitcher": true,
+      "persistPreference": true
+    },
+    "service": {
+      "presetThemes": ["dark"],
+      "customThemesAllowed": false,
+      "themeSwitcher": false,
+      "persistPreference": false
+    },
+    "infra": {
+      "presetThemes": [],
+      "customThemesAllowed": false,
+      "themeSwitcher": false,
+      "persistPreference": false
+    }
+  },
+  "summary": {
+    "totalNodes": 9,
+    "byCategory": {
+      "client": 4,
+      "service": 3,
+      "technical": 3,
+      "infra": 3
+    },
+    "withUI": 7,
+    "withoutUI": 3
+  }
+}

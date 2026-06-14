@@ -1,0 +1,257 @@
+{
+  "$schema": "../schemas/access-delegation.schema.json",
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Delegation map for Balloo access control",
+  "delegationRules": [
+    {
+      "ruleId": "delegation-001",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "any",
+      "allowedDelegatedRoles": [
+        "delegated-node-admin"
+      ],
+      "delegableScopes": [
+        "node:read:assigned",
+        "node:write:assigned",
+        "node:configure:assigned",
+        "node:admin:assigned",
+        "access:read:assigned",
+        "access:grant:assigned",
+        "access:revoke:assigned"
+      ],
+      "revocable": true,
+      "approvalNotes": "creator-superadmin can delegate per-node admin access to delegated-node-admin role",
+      "delegationType": ["temporary", "persistent"],
+      "maxDelegationDuration": null,
+      "requiresJustification": true,
+      "auditLevel": "maximum"
+    },
+    {
+      "ruleId": "delegation-002",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "kodegen.working.balloo.su",
+      "allowedDelegatedRoles": [
+        "delegated-node-admin"
+      ],
+      "delegableScopes": [
+        "codegen:read:*",
+        "codegen:execute:*"
+      ],
+      "revocable": true,
+      "approvalNotes": "Delegation for code generation execution on kodegen node",
+      "delegationType": ["temporary", "persistent"],
+      "maxDelegationDuration": null,
+      "requiresJustification": true,
+      "auditLevel": "maximum"
+    },
+    {
+      "ruleId": "delegation-003",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "nodes-switcher.working.balloo.su",
+      "allowedDelegatedRoles": [
+        "delegated-node-admin"
+      ],
+      "delegableScopes": [
+        "node:switch-version:assigned"
+      ],
+      "revocable": true,
+      "approvalNotes": "Delegation for version switching on specific nodes",
+      "delegationType": ["temporary"],
+      "maxDelegationDuration": "7d",
+      "requiresJustification": true,
+      "auditLevel": "maximum"
+    },
+    {
+      "ruleId": "delegation-004",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "workdocs.working.balloo.su",
+      "allowedDelegatedRoles": [
+        "company-staff"
+      ],
+      "delegableScopes": [
+        "docs:read:*",
+        "docs:write:workdocs",
+        "docs:publish:workdocs"
+      ],
+      "revocable": true,
+      "approvalNotes": "Default delegation for company staff to workdocs",
+      "delegationType": ["persistent"],
+      "maxDelegationDuration": null,
+      "requiresJustification": false,
+      "auditLevel": "standard"
+    },
+    {
+      "ruleId": "delegation-005",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "admin.balloo.su",
+      "allowedDelegatedRoles": [
+        "company-staff"
+      ],
+      "delegableScopes": [
+        "node:read:admin",
+        "node:use:admin",
+        "system:feature-toggle:limited"
+      ],
+      "revocable": true,
+      "approvalNotes": "Default delegation for company staff to production admin",
+      "delegationType": ["persistent"],
+      "maxDelegationDuration": null,
+      "requiresJustification": false,
+      "auditLevel": "standard"
+    },
+    {
+      "ruleId": "delegation-006",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "alpha.balloo.su",
+      "allowedDelegatedRoles": [
+        "alpha-staff",
+        "alpha-volunteer"
+      ],
+      "delegableScopes": [
+        "node:read:alpha",
+        "node:use:alpha",
+        "alpha:feedback:*"
+      ],
+      "revocable": true,
+      "approvalNotes": "Delegation for alpha testing participants",
+      "delegationType": ["temporary", "persistent"],
+      "maxDelegationDuration": null,
+      "requiresJustification": false,
+      "auditLevel": "standard"
+    },
+    {
+      "ruleId": "delegation-007",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "2commands.alpha.balloo.su",
+      "allowedDelegatedRoles": [
+        "alpha-staff"
+      ],
+      "delegableScopes": [
+        "alpha:volunteer:manage"
+      ],
+      "revocable": true,
+      "approvalNotes": "Delegation for volunteer management to alpha-staff only",
+      "delegationType": ["persistent"],
+      "maxDelegationDuration": null,
+      "requiresJustification": true,
+      "auditLevel": "standard"
+    },
+    {
+      "ruleId": "delegation-008",
+      "delegatorRole": "creator-superadmin",
+      "delegatorNode": "projectgeneralsettings.working.balloo.su",
+      "targetNode": "working.balloo.su",
+      "allowedDelegatedRoles": [
+        "sandbox-operator"
+      ],
+      "delegableScopes": [
+        "node:read:sandbox",
+        "node:use:sandbox",
+        "sandbox:deploy:*"
+      ],
+      "revocable": true,
+      "approvalNotes": "Delegation for sandbox operators",
+      "delegationType": ["temporary", "persistent"],
+      "maxDelegationDuration": null,
+      "requiresJustification": false,
+      "auditLevel": "standard"
+    }
+  ],
+  "forbiddenDelegations": [
+    {
+      "rule": "no-self-delegation",
+      "description": "creator-superadmin cannot delegate own role",
+      "reason": "Canonical creator role is unique"
+    },
+    {
+      "rule": "no-implicit-admin",
+      "description": "No implicit admin inheritance",
+      "reason": "All delegation must be explicit"
+    },
+    {
+      "rule": "no-cross-environment",
+      "description": "No cross-environment privilege delegation",
+      "reason": "Environment separation must be maintained"
+    },
+    {
+      "rule": "no-wildcard-permissions",
+      "description": "No wildcard permissions delegation",
+      "reason": "Scopes must be specific"
+    },
+    {
+      "rule": "delegated-cannot-delegate",
+      "description": "delegated-node-admin cannot delegate further",
+      "reason": "Single-level delegation only"
+    }
+  ],
+  "delegationTypes": {
+    "temporary": {
+      "description": "Time-limited access grant",
+      "requiresExpiry": true,
+      "maxDuration": "90d",
+      "renewalRequiresApproval": true
+    },
+    "persistent": {
+      "description": "Until explicitly revoked",
+      "requiresExpiry": false,
+      "maxDuration": null,
+      "renewalRequiresApproval": false
+    },
+    "read-only": {
+      "description": "View access only",
+      "allowedScopes": ["read"],
+      "modificationAllowed": false
+    },
+    "operational": {
+      "description": "Day-to-day operations",
+      "allowedScopes": ["use", "manage", "deploy"],
+      "modificationAllowed": true
+    },
+    "configuration": {
+      "description": "Configuration changes only",
+      "allowedScopes": ["configure"],
+      "modificationAllowed": true
+    }
+  },
+  "revocationRules": {
+    "immediateRevocation": [
+      "security_incident",
+      "terms_violation",
+      "employment_termination",
+      "creator-superadmin_request"
+    ],
+    "scheduledRevocation": [
+      "delegation_expiry",
+      "role_change",
+      "environment_change"
+    ],
+    "automaticRevocation": [
+      "alpha_program_end",
+      "sandbox_access_period_end"
+    ]
+  },
+  "auditRequirements": {
+    "logDelegationGrant": true,
+    "logDelegationRevoke": true,
+    "logDelegationUse": true,
+    "logDelegationExpiry": true,
+    "retentionPeriod": "90d",
+    "accessibleTo": ["creator-superadmin", "delegated-node-admin:audit"]
+  },
+  "metadata": {
+    "totalDelegationRules": 8,
+    "forbiddenDelegationRules": 5,
+    "delegationTypes": 5,
+    "revocableDelegations": 8,
+    "lastUpdated": "2026-06-13"
+  }
+}

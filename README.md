@@ -247,4 +247,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**🎈 Balloo - Share your moments safely!**
+**🎈 Balloo - Переверни общение!**

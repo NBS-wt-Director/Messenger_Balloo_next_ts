@@ -1,0 +1,229 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Translation coverage map for Balloo platform",
+  "sources": {
+    "primary": "messenger/src/i18n/locales/",
+    "contract": "SUMMARY_DOCS/contracts/i18n/I18nTranslationContract.md"
+  },
+  "coverageThresholds": {
+    "active": 100,
+    "partial": 80,
+    "planned": 0,
+    "blocking": 50
+  },
+  "languages": {
+    "ru": {
+      "languageId": "ru",
+      "canonicalName": "Russian",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "en": {
+      "languageId": "en",
+      "canonicalName": "English",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "tt": {
+      "languageId": "tt",
+      "canonicalName": "Tatar",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "hi": {
+      "languageId": "hi",
+      "canonicalName": "Hindi",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 200,
+      "missingStrings": 50,
+      "coverage": {
+        "ui": 80,
+        "system": 80,
+        "public": 75,
+        "overall": 80
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z",
+      "belowThreshold": true,
+      "actionRequired": "Translate 50 missing strings"
+    },
+    "zh": {
+      "languageId": "zh",
+      "canonicalName": "Chinese",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 200,
+      "missingStrings": 50,
+      "coverage": {
+        "ui": 80,
+        "system": 80,
+        "public": 75,
+        "overall": 80
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z",
+      "belowThreshold": true,
+      "actionRequired": "Translate 50 missing strings"
+    },
+    "be": {
+      "languageId": "be",
+      "canonicalName": "Belarusian",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "ba": {
+      "languageId": "ba",
+      "canonicalName": "Bashkir",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "cv": {
+      "languageId": "cv",
+      "canonicalName": "Chuvash",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "sah": {
+      "languageId": "sah",
+      "canonicalName": "Yakut",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "udm": {
+      "languageId": "udm",
+      "canonicalName": "Udmurt",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "ce": {
+      "languageId": "ce",
+      "canonicalName": "Chechen",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    },
+    "os": {
+      "languageId": "os",
+      "canonicalName": "Ossetian",
+      "status": "active",
+      "totalStrings": 250,
+      "translatedStrings": 250,
+      "missingStrings": 0,
+      "coverage": {
+        "ui": 100,
+        "system": 100,
+        "public": 100,
+        "overall": 100
+      },
+      "lastUpdated": "2026-06-13T00:00:00Z"
+    }
+  },
+  "summary": {
+    "totalLanguages": 12,
+    "fullCoverage": 10,
+    "partialCoverage": 2,
+    "belowThreshold": 2,
+    "averageCoverage": 96.7,
+    "totalStrings": 250,
+    "totalMissingStrings": 100,
+    "languagesAboveThreshold": ["ru", "en", "tt", "be", "ba", "cv", "sah", "udm", "ce", "os"],
+    "languagesBelowThreshold": ["hi", "zh"]
+  },
+  "alerts": [
+    {
+      "type": "coverage_warning",
+      "language": "hi",
+      "message": "Hindi coverage is 80%, below 100% target",
+      "action": "Translate 50 missing strings",
+      "priority": "high"
+    },
+    {
+      "type": "coverage_warning",
+      "language": "zh",
+      "message": "Chinese coverage is 80%, below 100% target",
+      "action": "Translate 50 missing strings",
+      "priority": "high"
+    }
+  ]
+}

@@ -1,0 +1,456 @@
+{
+  "$schema": "../schemas/access-scope.schema.json",
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Scope registry for Balloo access control",
+  "actionTypes": [
+    { "action": "none", "level": 0, "description": "No action permitted" },
+    { "action": "read", "level": 1, "description": "Read/view only" },
+    { "action": "use", "level": 2, "description": "Basic usage" },
+    { "action": "moderate", "level": 3, "description": "Content moderation" },
+    { "action": "manage", "level": 4, "description": "Resource management" },
+    { "action": "configure", "level": 5, "description": "Configuration changes" },
+    { "action": "deploy", "level": 6, "description": "Deployment actions" },
+    { "action": "switch-version", "level": 7, "description": "Version switching" },
+    { "action": "approve", "level": 8, "description": "Approval authority" },
+    { "action": "admin", "level": 9, "description": "Full node admin" },
+    { "action": "superadmin", "level": 10, "description": "Creator-superadmin only" }
+  ],
+  "scopes": [
+    {
+      "scopeId": "node-read-all",
+      "scope": "node:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["all"],
+      "description": "Read all nodes"
+    },
+    {
+      "scopeId": "node-use-all",
+      "scope": "node:use:*",
+      "actionType": "use",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["all"],
+      "description": "Use all nodes"
+    },
+    {
+      "scopeId": "node-moderate",
+      "scope": "node:moderate:*",
+      "actionType": "moderate",
+      "riskLevel": "medium",
+      "privileged": false,
+      "compatibleNodeTypes": ["C", "D", "E"],
+      "description": "Content moderation"
+    },
+    {
+      "scopeId": "node-manage",
+      "scope": "node:manage:*",
+      "actionType": "manage",
+      "riskLevel": "medium",
+      "privileged": false,
+      "compatibleNodeTypes": ["B", "C", "D"],
+      "description": "Resource management"
+    },
+    {
+      "scopeId": "node-configure",
+      "scope": "node:configure:*",
+      "actionType": "configure",
+      "riskLevel": "medium",
+      "privileged": true,
+      "compatibleNodeTypes": ["B", "D"],
+      "description": "Configuration changes"
+    },
+    {
+      "scopeId": "node-deploy",
+      "scope": "node:deploy:*",
+      "actionType": "deploy",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["D", "E"],
+      "description": "Deployment actions"
+    },
+    {
+      "scopeId": "node-switch-version",
+      "scope": "node:switch-version:*",
+      "actionType": "switch-version",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A", "D"],
+      "description": "Version switching"
+    },
+    {
+      "scopeId": "node-admin",
+      "scope": "node:admin:*",
+      "actionType": "admin",
+      "riskLevel": "critical",
+      "privileged": true,
+      "compatibleNodeTypes": ["per-node"],
+      "description": "Full node admin"
+    },
+    {
+      "scopeId": "node-superadmin",
+      "scope": "node:superadmin:*",
+      "actionType": "superadmin",
+      "riskLevel": "critical",
+      "privileged": true,
+      "compatibleNodeTypes": ["all"],
+      "description": "Creator-superadmin only"
+    },
+    {
+      "scopeId": "access-read",
+      "scope": "access:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["all"],
+      "description": "Read access logs"
+    },
+    {
+      "scopeId": "access-grant",
+      "scope": "access:grant:*",
+      "actionType": "grant",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Grant access"
+    },
+    {
+      "scopeId": "access-revoke",
+      "scope": "access:revoke:*",
+      "actionType": "revoke",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Revoke access"
+    },
+    {
+      "scopeId": "access-delegate",
+      "scope": "access:delegate:*",
+      "actionType": "delegate",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Delegate access"
+    },
+    {
+      "scopeId": "access-audit",
+      "scope": "access:audit:*",
+      "actionType": "audit",
+      "riskLevel": "medium",
+      "privileged": true,
+      "compatibleNodeTypes": ["A", "B"],
+      "description": "Audit access logs"
+    },
+    {
+      "scopeId": "role-read",
+      "scope": "role:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["all"],
+      "description": "Read roles"
+    },
+    {
+      "scopeId": "role-assign",
+      "scope": "role:assign:*",
+      "actionType": "assign",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Assign roles"
+    },
+    {
+      "scopeId": "role-modify",
+      "scope": "role:modify:*",
+      "actionType": "modify",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Modify roles"
+    },
+    {
+      "scopeId": "role-revoke",
+      "scope": "role:revoke:*",
+      "actionType": "revoke",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Revoke roles"
+    },
+    {
+      "scopeId": "environment-read",
+      "scope": "environment:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["all"],
+      "description": "Read environments"
+    },
+    {
+      "scopeId": "environment-bind",
+      "scope": "environment:bind:*",
+      "actionType": "bind",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Bind environments"
+    },
+    {
+      "scopeId": "environment-promote",
+      "scope": "environment:promote:*",
+      "actionType": "promote",
+      "riskLevel": "critical",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Promote to production"
+    },
+    {
+      "scopeId": "system-read",
+      "scope": "system:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["all"],
+      "description": "Read system info"
+    },
+    {
+      "scopeId": "system-configure",
+      "scope": "system:configure:*",
+      "actionType": "configure",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "System configuration"
+    },
+    {
+      "scopeId": "system-feature-toggle",
+      "scope": "system:feature-toggle:*",
+      "actionType": "feature-toggle",
+      "riskLevel": "medium",
+      "privileged": true,
+      "compatibleNodeTypes": ["A", "B"],
+      "description": "Feature flags"
+    },
+    {
+      "scopeId": "system-tariff",
+      "scope": "system:tariff:*",
+      "actionType": "tariff",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A", "B"],
+      "description": "Tariff changes"
+    },
+    {
+      "scopeId": "codegen-read",
+      "scope": "codegen:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["A"],
+      "description": "Read codegen"
+    },
+    {
+      "scopeId": "codegen-execute",
+      "scope": "codegen:execute:*",
+      "actionType": "execute",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Execute code generation"
+    },
+    {
+      "scopeId": "codegen-deploy",
+      "scope": "codegen:deploy:*",
+      "actionType": "deploy",
+      "riskLevel": "critical",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Deploy codegen"
+    },
+    {
+      "scopeId": "docs-read",
+      "scope": "docs:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["all"],
+      "description": "Read documentation"
+    },
+    {
+      "scopeId": "docs-write",
+      "scope": "docs:write:*",
+      "actionType": "write",
+      "riskLevel": "medium",
+      "privileged": false,
+      "compatibleNodeTypes": ["B"],
+      "description": "Write documentation"
+    },
+    {
+      "scopeId": "docs-publish",
+      "scope": "docs:publish:*",
+      "actionType": "publish",
+      "riskLevel": "medium",
+      "privileged": true,
+      "compatibleNodeTypes": ["B", "E"],
+      "description": "Publish documentation"
+    },
+    {
+      "scopeId": "alpha-read",
+      "scope": "alpha:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["C"],
+      "description": "Read alpha"
+    },
+    {
+      "scopeId": "alpha-use",
+      "scope": "alpha:use:*",
+      "actionType": "use",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["C"],
+      "description": "Use alpha"
+    },
+    {
+      "scopeId": "alpha-feedback",
+      "scope": "alpha:feedback:*",
+      "actionType": "feedback",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["C"],
+      "description": "Submit feedback"
+    },
+    {
+      "scopeId": "alpha-volunteer-manage",
+      "scope": "alpha:volunteer:manage",
+      "actionType": "manage",
+      "riskLevel": "medium",
+      "privileged": true,
+      "compatibleNodeTypes": ["C"],
+      "description": "Manage volunteers"
+    },
+    {
+      "scopeId": "sandbox-read",
+      "scope": "sandbox:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["D"],
+      "description": "Read sandbox"
+    },
+    {
+      "scopeId": "sandbox-use",
+      "scope": "sandbox:use:*",
+      "actionType": "use",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["D"],
+      "description": "Use sandbox"
+    },
+    {
+      "scopeId": "sandbox-configure",
+      "scope": "sandbox:configure:*",
+      "actionType": "configure",
+      "riskLevel": "medium",
+      "privileged": false,
+      "compatibleNodeTypes": ["D"],
+      "description": "Configure sandbox"
+    },
+    {
+      "scopeId": "sandbox-deploy",
+      "scope": "sandbox:deploy:*",
+      "actionType": "deploy",
+      "riskLevel": "high",
+      "privileged": true,
+      "compatibleNodeTypes": ["D"],
+      "description": "Deploy to sandbox"
+    },
+    {
+      "scopeId": "production-read",
+      "scope": "production:read:*",
+      "actionType": "read",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["E"],
+      "description": "Read production"
+    },
+    {
+      "scopeId": "production-use",
+      "scope": "production:use:*",
+      "actionType": "use",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["E"],
+      "description": "Use production"
+    },
+    {
+      "scopeId": "production-deploy",
+      "scope": "production:deploy:*",
+      "actionType": "deploy",
+      "riskLevel": "critical",
+      "privileged": true,
+      "compatibleNodeTypes": ["A", "E"],
+      "description": "Deploy to production"
+    },
+    {
+      "scopeId": "production-promote",
+      "scope": "production:promote:*",
+      "actionType": "promote",
+      "riskLevel": "critical",
+      "privileged": true,
+      "compatibleNodeTypes": ["A"],
+      "description": "Promote to production"
+    },
+    {
+      "scopeId": "account-manage-own",
+      "scope": "account:manage:own",
+      "actionType": "manage",
+      "riskLevel": "low",
+      "privileged": false,
+      "compatibleNodeTypes": ["E"],
+      "description": "Manage own account"
+    }
+  ],
+  "privilegedScopes": [
+    "node:configure:*",
+    "node:deploy:*",
+    "node:switch-version:*",
+    "node:admin:*",
+    "node:superadmin:*",
+    "access:grant:*",
+    "access:revoke:*",
+    "access:delegate:*",
+    "access:audit:*",
+    "role:assign:*",
+    "role:modify:*",
+    "role:revoke:*",
+    "environment:bind:*",
+    "environment:promote:*",
+    "system:configure:*",
+    "system:feature-toggle:*",
+    "system:tariff:*",
+    "codegen:execute:*",
+    "codegen:deploy:*",
+    "docs:publish:*",
+    "alpha:volunteer:manage",
+    "sandbox:deploy:*",
+    "production:deploy:*",
+    "production:promote:*"
+  ],
+  "forbiddenPatterns": [
+    "*:*:*",
+    "node:admin:*",
+    "access:*:*",
+    "environment:*:*"
+  ],
+  "metadata": {
+    "totalScopes": 44,
+    "privilegedScopes": 24,
+    "actionTypes": 11,
+    "riskLevels": ["low", "medium", "high", "critical"]
+  }
+}

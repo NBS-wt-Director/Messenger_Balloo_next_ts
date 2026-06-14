@@ -15,23 +15,26 @@ export default function Footer() {
         margin: '0 auto',
         textAlign: 'center'
       }}>
+        <p style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}>
+          🎈 Balloo - Переверни общение!
+        </p>
         <p style={{ margin: '0 0 0.5rem 0' }}>
           © 2026 Balloo Platform. All rights reserved.
         </p>
         <p style={{ 
           margin: 0, 
-          fontSize: '0.9rem', 
+          fontSize: '0.85rem', 
           opacity: 0.7,
           fontFamily: 'monospace'
         }}>
-          Version: {version} | Last Updated: {now.toLocaleDateString('ru-RU')}
+          Documentation Hub v{version} | SUMMARY_DOCS | Updated: {now.toLocaleDateString('ru-RU')}
         </p>
         <p style={{ 
           margin: '0.5rem 0 0 0', 
-          fontSize: '0.85rem', 
+          fontSize: '0.8rem', 
           opacity: 0.6 
         }}>
-          Made with ❤️ by NLP-Core-Team
+          Central Documentation Node • Canonical Source of Truth
         </p>
       </div>
     </footer>

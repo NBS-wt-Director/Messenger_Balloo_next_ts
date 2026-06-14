@@ -1,0 +1,110 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Canonical creator-superadmin account profile for Balloo",
+  "identity": {
+    "fullName": "Оберюхтин Иван Анатольевич",
+    "email": "o8eryuhtin@yandex.ru",
+    "phone": "89292167585",
+    "gender": "male",
+    "birthDate": "06.04.1993",
+    "registrationDate": "14.06.2026",
+    "projectStartDate": "14.06.2026"
+  },
+  "role": {
+    "roleId": "creator-superadmin",
+    "displayName": "Creator Superadmin",
+    "authorityLevel": "L10",
+    "authorityLevelNumeric": 10,
+    "accessClass": "maximal",
+    "nodeAdminClass": "full-node-admin",
+    "accessScope": "superadmin-only"
+  },
+  "auth": {
+    "authMethod": "dedicated-login-password",
+    "loginIdentifier": "creator",
+    "passwordRequired": true,
+    "passwordPolicy": {
+      "minLength": 16,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumber": true,
+      "requireSpecial": true,
+      "hashingAlgorithm": "argon2id",
+      "rotationDays": 60,
+      "historyCount": 10
+    },
+    "mfaEnabled": false,
+    "mfaRecommended": true
+  },
+  "bindings": {
+    "email": {
+      "value": "o8eryuhtin@yandex.ru",
+      "verified": true,
+      "mandatory": true,
+      "immutable": true,
+      "verifiedAt": "2026-06-13T00:00:00Z"
+    },
+    "phone": {
+      "value": "89292167585",
+      "verified": true,
+      "mandatory": true,
+      "immutable": true,
+      "verifiedAt": "2026-06-13T00:00:00Z"
+    }
+  },
+  "security": {
+    "securityClass": "highest",
+    "auditLevel": "maximum",
+    "sessionPolicy": {
+      "idleTimeoutMinutes": 15,
+      "absoluteTimeoutHours": 8,
+      "maxConcurrentSessions": 3,
+      "deviceBinding": "strict",
+      "ipWhitelist": null
+    },
+    "isolationRules": {
+      "isolatedFromCommonProviders": true,
+      "separateAuthEndpoint": true,
+      "separateSessionStore": true,
+      "separateAuditLog": true,
+      "crossEntryIsolation": true,
+      "recoveryIsolation": true
+    }
+  },
+  "exclusions": {
+    "notAllowedProviders": [
+      "yandex-id",
+      "phone-3char-code",
+      "max",
+      "gosuslugi",
+      "qr-code"
+    ],
+    "reason": "Creator-superadmin uses dedicated privileged auth flow, separate from common user providers"
+  },
+  "privileges": {
+    "fullPlatformAccess": true,
+    "nodeGroups": ["A", "B", "C", "D", "E"],
+    "canDelegate": true,
+    "canRevoke": true,
+    "canConfigure": true,
+    "canDeploy": true,
+    "overrideAuthority": true
+  },
+  "audit": {
+    "allEventsLogged": true,
+    "auditLevel": "maximum",
+    "retentionDays": 365,
+    "alertOnFailure": true,
+    "alertOnFailureCount": 3,
+    "realTimeMonitoring": true
+  },
+  "recovery": {
+    "standardRecoveryAllowed": false,
+    "specialProcessRequired": true,
+    "selfServiceAllowed": false,
+    "manualVerificationRequired": true,
+    "recoveryContacts": []
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Cross-entry authentication continuity mappings for Balloo",
+  "crossEntryRule": "if-authenticated-on-device-browser-then-auto-login-on-other-entry-points",
+  "nodeClassMatrix": [
+    {
+      "sourceNodeClass": "E",
+      "targetNodeClass": "E",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": false,
+      "notes": "Production to production - full cross-entry"
+    },
+    {
+      "sourceNodeClass": "E",
+      "targetNodeClass": "C",
+      "autoEntryAllowed": true,
+      "recheckRequired": true,
+      "recheckType": "role-check",
+      "isolatedForPrivileged": false,
+      "notes": "Production to alpha - role check required"
+    },
+    {
+      "sourceNodeClass": "E",
+      "targetNodeClass": "D",
+      "autoEntryAllowed": true,
+      "recheckRequired": true,
+      "recheckType": "role-check",
+      "isolatedForPrivileged": false,
+      "notes": "Production to working - role check required"
+    },
+    {
+      "sourceNodeClass": "E",
+      "targetNodeClass": "A",
+      "autoEntryAllowed": false,
+      "recheckRequired": true,
+      "recheckType": "full-reauth",
+      "isolatedForPrivileged": true,
+      "notes": "Production to privileged - full re-auth required"
+    },
+    {
+      "sourceNodeClass": "C",
+      "targetNodeClass": "C",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": false,
+      "notes": "Alpha to alpha - full cross-entry"
+    },
+    {
+      "sourceNodeClass": "C",
+      "targetNodeClass": "E",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": false,
+      "notes": "Alpha to production - full cross-entry"
+    },
+    {
+      "sourceNodeClass": "C",
+      "targetNodeClass": "D",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": false,
+      "notes": "Alpha to working - full cross-entry"
+    },
+    {
+      "sourceNodeClass": "C",
+      "targetNodeClass": "A",
+      "autoEntryAllowed": false,
+      "recheckRequired": true,
+      "recheckType": "full-reauth",
+      "isolatedForPrivileged": true,
+      "notes": "Alpha to privileged - full re-auth required"
+    },
+    {
+      "sourceNodeClass": "D",
+      "targetNodeClass": "D",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": false,
+      "notes": "Working to working - full cross-entry"
+    },
+    {
+      "sourceNodeClass": "D",
+      "targetNodeClass": "E",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": false,
+      "notes": "Working to production - full cross-entry"
+    },
+    {
+      "sourceNodeClass": "D",
+      "targetNodeClass": "C",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": false,
+      "notes": "Working to alpha - full cross-entry"
+    },
+    {
+      "sourceNodeClass": "D",
+      "targetNodeClass": "A",
+      "autoEntryAllowed": false,
+      "recheckRequired": true,
+      "recheckType": "full-reauth",
+      "isolatedForPrivileged": true,
+      "notes": "Working to privileged - full re-auth required"
+    },
+    {
+      "sourceNodeClass": "A",
+      "targetNodeClass": "A",
+      "autoEntryAllowed": true,
+      "recheckRequired": true,
+      "recheckType": "session-timeout-15min",
+      "isolatedForPrivileged": true,
+      "notes": "Privileged to privileged - 15 min idle timeout"
+    },
+    {
+      "sourceNodeClass": "A",
+      "targetNodeClass": "E",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": true,
+      "notes": "Privileged to production - cross-entry allowed"
+    },
+    {
+      "sourceNodeClass": "A",
+      "targetNodeClass": "C",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": true,
+      "notes": "Privileged to alpha - cross-entry allowed"
+    },
+    {
+      "sourceNodeClass": "A",
+      "targetNodeClass": "D",
+      "autoEntryAllowed": true,
+      "recheckRequired": false,
+      "isolatedForPrivileged": true,
+      "notes": "Privileged to working - cross-entry allowed"
+    }
+  ],
+  "exceptions": {
+    "privilegedNodes": {
+      "reauthRequired": true,
+      "sessionTimeoutMinutes": 15,
+      "additionalChecks": true
+    },
+    "creatorSuperadmin": {
+      "isolatedFlow": true,
+      "noCrossEntry": true,
+      "dedicatedSessions": true
+    }
+  },
+  "metadata": {
+    "totalNodeClasses": 5,
+    "matrixEntries": 16,
+    "autoEntryAllowedCount": 12,
+    "reauthRequiredCount": 4
+  }
+}

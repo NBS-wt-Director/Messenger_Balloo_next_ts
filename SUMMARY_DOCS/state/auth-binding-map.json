@@ -1,0 +1,100 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Identity binding mappings for Balloo authentication",
+  "bindings": [
+    {
+      "identityType": "email",
+      "bindingTarget": "balloo-account",
+      "mandatory": false,
+      "mandatoryForProviders": ["email-password", "creator-superadmin"],
+      "recoveryAllowed": true,
+      "duplicatePolicy": "reject",
+      "verificationRequired": true,
+      "immutable": false,
+      "notes": "Email binding required for email-password provider and creator-superadmin"
+    },
+    {
+      "identityType": "phone",
+      "bindingTarget": "balloo-account",
+      "mandatory": false,
+      "mandatoryForProviders": ["phone-3char-code", "max", "creator-superadmin"],
+      "recoveryAllowed": true,
+      "duplicatePolicy": "reject",
+      "verificationRequired": true,
+      "immutable": false,
+      "notes": "Phone binding required for phone-based providers and creator-superadmin"
+    },
+    {
+      "identityType": "yandex-user-id",
+      "bindingTarget": "balloo-account",
+      "mandatory": true,
+      "mandatoryForProviders": ["yandex-id"],
+      "recoveryAllowed": false,
+      "duplicatePolicy": "link-to-existing",
+      "verificationRequired": true,
+      "immutable": false,
+      "notes": "Yandex user ID from OAuth provider"
+    },
+    {
+      "identityType": "gosuslugi-user-id",
+      "bindingTarget": "balloo-account",
+      "mandatory": true,
+      "mandatoryForProviders": ["gosuslugi"],
+      "recoveryAllowed": false,
+      "duplicatePolicy": "link-to-existing",
+      "verificationRequired": true,
+      "immutable": false,
+      "notes": "Gosuslugi user ID from ESIA provider"
+    },
+    {
+      "identityType": "login-password",
+      "bindingTarget": "balloo-account",
+      "mandatory": true,
+      "mandatoryForProviders": ["creator-superadmin"],
+      "recoveryAllowed": false,
+      "duplicatePolicy": "unique",
+      "verificationRequired": true,
+      "immutable": true,
+      "notes": "Dedicated login for creator-superadmin only"
+    }
+  ],
+  "bindingPrecedence": {
+    "rules": [
+      "Primary identity anchor takes precedence",
+      "Email and phone can be linked to same account",
+      "External IDs (yandex, gosuslugi) can be linked to existing account",
+      "Duplicate email/phone rejected",
+      "Creator-superadmin bindings are immutable"
+    ]
+  },
+  "duplicateResolution": {
+    "email": {
+      "action": "reject",
+      "message": "Email already bound to another account",
+      "allowLinking": false
+    },
+    "phone": {
+      "action": "reject",
+      "message": "Phone already bound to another account",
+      "allowLinking": false
+    },
+    "yandex-user-id": {
+      "action": "link-to-existing",
+      "message": "Yandex ID already linked, signing in to existing account",
+      "allowLinking": true
+    },
+    "gosuslugi-user-id": {
+      "action": "link-to-existing",
+      "message": "Gosuslugi ID already linked, signing in to existing account",
+      "allowLinking": true
+    }
+  },
+  "metadata": {
+    "totalBindingTypes": 5,
+    "mandatoryBindings": 2,
+    "optionalBindings": 3,
+    "immutableBindings": 1
+  }
+}

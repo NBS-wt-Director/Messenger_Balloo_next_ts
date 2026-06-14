@@ -1,0 +1,106 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Policy manifest for Balloo authentication system",
+  "policy": {
+    "name": "Balloo Authentication Policy",
+    "version": "1.0.0",
+    "status": "active",
+    "authority": "creator-superadmin",
+    "managementNode": "projectgeneralsettings.working.balloo.su"
+  },
+  "creatorSuperadmin": {
+    "fullName": "Оберюхтин Иван Анатольевич",
+    "email": "o8eryuhtin@yandex.ru",
+    "phone": "89292167585",
+    "role": "creator-superadmin",
+    "authorityLevel": "L10",
+    "immutable": true
+  },
+  "principles": [
+    "auth-not-equal-access",
+    "creator-superadmin-isolation",
+    "phase-based-rollout",
+    "cross-entry-continuity",
+    "binding-required",
+    "session-security",
+    "security-baseline"
+  ],
+  "phases": {
+    "phase1": {
+      "id": 1,
+      "name": "Core Providers",
+      "providers": ["yandex-id", "email-password", "phone-3char-code"],
+      "status": "active"
+    },
+    "phase2": {
+      "id": 2,
+      "name": "Extended Providers",
+      "providers": ["gosuslugi", "max", "qr-code"],
+      "status": "planned"
+    }
+  },
+  "userClasses": [
+    "creator-superadmin",
+    "company-staff",
+    "alpha-staff",
+    "alpha-volunteer",
+    "sandbox-operator",
+    "public-user"
+  ],
+  "nodeGroups": {
+    "A": { "name": "Privileged", "authLevel": "maximum" },
+    "B": { "name": "Company", "authLevel": "standard" },
+    "C": { "name": "Alpha", "authLevel": "standard" },
+    "D": { "name": "Sandbox", "authLevel": "standard" },
+    "E": { "name": "Production", "authLevel": "optional" }
+  },
+  "invariants": [
+    "auth-not-equal-access",
+    "creator-superadmin-separate",
+    "phase-based-enablement",
+    "cross-entry-auth-only",
+    "binding-mandatory",
+    "session-secured",
+    "audit-required"
+  ],
+  "securityBaseline": {
+    "passwordPolicy": {
+      "minLength": 8,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumber": true,
+      "requireSpecial": true
+    },
+    "otpPolicy": {
+      "codeLength": 3,
+      "expiryMinutes": 5,
+      "oneTimeUse": true,
+      "maxAttempts": 3
+    },
+    "sessionPolicy": {
+      "standardIdleMinutes": 60,
+      "privilegedIdleMinutes": 15,
+      "absoluteTimeoutDays": 30
+    },
+    "auditLogging": {
+      "required": true,
+      "retentionDays": 90
+    }
+  },
+  "crossEntryPolicy": {
+    "enabled": true,
+    "rule": "if-authenticated-on-device-browser-then-auto-login-on-other-entry-points",
+    "privilegedExceptions": true,
+    "creatorSuperadminIsolation": true
+  },
+  "metadata": {
+    "totalProviders": 7,
+    "phase1Providers": 3,
+    "phase2Providers": 3,
+    "privilegedProviders": 1,
+    "totalUserClasses": 6,
+    "totalNodeGroups": 5
+  }
+}

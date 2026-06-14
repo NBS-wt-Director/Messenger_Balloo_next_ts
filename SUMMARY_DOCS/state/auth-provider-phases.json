@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Phase definitions for auth providers in Balloo",
+  "phases": [
+    {
+      "phaseId": 1,
+      "phaseName": "Phase 1 - Core Providers",
+      "status": "active",
+      "providers": [
+        "yandex-id",
+        "email-password",
+        "phone-3char-code"
+      ],
+      "rolloutRules": {
+        "enabledByDefault": true,
+        "requiresExplicitEnablement": false,
+        "availableEnvironments": ["production", "alpha", "working"],
+        "availableNodeClasses": ["E", "C", "D"]
+      },
+      "dependencies": [],
+      "notes": "Core authentication providers for initial rollout"
+    },
+    {
+      "phaseId": 2,
+      "phaseName": "Phase 2 - Extended Providers",
+      "status": "planned",
+      "providers": [
+        "gosuslugi",
+        "max",
+        "qr-code"
+      ],
+      "rolloutRules": {
+        "enabledByDefault": false,
+        "requiresExplicitEnablement": true,
+        "availableEnvironments": ["production", "alpha"],
+        "availableNodeClasses": ["E", "C"],
+        "enablementRequiresApproval": true
+      },
+      "dependencies": ["phase-1-complete", "phase-1-stable"],
+      "notes": "Extended providers requiring additional setup and approval"
+    }
+  ],
+  "creatorSuperadmin": {
+    "phase": "N/A",
+    "status": "always-active",
+    "provider": "creator-superadmin",
+    "notes": "Creator-superadmin auth is separate from phased providers, always available"
+  },
+  "metadata": {
+    "totalPhases": 2,
+    "phase1ProviderCount": 3,
+    "phase2ProviderCount": 3,
+    "currentActivePhase": 1,
+    "nextPhaseId": 2
+  }
+}

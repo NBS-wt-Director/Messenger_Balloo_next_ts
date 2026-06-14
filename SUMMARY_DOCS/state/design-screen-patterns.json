@@ -1,0 +1,236 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Machine-readable screen patterns for Balloo platform — reconstructed from messenger and SUMMARY_DOCS",
+  "sources": {
+    "userEnvironment": "messenger/src/app/",
+    "technicalNodes": "SUMMARY_DOCS/nodes/technical/",
+    "designContract": "SUMMARY_DOCS/DesignContract.md"
+  },
+  "invariants": {
+    "borderRadius": 0,
+    "borderWidth": 2,
+    "headerHeight": "64px",
+    "footerMinHeight": "120px"
+  },
+  "screenPatterns": {
+    "auth": {
+      "id": "auth-screen",
+      "name": "Authentication Screen",
+      "category": "user-flow",
+      "variants": ["login", "register", "forgot-password"],
+      "layout": {
+        "type": "centered",
+        "maxWidth": "28rem",
+        "verticalAlign": "center",
+        "padding": "2rem"
+      },
+      "components": ["Card", "Input", "Button", "Header"],
+      "structure": {
+        "header": "Logo + Title",
+        "main": "Form (email, password, submit button)",
+        "footer": "Links (register, forgot password)"
+      },
+      "usage": "User authentication flows",
+      "examples": ["messenger/src/app/login/page.tsx"]
+    },
+    "dashboard": {
+      "id": "dashboard-screen",
+      "name": "Dashboard Screen",
+      "category": "main-view",
+      "variants": ["user-dashboard", "admin-dashboard", "node-dashboard"],
+      "layout": {
+        "type": "grid",
+        "columns": "responsive",
+        "gap": "1.5rem",
+        "padding": "2rem"
+      },
+      "components": ["Header", "MetricCard", "NodeStatusBlock", "StatusBadge", "Footer"],
+      "structure": {
+        "header": "Logo + Navigation + User actions",
+        "main": "Grid of metric cards and status blocks",
+        "footer": "Copyright + Links"
+      },
+      "usage": "Main dashboard view for users and admins",
+      "examples": ["messenger/src/app/page.tsx", "SUMMARY_DOCS/nodes/technical/"]
+    },
+    "settings": {
+      "id": "settings-screen",
+      "name": "Settings Screen",
+      "category": "configuration",
+      "variants": ["user-settings", "node-settings", "system-settings"],
+      "layout": {
+        "type": "sidebar",
+        "sidebarWidth": "280px",
+        "mainPadding": "2rem"
+      },
+      "components": ["Header", "Card", "Input", "Select", "Button", "Footer"],
+      "structure": {
+        "header": "Logo + Settings title",
+        "sidebar": "Settings categories navigation",
+        "main": "Form sections with inputs and save buttons"
+      },
+      "usage": "Configuration and preferences",
+      "examples": ["messenger/src/app/settings/page.tsx"]
+    },
+    "chat": {
+      "id": "chat-screen",
+      "name": "Chat/Messenger Screen",
+      "category": "main-view",
+      "variants": ["chat-list", "chat-conversation"],
+      "layout": {
+        "type": "two-column",
+        "sidebarWidth": "320px",
+        "mainFlex": "1"
+      },
+      "components": ["Header", "Card", "Input", "Button", "Footer"],
+      "structure": {
+        "header": "Logo + Chat title + Actions",
+        "sidebar": "Chat list with search",
+        "main": "Message list + Input area"
+      },
+      "usage": "Messaging and conversations",
+      "examples": ["messenger/src/app/chat/page.tsx"]
+    },
+    "nodeDetail": {
+      "id": "node-detail-screen",
+      "name": "Node Detail Screen",
+      "category": "technical",
+      "variants": ["overview", "logs", "config", "health"],
+      "layout": {
+        "type": "tabs",
+        "tabHeight": "48px",
+        "contentPadding": "2rem"
+      },
+      "components": ["Header", "NodeStatusBlock", "MetricCard", "LogViewer", "Button", "Footer"],
+      "structure": {
+        "header": "Logo + Node name + Status",
+        "tabs": "Overview | Logs | Config | Health",
+        "main": "Tab content (varies by selection)"
+      },
+      "usage": "Technical node monitoring and management",
+      "examples": ["SUMMARY_DOCS/nodes/technical/"]
+    },
+    "logs": {
+      "id": "logs-screen",
+      "name": "Logs Viewer Screen",
+      "category": "technical",
+      "variants": ["realtime", "historical", "filtered"],
+      "layout": {
+        "type": "full-width",
+        "headerHeight": "48px",
+        "contentPadding": "1rem"
+      },
+      "components": ["Header", "LogViewer", "Select", "Input", "Button"],
+      "structure": {
+        "header": "Filters (level, time range, search)",
+        "main": "Log viewer with auto-scroll"
+      },
+      "usage": "Log viewing and debugging",
+      "examples": ["SUMMARY_DOCS/nodes/technical/"]
+    },
+    "health": {
+      "id": "health-screen",
+      "name": "Health Status Screen",
+      "category": "technical",
+      "variants": ["overview", "detailed", "history"],
+      "layout": {
+        "type": "grid",
+        "columns": "3",
+        "gap": "1.5rem",
+        "padding": "2rem"
+      },
+      "components": ["Header", "StatusBadge", "MetricCard", "NodeStatusBlock"],
+      "structure": {
+        "header": "Health overview title",
+        "main": "Grid of status indicators and metrics"
+      },
+      "usage": "System health monitoring",
+      "examples": ["SUMMARY_DOCS/nodes/technical/"]
+    },
+    "error": {
+      "id": "error-screen",
+      "name": "Error Screen",
+      "category": "fallback",
+      "variants": ["404", "500", "offline", "maintenance"],
+      "layout": {
+        "type": "centered",
+        "maxWidth": "32rem",
+        "verticalAlign": "center",
+        "padding": "2rem"
+      },
+      "components": ["Card", "Button", "StatusBadge"],
+      "structure": {
+        "header": "Error icon/status",
+        "main": "Error message and description",
+        "footer": "Action buttons (retry, go home)"
+      },
+      "usage": "Error states and fallback screens",
+      "examples": ["messenger/src/app/error.tsx"]
+    }
+  },
+  "layoutPatterns": {
+    "centered": {
+      "description": "Content centered horizontally and vertically",
+      "useCase": "Auth screens, error screens, modals",
+      "maxWidth": "28rem",
+      "padding": "2rem"
+    },
+    "grid": {
+      "description": "Responsive grid layout",
+      "useCase": "Dashboards, metric displays",
+      "columns": "1-4 (responsive)",
+      "gap": "1.5rem"
+    },
+    "sidebar": {
+      "description": "Sidebar navigation with main content",
+      "useCase": "Settings, admin panels",
+      "sidebarWidth": "280px",
+      "mainPadding": "2rem"
+    },
+    "two-column": {
+      "description": "Two-column layout with fixed sidebar",
+      "useCase": "Chat, email, file managers",
+      "sidebarWidth": "320px",
+      "mainFlex": "1"
+    },
+    "tabs": {
+      "description": "Tabbed content layout",
+      "useCase": "Node details, settings sections",
+      "tabHeight": "48px",
+      "contentPadding": "2rem"
+    },
+    "full-width": {
+      "description": "Full-width content with minimal padding",
+      "useCase": "Log viewers, data tables",
+      "padding": "1rem"
+    }
+  },
+  "usage": {
+    "clientApps": ["auth", "dashboard", "settings", "chat", "error"],
+    "technicalNodes": ["dashboard", "nodeDetail", "logs", "health", "settings"],
+    "adminApps": ["dashboard", "nodeDetail", "logs", "health", "settings"]
+  },
+  "responsiveBehavior": {
+    "mobile": {
+      "maxWidth": "640px",
+      "layout": "single-column",
+      "sidebarBehavior": "drawer",
+      "gridColumns": 1
+    },
+    "tablet": {
+      "minWidth": "641px",
+      "maxWidth": "1024px",
+      "layout": "adaptive",
+      "sidebarBehavior": "collapsible",
+      "gridColumns": 2
+    },
+    "desktop": {
+      "minWidth": "1024px",
+      "layout": "full",
+      "sidebarBehavior": "fixed",
+      "gridColumns": "3-4"
+    }
+  }
+}

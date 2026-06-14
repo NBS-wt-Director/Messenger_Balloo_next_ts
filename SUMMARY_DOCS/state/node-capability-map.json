@@ -1,0 +1,188 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Node capability map for Balloo node registry",
+  "capabilities": [
+    {
+      "capabilityId": "base-file-storage",
+      "capabilityName": "Base File Storage",
+      "nodeId": "files-production",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Base file storage role for production",
+      "evidence": "Production deployment"
+    },
+    {
+      "capabilityId": "yandex-disk-strategy",
+      "capabilityName": "Yandex.Disk Storage Strategy",
+      "nodeId": "files-production",
+      "status": "active",
+      "minVersion": "3.1.0",
+      "notes": "Yandex.Disk integration from v3.1.*",
+      "evidence": "Implementation in 3.1.*"
+    },
+    {
+      "capabilityId": "spifs-strategy",
+      "capabilityName": "SPiFS Proprietary Storage",
+      "nodeId": "files-production",
+      "status": "planned",
+      "minVersion": "TBD",
+      "notes": "SPiFS proprietary storage model",
+      "evidence": "No evidence of implementation"
+    },
+    {
+      "capabilityId": "local-storage-working",
+      "capabilityName": "Local Storage (Working)",
+      "nodeId": "files-working",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Local file storage for working environment",
+      "evidence": "Working deployment"
+    },
+    {
+      "capabilityId": "ai-api-capability",
+      "capabilityName": "AI API Capability",
+      "nodeId": "ai-api-production",
+      "status": "planned",
+      "minVersion": "4.0.0",
+      "versionScoped": "4.*",
+      "notes": "AI API from version 4.*",
+      "evidence": "Not yet implemented"
+    },
+    {
+      "capabilityId": "workdocs-presentation",
+      "capabilityName": "WorkDocs Web Presentation",
+      "nodeId": "workdocs-working",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "SUMMARY_DOCS web presentation",
+      "evidence": "Implemented"
+    },
+    {
+      "capabilityId": "nodes-version-registry",
+      "capabilityName": "Node Version Registry",
+      "nodeId": "nodes-switcher-working",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Node version tracking",
+      "evidence": "Implemented"
+    },
+    {
+      "capabilityId": "nodes-rollout-control",
+      "capabilityName": "Nodes Rollout Control",
+      "nodeId": "nodes-switcher-working",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Rollout orchestration",
+      "evidence": "Implemented"
+    },
+    {
+      "capabilityId": "kpdegen-server",
+      "capabilityName": "kpdegen Server Code Generator",
+      "nodeId": "kpdegen-working",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Server code generator",
+      "evidence": "Implemented"
+    },
+    {
+      "capabilityId": "project-settings-ui",
+      "capabilityName": "Project Settings UI",
+      "nodeId": "projectgeneralsettings-working",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Central settings management UI",
+      "evidence": "Implemented"
+    },
+    {
+      "capabilityId": "root-landing",
+      "capabilityName": "Production Root Landing",
+      "nodeId": "balloo-production-root",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Production root landing page",
+      "evidence": "Production deployment"
+    },
+    {
+      "capabilityId": "api-gateway",
+      "capabilityName": "API Gateway",
+      "nodeId": "api-production",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Production API gateway",
+      "evidence": "Production deployment"
+    },
+    {
+      "capabilityId": "public-docs",
+      "capabilityName": "Public Documentation",
+      "nodeId": "docs-production",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Public documentation site",
+      "evidence": "docs.balloo.su"
+    },
+    {
+      "capabilityId": "admin-panel",
+      "capabilityName": "Admin Panel",
+      "nodeId": "admin-production",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Production admin panel",
+      "evidence": "Production deployment"
+    },
+    {
+      "capabilityId": "workers-backend",
+      "capabilityName": "Background Workers",
+      "nodeId": "workers-production",
+      "status": "active",
+      "minVersion": "3.0.0",
+      "notes": "Background workers service",
+      "evidence": "Production deployment"
+    },
+    {
+      "capabilityId": "future-showcase",
+      "capabilityName": "Future Features Showcase",
+      "nodeId": "future-production",
+      "status": "planned",
+      "minVersion": "TBD",
+      "notes": "Future features showcase",
+      "evidence": "Not yet implemented"
+    }
+  ],
+  "versionScopedCapabilities": {
+    "3.0.*": [
+      "base-file-storage",
+      "local-storage-working",
+      "root-landing",
+      "api-gateway",
+      "public-docs",
+      "admin-panel",
+      "workers-backend",
+      "workdocs-presentation",
+      "nodes-version-registry",
+      "kpdegen-server",
+      "project-settings-ui"
+    ],
+    "3.1.*": [
+      "yandex-disk-strategy"
+    ],
+    "4.*": [
+      "ai-api-capability"
+    ],
+    "TBD": [
+      "spifs-strategy",
+      "future-showcase"
+    ]
+  },
+  "statusSummary": {
+    "active": 13,
+    "planned": 3,
+    "deprecated": 0
+  },
+  "importantNotes": {
+    "spifs": "SPiFS — planned/proprietary storage model, not production solution without evidence",
+    "aiApi": "ai.api.balloo.su — capability from version 4.*, status: planned",
+    "yandexDisk": "Yandex.Disk — accepted storage strategy for 3.1.*, status: active"
+  }
+}

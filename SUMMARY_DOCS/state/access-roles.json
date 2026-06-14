@@ -1,0 +1,204 @@
+{
+  "$schema": "../schemas/access-role.schema.json",
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Role registry for Balloo access control",
+  "roles": [
+    {
+      "roleId": "creator-superadmin",
+      "displayName": "Creator Superadmin",
+      "description": "Единственная каноническая роль создателя с максимальными полномочиями",
+      "authorityLevel": "L10",
+      "authorityLevelNumeric": 10,
+      "canonicalHolder": {
+        "name": "Оберюхтин Иван Анатольевич",
+        "email": "o8eryuhtin@yandex.ru"
+      },
+      "defaultScopes": [
+        "*:*:*"
+      ],
+      "allowedNodeGroups": ["A", "B", "C", "D", "E"],
+      "forbiddenNodeGroups": [],
+      "delegable": true,
+      "canDelegateTo": [
+        "delegated-node-admin",
+        "company-staff",
+        "alpha-staff",
+        "alpha-volunteer",
+        "sandbox-operator",
+        "public-user"
+      ],
+      "escalationPath": null,
+      "revocable": false,
+      "notes": "Cannot delegate own role. Highest authority. Cannot be revoked."
+    },
+    {
+      "roleId": "delegated-node-admin",
+      "displayName": "Delegated Node Admin",
+      "description": "Делегированная администрация отдельных узлов",
+      "authorityLevel": "L8",
+      "authorityLevelNumeric": 8,
+      "canonicalHolder": null,
+      "defaultScopes": [
+        "node:read:*",
+        "node:write:assigned",
+        "node:configure:assigned",
+        "node:admin:assigned",
+        "access:read:*",
+        "access:grant:assigned",
+        "access:revoke:assigned"
+      ],
+      "allowedNodeGroups": ["A", "B", "C", "D", "E"],
+      "forbiddenNodeGroups": [],
+      "delegable": false,
+      "canDelegateTo": [],
+      "escalationPath": "creator-superadmin",
+      "revocable": true,
+      "delegatedBy": "creator-superadmin",
+      "notes": "Per-node explicit delegation required. Cannot delegate further."
+    },
+    {
+      "roleId": "company-staff",
+      "displayName": "Company Staff",
+      "description": "Сотрудники компании NBS-wt с доступом к внутренним узлам",
+      "authorityLevel": "L6",
+      "authorityLevelNumeric": 6,
+      "canonicalHolder": null,
+      "organization": "NBS-wt",
+      "defaultScopes": [
+        "node:read:company",
+        "node:use:company",
+        "node:read:sandbox",
+        "node:use:sandbox",
+        "docs:read:*",
+        "docs:write:workdocs"
+      ],
+      "allowedNodeGroups": ["B", "D", "E"],
+      "forbiddenNodeGroups": ["A"],
+      "delegable": false,
+      "canDelegateTo": [],
+      "escalationPath": "delegated-node-admin",
+      "revocable": true,
+      "revocationConditions": [
+        "employment_termination",
+        "security_incident"
+      ],
+      "notes": "No access to privileged Group A nodes."
+    },
+    {
+      "roleId": "alpha-staff",
+      "displayName": "Alpha Staff",
+      "description": "Кураторы и сотрудники alpha-зоны",
+      "authorityLevel": "L5",
+      "authorityLevelNumeric": 5,
+      "canonicalHolder": null,
+      "zone": "alpha",
+      "defaultScopes": [
+        "node:read:alpha",
+        "node:use:alpha",
+        "node:moderate:alpha",
+        "alpha:volunteer:manage"
+      ],
+      "allowedNodeGroups": ["C"],
+      "forbiddenNodeGroups": ["A", "B"],
+      "delegable": false,
+      "canDelegateTo": [],
+      "escalationPath": "company-staff",
+      "revocable": true,
+      "revocationConditions": [
+        "alpha_program_end",
+        "volunteer_agreement_termination"
+      ],
+      "notes": "Alpha zone curators. May have company-staff role concurrently."
+    },
+    {
+      "roleId": "alpha-volunteer",
+      "displayName": "Alpha Volunteer",
+      "description": "Волонтёры и участники alpha-тестирования",
+      "authorityLevel": "L4",
+      "authorityLevelNumeric": 4,
+      "canonicalHolder": null,
+      "zone": "alpha",
+      "defaultScopes": [
+        "node:read:alpha-public",
+        "node:use:alpha-testing",
+        "alpha:feedback:*",
+        "volunteer:read:own"
+      ],
+      "allowedNodeGroups": ["C", "E"],
+      "forbiddenNodeGroups": ["A", "B", "D"],
+      "delegable": false,
+      "canDelegateTo": [],
+      "escalationPath": "alpha-staff",
+      "revocable": true,
+      "revocationConditions": [
+        "alpha_program_end",
+        "on_request",
+        "terms_violation"
+      ],
+      "notes": "Alpha testing volunteers. No sandbox or company access."
+    },
+    {
+      "roleId": "sandbox-operator",
+      "displayName": "Sandbox Operator",
+      "description": "Пользователи sandbox/pre-prod среды",
+      "authorityLevel": "L3",
+      "authorityLevelNumeric": 3,
+      "canonicalHolder": null,
+      "environment": "working",
+      "defaultScopes": [
+        "node:read:sandbox",
+        "node:use:sandbox",
+        "node:configure:sandbox",
+        "sandbox:deploy:*",
+        "api:use:sandbox"
+      ],
+      "allowedNodeGroups": ["D", "E"],
+      "forbiddenNodeGroups": ["A", "B", "C"],
+      "delegable": false,
+      "canDelegateTo": [],
+      "escalationPath": "company-staff",
+      "revocable": true,
+      "revocationConditions": [
+        "sandbox_access_period_end",
+        "terms_violation"
+      ],
+      "notes": "Sandbox/pre-prod users. No production privileged access."
+    },
+    {
+      "roleId": "public-user",
+      "displayName": "Public User",
+      "description": "Внешние пользователи публичных production узлов",
+      "authorityLevel": "L1",
+      "authorityLevelNumeric": 1,
+      "canonicalHolder": null,
+      "environment": "production",
+      "defaultScopes": [
+        "node:read:public",
+        "node:use:public",
+        "account:manage:own"
+      ],
+      "allowedNodeGroups": ["E"],
+      "forbiddenNodeGroups": ["A", "B", "C", "D"],
+      "delegable": false,
+      "canDelegateTo": [],
+      "escalationPath": "sandbox-operator",
+      "revocable": true,
+      "revocationConditions": [
+        "terms_violation",
+        "account_deletion"
+      ],
+      "notes": "Public production users only. No internal access."
+    }
+  ],
+  "metadata": {
+    "totalRoles": 7,
+    "maxAuthorityLevel": 10,
+    "minAuthorityLevel": 1,
+    "delegableRoles": 1,
+    "revocableRoles": 6,
+    "canonicalCreator": "Оберюхтин Иван Анатольевич",
+    "canonicalCreatorEmail": "o8eryuhtin@yandex.ru"
+  }
+}

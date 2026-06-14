@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo Screen Pattern Gallery</title>
+  <style>
+    :root {
+      --background: #000000;
+      --foreground: #ffffff;
+      --card: #1c1c1c;
+      --primary: #3b82f6;
+      --border: #404040;
+      --muted-foreground: #b0b0b0;
+      --healthy: #10b981;
+      --destructive: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0 !important;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      line-height: 1.5;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .pattern-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      overflow: hidden;
+    }
+
+    .pattern-preview {
+      padding: 1rem;
+      border-bottom: 2px solid var(--border);
+      min-height: 200px;
+      background: var(--background);
+      position: relative;
+    }
+
+    .pattern-info {
+      padding: 1rem;
+    }
+
+    .pattern-name {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .pattern-description {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      margin-bottom: 0.75rem;
+    }
+
+    .pattern-meta {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .pattern-tag {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--background);
+      border: 1px solid var(--border);
+      color: var(--muted-foreground);
+    }
+
+    /* Layout Patterns */
+    .layout-centered {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 200px;
+    }
+
+    .layout-centered-content {
+      width: 80%;
+      max-width: 280px;
+      padding: 1.5rem;
+      border: 2px solid var(--border);
+      background: var(--card);
+      text-align: center;
+    }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      padding: 0.75rem;
+      height: 100%;
+    }
+
+    .layout-grid-item {
+      background: var(--card);
+      border: 2px solid var(--border);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .layout-sidebar {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 0.75rem;
+      height: 100%;
+    }
+
+    .layout-sidebar-nav {
+      background: var(--card);
+      border-right: 2px solid var(--border);
+      padding: 0.5rem;
+    }
+
+    .layout-sidebar-nav-item {
+      padding: 0.5rem;
+      margin-bottom: 0.25rem;
+      background: var(--background);
+      border: 1px solid var(--border);
+      font-size: 0.625rem;
+    }
+
+    .layout-sidebar-content {
+      padding: 0.75rem;
+    }
+
+    .layout-two-column {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0.75rem;
+      height: 100%;
+    }
+
+    .layout-two-column-sidebar {
+      background: var(--card);
+      border-right: 2px solid var(--border);
+      padding: 0.5rem;
+    }
+
+    .layout-two-column-item {
+      padding: 0.5rem;
+      margin-bottom: 0.25rem;
+      background: var(--background);
+      border: 1px solid var(--border);
+      font-size: 0.625rem;
+    }
+
+    .layout-two-column-main {
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .layout-two-column-message {
+      padding: 0.5rem;
+      background: var(--card);
+      border: 2px solid var(--border);
+      font-size: 0.625rem;
+    }
+
+    .layout-tabs {
+      height: 100%;
+    }
+
+    .layout-tabs-header {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .layout-tab {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--border);
+      border-bottom: none;
+      margin-right: 0.25rem;
+      font-size: 0.75rem;
+      background: var(--background);
+    }
+
+    .layout-tab.active {
+      background: var(--card);
+      border-color: var(--primary);
+    }
+
+    .layout-tabs-content {
+      padding: 1rem;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    .layout-full-width {
+      padding: 0.5rem;
+      height: 100%;
+    }
+
+    .layout-full-width-item {
+      padding: 0.5rem;
+      margin-bottom: 0.25rem;
+      background: var(--card);
+      border: 2px solid var(--border);
+      font-family: monospace;
+      font-size: 0.625rem;
+    }
+
+    /* Screen Types */
+    .screen-auth {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+
+    .screen-auth-card {
+      width: 100%;
+      max-width: 280px;
+      padding: 1.5rem;
+      border: 2px solid var(--border);
+      background: var(--card);
+    }
+
+    .screen-auth-input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.75rem;
+      background: var(--background);
+      border: 2px solid var(--border);
+      color: var(--foreground);
+      font-size: 0.75rem;
+    }
+
+    .screen-auth-button {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--primary);
+      border: 2px solid var(--primary);
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .screen-dashboard {
+      padding: 1rem;
+    }
+
+    .screen-dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .screen-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .screen-dashboard-metric {
+      padding: 0.75rem;
+      background: var(--card);
+      border: 2px solid var(--border);
+    }
+
+    .screen-dashboard-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0.25rem 0;
+    }
+
+    .screen-dashboard-label {
+      font-size: 0.625rem;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+    }
+
+    .screen-error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      text-align: center;
+    }
+
+    .screen-error-icon {
+      width: 64px;
+      height: 64px;
+      border: 2px solid var(--destructive);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .screen-error-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .screen-error-message {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      margin-bottom: 1.5rem;
+    }
+
+    .screen-error-button {
+      padding: 0.75rem 1.5rem;
+      background: var(--primary);
+      border: 2px solid var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .code-block {
+      background: var(--background);
+      border: 2px solid var(--border);
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.75rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>📐 Balloo Screen Pattern Gallery</h1>
+  <p style="color: var(--muted-foreground); margin-top: 0.5rem;">Visual gallery of screen patterns and layouts</p>
+
+  <!-- Layout Patterns -->
+  <div class="section">
+    <h2>Layout Patterns</h2>
+    <div class="pattern-grid">
+      <!-- Centered -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="layout-centered">
+            <div class="layout-centered-content">
+              <div style="font-weight: 600; margin-bottom: 0.5rem;">Centered</div>
+              <div style="font-size: 0.75rem; color: var(--muted-foreground);">Auth, Error screens</div>
+            </div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Centered Layout</div>
+          <div class="pattern-description">Content centered horizontally and vertically</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Auth</span>
+            <span class="pattern-tag">Error</span>
+            <span class="pattern-tag">Modal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="layout-grid">
+            <div class="layout-grid-item">Metric 1</div>
+            <div class="layout-grid-item">Metric 2</div>
+            <div class="layout-grid-item">Metric 3</div>
+            <div class="layout-grid-item">Metric 4</div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Grid Layout</div>
+          <div class="pattern-description">Responsive grid for dashboards</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Dashboard</span>
+            <span class="pattern-tag">Metrics</span>
+            <span class="pattern-tag">Cards</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="layout-sidebar">
+            <div class="layout-sidebar-nav">
+              <div class="layout-sidebar-nav-item">Nav 1</div>
+              <div class="layout-sidebar-nav-item">Nav 2</div>
+              <div class="layout-sidebar-nav-item">Nav 3</div>
+            </div>
+            <div class="layout-sidebar-content">
+              <div style="font-size: 0.75rem; color: var(--muted-foreground);">Main content area</div>
+            </div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Sidebar Layout</div>
+          <div class="pattern-description">Navigation sidebar with main content</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Settings</span>
+            <span class="pattern-tag">Admin</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="layout-two-column">
+            <div class="layout-two-column-sidebar">
+              <div class="layout-two-column-item">Chat 1</div>
+              <div class="layout-two-column-item">Chat 2</div>
+              <div class="layout-two-column-item">Chat 3</div>
+            </div>
+            <div class="layout-two-column-main">
+              <div class="layout-two-column-message">Message 1</div>
+              <div class="layout-two-column-message">Message 2</div>
+              <div class="layout-two-column-message">Message 3</div>
+            </div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Two-Column Layout</div>
+          <div class="pattern-description">List + detail view</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Chat</span>
+            <span class="pattern-tag">Mail</span>
+            <span class="pattern-tag">Files</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="layout-tabs">
+            <div class="layout-tabs-header">
+              <div class="layout-tab active">Overview</div>
+              <div class="layout-tab">Logs</div>
+              <div class="layout-tab">Config</div>
+            </div>
+            <div class="layout-tabs-content">
+              Tab content area - changes based on selection
+            </div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Tabs Layout</div>
+          <div class="pattern-description">Tabbed content navigation</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Node Detail</span>
+            <span class="pattern-tag">Settings</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Width -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="layout-full-width">
+            <div class="layout-full-width-item">[LOG] 2026-06-13 10:00:00 INFO Starting service...</div>
+            <div class="layout-full-width-item">[LOG] 2026-06-13 10:00:01 INFO Connected to DB</div>
+            <div class="layout-full-width-item">[LOG] 2026-06-13 10:00:02 WARN High memory usage</div>
+            <div class="layout-full-width-item">[LOG] 2026-06-13 10:00:03 INFO Request processed</div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Full-Width Layout</div>
+          <div class="pattern-description">Full-width content with minimal padding</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Logs</span>
+            <span class="pattern-tag">Tables</span>
+            <span class="pattern-tag">Data</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen Types -->
+  <div class="section">
+    <h2>Screen Types</h2>
+    <div class="pattern-grid">
+      <!-- Auth Screen -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="screen-auth">
+            <div class="screen-auth-card">
+              <div style="text-align: center; font-weight: 700; margin-bottom: 1rem;">Balloo</div>
+              <input type="text" class="screen-auth-input" placeholder="Email" />
+              <input type="password" class="screen-auth-input" placeholder="Password" />
+              <button class="screen-auth-button">Sign In</button>
+            </div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Auth Screen</div>
+          <div class="pattern-description">Login, register, password reset flows</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Login</span>
+            <span class="pattern-tag">Register</span>
+            <span class="pattern-tag">Centered</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Screen -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="screen-dashboard">
+            <div class="screen-dashboard-header">
+              <div style="font-weight: 700;">Dashboard</div>
+              <div style="font-size: 0.75rem;">User</div>
+            </div>
+            <div class="screen-dashboard-grid">
+              <div class="screen-dashboard-metric">
+                <div class="screen-dashboard-label">Messages</div>
+                <div class="screen-dashboard-value">1,234</div>
+                <div style="font-size: 0.625rem; color: var(--healthy);">↑ +12%</div>
+              </div>
+              <div class="screen-dashboard-metric">
+                <div class="screen-dashboard-label">Contacts</div>
+                <div class="screen-dashboard-value">89</div>
+                <div style="font-size: 0.625rem; color: var(--muted-foreground);">+3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Dashboard Screen</div>
+          <div class="pattern-description">Main overview with metrics and status</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">Home</span>
+            <span class="pattern-tag">Metrics</span>
+            <span class="pattern-tag">Grid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Screen -->
+      <div class="pattern-card">
+        <div class="pattern-preview">
+          <div class="screen-error">
+            <div class="screen-error-icon">!</div>
+            <div class="screen-error-title">404 Not Found</div>
+            <div class="screen-error-message">The page you're looking for doesn't exist.</div>
+            <button class="screen-error-button">Go Home</button>
+          </div>
+        </div>
+        <div class="pattern-info">
+          <div class="pattern-name">Error Screen</div>
+          <div class="pattern-description">Error states and fallback screens</div>
+          <div class="pattern-meta">
+            <span class="pattern-tag">404</span>
+            <span class="pattern-tag">500</span>
+            <span class="pattern-tag">Offline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Usage Guide -->
+  <div class="section">
+    <h2>Usage Guide</h2>
+    <div class="code-block">
+// Centered Layout (Auth, Error)
+&lt;div class="layout-centered"&gt;
+  &lt;div class="content"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+
+// Grid Layout (Dashboard)
+&lt;div class="layout-grid" style="grid-template-columns: repeat(2, 1fr);"&gt;
+  &lt;div class="metric"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+
+// Sidebar Layout (Settings)
+&lt;div class="layout-sidebar"&gt;
+  &lt;nav class="sidebar"&gt;...&lt;/nav&gt;
+  &lt;main class="content"&gt;...&lt;/main&gt;
+&lt;/div&gt;
+
+// Two-Column Layout (Chat)
+&lt;div class="layout-two-column"&gt;
+  &lt;aside class="list"&gt;...&lt;/aside&gt;
+  &lt;main class="detail"&gt;...&lt;/main&gt;
+&lt;/div&gt;
+
+// Tabs Layout (Node Detail)
+&lt;div class="layout-tabs"&gt;
+  &lt;div class="tabs-header"&gt;...&lt;/div&gt;
+  &lt;div class="tabs-content"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+
+// Full-Width Layout (Logs)
+&lt;div class="layout-full-width"&gt;
+  &lt;div class="log-entry"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+    </div>
+  </div>
+
+  <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border); color: var(--muted-foreground); font-size: 0.875rem;">
+    <p>Balloo Screen Pattern Gallery v1.0.0 | Design Reconstruction | <a href="design-system-user.html" style="color: var(--primary);">Design Tokens</a> | <a href="component-anatomy.html" style="color: var(--primary);">Component Anatomy</a></p>
+  </footer>
+</body>
+</html>

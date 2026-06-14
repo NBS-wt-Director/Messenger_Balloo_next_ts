@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "canonicalRoot": "SUMMARY_DOCS/modules",
+  "primaryIndex": "SUMMARY_DOCS/modules/MODULE_INDEX.md",
+  "primaryManifest": "SUMMARY_DOCS/modules/MODULE_MANIFEST.json",
+  "totalModules": 14,
+  "activeModules": 14,
+  "inferredModules": 0,
+  "plannedModules": 0,
+  "deprecatedModules": 0,
+  "byType": {
+    "package": 7,
+    "hybrid": 4,
+    "service": 1,
+    "contract": 1,
+    "documentation": 1
+  },
+  "byCodegenRelevance": {
+    "high": 11,
+    "medium": 3,
+    "low": 0
+  },
+  "coreModules": [
+    "core-types",
+    "core-config",
+    "core-i18n",
+    "core-theme",
+    "core-brand",
+    "core-ui",
+    "core-docs-schema"
+  ],
+  "appModules": [
+    "messenger",
+    "admin-portal",
+    "desktop",
+    "mobile"
+  ],
+  "serviceModules": [
+    "android-service"
+  ],
+  "infrastructureModules": [
+    "node-system",
+    "summary-docs"
+  ],
+  "lastNormalizedAt": "2026-06-13T00:00:00Z",
+  "lastUpdatedAt": "2026-06-13T00:00:00Z",
+  "maintainedBy": "NLP-Core-Team",
+  "aiAgent": "Koda"
+}

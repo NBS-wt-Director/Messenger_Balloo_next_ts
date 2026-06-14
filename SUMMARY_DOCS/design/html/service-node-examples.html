@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo Service Node Examples — Technical UI Patterns</title>
+  <style>
+    :root {
+      --background: #000000;
+      --background-plain: #000000;
+      --foreground: #ffffff;
+      --card: #1c1c1c;
+      --card-solid: #1c1c1c;
+      --card-foreground: #ffffff;
+      --primary: #3b82f6;
+      --primary-foreground: #ffffff;
+      --secondary: #2c2c2c;
+      --secondary-foreground: #ffffff;
+      --muted: #2c2c2c;
+      --muted-foreground: #b0b0b0;
+      --accent: #3b82f6;
+      --accent-foreground: #ffffff;
+      --destructive: #dc2626;
+      --destructive-foreground: #ffffff;
+      --border: #404040;
+      --border-solid: #404040;
+      --input: #2c2c2c;
+      --input-solid: #2c2c2c;
+      --ring: #3b82f6;
+      --radius: 0;
+      
+      --status-healthy: #10b981;
+      --status-degraded: #f59e0b;
+      --status-failed: #dc2626;
+      --status-startup: #3b82f6;
+      --status-maintenance: #6b7280;
+      
+      --code-background: #1a1a1a;
+      --code-foreground: #e5e5e5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      line-height: 1.5;
+      padding: 2rem;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+    h2 { font-size: 2rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; }
+    h3 { font-size: 1.5rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; }
+
+    p { margin-bottom: 1rem; color: var(--muted-foreground); }
+
+    .section { margin-bottom: 3rem; }
+
+    .example-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .example-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .example-description {
+      color: var(--muted-foreground);
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .screen-preview {
+      background: var(--background);
+      border: 2px solid var(--border);
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      border: 2px solid;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .status-healthy { background: var(--status-healthy); color: white; border-color: var(--status-healthy); }
+    .status-degraded { background: var(--status-degraded); color: white; border-color: var(--status-degraded); }
+    .status-failed { background: var(--status-failed); color: white; border-color: var(--status-failed); }
+    .status-startup { background: var(--status-startup); color: white; border-color: var(--status-startup); }
+    .status-maintenance { background: var(--status-maintenance); color: white; border-color: var(--status-maintenance); }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      display: inline-block;
+      background: white;
+    }
+
+    /* Metric Card */
+    .metric-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      padding: 1.5rem;
+      display: inline-block;
+      min-width: 200px;
+      margin: 0.5rem;
+    }
+
+    .metric-title {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-delta {
+      font-size: 0.875rem;
+      color: var(--status-healthy);
+    }
+
+    .metric-delta.negative { color: var(--status-failed); }
+
+    .metric-range {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-top: 0.5rem;
+    }
+
+    /* Node Status Block */
+    .node-status-block {
+      background: var(--card);
+      border: 2px solid var(--border);
+      padding: 1rem;
+      margin: 0.5rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .node-status-indicator {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .node-status-indicator.healthy { background: var(--status-healthy); }
+    .node-status-indicator.degraded { background: var(--status-degraded); }
+    .node-status-indicator.failed { background: var(--status-failed); }
+
+    .node-status-content { flex: 1; }
+
+    .node-id {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .node-status-text {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .node-meta {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Log Viewer */
+    .log-viewer {
+      background: var(--code-background);
+      border: 2px solid var(--border);
+      padding: 1rem;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.875rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      margin-bottom: 0.5rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .log-level {
+      font-weight: 700;
+      min-width: 60px;
+    }
+
+    .log-level.info { color: var(--primary); }
+    .log-level.warn { color: var(--status-degraded); }
+    .log-level.error { color: var(--status-failed); }
+    .log-level.debug { color: var(--muted-foreground); }
+
+    .log-timestamp {
+      color: var(--muted-foreground);
+      font-size: 0.75rem;
+    }
+
+    .log-message { flex: 1; }
+
+    /* Settings Form */
+    .settings-form {
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--input);
+      border: 2px solid var(--border);
+      color: var(--foreground);
+      font-size: 1rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--ring);
+    }
+
+    .form-help {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-top: 0.5rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border: 2px solid;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      min-height: 44px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border-color: var(--primary);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: var(--secondary-foreground);
+      border-color: var(--secondary);
+    }
+
+    .btn-destructive {
+      background: var(--destructive);
+      color: var(--destructive-foreground);
+      border-color: var(--destructive);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--foreground);
+      border-color: var(--border);
+    }
+
+    /* Rollout Progress */
+    .rollout-progress {
+      background: var(--card);
+      border: 2px solid var(--border);
+      padding: 1.5rem;
+    }
+
+    .progress-bar {
+      height: 24px;
+      background: var(--secondary);
+      border: 2px solid var(--border);
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s;
+    }
+
+    .progress-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      font-size: 0.875rem;
+    }
+
+    .node-list {
+      margin-top: 1rem;
+    }
+
+    .node-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+
+    .node-item-dot {
+      width: 8px;
+      height: 8px;
+    }
+
+    .node-item-dot.success { background: var(--status-healthy); }
+    .node-item-dot.updating { background: var(--status-startup); }
+    .node-item-dot.pending { background: var(--muted); }
+
+    .node-item-name { flex: 1; font-weight: 500; }
+    .node-item-version { font-size: 0.75rem; color: var(--muted-foreground); }
+
+    /* Header */
+    .tech-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border: 2px solid var(--border);
+      border-bottom: none;
+      background: var(--card);
+    }
+
+    .tech-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .tech-header-logo {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    .tech-header-title {
+      font-size: 1rem;
+      color: var(--muted-foreground);
+    }
+
+    .tech-header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    /* Code Block */
+    pre {
+      background: var(--code-background);
+      border: 2px solid var(--border);
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    code {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.875rem;
+      color: var(--code-foreground);
+    }
+
+    /* Theme Switcher */
+    .theme-switcher {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--card);
+      border: 2px solid var(--border);
+      padding: 1rem;
+      z-index: 100;
+    }
+
+    .theme-switcher button {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.5rem;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border: 2px solid var(--primary);
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      h1 { font-size: 2rem; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-switcher">
+    <button onclick="setTheme('dark')">Dark</button>
+    <button onclick="setTheme('light')">Light</button>
+    <button onclick="setTheme('russia')">Russia</button>
+  </div>
+
+  <div class="container">
+    <h1>⚙️ Service Node Examples</h1>
+    <p>Примеры UI паттернов для технических узлов Balloo — реконструировано из SUMMARY_DOCS</p>
+    <p><strong>Version:</strong> 1.0.0 | <strong>Date:</strong> 2026-06-13</p>
+
+    <!-- WorkDocs Example -->
+    <section class="section">
+      <h2>📄 WorkDocs-like Screen</h2>
+      <p>Documentation viewer pattern for workdocs.working.balloo.su</p>
+
+      <div class="example-card">
+        <div class="example-title">WorkDocs Layout</div>
+        <div class="example-description">Left navigation with main content area</div>
+
+        <div class="screen-preview">
+          <div class="tech-header">
+            <div class="tech-header-left">
+              <div class="tech-header-logo">🎈 WorkDocs</div>
+              <div class="tech-header-title">Technical Documentation</div>
+            </div>
+            <div class="tech-header-right">
+              <input type="text" placeholder="Search docs..." class="form-input" style="width: 200px; padding: 0.5rem;">
+              <button class="btn btn-primary" style="padding: 0.5rem 1rem;">Login</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <div style="width: 250px; flex-shrink: 0;">
+              <div class="example-card" style="margin: 0; padding: 1rem;">
+                <div style="font-weight: 700; margin-bottom: 1rem;">Navigation</div>
+                <div style="margin-bottom: 0.5rem; color: var(--primary);">► Nodes</div>
+                <div style="margin-bottom: 0.5rem; margin-left: 1rem; color: var(--muted-foreground);">• Production (11)</div>
+                <div style="margin-bottom: 0.5rem; margin-left: 1rem; color: var(--muted-foreground);">• Alpha (3)</div>
+                <div style="margin-bottom: 0.5rem; margin-left: 1rem; color: var(--primary);">• Working (15)</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">► Contracts</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">► Runbooks</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">► State Files</div>
+              </div>
+            </div>
+
+            <div style="flex: 1;">
+              <div class="example-card" style="margin: 0;">
+                <h3 style="margin-top: 0;"># workdocs-working</h3>
+                <p style="color: var(--muted-foreground);">Node: workdocs.working.balloo.su:3210</p>
+                
+                <div style="margin: 1rem 0;">
+                  <span class="status-badge status-healthy"><span class="status-dot"></span> Healthy</span>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground); margin-left: 1rem;">Uptime: 99.9% (24h)</span>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                  <h4 style="margin-bottom: 0.5rem;">Purpose</h4>
+                  <p>Рабочая документация Balloo для разработчиков и AI — presentation layer для SUMMARY_DOCS.</p>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                  <h4 style="margin-bottom: 0.5rem;">Quick Links</h4>
+                  <ul style="margin-left: 1.5rem; color: var(--muted-foreground);">
+                    <li><a href="#" style="color: var(--primary);">NODE_SUMMARY_workdocs_working.md</a></li>
+                    <li><a href="#" style="color: var(--primary);">NODE_CONTRACT_workdocs_working.md</a></li>
+                    <li><a href="#" style="color: var(--primary);">RUNBOOK_workdocs_working.md</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <pre><code>&lt;!-- WorkDocs Pattern --&gt;
+&lt;Header logo="WorkDocs" search={true} auth={true} /&gt;
+&lt;Layout sidebar={&lt;Navigation /&gt;}&gt;
+  &lt;Content&gt;
+    &lt;NodeSummary nodeId="workdocs-working" /&gt;
+    &lt;QuickLinks links={[...]} /&gt;
+  &lt;/Content&gt;
+&lt;/Layout&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Nodes-Switcher Example -->
+    <section class="section">
+      <h2>🔄 Nodes-Switcher-like Screen</h2>
+      <p>Rollout control pattern for nodes-switcher.working.balloo.su</p>
+
+      <div class="example-card">
+        <div class="example-title">Rollout Control Dashboard</div>
+        <div class="example-description">Monitor and control node rollouts</div>
+
+        <div class="screen-preview">
+          <div class="tech-header">
+            <div class="tech-header-left">
+              <div class="tech-header-logo">🔄 Nodes-Switcher</div>
+              <div class="tech-header-title">Rollout: api-production v3.2.0</div>
+            </div>
+            <div class="tech-header-right">
+              <span class="status-badge status-startup"><span class="status-dot"></span> In Progress</span>
+            </div>
+          </div>
+
+          <div style="padding: 1.5rem;">
+            <div class="dashboard-grid">
+              <div class="metric-card">
+                <div class="metric-title">Progress</div>
+                <div class="metric-value">80%</div>
+                <div class="metric-delta">▲ 8 nodes</div>
+                <div class="metric-range">of 10 total</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">Success Rate</div>
+                <div class="metric-value">100%</div>
+                <div class="metric-delta">✓ 8/8</div>
+                <div class="metric-range">No failures</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">ETA</div>
+                <div class="metric-value">2m</div>
+                <div class="metric-delta" style="color: var(--muted-foreground);">Remaining</div>
+                <div class="metric-range">At current speed</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">Current Version</div>
+                <div class="metric-value" style="font-size: 1.5rem;">3.1.5</div>
+                <div class="metric-delta">→ 3.2.0</div>
+                <div class="metric-range">Target version</div>
+              </div>
+            </div>
+
+            <div class="rollout-progress" style="margin-top: 1.5rem;">
+              <div style="font-weight: 700; margin-bottom: 0.5rem;">Rollout Progress</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%;"></div>
+                <div class="progress-label">80% Complete</div>
+              </div>
+
+              <div class="node-list">
+                <div class="node-item">
+                  <div class="node-item-dot success"></div>
+                  <div class="node-item-name">api-prod-01.balloo.su</div>
+                  <div class="node-item-version">✓ 3.2.0</div>
+                </div>
+                <div class="node-item">
+                  <div class="node-item-dot success"></div>
+                  <div class="node-item-name">api-prod-02.balloo.su</div>
+                  <div class="node-item-version">✓ 3.2.0</div>
+                </div>
+                <div class="node-item">
+                  <div class="node-item-dot updating"></div>
+                  <div class="node-item-name">api-prod-03.balloo.su</div>
+                  <div class="node-item-version">🔄 Updating...</div>
+                </div>
+                <div class="node-item">
+                  <div class="node-item-dot pending"></div>
+                  <div class="node-item-name">api-prod-04.balloo.su</div>
+                  <div class="node-item-version">⏳ Pending</div>
+                </div>
+              </div>
+
+              <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary">Pause</button>
+                <button class="btn btn-primary">Resume</button>
+                <button class="btn btn-destructive">Rollback</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <pre><code>&lt;!-- Nodes-Switcher Pattern --&gt;
+&lt;Header title="Rollout: api-production" status="in-progress" /&gt;
+&lt;DashboardGrid&gt;
+  &lt;MetricCard title="Progress" value="80%" delta="+8 nodes" /&gt;
+  &lt;MetricCard title="Success Rate" value="100%" delta="✓ 8/8" /&gt;
+  &lt;MetricCard title="ETA" value="2m" /&gt;
+  &lt;MetricCard title="Version" value="3.1.5 → 3.2.0" /&gt;
+&lt;/DashboardGrid&gt;
+&lt;RolloutProgress percent={80} nodes={nodeList} /&gt;
+&lt;ActionButtons actions={["Pause", "Resume", "Rollback"]} /&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- KpdGen Example -->
+    <section class="section">
+      <h2>🤖 KpdGen-like Control Screen</h2>
+      <p>Code generation control pattern for kpdegen.working.balloo.su</p>
+
+      <div class="example-card">
+        <div class="example-title">Code Generation Dashboard</div>
+        <div class="example-description">Control and monitor code generation</div>
+
+        <div class="screen-preview">
+          <div class="tech-header">
+            <div class="tech-header-left">
+              <div class="tech-header-logo">🤖 KpdGen</div>
+              <div class="tech-header-title">Code Generator</div>
+            </div>
+            <div class="tech-header-right">
+              <span class="status-badge status-healthy"><span class="status-dot"></span> Ready</span>
+            </div>
+          </div>
+
+          <div style="padding: 1.5rem;">
+            <div class="dashboard-grid">
+              <div class="metric-card">
+                <div class="metric-title">Templates Loaded</div>
+                <div class="metric-value">10</div>
+                <div class="metric-range">Node scaffolds</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">Generations Today</div>
+                <div class="metric-value">47</div>
+                <div class="metric-delta">▲ 12</div>
+                <div class="metric-range">vs yesterday</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">Success Rate</div>
+                <div class="metric-value">98%</div>
+                <div class="metric-delta negative">▼ 1%</div>
+                <div class="metric-range">Last 7 days</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">Avg. Generation Time</div>
+                <div class="metric-value">1.2s</div>
+                <div class="metric-delta">▲ 0.3s</div>
+                <div class="metric-range">Per template</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+              <div class="example-card" style="margin: 0;">
+                <div class="example-title">New Generation</div>
+                <div class="settings-form" style="margin-top: 1rem;">
+                  <div class="form-group">
+                    <label class="form-label">Node ID</label>
+                    <input type="text" class="form-input" placeholder="my-new-node" />
+                    <div class="form-help">Unique identifier for the node</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Template</label>
+                    <select class="form-input">
+                      <option>node-scaffold</option>
+                      <option>contract-template</option>
+                      <option>runbook-template</option>
+                      <option>state-file</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Output Directory</label>
+                    <input type="text" class="form-input" placeholder="./output" />
+                  </div>
+
+                  <button class="btn btn-primary">Generate</button>
+                </div>
+              </div>
+
+              <div class="example-card" style="margin: 0;">
+                <div class="example-title">Recent Generations</div>
+                <div class="node-list" style="margin-top: 1rem;">
+                  <div class="node-item">
+                    <div class="node-item-dot success"></div>
+                    <div class="node-item-name">NODE_CONTRACT_new-node.md</div>
+                    <div class="node-item-version">2m ago</div>
+                  </div>
+                  <div class="node-item">
+                    <div class="node-item-dot success"></div>
+                    <div class="node-item-name">RUNBOOK_new-node.md</div>
+                    <div class="node-item-version">5m ago</div>
+                  </div>
+                  <div class="node-item">
+                    <div class="node-item-dot success"></div>
+                    <div class="node-item-name">design-tokens.json</div>
+                    <div class="node-item-version">10m ago</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <div class="example-title">Generation Logs</div>
+              <div class="log-viewer">
+                <div class="log-entry">
+                  <span class="log-level info">[INFO]</span>
+                  <span class="log-timestamp">10:00:00</span>
+                  <span class="log-message">Codegen started for node: workdocs-working</span>
+                </div>
+                <div class="log-entry">
+                  <span class="log-level info">[INFO]</span>
+                  <span class="log-timestamp">10:00:01</span>
+                  <span class="log-message">Templates loaded: 10</span>
+                </div>
+                <div class="log-entry">
+                  <span class="log-level warn">[WARN]</span>
+                  <span class="log-timestamp">10:00:05</span>
+                  <span class="log-message">Slow response: 2.1s for template: node-scaffold</span>
+                </div>
+                <div class="log-entry">
+                  <span class="log-level info">[INFO]</span>
+                  <span class="log-timestamp">10:00:15</span>
+                  <span class="log-message">Generation complete: 3 files generated</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <pre><code>&lt;!-- KpdGen Pattern --&gt;
+&lt;Header title="Code Generator" status="ready" /&gt;
+&lt;DashboardGrid&gt;
+  &lt;MetricCard title="Templates" value="10" /&gt;
+  &lt;MetricCard title="Generations" value="47" delta="+12" /&gt;
+  &lt;MetricCard title="Success Rate" value="98%" /&gt;
+  &lt;MetricCard title="Avg Time" value="1.2s" /&gt;
+&lt;/DashboardGrid&gt;
+&lt;GenerationForm templates={templates} /&gt;
+&lt;LogViewer logs={generationLogs} /&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ProjectGeneralSettings Example -->
+    <section class="section">
+      <h2>⚙️ ProjectGeneralSettings-like Screen</h2>
+      <p>Settings surface pattern for projectgeneralsettings.working.balloo.su</p>
+
+      <div class="example-card">
+        <div class="example-title">Settings Dashboard</div>
+        <div class="example-description">Project-wide configuration management</div>
+
+        <div class="screen-preview">
+          <div class="tech-header">
+            <div class="tech-header-left">
+              <div class="tech-header-logo">⚙️ Project Settings</div>
+              <div class="tech-header-title">Balloo Platform Configuration</div>
+            </div>
+            <div class="tech-header-right">
+              <button class="btn btn-primary" style="padding: 0.5rem 1rem;">Save All</button>
+            </div>
+          </div>
+
+          <div style="padding: 1.5rem;">
+            <div style="display: grid; grid-template-columns: 250px 1fr; gap: 1.5rem;">
+              <div class="example-card" style="margin: 0; padding: 1rem; height: fit-content;">
+                <div style="font-weight: 700; margin-bottom: 1rem;">Settings Sections</div>
+                <div style="margin-bottom: 0.5rem; color: var(--primary);">• General</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">• Branding</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">• Authentication</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">• Node Registry</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">• Theme Settings</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">• API Configuration</div>
+                <div style="margin-bottom: 0.5rem; color: var(--muted-foreground);">• Advanced</div>
+              </div>
+
+              <div class="example-card" style="margin: 0;">
+                <h3 style="margin-top: 0;">General Settings</h3>
+                <p style="color: var(--muted-foreground); margin-bottom: 1.5rem;">Core platform configuration</p>
+
+                <div class="settings-form">
+                  <div class="form-group">
+                    <label class="form-label">Platform Name</label>
+                    <input type="text" class="form-input" value="Balloo" />
+                    <div class="form-help">Display name for the platform</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Default Theme</label>
+                    <select class="form-input">
+                      <option value="dark">Dark</option>
+                      <option value="light">Light</option>
+                      <option value="russia">Russia</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Default Language</label>
+                    <select class="form-input">
+                      <option value="ru">Russian</option>
+                      <option value="en">English</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Node Count</label>
+                    <input type="text" class="form-input" value="29" disabled />
+                    <div class="form-help">Total nodes in registry (read-only)</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">API Base URL</label>
+                    <input type="text" class="form-input" value="https://api.balloo.su" />
+                  </div>
+
+                  <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                    <button class="btn btn-primary">Save Changes</button>
+                    <button class="btn btn-outline">Reset to Defaults</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <pre><code>&lt;!-- ProjectGeneralSettings Pattern --&gt;
+&lt;Header title="Project Settings" actions={["Save All"]} /&gt;
+&lt;Layout sidebar={&lt;SettingsNavigation /&gt;}&gt;
+  &lt;SettingsSection title="General"&gt;
+    &lt;SettingsForm fields={generalFields} /&gt;
+    &lt;ActionButtons actions={["Save", "Reset"]} /&gt;
+  &lt;/SettingsSection&gt;
+&lt;/Layout&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Health Monitoring Example -->
+    <section class="section">
+      <h2>📊 Health Monitoring Widget</h2>
+      <p>Status and health monitoring pattern for all technical nodes</p>
+
+      <div class="example-card">
+        <div class="example-title">System Health Dashboard</div>
+        <div class="example-description">Overview of all node health status</div>
+
+        <div class="screen-preview">
+          <div class="dashboard-grid">
+            <div class="metric-card">
+              <div class="metric-title">Overall Health</div>
+              <div class="metric-value" style="color: var(--status-healthy);">98%</div>
+              <div class="metric-delta">▲ 1%</div>
+              <div class="metric-range">Last 24 hours</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-title">Healthy Nodes</div>
+              <div class="metric-value">27</div>
+              <div class="metric-delta">✓ 93%</div>
+              <div class="metric-range">of 29 total</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-title">Degraded</div>
+              <div class="metric-value" style="color: var(--status-degraded);">2</div>
+              <div class="metric-range">Requires attention</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-title">Failed</div>
+              <div class="metric-value" style="color: var(--status-failed);">0</div>
+              <div class="metric-range">No failures</div>
+            </div>
+          </div>
+
+          <div class="example-card" style="margin-top: 1.5rem;">
+            <div class="example-title">Node Status Overview</div>
+            <div class="node-list">
+              <div class="node-status-block">
+                <div class="node-status-indicator healthy"></div>
+                <div class="node-status-content">
+                  <div class="node-id">workdocs-working</div>
+                  <div class="node-status-text">Status: HEALTHY | Uptime: 99.9% (24h)</div>
+                  <div class="node-meta">
+                    <span>Last check: 30s ago</span>
+                    <span>Port: 3210</span>
+                    <span>Version: 1.0.0</span>
+                  </div>
+                </div>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.75rem;">View Details</button>
+              </div>
+
+              <div class="node-status-block">
+                <div class="node-status-indicator healthy"></div>
+                <div class="node-status-content">
+                  <div class="node-id">nodes-switcher-working</div>
+                  <div class="node-status-text">Status: HEALTHY | Uptime: 99.8% (24h)</div>
+                  <div class="node-meta">
+                    <span>Last check: 45s ago</span>
+                    <span>Port: 4100</span>
+                    <span>Version: 1.0.0</span>
+                  </div>
+                </div>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.75rem;">View Details</button>
+              </div>
+
+              <div class="node-status-block">
+                <div class="node-status-indicator degraded"></div>
+                <div class="node-status-content">
+                  <div class="node-id">kpdegen-working</div>
+                  <div class="node-status-text">Status: DEGRADED | High response time</div>
+                  <div class="node-meta">
+                    <span>Last check: 1m ago</span>
+                    <span>Port: 4200</span>
+                    <span>Version: 1.0.0</span>
+                  </div>
+                </div>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.75rem;">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <pre><code>&lt;!-- Health Monitoring Pattern --&gt;
+&lt;DashboardGrid&gt;
+  &lt;MetricCard title="Overall Health" value="98%" delta="+1%" /&gt;
+  &lt;MetricCard title="Healthy Nodes" value="27" delta="✓ 93%" /&gt;
+  &lt;MetricCard title="Degraded" value="2" status="degraded" /&gt;
+  &lt;MetricCard title="Failed" value="0" status="healthy" /&gt;
+&lt;/DashboardGrid&gt;
+&lt;NodeStatusList nodes={nodeList} /&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Technical Invariants -->
+    <section class="section">
+      <h2>✅ Technical UI Invariants</h2>
+      <p>Critical design rules for all technical nodes</p>
+
+      <div class="example-card">
+        <div class="example-title">Must Follow Rules</div>
+        
+        <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+          <li><strong style="color: var(--destructive);">border-radius: 0</strong> — No rounded corners anywhere</li>
+          <li><strong style="color: var(--primary);">border: 2px solid</strong> — All borders 2px</li>
+          <li><strong style="color: var(--status-healthy);">Status always visible</strong> — Health/state in header</li>
+          <li><strong style="color: var(--primary);">Keyboard shortcuts</strong> — All actions accessible via keyboard</li>
+          <li><strong style="color: var(--primary);">Logs accessible</strong> — Log viewer available</li>
+          <li><strong style="color: var(--destructive);">Auth required</strong> — No public technical UI</li>
+          <li><strong style="color: var(--primary);">Audit trail</strong> — Actions logged and visible</li>
+        </ul>
+
+        <pre style="margin-top: 1rem;"><code>// Technical Design Context
+interface TechnicalDesignContext {
+  nodeType: 'technical';
+  requiresAuth: true;
+  showHealth: true;
+  showLogs: true;
+  allowRollback: true;
+  borderRadius: 0; // Always
+  borderWidth: 2; // Default
+}</code></pre>
+      </div>
+    </section>
+
+    <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--border); color: var(--muted-foreground); font-size: 0.875rem;">
+      <p><strong>Balloo Service Node Examples</strong> — Version 1.0.0</p>
+      <p>Created: 2026-06-13 | Author: Koda (NLP-Core-Team)</p>
+      <p>🎈 Balloo - Переверни общение!</p>
+    </footer>
+  </div>
+
+  <script>
+    function setTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('balloo-theme', themeName);
+    }
+
+    const savedTheme = localStorage.getItem('balloo-theme') || 'dark';
+    setTheme(savedTheme);
+  </script>
+</body>
+</html>

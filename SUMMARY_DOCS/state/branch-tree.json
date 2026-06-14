@@ -1,0 +1,70 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Branch tree state for Balloo node registry",
+  "branches": [
+    {
+      "branchId": "production",
+      "canonicalName": "Production",
+      "rootDomain": "balloo.su",
+      "description": "Стабильная production-среда для конечных пользователей",
+      "allowedNodeGroups": ["public", "api", "storage", "admin", "workers"],
+      "releaseOrder": 3,
+      "maturity": "stable",
+      "accessLevel": "public",
+      "nodeCount": 11,
+      "technicalNodesPolicy": "minimal",
+      "status": "active"
+    },
+    {
+      "branchId": "alpha",
+      "canonicalName": "Alpha",
+      "rootDomain": "alpha.balloo.su",
+      "description": "Среда тестирования новых функций перед production",
+      "allowedNodeGroups": ["public", "experimental"],
+      "releaseOrder": 2,
+      "maturity": "beta",
+      "accessLevel": "limited",
+      "nodeCount": 3,
+      "technicalNodesPolicy": "minimal",
+      "status": "active"
+    },
+    {
+      "branchId": "working",
+      "canonicalName": "Working",
+      "rootDomain": "working.balloo.su",
+      "description": "Среда разработки и интеграции",
+      "allowedNodeGroups": ["public", "api", "storage", "admin", "workers", "technical"],
+      "releaseOrder": 1,
+      "maturity": "development",
+      "accessLevel": "internal",
+      "nodeCount": 15,
+      "technicalNodesPolicy": "priority_1",
+      "status": "active"
+    }
+  ],
+  "releaseFlow": {
+    "order": ["working", "alpha", "production"],
+    "transitions": {
+      "working_to_alpha": {
+        "requirements": ["feature_complete", "ci_cd_passed", "docs_updated"],
+        "approval": ["tech-lead", "product-owner"]
+      },
+      "alpha_to_production": {
+        "requirements": ["qa_approved", "no_critical_bugs", "performance_tests_passed", "security_review"],
+        "approval": ["tech-lead", "product-owner", "security"]
+      }
+    }
+  },
+  "invariants": [
+    "Production stability — production branch всегда stable",
+    "Alpha isolation — alpha отделена от production",
+    "Working flexibility — working позволяет active development",
+    "Domain policy — production требует домены, working не требует",
+    "Technical nodes — working имеет priority 1 technical nodes",
+    "Access control — каждая ветка имеет свой access level",
+    "Release flow — working → alpha → production",
+    "Identity preservation — production identity не теряется"
+  ]
+}

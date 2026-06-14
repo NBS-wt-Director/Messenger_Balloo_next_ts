@@ -1,0 +1,53 @@
+{
+  "$schema": "../schemas/access-legacy-alias.schema.json",
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Legacy node name aliases for migration and reference",
+  "aliases": [
+    {
+      "legacyNodeId": "kpdegen.working.balloo.su",
+      "canonicalNodeId": "kodegen.working.balloo.su",
+      "aliasType": "typo",
+      "status": "deprecated-alias",
+      "usage": "docs-migration-only",
+      "redirectRecommended": true,
+      "dateDeprecated": "2026-06-13",
+      "deprecationReason": "Typo in node name (kpdegen → kodegen)",
+      "affectedDocuments": [
+        "SUMMARY_DOCS/access/ACCESS_POLICY.md",
+        "SUMMARY_DOCS/state/access-node-map.json",
+        "SUMMARY_DOCS/access/ACCESS_DISCOVERY_REPORT.md"
+      ],
+      "migrationNotes": "Replace all references to kpdegen.working.balloo.su with kodegen.working.balloo.su in new documents. Legacy references retained for historical context only.",
+      "codegenHandling": "AI codegen must use canonical name kodegen.working.balloo.su. Legacy alias should trigger warning if used in new code.",
+      "runtimeHandling": "Runtime may accept legacy alias for backward compatibility but should log warning and redirect to canonical.",
+      "validUntil": "2026-12-31",
+      "afterValidUntil": "Reject legacy alias, require canonical name"
+    }
+  ],
+  "policy": {
+    "legacyAliasUsage": "docs-migration-only",
+    "newDocumentsMustUse": "canonical-names-only",
+    "codegenMustUse": "canonical-names-only",
+    "runtimeMayAccept": "with-warning",
+    "warningMessage": "Legacy node alias used. Please update to canonical name: {canonicalNodeId}",
+    "errorAfterDate": "2026-12-31",
+    "errorMessage": "Legacy node alias expired. Use canonical name: {canonicalNodeId}"
+  },
+  "validation": {
+    "checkOnDocumentSave": true,
+    "checkOnCodegen": true,
+    "checkOnRuntime": true,
+    "warnOnLegacyUsage": true,
+    "errorOnExpiredAlias": true
+  },
+  "metadata": {
+    "totalAliases": 1,
+    "activeAliases": 1,
+    "expiredAliases": 0,
+    "typoAliases": 1,
+    "renameAliases": 0,
+    "lastUpdated": "2026-06-13"
+  }
+}

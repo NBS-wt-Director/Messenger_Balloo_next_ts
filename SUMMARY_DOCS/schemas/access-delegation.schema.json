@@ -1,0 +1,227 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/access-delegation.schema.json",
+  "title": "Balloo Access Delegation Schema",
+  "description": "JSON Schema for Balloo access delegation validation",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["version", "dateCreated", "status", "delegationRules"],
+  "properties": {
+    "version": { "type": "string" },
+    "dateCreated": { "type": "string", "format": "date" },
+    "status": { "type": "string", "enum": ["active", "draft", "deprecated"] },
+    "description": { "type": "string" },
+    "delegationRules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ruleId",
+          "delegatorRole",
+          "delegatorNode",
+          "targetNode",
+          "allowedDelegatedRoles",
+          "delegableScopes",
+          "revocable"
+        ],
+        "properties": {
+          "ruleId": { "type": "string" },
+          "delegatorRole": {
+            "type": "string",
+            "enum": ["creator-superadmin", "delegated-node-admin"]
+          },
+          "delegatorNode": {
+            "type": "string",
+            "const": "projectgeneralsettings.working.balloo.su"
+          },
+          "targetNode": { "type": "string" },
+          "allowedDelegatedRoles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "delegated-node-admin",
+                "company-staff",
+                "alpha-staff",
+                "alpha-volunteer",
+                "sandbox-operator"
+              ]
+            }
+          },
+          "delegableScopes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "revocable": { "type": "boolean" },
+          "approvalNotes": { "type": "string" },
+          "delegationType": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["temporary", "persistent", "read-only", "operational", "configuration"]
+            }
+          },
+          "maxDelegationDuration": {
+            "type": ["string", "null"],
+            "pattern": "^(\\d+d|null)$"
+          },
+          "requiresJustification": { "type": "boolean" },
+          "auditLevel": {
+            "type": "string",
+            "enum": ["standard", "maximum"]
+          }
+        },
+        "if": {
+          "properties": {
+            "delegatorRole": { "const": "creator-superadmin" }
+          }
+        },
+        "then": {
+          "properties": {
+            "delegatorNode": { "const": "projectgeneralsettings.working.balloo.su" }
+          }
+        }
+      }
+    },
+    "forbiddenDelegations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "description", "reason"],
+        "properties": {
+          "rule": { "type": "string" },
+          "description": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      },
+      "contains": {
+        "properties": {
+          "rule": { "const": "no-self-delegation" }
+        }
+      },
+      "contains": {
+        "properties": {
+          "rule": { "const": "no-implicit-admin" }
+        }
+      },
+      "contains": {
+        "properties": {
+          "rule": { "const": "no-cross-environment" }
+        }
+      }
+    },
+    "delegationTypes": {
+      "type": "object",
+      "properties": {
+        "temporary": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "requiresExpiry": { "type": "boolean", "const": true },
+            "maxDuration": { "type": "string" },
+            "renewalRequiresApproval": { "type": "boolean", "const": true }
+          }
+        },
+        "persistent": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "requiresExpiry": { "type": "boolean", "const": false },
+            "maxDuration": { "type": "null" },
+            "renewalRequiresApproval": { "type": "boolean", "const": false }
+          }
+        },
+        "read-only": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "allowedScopes": {
+              "type": "array",
+              "items": { "const": "read" }
+            },
+            "modificationAllowed": { "type": "boolean", "const": false }
+          }
+        },
+        "operational": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "allowedScopes": {
+              "type": "array",
+              "items": {
+                "enum": ["use", "manage", "deploy"]
+              }
+            },
+            "modificationAllowed": { "type": "boolean" }
+          }
+        },
+        "configuration": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "allowedScopes": {
+              "type": "array",
+              "items": { "const": "configure" }
+            },
+            "modificationAllowed": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "revocationRules": {
+      "type": "object",
+      "properties": {
+        "immediateRevocation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "security_incident",
+              "terms_violation",
+              "employment_termination",
+              "creator-superadmin_request"
+            ]
+          }
+        },
+        "scheduledRevocation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["delegation_expiry", "role_change", "environment_change"]
+          }
+        },
+        "automaticRevocation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["alpha_program_end", "sandbox_access_period_end"]
+          }
+        }
+      }
+    },
+    "auditRequirements": {
+      "type": "object",
+      "properties": {
+        "logDelegationGrant": { "type": "boolean", "const": true },
+        "logDelegationRevoke": { "type": "boolean", "const": true },
+        "logDelegationUse": { "type": "boolean", "const": true },
+        "logDelegationExpiry": { "type": "boolean", "const": true },
+        "retentionPeriod": { "type": "string", "const": "90d" },
+        "accessibleTo": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "totalDelegationRules": { "type": "integer" },
+        "forbiddenDelegationRules": { "type": "integer" },
+        "delegationTypes": { "type": "integer" },
+        "revocableDelegations": { "type": "integer" },
+        "lastUpdated": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

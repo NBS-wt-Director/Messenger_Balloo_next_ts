@@ -11,6 +11,8 @@ const EDITABLE_FILES = [
   { path: 'Realease_calendare.md', title: 'Календарь релиза' },
   { path: 'TZ.md', title: 'Техзадание' },
   { path: 'Errors.md', title: 'Ошибки' },
+  { path: 'INDEX.md', title: 'Documentation Index' },
+  { path: 'summary/ROOT_SUMMARY_DOCS.md', title: 'ROOT SUMMARY DOCS' },
 ];
 
 export default function EditorPage() {
@@ -20,7 +22,7 @@ export default function EditorPage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
-  const directories = ['Contracts', 'Nodes', 'Modules', 'Tree', 'history_tickets', 'Owner_tickets'];
+  const directories = ['contracts', 'summary', 'topology', 'state', 'playbooks', 'appendix'];
 
   useEffect(() => {
     if (selectedFile) {

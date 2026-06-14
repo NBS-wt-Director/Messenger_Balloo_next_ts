@@ -1,0 +1,322 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Missing translation strings tracker for Balloo platform",
+  "policy": {
+    "noSilentFallback": true,
+    "explicitMarkers": true,
+    "coverageThreshold": 100,
+    "blockingThreshold": 20
+  },
+  "missingStrings": {
+    "hi": [
+      {
+        "key": "familyRelations",
+        "packageName": "ui",
+        "ruValue": "Семейные связи",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "addRelation",
+        "packageName": "ui",
+        "ruValue": "Добавить связь",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "relationChildMother",
+        "packageName": "ui",
+        "ruValue": "Ребёнок-мать",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "relationChildFather",
+        "packageName": "ui",
+        "ruValue": "Ребёнок-отец",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "relationSibling",
+        "packageName": "ui",
+        "ruValue": "Брат/сестра",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "relationSpouse",
+        "packageName": "ui",
+        "ruValue": "Муж/жена",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "selectRelation",
+        "packageName": "ui",
+        "ruValue": "Выберите тип связи",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "relatedUser",
+        "packageName": "ui",
+        "ruValue": "Связанный пользователь",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "noRelations",
+        "packageName": "ui",
+        "ruValue": "Семейные связи не указаны",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "removeRelation",
+        "packageName": "ui",
+        "ruValue": "Удалить связь",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "installApp",
+        "packageName": "pwa",
+        "ruValue": "Установить приложение",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "installAppDesc",
+        "packageName": "pwa",
+        "ruValue": "Добавьте на главный экран для удобного доступа",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "enableNotifications",
+        "packageName": "pwa",
+        "ruValue": "Включить уведомления",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "notificationsDesc",
+        "packageName": "pwa",
+        "ruValue": "Получайте сообщения даже когда приложение закрыто",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "contactsPermissionDenied",
+        "packageName": "contacts",
+        "ruValue": "Доступ к контактам запрещён",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      }
+    ],
+    "zh": [
+      {
+        "key": "familyRelations",
+        "packageName": "ui",
+        "ruValue": "Семейные связи",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "addRelation",
+        "packageName": "ui",
+        "ruValue": "Добавить связь",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "relationChildMother",
+        "packageName": "ui",
+        "ruValue": "Ребёнок-мать",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "relationChildFather",
+        "packageName": "ui",
+        "ruValue": "Ребёнок-отец",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "relationSibling",
+        "packageName": "ui",
+        "ruValue": "Брат/сестра",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "relationSpouse",
+        "packageName": "ui",
+        "ruValue": "Муж/жена",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "selectRelation",
+        "packageName": "ui",
+        "ruValue": "Выберите тип связи",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "relatedUser",
+        "packageName": "ui",
+        "ruValue": "Связанный пользователь",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "noRelations",
+        "packageName": "ui",
+        "ruValue": "Семейные связи не указаны",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "removeRelation",
+        "packageName": "ui",
+        "ruValue": "Удалить связь",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "installApp",
+        "packageName": "pwa",
+        "ruValue": "Установить приложение",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "installAppDesc",
+        "packageName": "pwa",
+        "ruValue": "Добавьте на главный экран для удобного доступа",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "enableNotifications",
+        "packageName": "pwa",
+        "ruValue": "Включить уведомления",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      },
+      {
+        "key": "notificationsDesc",
+        "packageName": "pwa",
+        "ruValue": "Получайте сообщения даже когда приложение закрыто",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "low"
+      },
+      {
+        "key": "contactsPermissionDenied",
+        "packageName": "contacts",
+        "ruValue": "Доступ к контактам запрещён",
+        "status": "missing",
+        "addedAt": "2026-06-13T00:00:00Z",
+        "priority": "medium"
+      }
+    ]
+  },
+  "summary": {
+    "totalMissingStrings": 30,
+    "byLanguage": {
+      "hi": 15,
+      "zh": 15
+    },
+    "byPackage": {
+      "ui": 20,
+      "pwa": 6,
+      "contacts": 4
+    },
+    "byPriority": {
+      "high": 0,
+      "medium": 10,
+      "low": 20
+    },
+    "languagesAboveThreshold": 10,
+    "languagesBelowThreshold": 2,
+    "blockingLanguages": []
+  },
+  "coverageByLanguage": {
+    "ru": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "en": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "tt": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "hi": { "total": 250, "translated": 200, "missing": 50, "coverage": 80 },
+    "zh": { "total": 250, "translated": 200, "missing": 50, "coverage": 80 },
+    "be": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "ba": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "cv": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "sah": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "udm": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "ce": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 },
+    "os": { "total": 250, "translated": 250, "missing": 0, "coverage": 100 }
+  },
+  "actions": {
+    "required": [
+      {
+        "language": "hi",
+        "action": "translate",
+        "missingCount": 15,
+        "priority": "medium",
+        "deadline": "2026-06-20"
+      },
+      {
+        "language": "zh",
+        "action": "translate",
+        "missingCount": 15,
+        "priority": "medium",
+        "deadline": "2026-06-20"
+      }
+    ],
+    "recommended": [
+      {
+        "action": "review",
+        "description": "Review all partial translations for accuracy",
+        "languages": ["hi", "zh"]
+      },
+      {
+        "action": "audit",
+        "description": "Audit translation files for consistency",
+        "frequency": "monthly"
+      }
+    ]
+  }
+}

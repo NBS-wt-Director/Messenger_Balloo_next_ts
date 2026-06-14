@@ -1,0 +1,274 @@
+{
+  "version": "1.0.0",
+  "date": "2026-06-13",
+  "status": "active",
+  "description": "Machine-readable component registry for Balloo platform — reconstructed from messenger and SUMMARY_DOCS",
+  "sources": {
+    "userEnvironment": "messenger/src/components/",
+    "technicalNodes": "SUMMARY_DOCS/nodes/technical/",
+    "designContract": "SUMMARY_DOCS/DesignContract.md"
+  },
+  "invariants": {
+    "borderRadius": 0,
+    "borderWidth": 2,
+    "touchTargetMin": 44
+  },
+  "components": {
+    "Button": {
+      "id": "button",
+      "name": "Button",
+      "category": "interactive",
+      "variants": ["primary", "secondary", "destructive", "outline"],
+      "states": ["default", "hover", "active", "focus", "disabled"],
+      "props": {
+        "variant": { "type": "string", "default": "primary", "options": ["primary", "secondary", "destructive", "outline"] },
+        "size": { "type": "string", "default": "md", "options": ["sm", "md", "lg"] },
+        "disabled": { "type": "boolean", "default": false },
+        "loading": { "type": "boolean", "default": false }
+      },
+      "styles": {
+        "padding": "0.75rem 1.5rem",
+        "border": "2px solid",
+        "borderRadius": 0,
+        "minHeight": "44px",
+        "fontWeight": 500
+      },
+      "usage": "Primary actions, form submissions, navigation",
+      "examples": {
+        "primary": "<Button variant=\"primary\">Save Changes</Button>",
+        "destructive": "<Button variant=\"destructive\">Delete Account</Button>"
+      }
+    },
+    "Input": {
+      "id": "input",
+      "name": "Input Field",
+      "category": "form",
+      "variants": ["text", "password", "email", "number", "search"],
+      "states": ["default", "focus", "disabled", "error"],
+      "props": {
+        "type": { "type": "string", "default": "text" },
+        "placeholder": { "type": "string", "default": "" },
+        "disabled": { "type": "boolean", "default": false },
+        "error": { "type": "boolean", "default": false },
+        "label": { "type": "string", "default": "" }
+      },
+      "styles": {
+        "padding": "0.75rem 1rem",
+        "border": "2px solid var(--border)",
+        "borderRadius": 0,
+        "fontSize": "1rem"
+      },
+      "usage": "Text input, form fields, search",
+      "examples": {
+        "default": "<Input placeholder=\"Enter email\" />",
+        "error": "<Input error message=\"Invalid email\" />"
+      }
+    },
+    "Card": {
+      "id": "card",
+      "name": "Card",
+      "category": "container",
+      "variants": ["basic", "interactive", "status"],
+      "states": ["default", "hover"],
+      "props": {
+        "title": { "type": "string", "default": "" },
+        "description": { "type": "string", "default": "" },
+        "interactive": { "type": "boolean", "default": false }
+      },
+      "styles": {
+        "padding": "1.5rem",
+        "border": "2px solid var(--border)",
+        "borderRadius": 0,
+        "background": "var(--card)"
+      },
+      "usage": "Content containers, feature cards, status displays",
+      "examples": {
+        "basic": "<Card title=\"Settings\"><p>Content here</p></Card>",
+        "status": "<Card status=\"healthy\">Node is running</Card>"
+      }
+    },
+    "Modal": {
+      "id": "modal",
+      "name": "Modal Dialog",
+      "category": "overlay",
+      "variants": ["default", "confirm", "form"],
+      "states": ["open", "closed", "animating"],
+      "props": {
+        "title": { "type": "string", "required": true },
+        "description": { "type": "string", "default": "" },
+        "actions": { "type": "array", "default": [] },
+        "closeOnBackdrop": { "type": "boolean", "default": true }
+      },
+      "styles": {
+        "maxWidth": "28rem",
+        "padding": "1.5rem",
+        "border": "2px solid var(--border)",
+        "borderRadius": 0,
+        "boxShadow": "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+      },
+      "usage": "Confirmations, forms, alerts, detailed views",
+      "examples": {
+        "confirm": "<Modal title=\"Delete?\" actions={[\"Cancel\", \"Delete\"]} />"
+      }
+    },
+    "StatusBadge": {
+      "id": "status-badge",
+      "name": "Status Badge",
+      "category": "feedback",
+      "variants": ["healthy", "degraded", "failed", "startup", "maintenance"],
+      "states": ["default"],
+      "props": {
+        "status": { "type": "string", "required": true, "options": ["healthy", "degraded", "failed", "startup", "maintenance"] },
+        "showDot": { "type": "boolean", "default": true },
+        "uppercase": { "type": "boolean", "default": true }
+      },
+      "styles": {
+        "padding": "0.25rem 0.75rem",
+        "border": "2px solid",
+        "borderRadius": 0,
+        "fontSize": "0.75rem",
+        "fontWeight": 700,
+        "textTransform": "uppercase"
+      },
+      "usage": "Health status, state indicators, node status",
+      "examples": {
+        "healthy": "<StatusBadge status=\"healthy\">Healthy</StatusBadge>",
+        "failed": "<StatusBadge status=\"failed\">Failed</StatusBadge>"
+      }
+    },
+    "Header": {
+      "id": "header",
+      "name": "Header Navigation",
+      "category": "layout",
+      "variants": ["default", "mobile", "admin"],
+      "states": ["default", "scrolled"],
+      "props": {
+        "logo": { "type": "string", "default": "/logo.png" },
+        "title": { "type": "string", "default": "" },
+        "actions": { "type": "array", "default": [] },
+        "showBurger": { "type": "boolean", "default": false }
+      },
+      "styles": {
+        "padding": "1rem 2rem",
+        "border": "none",
+        "borderBottom": "2px solid var(--border)",
+        "display": "flex",
+        "justifyContent": "space-between",
+        "alignItems": "center"
+      },
+      "usage": "Top navigation, branding, user actions",
+      "examples": {
+        "default": "<Header logo=\"/logo.png\" title=\"Messenger\" actions={[\"Settings\", \"Logout\"]} />"
+      }
+    },
+    "Footer": {
+      "id": "footer",
+      "name": "Footer",
+      "category": "layout",
+      "variants": ["default", "minimal", "links"],
+      "states": ["default"],
+      "props": {
+        "links": { "type": "array", "default": [] },
+        "copyright": { "type": "string", "default": "© Balloo" },
+        "social": { "type": "array", "default": [] }
+      },
+      "styles": {
+        "padding": "2rem",
+        "border": "none",
+        "borderTop": "2px solid var(--border)",
+        "color": "var(--muted-foreground)"
+      },
+      "usage": "Page footer, links, copyright",
+      "examples": {
+        "default": "<Footer links={[\"Privacy\", \"Terms\"]} copyright=\"© 2026 Balloo\" />"
+      }
+    },
+    "MetricCard": {
+      "id": "metric-card",
+      "name": "Metric Card",
+      "category": "dashboard",
+      "variants": ["default", "trend", "status"],
+      "states": ["default", "loading"],
+      "props": {
+        "title": { "type": "string", "required": true },
+        "value": { "type": "string", "required": true },
+        "delta": { "type": "string", "default": "" },
+        "trend": { "type": "string", "default": "", "options": ["up", "down", "neutral"] },
+        "timeRange": { "type": "string", "default": "" }
+      },
+      "styles": {
+        "padding": "1.5rem",
+        "border": "2px solid var(--border)",
+        "borderRadius": 0,
+        "background": "var(--card)"
+      },
+      "usage": "Dashboard metrics, KPI displays, monitoring",
+      "examples": {
+        "trend": "<MetricCard title=\"Uptime\" value=\"99.9%\" delta=\"+0.1%\" trend=\"up\" timeRange=\"Last 24h\" />"
+      }
+    },
+    "LogViewer": {
+      "id": "log-viewer",
+      "name": "Log Viewer",
+      "category": "technical",
+      "variants": ["default", "compact"],
+      "states": ["default", "streaming", "paused"],
+      "props": {
+        "logs": { "type": "array", "required": true },
+        "filter": { "type": "string", "default": "" },
+        "autoScroll": { "type": "boolean", "default": true },
+        "levels": { "type": "array", "default": ["INFO", "WARN", "ERROR", "DEBUG"] }
+      },
+      "styles": {
+        "padding": "1rem",
+        "border": "2px solid var(--border)",
+        "borderRadius": 0,
+        "background": "var(--code-background)",
+        "fontFamily": "monospace",
+        "fontSize": "0.875rem"
+      },
+      "usage": "Log display, debugging, monitoring",
+      "examples": {
+        "default": "<LogViewer logs={logs} filter=\"ERROR\" autoScroll={true} />"
+      }
+    },
+    "NodeStatusBlock": {
+      "id": "node-status-block",
+      "name": "Node Status Block",
+      "category": "technical",
+      "variants": ["compact", "detailed"],
+      "states": ["healthy", "degraded", "failed", "startup", "maintenance"],
+      "props": {
+        "nodeId": { "type": "string", "required": true },
+        "status": { "type": "string", "required": true },
+        "uptime": { "type": "string", "default": "" },
+        "lastCheck": { "type": "string", "default": "" },
+        "version": { "type": "string", "default": "" }
+      },
+      "styles": {
+        "padding": "1rem",
+        "border": "2px solid var(--border)",
+        "borderRadius": 0,
+        "background": "var(--card)"
+      },
+      "usage": "Node health display, status monitoring",
+      "examples": {
+        "detailed": "<NodeStatusBlock nodeId=\"workdocs-working\" status=\"healthy\" uptime=\"99.9%\" lastCheck=\"30s ago\" />"
+      }
+    }
+  },
+  "componentCategories": {
+    "interactive": ["Button", "Link", "Toggle", "Switch"],
+    "form": ["Input", "Select", "Textarea", "Checkbox", "Radio"],
+    "container": ["Card", "Panel", "Section", "Container"],
+    "overlay": ["Modal", "Dialog", "Tooltip", "Popover"],
+    "feedback": ["StatusBadge", "Alert", "Toast", "Progress"],
+    "layout": ["Header", "Footer", "Sidebar", "Grid"],
+    "dashboard": ["MetricCard", "Chart", "Table", "Timeline"],
+    "technical": ["LogViewer", "NodeStatusBlock", "ConfigEditor", "HealthWidget"]
+  },
+  "usage": {
+    "clientApps": ["Button", "Input", "Card", "Modal", "Header", "Footer", "StatusBadge"],
+    "technicalNodes": ["MetricCard", "LogViewer", "NodeStatusBlock", "StatusBadge", "Card", "Button", "Input"]
+  }
+}

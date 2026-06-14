@@ -1,0 +1,195 @@
+{
+  "$schema": "../schemas/access-environment.schema.json",
+  "version": "1.0.0",
+  "dateCreated": "2026-06-13",
+  "status": "active",
+  "description": "Environment access map for Balloo platform",
+  "environments": [
+    {
+      "environmentId": "production",
+      "displayName": "Production",
+      "description": "Production environment - public and restricted production nodes",
+      "riskLevel": "critical",
+      "allowedRoleClasses": [
+        "creator-superadmin",
+        "delegated-node-admin",
+        "company-staff",
+        "public-user"
+      ],
+      "forbiddenRoleClasses": [
+        "alpha-staff",
+        "alpha-volunteer",
+        "sandbox-operator"
+      ],
+      "privilegedNodeRules": {
+        "admin.balloo.su": {
+          "access": "company-staff-minimum",
+          "privilegedActions": ["system:tariff:*", "system:feature-toggle:*"],
+          "requiresDelegation": true,
+          "auditLevel": "standard"
+        }
+      },
+      "productionIsolation": {
+        "enabled": true,
+        "noAutomaticCarryover": true,
+        "requiresExplicitAuthorization": true,
+        "controlledPromotionPath": true,
+        "promotionRequiresApproval": "creator-superadmin"
+      },
+      "deploymentRules": {
+        "directDeployment": false,
+        "promotionFromEnvironment": "working",
+        "approvalRequired": true,
+        "approverRole": "creator-superadmin",
+        "rollbackSupported": true
+      },
+      "notes": "Production environment. Strictest access control. No automatic privilege carryover from other environments."
+    },
+    {
+      "environmentId": "alpha",
+      "displayName": "Alpha",
+      "description": "Alpha testing environment - volunteer and staff access",
+      "riskLevel": "medium",
+      "allowedRoleClasses": [
+        "creator-superadmin",
+        "alpha-staff",
+        "alpha-volunteer"
+      ],
+      "forbiddenRoleClasses": [
+        "sandbox-operator",
+        "public-user"
+      ],
+      "privilegedNodeRules": {
+        "2commands.alpha.balloo.su": {
+          "access": "alpha-staff-minimum",
+          "privilegedActions": ["alpha:volunteer:manage"],
+          "requiresDelegation": false,
+          "auditLevel": "standard"
+        }
+      },
+      "productionIsolation": {
+        "enabled": true,
+        "noAutomaticCarryover": true,
+        "requiresExplicitAuthorization": true,
+        "controlledPromotionPath": true,
+        "promotionRequiresApproval": "creator-superadmin"
+      },
+      "deploymentRules": {
+        "directDeployment": true,
+        "promotionFromEnvironment": null,
+        "approvalRequired": false,
+        "approverRole": null,
+        "rollbackSupported": true
+      },
+      "notes": "Alpha testing environment. Separate from production. Volunteers have limited access."
+    },
+    {
+      "environmentId": "working",
+      "displayName": "Working",
+      "description": "Working/sandbox environment - internal development and testing",
+      "riskLevel": "medium",
+      "allowedRoleClasses": [
+        "creator-superadmin",
+        "delegated-node-admin",
+        "company-staff",
+        "sandbox-operator"
+      ],
+      "forbiddenRoleClasses": [
+        "alpha-volunteer",
+        "public-user"
+      ],
+      "privilegedNodeRules": {
+        "projectgeneralsettings.working.balloo.su": {
+          "access": "creator-superadmin-only",
+          "privilegedActions": ["access:grant:*", "access:revoke:*", "access:delegate:*", "role:assign:*"],
+          "requiresDelegation": true,
+          "auditLevel": "maximum"
+        },
+        "kodegen.working.balloo.su": {
+          "access": "creator-superadmin-only",
+          "privilegedActions": ["codegen:execute:*", "codegen:deploy:*"],
+          "requiresDelegation": true,
+          "auditLevel": "maximum"
+        },
+        "pilot-future.working.balloo.su": {
+          "access": "creator-superadmin-only",
+          "privilegedActions": ["system:feature-toggle:*"],
+          "requiresDelegation": true,
+          "auditLevel": "maximum"
+        },
+        "nodes-switcher.working.balloo.su": {
+          "access": "creator-superadmin-only",
+          "privilegedActions": ["node:switch-version:*", "environment:promote:*"],
+          "requiresDelegation": true,
+          "auditLevel": "maximum"
+        }
+      },
+      "productionIsolation": {
+        "enabled": true,
+        "noAutomaticCarryover": true,
+        "requiresExplicitAuthorization": true,
+        "controlledPromotionPath": true,
+        "promotionRequiresApproval": "creator-superadmin"
+      },
+      "deploymentRules": {
+        "directDeployment": true,
+        "promotionFromEnvironment": null,
+        "approvalRequired": true,
+        "approverRole": "creator-superadmin",
+        "rollbackSupported": true
+      },
+      "notes": "Working/sandbox environment. Contains privileged technical nodes. No automatic production access."
+    }
+  ],
+  "environmentSeparation": {
+    "rules": [
+      {
+        "rule": "no-automatic-carryover",
+        "description": "Access in one environment does not grant access to another",
+        "enforcement": "mandatory"
+      },
+      {
+        "rule": "production-isolation",
+        "description": "Production requires explicit authorization",
+        "enforcement": "mandatory"
+      },
+      {
+        "rule": "working-not-production",
+        "description": "Sandbox access is not production authority",
+        "enforcement": "mandatory"
+      },
+      {
+        "rule": "controlled-promotion",
+        "description": "Production updates via controlled path only",
+        "enforcement": "mandatory"
+      }
+    ],
+    "crossEnvironmentAccess": {
+      "allowed": false,
+      "exceptions": [
+        {
+          "role": "creator-superadmin",
+          "environments": ["all"],
+          "reason": "Full platform authority"
+        },
+        {
+          "role": "delegated-node-admin",
+          "environments": ["per-node-explicit"],
+          "reason": "Explicit per-node delegation"
+        },
+        {
+          "role": "company-staff",
+          "environments": ["working", "production"],
+          "reason": "Internal staff access"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "totalEnvironments": 3,
+    "productionEnvironment": "production",
+    "nonProductionEnvironments": ["alpha", "working"],
+    "privilegedNodesInWorking": 4,
+    "lastUpdated": "2026-06-13"
+  }
+}
