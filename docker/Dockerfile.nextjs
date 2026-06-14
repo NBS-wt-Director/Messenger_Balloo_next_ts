@@ -1,0 +1,53 @@
+# Balloo Platform - Next.js Application Dockerfile
+# For messenger, balloo, admin, workdocs, working, nodes-switcher, kodegen
+
+FROM node:20-alpine AS base
+
+# Install dependencies
+RUN apk add --no-cache libc6-compat
+
+WORKDIR /app
+
+# Enable corepack
+RUN corepack enable
+
+# Dependencies
+FROM base AS deps
+
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Builder
+FROM base AS builder
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build arguments
+ARG NODE_ID
+ENV NODE_ID=${NODE_ID}
+
+# Build Next.js app
+RUN npm run build
+
+# Production runner
+FROM base AS runner
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+# Set environment
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+USER nextjs
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]
