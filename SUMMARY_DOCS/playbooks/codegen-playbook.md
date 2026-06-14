@@ -1,3 +1,4 @@
+
 ---
 title: Codegen Playbook
 description: Инструкции по кодогенерации с использованием SUMMARY_DOCS

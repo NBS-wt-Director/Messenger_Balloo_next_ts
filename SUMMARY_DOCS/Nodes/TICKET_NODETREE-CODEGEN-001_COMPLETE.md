@@ -1,3 +1,4 @@
+
 ---
 title: TICKET NODETREE-CODEGEN-001 Completion Report
 description: Отчёт о выполнении тикета — каноническая документация для кодогенерации дерева узлов

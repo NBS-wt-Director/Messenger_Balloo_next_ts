@@ -1,3 +1,4 @@
+
 ---
 title: User vs Technical UI Boundary
 description: Границы между пользовательским и техническим интерфейсами Balloo

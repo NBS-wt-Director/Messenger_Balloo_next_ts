@@ -104,8 +104,8 @@ services:
     volumes:
       - redis_data:/data
 
-  messenger:
-    build: ./messenger
+  balloo:
+    build: ./balloo
     ports:
       - "3000:3000"
     depends_on:
@@ -114,42 +114,75 @@ services:
     environment:
       DATABASE_URL: postgresql://balloo:${DB_PASSWORD}@postgres:5432/balloo
       REDIS_URL: redis://redis:6379
+      NODE_ID: balloo.su
+      NODE_TYPE: client-app
 
-  admin:
-    build: ./admin
+  messenger:
+    build: ./messenger
     ports:
       - "3001:3000"
     depends_on:
       - postgres
       - redis
+    environment:
+      DATABASE_URL: postgresql://balloo:${DB_PASSWORD}@postgres:5432/balloo
+      REDIS_URL: redis://redis:6379
+      NODE_ID: messenger.balloo.su
+      NODE_TYPE: client-app
 
-  api:
-    build: ./api
+  admin:
+    build: ./admin
     ports:
       - "3002:3000"
     depends_on:
       - postgres
       - redis
+    environment:
+      NODE_ID: admin.balloo.su
+      NODE_TYPE: client-app
+
+  api:
+    build: ./api
+    ports:
+      - "3003:3000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      NODE_ID: api.working.balloo.su
+      NODE_TYPE: service
 
   workdocs:
     build: ./workdocs
     ports:
-      - "3003:3000"
+      - "3004:3000"
+    environment:
+      NODE_ID: workdocs.working.balloo.su
+      NODE_TYPE: client-app
 
   kodegen:
     build: ./kodegen
     ports:
-      - "3004:3000"
+      - "3005:3000"
+    environment:
+      NODE_ID: kodegen.working.balloo.su
+      NODE_TYPE: technical
 
   nodes-switcher:
     build: ./nodes-switcher
     ports:
-      - "3005:3000"
+      - "3006:3000"
+    environment:
+      NODE_ID: nodes-switcher.working.balloo.su
+      NODE_TYPE: technical
 
   working:
     build: ./working
     ports:
-      - "3006:3000"
+      - "3007:3000"
+    environment:
+      NODE_ID: working.balloo.su
+      NODE_TYPE: client-app
 
 volumes:
   postgres_data:
@@ -164,13 +197,14 @@ volumes:
 
 | Priority | Node | Canonical Hostname | Group | Status |
 |----------|------|-------------------|-------|--------|
-| **1** | working | working.balloo.su | D (Sandbox) | ✅ Include |
-| **2** | messenger | messenger.balloo.su | E (Production) | ✅ Include |
-| **3** | admin | admin.balloo.su | B (Company) | ✅ Include |
-| **4** | kodegen | kodegen.working.balloo.su | A (Privileged) | ✅ Include |
-| **5** | workdocs | workdocs.working.balloo.su | B (Company) | ✅ Include |
-| **6** | nodes-switcher | nodes-switcher.working.balloo.su | A (Privileged) | ✅ Include |
-| **7** | api | api.working.balloo.su | D (Sandbox) | ✅ Include |
+| **1** | balloo.su | balloo.su | E (Production) | ✅ Include (Main) |
+| **2** | working | working.balloo.su | D (Sandbox) | ✅ Include |
+| **3** | messenger | messenger.balloo.su | E (Production) | ✅ Include |
+| **4** | admin | admin.balloo.su | B (Company) | ✅ Include |
+| **5** | kodegen | kodegen.working.balloo.su | A (Privileged) | ✅ Include |
+| **6** | workdocs | workdocs.working.balloo.su | B (Company) | ✅ Include |
+| **7** | nodes-switcher | nodes-switcher.working.balloo.su | A (Privileged) | ✅ Include |
+| **8** | api | api.working.balloo.su | D (Sandbox) | ✅ Include |
 
 **Отложено до Phase 3:**
 - pilot-future.working.balloo.su
@@ -184,7 +218,29 @@ volumes:
 - workers.working.balloo.su
 - abaut.working.balloo.su
 - apps.working.balloo.su
-- balloo.su
+
+### 2.1.1 Balloo.su — Главный узел
+
+**balloo.su** — это основной производственный узел (Group E), который включает:
+
+| Компонент | Описание | Статус |
+|-----------|----------|--------|
+| **Header** | Каноничный хедер из messenger (адаптируется) | ✅ Существует |
+| **Footer** | Каноничный футер из messenger (адаптируется) | ✅ Существует |
+| **Logo** | Логотип Balloo с маскотом | ✅ Существует |
+| **Company Info** | NBS-wt, Екатеринбург, слоган | ✅ Существует |
+| **Landing Page** | Главная страница продукта | ✅ Требуется |
+| **Navigation** | Переключение между узлами | ✅ Через nodes-switcher |
+
+**Адаптация Header/Footer для других узлов:**
+
+```typescript
+// Header используется во всех узлах с контекстно-зависимым меню
+// messenger: полный функционал (чаты, настройки, профиль)
+// admin: метрики, управление узлами
+// working: sandbox функции
+// balloo.su: лендинг, навигация по продукту
+```
 
 ### 2.2 Messenger Specifications
 
@@ -393,8 +449,8 @@ interface SystemMetrics {
 | **core-types** | ✅ | High | ~50 типов (common, node, messenger, SMSRequest, SystemMetrics) |
 | **core-config** | ✅ | High | Управление настройками узлов |
 | **core-i18n** | ✅ | Medium | ru, en |
-| **core-theme** | ✅ | Medium | light, dark |
-| **core-brand** | ❌ | Low | Отложено до Phase 3 |
+| **core-theme** | ✅ | Medium | light, dark, russia |
+| **core-brand** | ✅ | High | Logo, brand colors, company info (NBS-wt, Екатеринбург) |
 | **core-ui** | ✅ | High | ~30 компонентов |
 | **core-docs-schema** | ✅ | Medium | Структурирование документации |
 
@@ -500,7 +556,74 @@ export interface SystemMetrics {
 }
 ```
 
-### 5.3 Core UI Components (~30 компонентов)
+### 5.3 Core Brand (Phase 1)
+
+**Компоненты:**
+
+| Компонент | Описание | Статус |
+|-----------|----------|--------|
+| **Logo** | Логотип Balloo с маскотом | ✅ Существует в messenger |
+| **Brand Colors** | Russia flag (white, blue, red) | ✅ Существует в core-brand |
+| **Company Info** | NBS-wt, Екатеринбург | ✅ Требуется обновить |
+| **Slogan** | "Системы для Ваших Новых Начинаний." | ✅ Существует в Footer |
+| **Brand Guidelines** | Лого clear space: 8px, min size: 32px | ✅ Существует |
+
+**Company Information:**
+```typescript
+// packages/core-brand/src/brand.ts
+export const COMPANY_INFO = {
+  name: 'NBS - web-tech',
+  shortName: 'NBS-wt',
+  city: 'Екатеринбург',
+  slogan: 'Системы для Ваших Новых Начинаний.',
+  year: new Date().getFullYear(),
+};
+
+export const BRAND_COLORS = {
+  primary: '#0039A6',    // Russia blue
+  secondary: '#D52B1E',  // Russia red
+  accent: '#007bff',     // Modern blue
+  white: '#ffffff',
+  blue: '#0039A6',
+  red: '#D52B1E',
+};
+```
+
+**Header/Footer Architecture:**
+
+```
+messenger/src/components/
+├── Header.tsx          # Каноничный хедер (адаптируется для всех узлов)
+├── Footer.tsx          # Каноничный футер (адаптируется для всех узлов)
+├── layout/
+│   ├── Header.css      # Стили хедера
+│   └── Footer.css      # Стили футера
+└── ui/
+    ├── BurgerMenu.tsx  # Бургер меню с маскотом
+    └── ThemeSelector.tsx # Выбор тем
+
+packages/core-brand/src/
+├── Logo.tsx            # Logo компонент
+├── brand.ts            # Brand constants
+├── types.ts            # Brand types
+└── index.ts            # Exports
+```
+
+**Адаптация для узлов:**
+
+| Узел | Header Menu | Footer Links | Special Features |
+|------|-------------|--------------|------------------|
+| **balloo.su** | Лендинг, продукт, компания | Все ссылки | Главный лендинг |
+| **messenger** | Чаты, настройки, профиль | Стандартные | WebSocket, real-time |
+| **admin** | Метрики, узлы, пользователи | Стандартные | Stats Dashboard |
+| **working** | Sandbox функции | Стандартные | Тестовая среда |
+| **kodegen** | Codegen инструменты | Стандартные | AI codegen |
+| **workdocs** | Документы | Стандартные | Documentation |
+| **nodes-switcher** | Переключение узлов | Стандартные | Node navigation |
+| **api** | API docs | Стандартные | API endpoints |
+```
+
+### 5.4 Core UI Components (~30 компонентов)
 
 **Категории:**
 
@@ -537,7 +660,7 @@ interface RealTimeStatsProps {
 }
 ```
 
-### 5.4 Core I18N
+### 5.5 Core I18N
 
 **Языки:** ru, en
 
@@ -571,7 +694,7 @@ packages/core-i18n/
 }
 ```
 
-### 5.5 Core Theme
+### 5.6 Core Theme
 
 **Темы:** light, dark
 

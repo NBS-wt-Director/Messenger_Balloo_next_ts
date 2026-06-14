@@ -1,3 +1,4 @@
+
 // Роли в группе
 export type GroupRole = 'creator' | 'moderator' | 'author' | 'reader';
 
