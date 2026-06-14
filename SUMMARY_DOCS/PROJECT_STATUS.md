@@ -1,7 +1,7 @@
 ---
 title: Balloo Project Status
 description: Текущий статус разработки Balloo Platform (Phase 1-2)
-version: 1.0.0
+version: 2.0.0
 date: 2026-06-14
 author: Koda (NLP-Core-Team)
 status: active
@@ -14,13 +14,14 @@ related_docs:
   - SUMMARY_DOCS/BALLOO_BUILD_SPEC.md
   - SUMMARY_DOCS/access/ACCESS_POLICY.md
   - SUMMARY_DOCS/auth/AUTH_POLICY.md
+  - packages/core-brand/assets/README.md
 ---
 
 # 📊 BALLOO PROJECT STATUS
 
-**Версия:** 1.0.0  
+**Версия:** 2.0.0 (Updated)  
 **Дата:** 2026-06-14  
-**Статус:** 🔴 In Development (Phase 1)  
+**Статус:** 🟡 In Development (Phase 1)  
 **Дедлайн Phase 1:** 2026-06-22  
 **Владелец:** Оберюхтин Иван Анатольевич (o8eryuhtin@yandex.ru)
 
@@ -30,13 +31,13 @@ related_docs:
 
 | Показатель | Значение |
 |------------|----------|
-| **Общий прогресс** | ~65% |
-| **Phase 1 прогресс** | ~70% |
+| **Общий прогресс** | ~70% |
+| **Phase 1 прогресс** | ~75% |
 | **Phase 2 прогресс** | ~10% |
-| **Документация** | ✅ 95% |
-| **Код** | 🟡 50% |
+| **Документация** | ✅ 98% |
+| **Код** | 🟡 60% |
 | **Тесты** | 🔴 15% |
-| **Деплой** | 🟡 40% |
+| **Деплой** | 🟡 45% |
 
 ---
 
@@ -109,11 +110,11 @@ related_docs:
 
 | Package | Version | Статус | Готовность | Notes |
 |---------|---------|--------|------------|-------|
-| **core-types** | 0.1.0 | 🟢 Ready | 95% | ~50 типов |
+| **core-types** | 0.1.0 | ✅ Ready | 95% | ~50 типов |
 | **core-config** | 0.1.0 | 🟡 In Dev | 60% | Node configs |
-| **core-i18n** | 0.1.0 | 🟢 Ready | 85% | ru, en |
-| **core-theme** | 0.1.0 | 🟢 Ready | 90% | light, dark, russia |
-| **core-brand** | 0.1.0 | 🟢 Ready | 95% | Logo, NBS-wt, Ekaterinburg |
+| **core-i18n** | 0.1.0 | ✅ Ready | 85% | ru, en |
+| **core-theme** | 0.1.0 | ✅ Ready | 90% | light, dark, russia |
+| **core-brand** | 0.1.0 | ✅ Ready | 100% | Logo (JPG/PNG/SVG), COMPANY_INFO, assets/README.md |
 | **core-ui** | 0.1.0 | 🟡 In Dev | 50% | ~30 компонентов |
 | **core-docs-schema** | 0.1.0 | 🟡 In Dev | 40% | Doc structure |
 
@@ -230,6 +231,9 @@ related_docs:
 
 | Commit | Message | Date | Author |
 |--------|---------|------|--------|
+| **b95ac7e** | BRAND_ASSETS_MIGRATION_REPORT.md | 2026-06-14 | Koda |
+| **0edbbd0** | BALLOO-BUILD-20260614-003: Move logo assets to core-brand | 2026-06-14 | Koda |
+| **8b9ff11** | PROJECT_STATUS.md - Live dashboard | 2026-06-14 | Koda |
 | **11df3b4** | BALLOO-BUILD-20260614-002: balloo.su + core-brand → Phase 1 | 2026-06-14 | Koda |
 | **ea8767c** | BALLOO-BUILD-20260614-001: Build Specification | 2026-06-14 | Koda |
 | **d22be97** | AUTH-PROVIDERS-001: Auth Documentation | 2026-06-13 | Koda |

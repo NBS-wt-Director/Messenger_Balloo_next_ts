@@ -1,7 +1,7 @@
 ---
 title: Balloo Project Build Specification — Phase 1-2
 description: Единая спецификация для разработки и развёртывания Balloo (Phase 1-2, 1 сервер, без платных функций)
-version: 1.0.0
+version: 2.0.0
 date: 2026-06-14
 author: Koda (NLP-Core-Team)
 status: active
@@ -16,12 +16,13 @@ related_docs:
   - SUMMARY_DOCS/auth/AUTH_POLICY.md
   - SUMMARY_DOCS/design/DESIGN_RECONSTRUCTION_REPORT.md
   - SUMMARY_DOCS/Nodes/NODETREE_MANIFEST.json
+  - packages/core-brand/assets/README.md
 ---
 
 # 🏗️ BALLOO PROJECT BUILD SPECIFICATION (PHASE 1-2)
 
 **Ticket ID:** BALLOO-BUILD-20260614-001  
-**Версия:** 1.0.0  
+**Версия:** 2.0.0 (Updated)  
 **Дата:** 2026-06-14  
 **Статус:** Active  
 **Дедлайн Phase 1:** 2026-06-22  
@@ -43,12 +44,13 @@ related_docs:
 - ✅ 120,000 пользователей (плановая нагрузка)
 
 **Включено в Phase 1-2:**
-- 7 узлов (working, messenger, admin, kodegen, workdocs, nodes-switcher, api)
+- 8 узлов (balloo.su, working, messenger, admin, kodegen, workdocs, nodes-switcher, api)
 - 3 auth провайдера (yandex-id, email-password, phone-3char-code)
 - 4 роли (creator-superadmin, delegated-node-admin, company-staff, sandbox-operator)
 - ~30 UI компонентов
 - ~50 TypeScript типов
 - 35% minimum test coverage
+- Brand assets: Logo (JPG/PNG/SVG), COMPANY_INFO (NBS-wt, Екатеринбург)
 
 ---
 
@@ -562,21 +564,30 @@ export interface SystemMetrics {
 
 | Компонент | Описание | Статус |
 |-----------|----------|--------|
-| **Logo** | Логотип Balloo с маскотом | ✅ Существует в messenger |
+| **Logo** | Логотип Balloo (JPG/PNG/SVG) | ✅ В packages/core-brand/assets/ |
 | **Brand Colors** | Russia flag (white, blue, red) | ✅ Существует в core-brand |
-| **Company Info** | NBS-wt, Екатеринбург | ✅ Требуется обновить |
+| **Company Info** | NBS-wt, Екатеринбург | ✅ Канонизировано |
 | **Slogan** | "Системы для Ваших Новых Начинаний." | ✅ Существует в Footer |
-| **Brand Guidelines** | Лого clear space: 8px, min size: 32px | ✅ Существует |
+| **Brand Guidelines** | Лого clear space: 8px, min size: 32px | ✅ Задокументировано |
 
-**Company Information:**
+**Logo Assets:**
+```
+packages/core-brand/assets/
+├── logo.jpg          # Основной логотип (~50 KB)
+├── logo.png          # Прозрачный фон (~30 KB)
+└── logo.svg          # Векторный (~5 KB)
+```
+
+**Company Information (CANONICAL):**
 ```typescript
 // packages/core-brand/src/brand.ts
-export const COMPANY_INFO = {
+export const COMPANY_INFO: CompanyInfo = {
   name: 'NBS - web-tech',
   shortName: 'NBS-wt',
   city: 'Екатеринбург',
   slogan: 'Системы для Ваших Новых Начинаний.',
-  year: new Date().getFullYear(),
+  founded: 2026,
+  website: 'https://balloo.su',
 };
 
 export const BRAND_COLORS = {
@@ -587,6 +598,24 @@ export const BRAND_COLORS = {
   blue: '#0039A6',
   red: '#D52B1E',
 };
+```
+
+**Usage in All Nodes:**
+```tsx
+import { Logo, COMPANY_INFO, LOGO_PNG } from '@balloo/core-brand';
+
+// Default logo (uses logo.jpg)
+<Logo size="md" showText={true} />
+
+// Company info in Footer
+<footer>
+  <span>{COMPANY_INFO.name}</span>
+  <span>{COMPANY_INFO.slogan}</span>
+  <span>{COMPANY_INFO.city}</span>
+</footer>
+
+// Direct asset import
+<img src={LOGO_PNG} alt="Balloo" />
 ```
 
 **Header/Footer Architecture:**
@@ -602,11 +631,18 @@ messenger/src/components/
     ├── BurgerMenu.tsx  # Бургер меню с маскотом
     └── ThemeSelector.tsx # Выбор тем
 
-packages/core-brand/src/
-├── Logo.tsx            # Logo компонент
-├── brand.ts            # Brand constants
-├── types.ts            # Brand types
-└── index.ts            # Exports
+packages/core-brand/
+├── assets/
+│   ├── logo.jpg        # Основной логотип
+│   ├── logo.png        # Прозрачный фон
+│   ├── logo.svg        # Векторный
+│   └── README.md       # Документация
+├── src/
+│   ├── Logo.tsx        # Logo компонент
+│   ├── brand.ts        # Brand constants
+│   ├── types.ts        # Brand types
+│   └── index.ts        # Exports
+└── package.json
 ```
 
 **Адаптация для узлов:**
