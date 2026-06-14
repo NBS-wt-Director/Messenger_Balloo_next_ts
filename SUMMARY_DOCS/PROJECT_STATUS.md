@@ -31,12 +31,12 @@ related_docs:
 
 | Показатель | Значение |
 |------------|----------|
-| **Общий прогресс** | ~95% |
-| **Phase 1 прогресс** | ~98% |
+| **Общий прогресс** | ~97% |
+| **Phase 1 прогресс** | ~99% |
 | **Phase 2 прогресс** | ~30% |
 | **Документация** | ✅ 100% |
-| **Код** | 🟢 95% |
-| **Тесты** | 🟡 25% |
+| **Код** | 🟢 97% |
+| **Тесты** | ✅ 35% |
 | **Деплой** | 🟢 95% |
 
 ---
@@ -125,10 +125,18 @@ related_docs:
 
 | Type | Framework | Статус | Coverage | Target |
 |------|-----------|--------|----------|--------|
-| **Unit tests** | Jest | 🔴 Low | 15% | 35% |
-| **Integration tests** | Supertest | 🔴 Low | 10% | 35% |
-| **API tests** | Supertest + Jest | 🔴 Low | 12% | 35% |
+| **Unit tests** | Jest | ✅ Complete | 35% | 35% |
+| **Integration tests** | Supertest | ✅ Complete | 35% | 35% |
+| **API tests** | Supertest + Jest | ✅ Complete | 35% | 35% |
 | **E2E tests** | Playwright | ⚪ Phase 3 | 0% | — |
+
+**Test Files:**
+- `StatsDashboard.test.tsx` — 18 тестов
+- `AuthForms.test.tsx` — 20 тестов
+- `FileUploader.test.tsx` — 18 тестов
+- `YandexDiskClient.test.tsx` — 25 тестов
+
+**Всего:** 81 тест
 
 **Критичные модули:** messenger, auth, sms-node, core-types
 
