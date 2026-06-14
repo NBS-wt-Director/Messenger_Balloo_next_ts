@@ -1,10 +1,28 @@
 /**
  * Core Brand - Brand Constants
  * 
- * Official brand colors, typography, and guidelines for Balloo platform.
+ * Official brand colors, typography, company info, and guidelines for Balloo platform.
  */
 
-import type { BrandColors, BrandTypography, BrandGuidelines } from './types';
+import type { BrandColors, BrandTypography, BrandGuidelines, CompanyInfo } from './types';
+
+// ============================================================================
+// Company Information
+// ============================================================================
+
+/**
+ * Company: NBS - web-tech
+ * City: Екатеринбург
+ * Slogan: Системы для Ваших Новых Начинаний.
+ */
+export const COMPANY_INFO: CompanyInfo = {
+  name: 'NBS - web-tech',
+  shortName: 'NBS-wt',
+  city: 'Екатеринбург',
+  slogan: 'Системы для Ваших Новых Начинаний.',
+  founded: 2026,
+  website: 'https://balloo.su',
+};
 
 // ============================================================================
 // Brand Colors
@@ -62,7 +80,7 @@ export const BRAND_GUIDELINES: BrandGuidelines = {
   colors: BRAND_COLORS,
   typography: BRAND_TYPOGRAPHY,
   logoMinSize: '32px',
-  logoClearSpace: '8px',
+  logoClearSpace: '8px', // Design invariant #6
 };
 
 // ============================================================================

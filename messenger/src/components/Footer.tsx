@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSettingsStore } from '@/stores/settings-store';
 import { getTranslations } from '@/i18n';
-import { Logo } from '@balloo/core-brand';
+import { Logo, COMPANY_INFO } from '@balloo/core-brand';
 import './layout/Footer.css';
 
 interface VersionsData {
@@ -45,20 +45,19 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-content">
         {/* Логотип и название компании */}
-        <div className="footer-brand">
-          <Link href="/" className="footer-logo-link">
-            <Logo 
-              src="/logo.jpg" 
-              alt="Balloo Messenger" 
-              size="sm"
-              showText={false}
-            />
-          </Link>
-          <div className="footer-company">
-            <span className="footer-company-name">NBS - web-tech</span>
-            <span className="footer-company-slogan">Системы для Ваших Новых Начинаний.</span>
-          </div>
+      <div className="footer-brand">
+        <Link href="/" className="footer-logo-link">
+          <Logo 
+            size="sm"
+            showText={false}
+          />
+        </Link>
+        <div className="footer-company">
+          <span className="footer-company-name">{COMPANY_INFO.name}</span>
+          <span className="footer-company-slogan">{COMPANY_INFO.slogan}</span>
+          <span className="footer-company-city">{COMPANY_INFO.city}</span>
         </div>
+      </div>
 
         {/* Ссылки */}
         <nav className="footer-links">

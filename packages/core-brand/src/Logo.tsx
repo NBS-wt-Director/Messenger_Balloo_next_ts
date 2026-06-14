@@ -3,22 +3,28 @@
 import Image from 'next/image';
 import { MessageCircle } from 'lucide-react';
 import type { LogoProps, LogoSize } from './types';
+import logoDefault from '../assets/logo.jpg';
 
 /**
  * Balloo Logo Component
  * 
  * Official brand logo for Balloo platform.
- * Supports image src or fallback gradient (Russia flag colors).
+ * Default logo from @balloo/core-brand/assets/logo.jpg
+ * Supports custom src or fallback gradient (Russia flag colors).
  * 
  * @example
  * ```tsx
  * import { Logo } from '@balloo/core-brand';
  * 
- * <Logo src="/logo.jpg" alt="Balloo" size="md" />
+ * // Use default logo
+ * <Logo size="md" />
+ * 
+ * // Use custom logo
+ * <Logo src="/custom-logo.jpg" size="lg" />
  * ```
  */
 export function Logo({ 
-  src, 
+  src = logoDefault,
   alt = 'Balloo', 
   size = 'md',
   showText = true,
