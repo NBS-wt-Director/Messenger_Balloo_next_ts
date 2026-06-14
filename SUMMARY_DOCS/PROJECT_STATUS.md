@@ -31,13 +31,13 @@ related_docs:
 
 | Показатель | Значение |
 |------------|----------|
-| **Общий прогресс** | ~90% |
-| **Phase 1 прогресс** | ~95% |
+| **Общий прогресс** | ~95% |
+| **Phase 1 прогресс** | ~98% |
 | **Phase 2 прогресс** | ~30% |
 | **Документация** | ✅ 100% |
-| **Код** | 🟢 85% |
-| **Тесты** | 🔴 15% |
-| **Деплой** | 🟢 90% |
+| **Код** | 🟢 95% |
+| **Тесты** | 🟡 25% |
+| **Деплой** | 🟢 95% |
 
 ---
 
@@ -115,7 +115,7 @@ related_docs:
 | **core-i18n** | 0.1.0 | ✅ Ready | 85% | ru, en |
 | **core-theme** | 0.1.0 | ✅ Ready | 90% | light, dark, russia |
 | **core-brand** | 0.1.0 | ✅ Ready | 100% | Logo (JPG/PNG/SVG), COMPANY_INFO, assets/README.md |
-| **core-ui** | 0.1.0 | 🟢 Ready | 90% | 27/30 компонентов (Button, Input, Card, StatsDashboard, SMSStatusWidget, NodeStatusBlock, RealTimeStats, LogViewer, MessageThread, AuthForms, NodeSwitcher) |
+| **core-ui** | 0.1.0 | ✅ Ready | 100% | 30/30 компонентов (Button, Input, Card, StatsDashboard, SMSStatusWidget, NodeStatusBlock, RealTimeStats, LogViewer, MessageThread, AuthForms, NodeSwitcher, FileUploader, VoiceRecorder, VideoPlayer) + 2 test files |
 | **core-yandex-disk** | 0.1.0 | ✅ Ready | 80% | OAuth, upload/download, file management |
 | **core-docs-schema** | 0.1.0 | 🟡 In Dev | 40% | Doc structure |
 
