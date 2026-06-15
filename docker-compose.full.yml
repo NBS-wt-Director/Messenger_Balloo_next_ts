@@ -1,0 +1,377 @@
+# Balloo Platform - Complete Docker Compose (All Nodes)
+# Version: 3.0.0
+# Usage: docker-compose -f docker-compose.full.yml up -d
+
+version: '3.8'
+
+services:
+  # ==================== INFRASTRUCTURE ====================
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: balloo
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-balloo_secret_password}
+      POSTGRES_DB: balloo_production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - balloo-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U balloo -d balloo_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - balloo-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ==================== CORE SERVICES ====================
+
+  # API Gateway
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=postgresql://balloo:${DB_PASSWORD}@postgres:5432/balloo_production
+      - REDIS_URL=redis://redis:6379
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000}
+      - YANDEX_CLIENT_ID=${YANDEX_CLIENT_ID}
+      - YANDEX_CLIENT_SECRET=${YANDEX_CLIENT_SECRET}
+      - ANDROID_SMS_NODE_URL=http://android-sms-node:3005
+      - ANDROID_SMS_NODE_TOKEN=${ANDROID_SMS_NODE_TOKEN}
+    volumes:
+      - api-logs:/app/logs
+      - api-data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Android Service
+  android-service:
+    build:
+      context: ./android-service
+      dockerfile: Dockerfile
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=production
+      - PORT=3004
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=postgresql://balloo:${DB_PASSWORD}@postgres:5432/balloo_production
+      - REDIS_URL=redis://redis:6379
+      - ANDROID_SMS_NODE_URL=http://android-sms-node:3005
+    volumes:
+      - android-service-logs:/app/logs
+    depends_on:
+      - postgres
+      - redis
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Android SMS Node
+  android-sms-node:
+    build:
+      context: ./android-sms-node
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=production
+      - PORT=3005
+      - API_URL=http://api:3001
+      - API_TOKEN=${ANDROID_SMS_NODE_TOKEN}
+    volumes:
+      - sms-node-logs:/app/logs
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # ==================== APPLICATION NODES ====================
+
+  # Balloo Landing (balloo.su)
+  balloo-landing:
+    build:
+      context: ./balloo
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_NODE_ID=balloo.su
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Messenger (messenger.balloo.su)
+  messenger:
+    build:
+      context: ./messenger
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_WS_URL=ws://api:3001
+      - NEXT_PUBLIC_NODE_ID=messenger.balloo.su
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Admin Portal (admin.balloo.su)
+  admin-portal:
+    build:
+      context: ./admin-portal
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_NODE_ID=admin.balloo.su
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Workdocs (docs.balloo.su)
+  workdocs:
+    build:
+      context: ./workdocs
+      dockerfile: Dockerfile
+    ports:
+      - "3006:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_NODE_ID=docs.balloo.su
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Nodes Switcher (switch.balloo.su)
+  nodes-switcher:
+    build:
+      context: ./nodes-switcher
+      dockerfile: Dockerfile
+    ports:
+      - "3007:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_NODE_ID=switch.balloo.su
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Working Sandbox (working.balloo.su)
+  working:
+    build:
+      context: ./working
+      dockerfile: Dockerfile
+    ports:
+      - "3008:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_NODE_ID=working.balloo.su
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Kodegen (kodegen.balloo.su)
+  kodegen:
+    build:
+      context: ./kodegen
+      dockerfile: Dockerfile
+    ports:
+      - "3009:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_NODE_ID=kodegen.balloo.su
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Media Server (media.balloo.su)
+  media:
+    build:
+      context: ./media
+      dockerfile: Dockerfile
+    ports:
+      - "3010:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+      - YANDEX_DISK_TOKEN=${YANDEX_DISK_TOKEN}
+    volumes:
+      - media-storage:/app/storage
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # ==================== ADDITIONAL NODES ====================
+
+  # Files (files.balloo.su)
+  files:
+    build:
+      context: ./files
+      dockerfile: Dockerfile
+    ports:
+      - "3011:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Alpha (alpha.balloo.su)
+  alpha:
+    build:
+      context: ./alpha
+      dockerfile: Dockerfile
+    ports:
+      - "3012:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Future (future.balloo.su)
+  future:
+    build:
+      context: ./future
+      dockerfile: Dockerfile
+    ports:
+      - "3013:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Docs Site (docs-site.balloo.su)
+  docs-site:
+    build:
+      context: ./docs-site
+      dockerfile: Dockerfile
+    ports:
+      - "3014:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Platform State (state.balloo.su)
+  platform-state:
+    build:
+      context: ./platform-state
+      dockerfile: Dockerfile
+    ports:
+      - "3015:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - api
+      - redis
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # ==================== MONITORING ====================
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+      - messenger
+      - admin-portal
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+volumes:
+  pgdata:
+  redis-data:
+  api-logs:
+  api-data:
+  android-service-logs:
+  sms-node-logs:
+  media-storage:
+
+networks:
+  balloo-network:
+    driver: bridge
