@@ -124,7 +124,7 @@ services:
   # Balloo Landing (balloo.su)
   balloo-landing:
     build:
-      context: ./balloo
+      context: ./balloo-landing
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
