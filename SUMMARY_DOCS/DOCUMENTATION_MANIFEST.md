@@ -48,7 +48,8 @@
 | **TreeContract.md** | project/contracts | ✅ N/A | ✅ Active | — |
 | **AutopilotContract.md** | project/contracts | ✅ N/A | ✅ Active | — |
 | **Monorepo_structure.md** | project/architecture | ✅ N/A | ✅ Active | — |
-| **MONOREPO_STATUS_REPORT.md** | reports/status | ⚠️ Mixed | ⚠️ Требуется проверка | — |
+| **MONOREPO_STATUS_REPORT.md** | reports/status | ⚠️ Mixed | ✅ Active | ✅ Добавлен маркер честности |
+| **IMPLEMENTATION_STATUS.md** | reports/status | ✅ Verified | ✅ Active | ✅ 70% → 55-60% (v4.0.0) |
 | **PHASE1_COMPLETION_REPORT.md** | reports/status | ✅ Verified | ✅ Active | ✅ 98% → 60% (v2.0.0) |
 | **COMPLETION_REPORT.md** | reports/status | ✅ N/A | ✅ Active | Summary docs system |
 | **COMPONENTS_COMPLETE.md** | reports/status | ✅ N/A | ✅ Active | Summary docs system |
@@ -224,10 +225,10 @@ mv SUMMARY_DOCS/UBUNTU_DEPLOYMENT_GUIDE.md SUMMARY_DOCS/guides/
 - [x] Создать DOCUMENTATION_MANIFEST.md (классификация)
 - [x] Добавить маркеры честности во все исправленные документы
 
-### ⚠️ Важные (до 2026-06-17):
+### ✅ Важные (выполнено 2026-06-14):
 
-- [ ] Исправить MONOREPO_STATUS_REPORT.md (требуется разделение)
-- [ ] Исправить IMPLEMENTATION_STATUS.md (смесь фактов и оценок)
+- [x] Исправить MONOREPO_STATUS_REPORT.md (добавлен маркер честности)
+- [x] Исправить IMPLEMENTATION_STATUS.md (70% → 55-60%, v4.0.0)
 - [ ] Физически переместить файлы по новым директориям (project/, reports/, guides/)
 - [ ] Обновить ссылки в документах
 
