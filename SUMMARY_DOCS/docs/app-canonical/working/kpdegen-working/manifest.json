@@ -1,0 +1,48 @@
+---
+appId: "kpdegen-working"
+nodeId: "working"
+title: "Kpdegen Working — Server Code Generator"
+description: "Technical node for server code generation, execution/control surface for codegen"
+status: "active"
+version: "1.0.0"
+dateCreated: "2026-06-20T04:00:00.000Z"
+---
+
+# Kpdegen Working Application
+
+## Overview
+
+Server code generator node. Reads docs/contracts/state, generates source code, type definitions, API handlers, configs, and documentation.
+
+## Screens
+
+| ID | Title | Status |
+|----|-------|--------|
+| codegen-dashboard | Codegen Dashboard | active |
+| codegen-input | Input Processing | active |
+| codegen-output | Output Preview | active |
+| codegen-settings | Codegen Settings | draft |
+
+## Transitions
+
+| ID | From | To | Trigger | Status |
+|----|------|-----|---------|--------|
+| dashboard-to-input | codegen-dashboard | codegen-input | start generation | active |
+| input-to-output | codegen-input | codegen-output | generation complete | active |
+| output-to-dashboard | codegen-output | codegen-dashboard | confirm/rollback | active |
+
+## Scenarios
+
+| ID | Title | Goal | Actor | Status |
+|----|-------|------|-------|--------|
+| generate-node | Generate Node Code | Create node scaffolding | ai-agent | active |
+| generate-config | Generate Config | Create environment config | ai-agent | active |
+| validate-output | Validate Output | Check generated code | system | active |
+
+## Integrations
+
+| ID | Title | Direction | Target | Status |
+|----|-------|-----------|--------|--------|
+| workdocs-integration | Workdocs Integration | inbound | workdocs-working | active |
+| nodes-switcher-integration | Nodes Switcher Integration | outbound | nodes-switcher-working | active |
+| projectsettings-integration | Project Settings Integration | inbound | projectgeneralsettings-working | active |

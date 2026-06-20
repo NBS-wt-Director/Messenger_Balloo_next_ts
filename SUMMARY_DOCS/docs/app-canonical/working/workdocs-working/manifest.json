@@ -1,0 +1,47 @@
+---
+appId: "workdocs-working"
+nodeId: "working"
+title: "Workdocs Working — Technical Documentation Node"
+description: "Technical node for working documentation, md-files for developers and AI, documentation as protected website"
+status: "active"
+version: "1.0.0"
+dateCreated: "2026-06-20T04:00:00.000Z"
+---
+
+# Workdocs Working Application
+
+## Overview
+
+Technical node for working documentation. Handles SUMMARY_DOCS web presentation, password-protected access, AI doc reading core, and docs context assembly for codegen.
+
+## Screens
+
+| ID | Title | Status |
+|----|-------|--------|
+| docs-view | Documentation Viewer | active |
+| docs-search | Documentation Search | active |
+| docs-auth | Authentication | active |
+| docs-settings | Documentation Settings | draft |
+
+## Transitions
+
+| ID | From | To | Trigger | Status |
+|----|------|-----|---------|--------|
+| auth-to-docs | docs-auth | docs-view | login success | active |
+| docs-view-to-search | docs-view | docs-search | search click | active |
+| docs-search-to-docs-view | docs-search | docs-view | result select | active |
+
+## Scenarios
+
+| ID | Title | Goal | Actor | Status |
+|----|-------|------|-------|--------|
+| view-document | View Documentation | Read documentation | developer | active |
+| search-docs | Search Documentation | Find documentation | developer | active |
+| ai-read-docs | AI Read Documentation | AI reads docs for context | ai-agent | active |
+
+## Integrations
+
+| ID | Title | Direction | Target | Status |
+|----|-------|-----------|--------|--------|
+| kpdegen-integration | Kpdegen Integration | bidirectional | kpdegen-working | active |
+| nodes-switcher-integration | Nodes Switcher Integration | outbound | nodes-switcher-working | active |

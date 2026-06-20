@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "messenger",
+  "lastUpdated": "2026-06-19T17:30:00Z",
+  "integrations": [
+    {
+      "integrationId": "int-auth-email-password",
+      "title": "Email-Password аутентификация",
+      "direction": "inbound",
+      "targetType": "service",
+      "targetId": "api-auth-service",
+      "screens": ["login", "register"],
+      "scenarios": ["sc-login-flow", "sc-register-flow"]
+    },
+    {
+      "integrationId": "int-auth-yandex-oauth",
+      "title": "Yandex OAuth",
+      "direction": "inbound",
+      "targetType": "external-system",
+      "targetId": "yandex-id",
+      "screens": ["login"],
+      "scenarios": ["sc-login-flow"]
+    },
+    {
+      "integrationId": "int-push-notifications",
+      "title": "Push-уведомления",
+      "direction": "outbound",
+      "targetType": "service",
+      "targetId": "vapid-push-service",
+      "screens": ["chat"],
+      "scenarios": ["sc-send-message"]
+    }
+  ]
+}

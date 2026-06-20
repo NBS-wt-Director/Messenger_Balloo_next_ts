@@ -1,0 +1,55 @@
+name: Check Documentation Honesty
+
+on:
+  pull_request:
+    paths:
+      - 'SUMMARY_DOCS/**/*.md'
+      - 'SUMMARY_DOCS/**/*.json'
+  push:
+    branches:
+      - main
+      - master
+      - 'feature/**'
+    paths:
+      - 'SUMMARY_DOCS/**/*.md'
+
+jobs:
+  check-inflated:
+    name: Check for Inflated Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run inflated documentation check
+        run: node tools/check-inflated-docs.js
+      
+      - name: Check documentation structure
+        run: |
+          echo "Checking SUMMARY_DOCS structure..."
+          
+          # Check that reports exist in correct location
+          if [ -f "SUMMARY_DOCS/PROJECT_STATUS.md" ]; then
+            echo "❌ ERROR: PROJECT_STATUS.md should be in SUMMARY_DOCS/reports/status/"
+            exit 1
+          fi
+          
+          if [ -f "SUMMARY_DOCS/reports/status/PROJECT_STATUS.md" ]; then
+            echo "✅ PROJECT_STATUS.md in correct location"
+          fi
+          
+          # Check REAL_STATUS.md exists
+          if [ -f "SUMMARY_DOCS/reports/REAL_STATUS.md" ]; then
+            echo "✅ REAL_STATUS.md exists"
+          else
+            echo "❌ ERROR: REAL_STATUS.md is missing"
+            exit 1
+          fi
+          
+          echo "Structure check passed!"

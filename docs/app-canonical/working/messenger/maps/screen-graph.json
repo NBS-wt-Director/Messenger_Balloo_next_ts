@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "messenger",
+  "lastUpdated": "2026-06-19T17:30:00Z",
+  "nodes": {
+    "login": { "title": "Экран входа", "status": "active" },
+    "register": { "title": "Экран регистрации", "status": "active" },
+    "dashboard": { "title": "Главная панель", "status": "active" },
+    "chat": { "title": "Экран чата", "status": "active" },
+    "settings": { "title": "Настройки", "status": "active" }
+  },
+  "edges": [
+    { "from": "login", "to": "dashboard", "via": "t-login-to-dashboard" },
+    { "from": "login", "to": "register", "via": "t-login-to-register" },
+    { "from": "login", "to": "settings", "via": "t-login-to-forgot-password" },
+    { "from": "register", "to": "login", "via": "t-register-to-login" },
+    { "from": "register", "to": "dashboard", "via": "t-register-to-dashboard" },
+    { "from": "dashboard", "to": "chat", "via": "t-dashboard-to-chat" }
+  ]
+}

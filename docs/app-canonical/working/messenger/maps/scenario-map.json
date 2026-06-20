@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "messenger",
+  "lastUpdated": "2026-06-19T17:30:00Z",
+  "scenarios": [
+    {
+      "scenarioId": "sc-login-flow",
+      "title": "Поток авторизации",
+      "actor": "public-user",
+      "entryScreen": "login",
+      "exitScreens": ["dashboard"],
+      "screens": ["login", "dashboard", "register"],
+      "transitions": ["t-login-to-dashboard", "t-login-to-register", "t-login-to-forgot-password"],
+      "integrations": ["int-auth-email-password", "int-auth-yandex-oauth"]
+    },
+    {
+      "scenarioId": "sc-register-flow",
+      "title": "Поток регистрации",
+      "actor": "public-user",
+      "entryScreen": "register",
+      "exitScreens": ["dashboard", "login"],
+      "screens": ["register", "login", "dashboard"],
+      "transitions": ["t-register-to-dashboard", "t-register-to-login"],
+      "integrations": ["int-auth-email-password"]
+    },
+    {
+      "scenarioId": "sc-send-message",
+      "title": "Отправка сообщения",
+      "actor": "company-staff",
+      "entryScreen": "dashboard",
+      "exitScreens": ["chat"],
+      "screens": ["dashboard", "chat"],
+      "transitions": ["t-dashboard-to-chat"],
+      "integrations": ["int-push-notifications"]
+    },
+    {
+      "scenarioId": "sc-browse-chats",
+      "title": "Просмотр списка чатов",
+      "actor": "company-staff",
+      "entryScreen": "dashboard",
+      "exitScreens": ["chat"],
+      "screens": ["dashboard", "chat"],
+      "transitions": ["t-dashboard-to-chat"],
+      "integrations": ["int-push-notifications"]
+    }
+  ]
+}

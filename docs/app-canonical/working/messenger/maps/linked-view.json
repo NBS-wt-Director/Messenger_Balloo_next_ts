@@ -1,0 +1,195 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "messenger",
+  "appName": "Balloo Messenger",
+  "lastUpdated": "2026-06-19T17:30:00Z",
+  "counters": {
+    "screens": 5,
+    "transitions": 6,
+    "scenarios": 4,
+    "integrations": 3
+  },
+  "screens": [
+    {
+      "screenId": "login",
+      "title": "Экран входа",
+      "status": "active",
+      "actors": ["public-user"],
+      "relatedTransitions": ["t-login-to-dashboard", "t-login-to-register", "t-login-to-forgot-password"],
+      "relatedScenarios": ["sc-login-flow"],
+      "relatedIntegrations": ["int-auth-email-password", "int-auth-yandex-oauth"]
+    },
+    {
+      "screenId": "register",
+      "title": "Экран регистрации",
+      "status": "active",
+      "actors": ["public-user"],
+      "relatedTransitions": ["t-register-to-login", "t-register-to-dashboard"],
+      "relatedScenarios": ["sc-register-flow"],
+      "relatedIntegrations": ["int-auth-email-password"]
+    },
+    {
+      "screenId": "dashboard",
+      "title": "Главная панель",
+      "status": "active",
+      "actors": ["company-staff", "alpha-staff", "public-user"],
+      "relatedTransitions": ["t-dashboard-to-chat", "t-dashboard-to-settings", "t-dashboard-to-profile"],
+      "relatedScenarios": ["sc-browse-chats", "sc-view-profile"],
+      "relatedIntegrations": []
+    },
+    {
+      "screenId": "chat",
+      "title": "Экран чата",
+      "status": "active",
+      "actors": ["company-staff", "alpha-staff", "public-user"],
+      "relatedTransitions": ["t-chat-to-profile", "t-chat-to-settings"],
+      "relatedScenarios": ["sc-send-message", "sc-attach-file"],
+      "relatedIntegrations": ["int-push-notifications"]
+    },
+    {
+      "screenId": "settings",
+      "title": "Настройки",
+      "status": "active",
+      "actors": ["company-staff", "alpha-staff"],
+      "relatedTransitions": ["t-settings-to-profile"],
+      "relatedScenarios": ["sc-manage-settings"],
+      "relatedIntegrations": []
+    }
+  ],
+  "transitions": [
+    {
+      "transitionId": "t-login-to-dashboard",
+      "title": "Вход в систему",
+      "sourceScreenId": "login",
+      "targetScreenId": "dashboard",
+      "trigger": "user clicks login with valid credentials",
+      "status": "active",
+      "relatedScenarios": ["sc-login-flow"],
+      "relatedIntegrations": ["int-auth-email-password", "int-auth-yandex-oauth"]
+    },
+    {
+      "transitionId": "t-login-to-register",
+      "title": "Переход к регистрации",
+      "sourceScreenId": "login",
+      "targetScreenId": "register",
+      "trigger": "user clicks register link",
+      "status": "active",
+      "relatedScenarios": ["sc-login-flow"],
+      "relatedIntegrations": []
+    },
+    {
+      "transitionId": "t-login-to-forgot-password",
+      "title": "Забыл пароль",
+      "sourceScreenId": "login",
+      "targetScreenId": "settings",
+      "trigger": "user clicks forgot password",
+      "status": "active",
+      "relatedScenarios": ["sc-login-flow"],
+      "relatedIntegrations": ["int-email-verification"]
+    },
+    {
+      "transitionId": "t-register-to-login",
+      "title": "Регистрация → Вход",
+      "sourceScreenId": "register",
+      "targetScreenId": "login",
+      "trigger": "registration failed, return to login",
+      "status": "active",
+      "relatedScenarios": ["sc-register-flow"],
+      "relatedIntegrations": []
+    },
+    {
+      "transitionId": "t-register-to-dashboard",
+      "title": "Успешная регистрация",
+      "sourceScreenId": "register",
+      "targetScreenId": "dashboard",
+      "trigger": "registration completed successfully",
+      "status": "active",
+      "relatedScenarios": ["sc-register-flow"],
+      "relatedIntegrations": ["int-auth-email-password"]
+    },
+    {
+      "transitionId": "t-dashboard-to-chat",
+      "title": "Открыть чат",
+      "sourceScreenId": "dashboard",
+      "targetScreenId": "chat",
+      "trigger": "user selects a chat",
+      "status": "active",
+      "relatedScenarios": ["sc-send-message", "sc-browse-chats"],
+      "relatedIntegrations": ["int-push-notifications"]
+    }
+  ],
+  "scenarios": [
+    {
+      "scenarioId": "sc-login-flow",
+      "title": "Поток авторизации",
+      "goal": "Авторизовать пользователя в системе",
+      "actor": "public-user",
+      "involvedScreens": ["login", "dashboard", "register"],
+      "involvedTransitions": ["t-login-to-dashboard", "t-login-to-register", "t-login-to-forgot-password"],
+      "status": "active"
+    },
+    {
+      "scenarioId": "sc-register-flow",
+      "title": "Поток регистрации",
+      "goal": "Зарегистрировать нового пользователя",
+      "actor": "public-user",
+      "involvedScreens": ["register", "login", "dashboard"],
+      "involvedTransitions": ["t-register-to-dashboard", "t-register-to-login"],
+      "status": "active"
+    },
+    {
+      "scenarioId": "sc-send-message",
+      "title": "Отправка сообщения",
+      "goal": "Отправить текстовое сообщение в чат",
+      "actor": "company-staff",
+      "involvedScreens": ["dashboard", "chat"],
+      "involvedTransitions": ["t-dashboard-to-chat"],
+      "status": "active"
+    },
+    {
+      "scenarioId": "sc-browse-chats",
+      "title": "Просмотр списка чатов",
+      "goal": "Найти и открыть нужный чат",
+      "actor": "company-staff",
+      "involvedScreens": ["dashboard", "chat"],
+      "involvedTransitions": ["t-dashboard-to-chat"],
+      "status": "active"
+    }
+  ],
+  "integrations": [
+    {
+      "integrationId": "int-auth-email-password",
+      "title": "Email-Password аутентификация",
+      "direction": "inbound",
+      "targetType": "service",
+      "targetId": "api-auth-service",
+      "purpose": "Авторизация пользователей через email и пароль",
+      "relatedScreens": ["login", "register"],
+      "relatedScenarios": ["sc-login-flow", "sc-register-flow"],
+      "status": "active"
+    },
+    {
+      "integrationId": "int-auth-yandex-oauth",
+      "title": "Yandex OAuth",
+      "direction": "inbound",
+      "targetType": "external-system",
+      "targetId": "yandex-id",
+      "purpose": "Авторизация через Яндекс ID",
+      "relatedScreens": ["login"],
+      "relatedScenarios": ["sc-login-flow"],
+      "status": "active"
+    },
+    {
+      "integrationId": "int-push-notifications",
+      "title": "Push-уведомления",
+      "direction": "outbound",
+      "targetType": "service",
+      "targetId": "vapid-push-service",
+      "purpose": "Отправка push-уведомлений через VAPID",
+      "relatedScreens": ["chat"],
+      "relatedScenarios": ["sc-send-message"],
+      "status": "active"
+    }
+  ]
+}
