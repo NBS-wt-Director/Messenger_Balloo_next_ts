@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AppScenario Object Schema",
+  "description": "Schema for canonical Scenario documentation objects",
+  "type": "object",
+  "required": ["objectType", "nodeId", "appId", "scenarioId", "title", "goal", "actor", "steps", "status"],
+  "properties": {
+    "objectType": {
+      "type": "string",
+      "const": "scenario",
+      "description": "Fixed object type identifier"
+    },
+    "nodeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "appId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scenarioId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique scenario identifier (kebab-case)"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Goal of this scenario"
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1,
+      "description": "User role performing the scenario"
+    },
+    "preconditions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "steps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Sequence of steps"
+    },
+    "involvedScreens": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "involvedTransitions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "outputs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "path"],
+        "properties": {
+          "type": { "type": "string", "enum": ["contract", "code", "report", "state", "playbook", "config"] },
+          "path": { "type": "string", "minLength": 1 },
+          "title": { "type": "string" },
+          "lineRange": { "type": "string" }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "deprecated"]
+    }
+  },
+  "additionalProperties": false
+}

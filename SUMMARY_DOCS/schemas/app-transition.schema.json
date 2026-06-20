@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AppTransition Object Schema",
+  "description": "Schema for canonical Transition documentation objects",
+  "type": "object",
+  "required": ["objectType", "nodeId", "appId", "transitionId", "title", "sourceScreenId", "targetScreenId", "trigger", "status"],
+  "properties": {
+    "objectType": {
+      "type": "string",
+      "const": "transition",
+      "description": "Fixed object type identifier"
+    },
+    "nodeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "appId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transitionId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique transition identifier (kebab-case)"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "sourceScreenId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Source screen ID"
+    },
+    "targetScreenId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Target screen ID"
+    },
+    "trigger": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What triggers this transition"
+    },
+    "conditions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "result": {
+      "type": "string"
+    },
+    "failureModes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "relatedScenarios": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "relatedIntegrations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "path"],
+        "properties": {
+          "type": { "type": "string", "enum": ["contract", "code", "report", "state", "playbook", "config"] },
+          "path": { "type": "string", "minLength": 1 },
+          "title": { "type": "string" },
+          "lineRange": { "type": "string" }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "deprecated"]
+    }
+  },
+  "additionalProperties": false
+}

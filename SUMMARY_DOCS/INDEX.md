@@ -41,6 +41,16 @@
 
 ## 📁 СТРУКТУРА ДОКУМЕНТАЦИИ
 
+### 🖥️ Node Documentation (Узлы)
+
+| Ресурс | Описание |
+|--------|----------|
+| [Node Docs Web UI](http://localhost:3100/nodes) | Веб-интерфейс для просмотра документации всех узлов |
+| [NODETREE_INDEX.md](./project/nodes/Nodes/NODETREE_INDEX.md) | Индекс дерева узлов |
+| [Nodes/](./project/nodes/Nodes/) | Документация технических узлов |
+| [Modules/](./project/nodes/Modules/) | Документация модулей |
+| [Messenger/](./project/nodes/Messenger/) | Документация messenger |
+
 ### 📘 Policies (Политики)
 
 | Документ | Описание |

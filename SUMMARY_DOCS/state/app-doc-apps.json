@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-19",
+  "description": "Canonical app-doc apps index",
+  "apps": [
+    {
+      "nodeId": "working",
+      "appId": "messenger",
+      "displayName": "Balloo Messenger",
+      "repoPath": "messenger",
+      "canonicalPath": "docs/app-canonical/working/messenger",
+      "status": "active"
+    },
+    {
+      "nodeId": "working",
+      "appId": "admin",
+      "displayName": "Admin Portal",
+      "repoPath": "admin-portal",
+      "canonicalPath": "docs/app-canonical/working/admin",
+      "status": "active"
+    },
+    {
+      "nodeId": "messenger",
+      "appId": "messenger",
+      "displayName": "Balloo Messenger Production",
+      "repoPath": "messenger",
+      "canonicalPath": "docs/app-canonical/messenger/messenger",
+      "status": "active"
+    },
+    {
+      "nodeId": "balloo",
+      "appId": "landing",
+      "displayName": "Balloo Landing",
+      "repoPath": "balloo-landing",
+      "canonicalPath": "docs/app-canonical/balloo/landing",
+      "status": "active"
+    }
+  ]
+}

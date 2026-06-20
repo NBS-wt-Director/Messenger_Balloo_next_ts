@@ -1,0 +1,244 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "messenger",
+  "dateCreated": "2026-06-20T03:08:49.739Z",
+  "counters": {
+    "screens": 5,
+    "transitions": 6,
+    "scenarios": 4,
+    "integrations": 3
+  },
+  "screens": [
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "messenger",
+      "screenId": "login",
+      "title": "Login Screen",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "messenger",
+      "screenId": "chat",
+      "title": "Chat Screen",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "messenger",
+      "screenId": "profile",
+      "title": "Profile Screen",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "messenger",
+      "screenId": "settings",
+      "title": "Settings Screen",
+      "status": "draft"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "messenger",
+      "screenId": "notifications",
+      "title": "Notifications Screen",
+      "status": "draft"
+    }
+  ],
+  "transitions": [
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "messenger",
+      "transitionId": "login-to-chat",
+      "title": "Login to Chat",
+      "sourceScreenId": "login",
+      "targetScreenId": "chat",
+      "trigger": "submit",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "messenger",
+      "transitionId": "chat-to-profile",
+      "title": "Chat to Profile",
+      "sourceScreenId": "chat",
+      "targetScreenId": "profile",
+      "trigger": "tap-avatar",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "messenger",
+      "transitionId": "profile-to-settings",
+      "title": "Profile to Settings",
+      "sourceScreenId": "profile",
+      "targetScreenId": "settings",
+      "trigger": "tap-settings",
+      "status": "draft"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "messenger",
+      "transitionId": "chat-to-notifications",
+      "title": "Chat to Notifications",
+      "sourceScreenId": "chat",
+      "targetScreenId": "notifications",
+      "trigger": "tap-bell",
+      "status": "draft"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "messenger",
+      "transitionId": "settings-to-login",
+      "title": "Settings to Login",
+      "sourceScreenId": "settings",
+      "targetScreenId": "login",
+      "trigger": "logout",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "messenger",
+      "transitionId": "notifications-to-chat",
+      "title": "Notifications to Chat",
+      "sourceScreenId": "notifications",
+      "targetScreenId": "chat",
+      "trigger": "tap-notification",
+      "status": "active"
+    }
+  ],
+  "scenarios": [
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "messenger",
+      "scenarioId": "user-login-flow",
+      "title": "User Login Flow",
+      "goal": "Authenticate user",
+      "actor": "user",
+      "steps": [
+        "User opens app",
+        "User enters credentials",
+        "App validates",
+        "App navigates to chat"
+      ],
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "messenger",
+      "scenarioId": "send-message",
+      "title": "Send Message",
+      "goal": "Send message to contact",
+      "actor": "user",
+      "steps": [
+        "User opens chat",
+        "User types message",
+        "User taps send",
+        "Message delivered"
+      ],
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "messenger",
+      "scenarioId": "view-profile",
+      "title": "View Profile",
+      "goal": "View user profile",
+      "actor": "user",
+      "steps": [
+        "User taps avatar",
+        "Profile screen opens",
+        "User views details"
+      ],
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "messenger",
+      "scenarioId": "push-notification",
+      "title": "Push Notification",
+      "goal": "Receive push notification",
+      "actor": "system",
+      "steps": [
+        "System sends push",
+        "User taps notification",
+        "App opens relevant chat"
+      ],
+      "status": "active"
+    }
+  ],
+  "integrations": [
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "messenger",
+      "integrationId": "firebase-push",
+      "title": "Firebase Push",
+      "direction": "outbound",
+      "targetType": "external-system",
+      "targetId": "firebase",
+      "purpose": "Push notifications",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "messenger",
+      "integrationId": "auth-service",
+      "title": "Auth Service",
+      "direction": "bidirectional",
+      "targetType": "service",
+      "targetId": "auth-service",
+      "purpose": "User authentication",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "messenger",
+      "integrationId": "media-upload",
+      "title": "Media Upload",
+      "direction": "outbound",
+      "targetType": "service",
+      "targetId": "cdn-service",
+      "purpose": "Upload media files",
+      "status": "draft"
+    }
+  ],
+  "links": [
+    {
+      "from": "login",
+      "to": "chat",
+      "type": "transition",
+      "ref": "login-to-chat"
+    },
+    {
+      "from": "chat",
+      "to": "profile",
+      "type": "transition",
+      "ref": "chat-to-profile"
+    },
+    {
+      "from": "profile",
+      "to": "settings",
+      "type": "transition",
+      "ref": "profile-to-settings"
+    }
+  ]
+}

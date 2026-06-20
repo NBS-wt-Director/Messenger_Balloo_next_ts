@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "dateCreated": "2026-06-19",
+  "description": "Canonical app-doc nodes index",
+  "nodes": [
+    {
+      "nodeId": "working",
+      "displayName": "Working (Sandbox)",
+      "domain": "working.balloo.su",
+      "canonicalPath": "docs/app-canonical/working",
+      "status": "active"
+    },
+    {
+      "nodeId": "messenger",
+      "displayName": "Messenger",
+      "domain": "messenger.balloo.su",
+      "canonicalPath": "docs/app-canonical/messenger",
+      "status": "active"
+    },
+    {
+      "nodeId": "admin",
+      "displayName": "Admin Portal",
+      "domain": "admin.balloo.su",
+      "canonicalPath": "docs/app-canonical/admin",
+      "status": "active"
+    },
+    {
+      "nodeId": "balloo",
+      "displayName": "Balloo Landing",
+      "domain": "balloo.su",
+      "canonicalPath": "docs/app-canonical/balloo",
+      "status": "active"
+    }
+  ]
+}

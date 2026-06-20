@@ -1,0 +1,10 @@
+﻿{
+  "appId": "messenger",
+  "nodeId": "working",
+  "title": "Messenger Application",
+  "description": "Core messaging application for user communication",
+  "status": "active",
+  "version": "1.0.0",
+  "createdAt": "2026-06-13T00:00:00Z",
+  "updatedAt": "2026-06-13T00:00:00Z"
+}

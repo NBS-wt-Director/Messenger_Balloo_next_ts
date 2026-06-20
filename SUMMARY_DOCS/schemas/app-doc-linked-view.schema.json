@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AppDoc Linked View Schema",
+  "description": "Schema for the SUMMARYDOCS linked-view of canonical app docs",
+  "type": "object",
+  "required": ["version", "nodeId", "appId", "counters", "screens", "transitions", "scenarios", "integrations"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "nodeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "appId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "counters": {
+      "type": "object",
+      "required": ["screens", "transitions", "scenarios", "integrations"],
+      "properties": {
+        "screens": { "type": "integer", "minimum": 0 },
+        "transitions": { "type": "integer", "minimum": 0 },
+        "scenarios": { "type": "integer", "minimum": 0 },
+        "integrations": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "screens": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/screenSummary" }
+    },
+    "transitions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/transitionSummary" }
+    },
+    "scenarios": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/scenarioSummary" }
+    },
+    "integrations": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/integrationSummary" }
+    }
+  },
+  "definitions": {
+    "screenSummary": {
+      "type": "object",
+      "required": ["screenId", "title", "status"],
+      "properties": {
+        "screenId": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "active", "deprecated"] },
+        "actors": { "type": "array", "items": { "type": "string" } },
+        "relatedTransitions": { "type": "array", "items": { "type": "string" } },
+        "relatedScenarios": { "type": "array", "items": { "type": "string" } },
+        "relatedIntegrations": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "transitionSummary": {
+      "type": "object",
+      "required": ["transitionId", "title", "sourceScreenId", "targetScreenId", "status"],
+      "properties": {
+        "transitionId": { "type": "string" },
+        "title": { "type": "string" },
+        "sourceScreenId": { "type": "string" },
+        "targetScreenId": { "type": "string" },
+        "trigger": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "active", "deprecated"] }
+      }
+    },
+    "scenarioSummary": {
+      "type": "object",
+      "required": ["scenarioId", "title", "goal", "actor", "status"],
+      "properties": {
+        "scenarioId": { "type": "string" },
+        "title": { "type": "string" },
+        "goal": { "type": "string" },
+        "actor": { "type": "string" },
+        "involvedScreens": { "type": "array", "items": { "type": "string" } },
+        "involvedTransitions": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["draft", "active", "deprecated"] }
+      }
+    },
+    "integrationSummary": {
+      "type": "object",
+      "required": ["integrationId", "title", "direction", "targetType", "status"],
+      "properties": {
+        "integrationId": { "type": "string" },
+        "title": { "type": "string" },
+        "direction": { "type": "string", "enum": ["inbound", "outbound", "bidirectional"] },
+        "targetType": { "type": "string", "enum": ["app", "node", "service", "external-system"] },
+        "targetId": { "type": "string" },
+        "relatedScreens": { "type": "array", "items": { "type": "string" } },
+        "relatedScenarios": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["draft", "active", "deprecated"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -163,18 +163,182 @@
       "status": "deprecated",
       "redirect": true,
       "category": "policies"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/APPDOCMODEL001.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/APPDOCINDEX.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/APPDOCVIEWERMODEL.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/APPDOCEDITPOLICY.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/APPDOCCODEGENINSTRUCTIONS.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/contracts/AppScreenContract.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/contracts/AppTransitionContract.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/contracts/AppScenarioContract.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/contracts/AppIntegrationContract.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/contracts/AppDocLinkedViewContract.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/appdocs/contracts/AppDocEditContract.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/schemas/app-screen.schema.json",
+      "status": "active",
+      "redirect": false,
+      "category": "schemas"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/schemas/app-transition.schema.json",
+      "status": "active",
+      "redirect": false,
+      "category": "schemas"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/schemas/app-scenario.schema.json",
+      "status": "active",
+      "redirect": false,
+      "category": "schemas"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/schemas/app-integration.schema.json",
+      "status": "active",
+      "redirect": false,
+      "category": "schemas"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/schemas/app-doc-linked-view.schema.json",
+      "status": "active",
+      "redirect": false,
+      "category": "schemas"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/state/app-doc-nodes.json",
+      "status": "active",
+      "redirect": false,
+      "category": "state"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/state/app-doc-apps.json",
+      "status": "active",
+      "redirect": false,
+      "category": "state"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/state/app-doc-objects.json",
+      "status": "active",
+      "redirect": false,
+      "category": "state"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/state/app-doc-links.json",
+      "status": "active",
+      "redirect": false,
+      "category": "state"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "SUMMARY_DOCS/state/app-doc-view-index.json",
+      "status": "active",
+      "redirect": false,
+      "category": "state"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "docs/app-canonical/working/messenger/screens/login.md",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs-content"
+    },
+    {
+      "legacy_path": null,
+      "canonical_path": "docs/app-canonical/working/messenger/maps/linked-view.json",
+      "status": "active",
+      "redirect": false,
+      "category": "appdocs-content"
     }
   ],
   "web_reader": {
     "landing_page": "SUMMARY_DOCS/INDEX.md",
     "overview_page": "SUMMARY_DOCS/summary/ROOT_SUMMARY_DOCS.md",
     "manifest_path": "SUMMARY_DOCS/MANIFEST.json",
-    "routing_path": "SUMMARY_DOCS/ROUTING.json"
+    "routing_path": "SUMMARY_DOCS/ROUTING.json",
+    "appdocs_viewer": "SUMMARY_DOCS/src/app/docs/app-canonical/[nodeId]/[appId]/page.tsx"
   },
   "ai_entrypoints": {
     "primary": "SUMMARY_DOCS/INDEX.md",
     "secondary": "SUMMARY_DOCS/MANIFEST.json",
     "overview": "SUMMARY_DOCS/summary/ROOT_SUMMARY_DOCS.md",
-    "instructions": "SUMMARY_DOCS/appendix/AI_ENTRYPOINTS.md"
+    "instructions": "SUMMARY_DOCS/appendix/AI_ENTRYPOINTS.md",
+    "appdocs_model": "SUMMARY_DOCS/APPDOCMODEL001.md",
+    "appdocs_codegen": "SUMMARY_DOCS/appdocs/APPDOCCODEGENINSTRUCTIONS.md"
   }
 }
