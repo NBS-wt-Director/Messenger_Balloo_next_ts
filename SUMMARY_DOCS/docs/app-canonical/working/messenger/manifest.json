@@ -1,10 +1,8 @@
-﻿{
+{
   "appId": "messenger",
   "nodeId": "working",
-  "title": "Messenger Application",
-  "description": "Core messaging application for user communication",
+  "title": "Messenger — Web Messaging Application",
+  "description": "Web messaging application with E2E encryption, group chats, file sharing, and Yandex integrations. Next.js 15 + TypeScript + Tailwind CSS",
   "status": "active",
-  "version": "1.0.0",
-  "createdAt": "2026-06-13T00:00:00Z",
-  "updatedAt": "2026-06-13T00:00:00Z"
+  "version": "1.0.0"
 }

@@ -1,0 +1,232 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "api",
+  "dateCreated": "2026-06-20T04:00:00.000Z",
+  "counters": {
+    "screens": 10,
+    "transitions": 3,
+    "scenarios": 3,
+    "integrations": 4
+  },
+  "screens": [
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "auth-endpoints",
+      "title": "Authentication Endpoints",
+      "description": "User registration, login, session management",
+      "path": "/api/auth",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "users-endpoints",
+      "title": "Users Endpoints",
+      "description": "User profile management, search, contacts",
+      "path": "/api/users",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "chats-endpoints",
+      "title": "Chats Endpoints",
+      "description": "Chat creation, management, participants",
+      "path": "/api/chats",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "messages-endpoints",
+      "title": "Messages Endpoints",
+      "description": "Message CRUD, search, reactions",
+      "path": "/api/messages",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "files-endpoints",
+      "title": "Files Endpoints",
+      "description": "File upload, download, Yandex Disk integration",
+      "path": "/api/files",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "notifications-endpoints",
+      "title": "Notifications Endpoints",
+      "description": "Push notifications, in-app notifications",
+      "path": "/api/notifications",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "themes-endpoints",
+      "title": "Themes Endpoints",
+      "description": "Theme management, subscriptions",
+      "path": "/api/themes",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "admin-endpoints",
+      "title": "Admin Endpoints",
+      "description": "Admin panel, user management, analytics",
+      "path": "/api/admin",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "features-endpoints",
+      "title": "Features Endpoints",
+      "description": "Feature requests, polls, quizzes, surveys",
+      "path": "/api/features",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "api",
+      "screenId": "search-endpoints",
+      "title": "Search Endpoints",
+      "description": "Global search across chats, messages, users",
+      "path": "/api/search",
+      "status": "active"
+    }
+  ],
+  "transitions": [
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "api",
+      "transitionId": "unauthenticated-to-authenticated",
+      "title": "Unauthenticated to Authenticated",
+      "sourceScreenId": "auth-endpoints",
+      "targetScreenId": "users-endpoints",
+      "trigger": "successful login",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "api",
+      "transitionId": "chat-created-to-messages-active",
+      "title": "Chat Created to Messages Active",
+      "sourceScreenId": "chats-endpoints",
+      "targetScreenId": "messages-endpoints",
+      "trigger": "chat creation",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "api",
+      "transitionId": "message-sent-to-delivered",
+      "title": "Message Sent to Delivered",
+      "sourceScreenId": "messages-endpoints",
+      "targetScreenId": "notifications-endpoints",
+      "trigger": "message send",
+      "status": "active"
+    }
+  ],
+  "scenarios": [
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "api",
+      "scenarioId": "user-registration",
+      "title": "User Registration",
+      "goal": "Create new user account",
+      "actor": "user",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "api",
+      "scenarioId": "send-encrypted-message",
+      "title": "Send Encrypted Message",
+      "goal": "Send E2E encrypted message",
+      "actor": "user",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "api",
+      "scenarioId": "upload-file-to-yandex-disk",
+      "title": "Upload File to Yandex Disk",
+      "goal": "Store file in Yandex Disk with encryption",
+      "actor": "user",
+      "status": "active"
+    }
+  ],
+  "integrations": [
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "api",
+      "integrationId": "sqlite-database",
+      "title": "SQLite Database",
+      "direction": "bidirectional",
+      "targetType": "database",
+      "targetId": "sqlite",
+      "purpose": "Data storage",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "api",
+      "integrationId": "websocket-server",
+      "title": "WebSocket Server",
+      "direction": "bidirectional",
+      "targetType": "protocol",
+      "targetId": "websocket",
+      "purpose": "Real-time events",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "api",
+      "integrationId": "yandex-oauth",
+      "title": "Yandex OAuth",
+      "direction": "bidirectional",
+      "targetType": "service",
+      "targetId": "yandex-oauth",
+      "purpose": "Yandex authentication and Disk access",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "api",
+      "integrationId": "email-service",
+      "title": "Email Service",
+      "direction": "outbound",
+      "targetType": "service",
+      "targetId": "smtp",
+      "purpose": "Password reset, verification emails",
+      "status": "active"
+    }
+  ],
+  "links": []
+}

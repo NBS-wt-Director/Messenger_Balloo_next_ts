@@ -1,0 +1,8 @@
+{
+  "appId": "api",
+  "nodeId": "working",
+  "title": "API — Backend API Server",
+  "description": "Backend API server for messenger with E2E encryption and Yandex integrations. Express.js + SQLite + WebSocket",
+  "status": "active",
+  "version": "1.0.0"
+}

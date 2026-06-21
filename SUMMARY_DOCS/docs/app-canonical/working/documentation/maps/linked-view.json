@@ -1,0 +1,211 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "documentation",
+  "dateCreated": "2026-06-20T04:00:00.000Z",
+  "counters": {
+    "screens": 6,
+    "transitions": 6,
+    "scenarios": 4,
+    "integrations": 2
+  },
+  "screens": [
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "documentation",
+      "screenId": "docs-home",
+      "title": "Documentation Home",
+      "description": "Overview of all nodes and documentation",
+      "path": "/docs",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "documentation",
+      "screenId": "docs-node",
+      "title": "Node Documentation",
+      "description": "Detailed documentation for a specific node",
+      "path": "/docs/[nodeId]",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "documentation",
+      "screenId": "docs-screen-detail",
+      "title": "Screen Detail",
+      "description": "Detailed documentation for a specific screen",
+      "path": "/docs/[nodeId]/screen/[screenId]",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "documentation",
+      "screenId": "docs-transition-detail",
+      "title": "Transition Detail",
+      "description": "Detailed documentation for a specific transition",
+      "path": "/docs/[nodeId]/transition/[transitionId]",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "documentation",
+      "screenId": "docs-scenario-detail",
+      "title": "Scenario Detail",
+      "description": "Detailed documentation for a specific scenario",
+      "path": "/docs/[nodeId]/scenario/[scenarioId]",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "documentation",
+      "screenId": "docs-integration-detail",
+      "title": "Integration Detail",
+      "description": "Detailed documentation for a specific integration",
+      "path": "/docs/[nodeId]/integration/[integrationId]",
+      "status": "active"
+    }
+  ],
+  "transitions": [
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "documentation",
+      "transitionId": "home-to-node",
+      "title": "Home to Node",
+      "sourceScreenId": "docs-home",
+      "targetScreenId": "docs-node",
+      "trigger": "click on node card",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "documentation",
+      "transitionId": "node-to-screen",
+      "title": "Node to Screen",
+      "sourceScreenId": "docs-node",
+      "targetScreenId": "docs-screen-detail",
+      "trigger": "click on screen link",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "documentation",
+      "transitionId": "node-to-transition",
+      "title": "Node to Transition",
+      "sourceScreenId": "docs-node",
+      "targetScreenId": "docs-transition-detail",
+      "trigger": "click on transition link",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "documentation",
+      "transitionId": "node-to-scenario",
+      "title": "Node to Scenario",
+      "sourceScreenId": "docs-node",
+      "targetScreenId": "docs-scenario-detail",
+      "trigger": "click on scenario link",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "documentation",
+      "transitionId": "node-to-integration",
+      "title": "Node to Integration",
+      "sourceScreenId": "docs-node",
+      "targetScreenId": "docs-integration-detail",
+      "trigger": "click on integration link",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "documentation",
+      "transitionId": "back-to-home",
+      "title": "Back to Home",
+      "sourceScreenId": "docs-node",
+      "targetScreenId": "docs-home",
+      "trigger": "back button click",
+      "status": "active"
+    }
+  ],
+  "scenarios": [
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "documentation",
+      "scenarioId": "browse-documentation",
+      "title": "Browse Documentation",
+      "goal": "Find and read node documentation",
+      "actor": "developer",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "documentation",
+      "scenarioId": "search-documentation",
+      "title": "Search Documentation",
+      "goal": "Search for specific documentation",
+      "actor": "developer",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "documentation",
+      "scenarioId": "fill-documentation",
+      "title": "Fill Documentation",
+      "goal": "Add documentation content",
+      "actor": "developer",
+      "status": "draft"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "documentation",
+      "scenarioId": "review-documentation",
+      "title": "Review Documentation",
+      "goal": "Review and update documentation",
+      "actor": "developer",
+      "status": "draft"
+    }
+  ],
+  "integrations": [
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "documentation",
+      "integrationId": "messenger-integration",
+      "title": "Messenger Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "messenger",
+      "purpose": "Read messenger documentation",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "documentation",
+      "integrationId": "api-integration",
+      "title": "API Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "api",
+      "purpose": "Read API documentation",
+      "status": "active"
+    }
+  ],
+  "links": []
+}

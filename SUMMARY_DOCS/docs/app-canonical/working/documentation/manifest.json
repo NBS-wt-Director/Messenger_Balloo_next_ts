@@ -1,0 +1,8 @@
+{
+  "appId": "documentation",
+  "nodeId": "working",
+  "title": "Documentation — System Documentation Web UI",
+  "description": "Web documentation reader for Balloo monorepo. Reads app-docs from docs/app-canonical/, provides unified API and responsive UI in Balloo Messenger style.",
+  "status": "active",
+  "version": "1.0.0"
+}
