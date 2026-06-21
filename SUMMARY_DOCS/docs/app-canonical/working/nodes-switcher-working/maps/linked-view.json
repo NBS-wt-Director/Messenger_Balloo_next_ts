@@ -1,0 +1,152 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "nodes-switcher-working",
+  "dateCreated": "2026-06-20T04:00:00.000Z",
+  "counters": {
+    "screens": 4,
+    "transitions": 3,
+    "scenarios": 3,
+    "integrations": 3
+  },
+  "screens": [
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "screenId": "version-registry",
+      "title": "Version Registry",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "screenId": "rollout-control",
+      "title": "Rollout Control",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "screenId": "compatibility-check",
+      "title": "Compatibility Check",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "screenId": "rollout-settings",
+      "title": "Rollout Settings",
+      "status": "draft"
+    }
+  ],
+  "transitions": [
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "transitionId": "registry-to-rollout",
+      "title": "Registry to Rollout",
+      "sourceScreenId": "version-registry",
+      "targetScreenId": "rollout-control",
+      "trigger": "select version",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "transitionId": "rollout-to-compatibility",
+      "title": "Rollout to Compatibility",
+      "sourceScreenId": "rollout-control",
+      "targetScreenId": "compatibility-check",
+      "trigger": "start rollout",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "transitionId": "compatibility-to-registry",
+      "title": "Compatibility to Registry",
+      "sourceScreenId": "compatibility-check",
+      "targetScreenId": "version-registry",
+      "trigger": "complete/rollback",
+      "status": "active"
+    }
+  ],
+  "scenarios": [
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "scenarioId": "register-version",
+      "title": "Register New Version",
+      "goal": "Add new node version",
+      "actor": "devops",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "scenarioId": "rollout-version",
+      "title": "Rollout Version",
+      "goal": "Deploy version to nodes",
+      "actor": "devops",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "scenarioId": "check-compatibility",
+      "title": "Check Compatibility",
+      "goal": "Verify version compatibility",
+      "actor": "system",
+      "status": "active"
+    }
+  ],
+  "integrations": [
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "integrationId": "kpdegen-integration",
+      "title": "Kpdegen Integration",
+      "direction": "bidirectional",
+      "targetType": "node",
+      "targetId": "kpdegen-working",
+      "purpose": "Codegen coordination",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "integrationId": "projectsettings-integration",
+      "title": "Project Settings Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "projectgeneralsettings-working",
+      "purpose": "Settings update",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "nodes-switcher-working",
+      "integrationId": "workdocs-integration",
+      "title": "Workdocs Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "workdocs-working",
+      "purpose": "Documentation update",
+      "status": "active"
+    }
+  ],
+  "links": []
+}

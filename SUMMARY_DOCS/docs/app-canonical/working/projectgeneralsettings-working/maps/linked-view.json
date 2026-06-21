@@ -1,0 +1,181 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "projectgeneralsettings-working",
+  "dateCreated": "2026-06-20T04:00:00.000Z",
+  "counters": {
+    "screens": 5,
+    "transitions": 4,
+    "scenarios": 4,
+    "integrations": 3
+  },
+  "screens": [
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "screenId": "settings-dashboard",
+      "title": "Settings Dashboard",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "screenId": "project-settings",
+      "title": "Project Settings",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "screenId": "node-settings",
+      "title": "Node Settings Map",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "screenId": "feature-flags",
+      "title": "Feature Flags",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "screenId": "release-toggles",
+      "title": "Release Toggles",
+      "status": "draft"
+    }
+  ],
+  "transitions": [
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "transitionId": "dashboard-to-project",
+      "title": "Dashboard to Project",
+      "sourceScreenId": "settings-dashboard",
+      "targetScreenId": "project-settings",
+      "trigger": "select project",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "transitionId": "dashboard-to-node",
+      "title": "Dashboard to Node",
+      "sourceScreenId": "settings-dashboard",
+      "targetScreenId": "node-settings",
+      "trigger": "select node",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "transitionId": "dashboard-to-features",
+      "title": "Dashboard to Features",
+      "sourceScreenId": "settings-dashboard",
+      "targetScreenId": "feature-flags",
+      "trigger": "select features",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "transitionId": "dashboard-to-releases",
+      "title": "Dashboard to Releases",
+      "sourceScreenId": "settings-dashboard",
+      "targetScreenId": "release-toggles",
+      "trigger": "select releases",
+      "status": "draft"
+    }
+  ],
+  "scenarios": [
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "scenarioId": "manage-project-settings",
+      "title": "Manage Project Settings",
+      "goal": "Update project config",
+      "actor": "admin",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "scenarioId": "manage-node-settings",
+      "title": "Manage Node Settings",
+      "goal": "Update node config",
+      "actor": "admin",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "scenarioId": "manage-feature-flags",
+      "title": "Manage Feature Flags",
+      "goal": "Toggle features",
+      "actor": "product-owner",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "scenarioId": "manage-release-toggles",
+      "title": "Manage Release Toggles",
+      "goal": "Control rollout %",
+      "actor": "admin",
+      "status": "draft"
+    }
+  ],
+  "integrations": [
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "integrationId": "nodes-switcher-integration",
+      "title": "Nodes Switcher Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "nodes-switcher-working",
+      "purpose": "Rollout coordination",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "integrationId": "kpdegen-integration",
+      "title": "Kpdegen Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "kpdegen-working",
+      "purpose": "Settings for codegen",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "projectgeneralsettings-working",
+      "integrationId": "workdocs-integration",
+      "title": "Workdocs Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "workdocs-working",
+      "purpose": "Documentation update",
+      "status": "active"
+    }
+  ],
+  "links": []
+}

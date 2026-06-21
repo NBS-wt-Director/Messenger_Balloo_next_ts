@@ -1,0 +1,140 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "workdocs-working",
+  "dateCreated": "2026-06-20T04:00:00.000Z",
+  "counters": {
+    "screens": 4,
+    "transitions": 3,
+    "scenarios": 3,
+    "integrations": 2
+  },
+  "screens": [
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "screenId": "docs-view",
+      "title": "Documentation Viewer",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "screenId": "docs-search",
+      "title": "Documentation Search",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "screenId": "docs-auth",
+      "title": "Authentication",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "screenId": "docs-settings",
+      "title": "Documentation Settings",
+      "status": "draft"
+    }
+  ],
+  "transitions": [
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "transitionId": "auth-to-docs",
+      "title": "Auth to Docs",
+      "sourceScreenId": "docs-auth",
+      "targetScreenId": "docs-view",
+      "trigger": "login success",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "transitionId": "docs-view-to-search",
+      "title": "Docs View to Search",
+      "sourceScreenId": "docs-view",
+      "targetScreenId": "docs-search",
+      "trigger": "search click",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "transitionId": "docs-search-to-docs-view",
+      "title": "Docs Search to Docs View",
+      "sourceScreenId": "docs-search",
+      "targetScreenId": "docs-view",
+      "trigger": "result select",
+      "status": "active"
+    }
+  ],
+  "scenarios": [
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "scenarioId": "view-document",
+      "title": "View Documentation",
+      "goal": "Read documentation",
+      "actor": "developer",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "scenarioId": "search-docs",
+      "title": "Search Documentation",
+      "goal": "Find documentation",
+      "actor": "developer",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "scenarioId": "ai-read-docs",
+      "title": "AI Read Documentation",
+      "goal": "AI reads docs for context",
+      "actor": "ai-agent",
+      "status": "active"
+    }
+  ],
+  "integrations": [
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "integrationId": "kpdegen-integration",
+      "title": "Kpdegen Integration",
+      "direction": "bidirectional",
+      "targetType": "node",
+      "targetId": "kpdegen-working",
+      "purpose": "Codegen context",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "workdocs-working",
+      "integrationId": "nodes-switcher-integration",
+      "title": "Nodes Switcher Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "nodes-switcher-working",
+      "purpose": "Version updates",
+      "status": "active"
+    }
+  ],
+  "links": []
+}

@@ -1,48 +1,8 @@
----
-appId: "nodes-switcher-working"
-nodeId: "working"
-title: "Nodes Switcher Working — Version Manager"
-description: "Technical node for node version management, rollout control, version registry"
-status: "active"
-version: "1.0.0"
-dateCreated: "2026-06-20T04:00:00.000Z"
----
-
-# Nodes Switcher Working Application
-
-## Overview
-
-Node version manager. Tracks versions of all nodes, manages updates, version switching, rollout control, and compatibility checks.
-
-## Screens
-
-| ID | Title | Status |
-|----|-------|--------|
-| version-registry | Version Registry | active |
-| rollout-control | Rollout Control | active |
-| compatibility-check | Compatibility Check | active |
-| rollout-settings | Rollout Settings | draft |
-
-## Transitions
-
-| ID | From | To | Trigger | Status |
-|----|------|-----|---------|--------|
-| registry-to-rollout | version-registry | rollout-control | select version | active |
-| rollout-to-compatibility | rollout-control | compatibility-check | start rollout | active |
-| compatibility-to-registry | compatibility-check | version-registry | complete/rollback | active |
-
-## Scenarios
-
-| ID | Title | Goal | Actor | Status |
-|----|-------|------|-------|--------|
-| register-version | Register New Version | Add new node version | devops | active |
-| rollout-version | Rollout Version | Deploy version to nodes | devops | active |
-| check-compatibility | Check Compatibility | Verify version compatibility | system | active |
-
-## Integrations
-
-| ID | Title | Direction | Target | Status |
-|----|-------|-----------|--------|--------|
-| kpdegen-integration | Kpdegen Integration | bidirectional | kpdegen-working | active |
-| projectsettings-integration | Project Settings Integration | outbound | projectgeneralsettings-working | active |
-| workdocs-integration | Workdocs Integration | outbound | workdocs-working | active |
+{
+  "appId": "nodes-switcher-working",
+  "nodeId": "working",
+  "title": "Nodes Switcher Working — Version Manager",
+  "description": "Node version manager. Tracks versions, manages updates, rollout control, compatibility checks",
+  "status": "active",
+  "version": "1.0.0"
+}

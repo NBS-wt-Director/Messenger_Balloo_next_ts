@@ -1,0 +1,152 @@
+{
+  "version": "1.0.0",
+  "nodeId": "working",
+  "appId": "kpdegen-working",
+  "dateCreated": "2026-06-20T04:00:00.000Z",
+  "counters": {
+    "screens": 4,
+    "transitions": 3,
+    "scenarios": 3,
+    "integrations": 3
+  },
+  "screens": [
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "screenId": "codegen-dashboard",
+      "title": "Codegen Dashboard",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "screenId": "codegen-input",
+      "title": "Input Processing",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "screenId": "codegen-output",
+      "title": "Output Preview",
+      "status": "active"
+    },
+    {
+      "objectType": "screen",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "screenId": "codegen-settings",
+      "title": "Codegen Settings",
+      "status": "draft"
+    }
+  ],
+  "transitions": [
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "transitionId": "dashboard-to-input",
+      "title": "Dashboard to Input",
+      "sourceScreenId": "codegen-dashboard",
+      "targetScreenId": "codegen-input",
+      "trigger": "start generation",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "transitionId": "input-to-output",
+      "title": "Input to Output",
+      "sourceScreenId": "codegen-input",
+      "targetScreenId": "codegen-output",
+      "trigger": "generation complete",
+      "status": "active"
+    },
+    {
+      "objectType": "transition",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "transitionId": "output-to-dashboard",
+      "title": "Output to Dashboard",
+      "sourceScreenId": "codegen-output",
+      "targetScreenId": "codegen-dashboard",
+      "trigger": "confirm/rollback",
+      "status": "active"
+    }
+  ],
+  "scenarios": [
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "scenarioId": "generate-node",
+      "title": "Generate Node Code",
+      "goal": "Create node scaffolding",
+      "actor": "ai-agent",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "scenarioId": "generate-config",
+      "title": "Generate Config",
+      "goal": "Create environment config",
+      "actor": "ai-agent",
+      "status": "active"
+    },
+    {
+      "objectType": "scenario",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "scenarioId": "validate-output",
+      "title": "Validate Output",
+      "goal": "Check generated code",
+      "actor": "system",
+      "status": "active"
+    }
+  ],
+  "integrations": [
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "integrationId": "workdocs-integration",
+      "title": "Workdocs Integration",
+      "direction": "inbound",
+      "targetType": "node",
+      "targetId": "workdocs-working",
+      "purpose": "Documentation context",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "integrationId": "nodes-switcher-integration",
+      "title": "Nodes Switcher Integration",
+      "direction": "outbound",
+      "targetType": "node",
+      "targetId": "nodes-switcher-working",
+      "purpose": "Version coordination",
+      "status": "active"
+    },
+    {
+      "objectType": "integration",
+      "nodeId": "working",
+      "appId": "kpdegen-working",
+      "integrationId": "projectsettings-integration",
+      "title": "Project Settings Integration",
+      "direction": "inbound",
+      "targetType": "node",
+      "targetId": "projectgeneralsettings-working",
+      "purpose": "Settings context",
+      "status": "active"
+    }
+  ],
+  "links": []
+}
