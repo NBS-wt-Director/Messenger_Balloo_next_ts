@@ -1,0 +1,8 @@
+{
+  "title": "⚙️ Tech Org — Тех-орг вопросы",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Технические и организационные вопросы",
+  "items": [{"category": "Infrastructure", "question": "Где сервер?", "answer": "Екатеринбург, РФ", "status": "resolved"}, {"category": "Compliance", "question": "152-ФЗ?", "answer": "Сервер в РФ, политика обработки", "status": "resolved"}],
+  "status": "complete"
+}

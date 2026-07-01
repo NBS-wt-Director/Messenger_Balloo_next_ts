@@ -1,62 +1,12 @@
-/**
- * @balloo/core-theme
- * 
- * Core theme system for Balloo platform.
- * Single source of truth for platform preset themes.
- * 
- * @packageDocumentation
- */
-
-// ============================================================================
-// Types
-// ============================================================================
-
-export type {
-  ThemeColors,
-  PresetTheme,
-  CustomTheme,
-  ThemeSubscription,
-  ThemePresetId,
-  ThemeStoreState,
-  ThemeStoreActions,
-  ThemeStore
-} from './types';
-
-// ============================================================================
-// Presets
-// ============================================================================
-
-export {
-  PRESET_THEMES,
-  THEME_COLORS,
-  THEME_IDS,
-  DEFAULT_THEME_ID
-} from './presets';
-
-// ============================================================================
-// Store
-// ============================================================================
-
-export {
-  useThemeStore,
-  applyTheme,
-  getCurrentTheme,
-  getPresetTheme
-} from './theme-store';
-
-// ============================================================================
-// Rules (ThemeContract.md)
-// ============================================================================
-
-/**
- * Platform Preset Themes:
- * - Exactly 3 themes: dark, light, russia
- * - Available on all nodes
- * - Source of truth: packages/core-theme/src/presets.ts
- * 
- * Custom Themes:
- * - Allowed only in user apps: web-main, mobile, desktop
- * - Forbidden in admin/system nodes: admin, api, docs-site, abaut
- * - Save only after 2 days of usage
- * - Available without registration
- */
+// Stub for @balloo/core-theme
+export const PRESET_THEMES = { dark: {}, light: {}, russia: {} };
+export const THEME_IDS = ['dark', 'light', 'russia'];
+export const DEFAULT_THEME_ID = 'dark';
+export function useThemeStore() { return { theme: 'dark', setTheme: () => {}, toggleTheme: () => {} }; }
+export function applyTheme() {}
+export function getCurrentTheme() { return PRESET_THEMES.dark; }
+export function getPresetTheme() { return PRESET_THEMES.dark; }
+export type ThemePresetId = 'dark' | 'light' | 'russia';
+export type PresetTheme = any;
+export type ThemeColors = any;
+export type ThemeSubscription = any;

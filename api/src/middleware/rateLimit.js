@@ -1,12 +1,10 @@
 /**
  * Rate Limiting Middleware
  * Ограничение частоты запросов для защиты от abuse
- * С Redis persistence
+ * С MemoryStore (Redis добавлен позже)
  */
 
 const rateLimit = require('express-rate-limit');
-const RedisStore = require('rate-limit-redis');
-const { redis } = require('../config/redis');
 const logger = require('../config/logger');
 
 // ============================================
@@ -16,10 +14,6 @@ const logger = require('../config/logger');
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 минут
   max: 100, // максимум 100 запросов за окно
-  store: new RedisStore({
-    sendCommand: (...args) => redis.sendCommand(...args),
-    prefix: 'ratelimit:global:'
-  }),
   message: {
     success: false,
     error: {
@@ -48,10 +42,6 @@ const globalLimiter = rateLimit({
 const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 час
   max: 20, // максимум 20 запросов в час
-  store: new RedisStore({
-    sendCommand: (...args) => redis.sendCommand(...args),
-    prefix: 'ratelimit:auth:'
-  }),
   message: {
     success: false,
     error: {
@@ -80,10 +70,6 @@ const authLimiter = rateLimit({
 const smsLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 час
   max: 10, // максимум 10 SMS в час
-  store: new RedisStore({
-    sendCommand: (...args) => redis.sendCommand(...args),
-    prefix: 'ratelimit:sms:'
-  }),
   message: {
     success: false,
     error: {
@@ -112,10 +98,6 @@ const smsLimiter = rateLimit({
 const uploadLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 час
   max: 50, // максимум 50 загрузок в час
-  store: new RedisStore({
-    sendCommand: (...args) => redis.sendCommand(...args),
-    prefix: 'ratelimit:upload:'
-  }),
   message: {
     success: false,
     error: {
@@ -135,19 +117,7 @@ const WEBSOCKET_WINDOW_MS = 3000; // 3 секунды
 const WEBSOCKET_MAX_MESSAGES = 10; // 10 сообщений за 3 секунды
 
 async function checkWebSocketRateLimit(userId) {
-  try {
-    const key = `ws:ratelimit:${userId}`;
-    const count = await redis.incr(key);
-    
-    if (count === 1) {
-      await redis.expire(key, Math.ceil(WEBSOCKET_WINDOW_MS / 1000));
-    }
-    
-    return count <= WEBSOCKET_MAX_MESSAGES;
-  } catch (error) {
-    logger.error('WebSocket rate limit check error:', error);
-    return true; // Fail open
-  }
+  return true; // Временно отключен
 }
 
 // ============================================

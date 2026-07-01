@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Удаление аккаунта</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --error: #EF4444; --warning: #F59E0B;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .warning-card {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--error);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .warning-icon { font-size: 48px; margin-bottom: 16px; }
+    .warning-title { font-size: 20px; font-weight: 700; color: var(--error); margin-bottom: 12px; }
+    .warning-list {
+      list-style: none;
+      margin-top: 16px;
+    }
+    .warning-list li {
+      padding: 8px 0;
+      padding-left: 24px;
+      position: relative;
+      color: var(--text-secondary);
+    }
+    .warning-list li::before {
+      content: '⚠️';
+      position: absolute;
+      left: 0;
+    }
+    
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .step.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .step.completed {
+      opacity: 1;
+      border-color: var(--success);
+    }
+    .step-number {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      background: var(--border);
+      color: var(--text-secondary);
+      font-weight: 700;
+      text-align: center;
+      line-height: 32px;
+      margin-bottom: 16px;
+    }
+    .step.active .step-number {
+      background: var(--primary);
+      color: white;
+    }
+    .step.completed .step-number {
+      background: var(--success);
+      color: white;
+    }
+    .step-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .checkbox-group input {
+      margin-top: 4px;
+    }
+    .checkbox-group label {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 16px;
+    }
+    .form-input:focus { border-color: var(--error); }
+    
+    .btn {
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+    }
+    .btn-danger {
+      background: var(--error);
+      color: white;
+    }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-danger:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      margin-top: 12px;
+    }
+    
+    .success-card {
+      text-align: center;
+      padding: 40px;
+    }
+    .success-icon { font-size: 64px; margin-bottom: 24px; }
+    .success-title { font-size: 24px; font-weight: 700; margin-bottom: 16px; }
+    .success-text { color: var(--text-secondary); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Удаление аккаунта</h1>
+  </header>
+
+  <div class="container">
+    <div class="warning-card">
+      <div class="warning-icon">⚠️</div>
+      <h1 class="warning-title">Это действие необратимо</h1>
+      <p style="color: var(--text-secondary);">
+        После удаления аккаунта вы потеряете доступ ко всем данным без возможности восстановления.
+      </p>
+      <ul class="warning-list">
+        <li>Все чаты и сообщения будут удалены</li>
+        <li>Контакты и группы будут потеряны</li>
+        <li>Premium подписка будет аннулирована</li>
+        <li>Файлы в облачном хранилище будут удалены</li>
+      </ul>
+    </div>
+
+    <!-- Шаг 1: Предупреждения -->
+    <div class="step active" id="step1">
+      <div class="step-number">1</div>
+      <h3 class="step-title">Подтвердите понимание</h3>
+      <div class="checkbox-group">
+        <input type="checkbox" id="check1" onchange="updateStep1()">
+        <label for="check1">Я понимаю, что удаление аккаунта необратимо</label>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="check2" onchange="updateStep1()">
+        <label for="check2">Я хочу удалить свой аккаунт навсегда</label>
+      </div>
+      <button class="btn btn-danger" id="btn1" disabled onclick="completeStep(1)">Продолжить</button>
+    </div>
+
+    <!-- Шаг 2: Причина -->
+    <div class="step" id="step2">
+      <div class="step-number">2</div>
+      <h3 class="step-title">Расскажите, почему вы уходите</h3>
+      <select class="form-input" id="reason">
+        <option value="">Выберите причину...</option>
+        <option value="privacy">Беспокоюсь о конфиденциальности</option>
+        <option value="features">Не хватает функций</option>
+        <option value="performance">Плохо работает</option>
+        <option value="switched">Перешёл на другой мессенджер</option>
+        <option value="temporary">Временное решение</option>
+        <option value="other">Другая причина</option>
+      </select>
+      <textarea class="form-input" placeholder="Комментарий (необязательно)" rows="3"></textarea>
+      <button class="btn btn-danger" onclick="completeStep(2)">Продолжить</button>
+    </div>
+
+    <!-- Шаг 3: Подтверждение паролем -->
+    <div class="step" id="step3">
+      <div class="step-number">3</div>
+      <h3 class="step-title">Подтвердите паролем</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 16px;">
+        Введите пароль от аккаунта <strong>alex@balloo.app</strong>
+      </p>
+      <input type="password" class="form-input" placeholder="Пароль" id="password">
+      <button class="btn btn-danger" onclick="completeStep(3)">Подтвердить</button>
+      <button class="btn btn-secondary" onclick="alert('Код отправлен на email')">Использовать код из SMS</button>
+    </div>
+
+    <!-- Шаг 4: Финальное подтверждение -->
+    <div class="step" id="step4">
+      <div class="step-number">4</div>
+      <h3 class="step-title">Введите "УДАЛИТЬ" для подтверждения</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 16px;">
+        Это последняя проверка. Введите слово <strong>УДАЛИТЬ</strong> в поле ниже.
+      </p>
+      <input type="text" class="form-input" placeholder="УДАЛИТЬ" id="confirmText" oninput="checkConfirm()">
+      <button class="btn btn-danger" id="btnDelete" disabled onclick="deleteAccount()">Удалить аккаунт</button>
+    </div>
+
+    <!-- Успех -->
+    <div class="step" id="success" style="display: none;">
+      <div class="success-card">
+        <div class="success-icon">✅</div>
+        <h2 class="success-title">Аккаунт удалён</h2>
+        <p class="success-text">
+          Ваш аккаунт будет полностью удалён в течение 30 дней.<br>
+          В течение этого периода вы можете восстановить аккаунт,<br>
+          войдя с теми же учётными данными.
+        </p>
+        <a href="landing.html" class="btn btn-secondary" style="display: block; text-decoration: none; margin-top: 24px;">
+          Вернуться на главную
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateStep1() {
+      const check1 = document.getElementById('check1').checked;
+      const check2 = document.getElementById('check2').checked;
+      document.getElementById('btn1').disabled = !(check1 && check2);
+    }
+
+    function completeStep(step) {
+      document.getElementById('step' + step).classList.remove('active');
+      document.getElementById('step' + step).classList.add('completed');
+      
+      const nextStep = step + 1;
+      const nextElement = document.getElementById('step' + nextStep);
+      if (nextElement) {
+        nextElement.classList.add('active');
+      }
+    }
+
+    function checkConfirm() {
+      const text = document.getElementById('confirmText').value;
+      document.getElementById('btnDelete').disabled = text !== 'УДАЛИТЬ';
+    }
+
+    function deleteAccount() {
+      if (confirm('Вы уверены? Это действие необратимо!')) {
+        document.getElementById('step4').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -123,6 +123,21 @@ async function closePool() {
 }
 
 // ============================================
+// INIT DATABASE (compatibility wrapper)
+// ============================================
+
+async function initDatabase() {
+  try {
+    const result = await pool.query('SELECT 1');
+    console.log('PostgreSQL connected successfully');
+    return { status: 'connected' };
+  } catch (error) {
+    console.error('PostgreSQL connection failed:', error.message);
+    throw error;
+  }
+}
+
+// ============================================
 // EXPORTS
 // ============================================
 
@@ -132,5 +147,6 @@ module.exports = {
   transaction,
   getPoolStats,
   checkHealth,
-  closePool
+  closePool,
+  initDatabase
 };

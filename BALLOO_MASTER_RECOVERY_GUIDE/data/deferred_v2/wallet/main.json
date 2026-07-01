@@ -1,0 +1,151 @@
+{
+  "title": "💰 Wallet — Кошелёк (V2)",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "Встроенный кошелёк для платежей и переводов",
+  "status": "deferred",
+  "source_file": "trash/V2_ENHANCEMENTS/documents/v2_features.md",
+  
+  "features": {
+    "balance": {
+      "name": "Баланс",
+      "description": "Отслеживание баланса кошелька",
+      "currency": "RUB",
+      "display": "XXXX.XX ₽",
+      "refresh": "Real-time"
+    },
+    "top_up": {
+      "name": "Пополнение",
+      "description": "Пополнение кошелька",
+      "methods": [
+        "Банковская карта",
+        "СБП (Система быстрых платежей)",
+        "ЮMoney",
+        "Наличные (терминалы)"
+      ],
+      "limits": {
+        "min": "100 ₽",
+        "max": "100 000 ₽/день",
+        "monthly": "500 000 ₽"
+      },
+      "fee": "0% (комиссию платит платформа)"
+    },
+    "withdraw": {
+      "name": "Вывод средств",
+      "description": "Вывод на карту или счёт",
+      "methods": ["Карта", "Банковский счёт", "ЮMoney"],
+      "limits": {
+        "min": "100 ₽",
+        "max": "100 000 ₽/день",
+        "monthly": "500 000 ₽"
+      },
+      "fee": "1% (min 50 ₽)",
+      "processing_time": "1-3 рабочих дня"
+    },
+    "transfers": {
+      "name": "Переводы пользователям",
+      "description": "P2P переводы внутри платформы",
+      "fee": "0%",
+      "limit": "50 000 ₽/день",
+      "instant": true
+    },
+    "payments": {
+      "name": "Оплата товаров и услуг",
+      "description": "Оплата через кошелёк Balloo",
+      "use_cases": [
+        "Маркетплейс",
+        "Premium-подписка",
+        "Донаты авторам",
+        "Платные функции"
+      ],
+      "fee": "0% для пользователей"
+    },
+    "donations": {
+      "name": "Донаты",
+      "description": "Поддержка авторов и проекта",
+      "types": [
+        "Одноразовый донат",
+        "Ежемесячная подписка",
+        "Донат за контент"
+      ],
+      "fee": "5% (платформа)"
+    },
+    "history": {
+      "name": "История транзакций",
+      "description": "Полная история операций",
+      "filters": ["Тип", "Дата", "Сумма", "Статус"],
+      "export": "CSV, PDF",
+      "retention": "5 лет"
+    },
+    "notifications": {
+      "name": "Уведомления",
+      "description": "Push/email о транзакциях",
+      "events": [
+        "Пополнение",
+        "Списание",
+        "Перевод получен",
+        "Перевод отправлен",
+        "Возврат"
+      ]
+    }
+  },
+  
+  "security": {
+    "pin_code": "4-6 цифр для подтверждения",
+    "biometric": "Face ID / Touch ID",
+    "2fa": "Обязательно для вывода > 10 000 ₽",
+    "fraud_detection": "AI-мониторинг подозрительных операций",
+    "freeze": "Возможность заморозки при потере устройства"
+  },
+  
+  "compliance": {
+    "fz_161": "ФЗ-161 «О национальной платёжной системе»",
+    "kyc": "Верификация для лимитов > 100 000 ₽/мес",
+    "aml": "Мониторинг подозрительных операций (115-ФЗ)",
+    "tax_reporting": "Справки для налоговой по запросу"
+  },
+  
+  "payment_provider": {
+    "primary": "ЮKassa",
+    "fallback": "CloudPayments",
+    "sdk": "White-label SDK",
+    "integration": "REST API + Webhooks"
+  },
+  
+  "database": {
+    "tables": [
+      {
+        "name": "wallets",
+        "columns": ["user_id", "balance", "currency", "pin_hash", "biometric_enabled", "created_at", "updated_at"]
+      },
+      {
+        "name": "transactions",
+        "columns": ["id", "from_user_id", "to_user_id", "amount", "currency", "type", "status", "reference_id", "created_at"]
+      },
+      {
+        "name": "withdrawals",
+        "columns": ["id", "user_id", "amount", "method", "details", "status", "created_at", "processed_at"]
+      }
+    ]
+  },
+  
+  "api": {
+    "endpoints": [
+      { "method": "GET", "path": "/api/v2/wallet/balance", "description": "Баланс" },
+      { "method": "POST", "path": "/api/v2/wallet/topup", "description": "Пополнение" },
+      { "method": "POST", "path": "/api/v2/wallet/withdraw", "description": "Вывод" },
+      { "method": "POST", "path": "/api/v2/wallet/transfer", "description": "Перевод" },
+      { "method": "GET", "path": "/api/v2/wallet/history", "description": "История" },
+      { "method": "POST", "path": "/api/v2/wallet/donation", "description": "Донат" }
+    ]
+  },
+  
+  "metrics": {
+    "target_users": "20% от MAU к концу года 1",
+    "avg_balance": "5 000 ₽",
+    "monthly_volume": "50 млн ₽",
+    "fraud_rate": "< 0.1%"
+  },
+  
+  "mockup": "trash/V2_ENHANCEMENTS/mockups/wallet.html"
+}

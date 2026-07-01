@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Политика конфиденциальности</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A; --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8; --border: #334155; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .header-logo { display: flex; align-items: center; gap: 12px; }
+    .header-logo-img { width: 40px; height: 40px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); }
+    .header-mascot { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 14px; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+    .header-title { font-size: 18px; font-weight: 700; }
+    .header-nav { display: flex; gap: 8px; margin-left: 24px; }
+    .header-nav-item { padding: 8px 12px; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); font-size: 13px; cursor: pointer; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .header-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+    .main-content { flex: 1; padding: 40px 20px; max-width: 800px; margin: 0 auto; width: 100%; }
+    .section-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .section-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+    .content-section { background: var(--surface); border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+    .content-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+    .content-text { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 12px; }
+    .toc { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
+    .toc-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+    .toc-item { font-size: 14px; color: var(--primary); margin-bottom: 8px; cursor: pointer; }
+    .toc-item:hover { text-decoration: underline; }
+    .footer { background: var(--surface); border-top: 1px solid var(--border); padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .footer-logo { width: 40px; height: 40px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--text-secondary); }
+    .footer-company { flex: 1; margin-left: 16px; }
+    .footer-company-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .footer-company-info { font-size: 11px; color: var(--text-secondary); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-link { font-size: 12px; color: var(--text-secondary); text-decoration: none; cursor: pointer; }
+    .footer-link:hover { color: var(--primary); }
+    .footer-version { font-size: 11px; color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-logo">
+      <div class="header-logo-img">LOGO</div>
+      <div class="header-mascot">🐻</div>
+    </div>
+    <div class="header-title">Balloo</div>
+    <nav class="header-nav">
+      <a href="home_screen.html" class="header-nav-item">Главная</a>
+    </nav>
+    <div class="header-right">
+      <div class="header-avatar">АИ</div>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="section-title">🔒 Политика конфиденциальности</div>
+    <div class="section-sub">Действует с 24.06.2026 • Версия 1.0</div>
+
+    <div class="toc">
+      <div class="toc-title">Содержание</div>
+      <div class="toc-item">1. Общие положения</div>
+      <div class="toc-item">2. Собираемые данные</div>
+      <div class="toc-item">3. Цели обработки</div>
+      <div class="toc-item">4. Хранение и локализация</div>
+      <div class="toc-item">5. Права пользователя</div>
+      <div class="toc-item">6. Безопасность</div>
+      <div class="toc-item">7. Cookies</div>
+      <div class="toc-item">8. Передача данных</div>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">1. Юридические основы</div>
+      <p class="content-text">• <strong>РФ:</strong> Федеральный закон №152-ФЗ «О персональных данных»</p>
+      <p class="content-text">• <strong>РБ:</strong> Закон «О защите персональных данных» №76-З</p>
+      <p class="content-text">• <strong>Индия:</strong> Digital Personal Data Protection Act, 2023</p>
+      <p class="content-text">• <strong>Китай:</strong> Personal Information Protection Law (PIPL)</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">2. Собираемые данные</div>
+      <p class="content-text"><strong>От пользователя:</strong> Email, телефон, имя, пароль</p>
+      <p class="content-text"><strong>Автоматически:</strong> IP, User-Agent, метаданные файлов</p>
+      <p class="content-text"><strong>Мы НЕ собираем:</strong> Биометрию, геолокацию без согласия, финансовые данные</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">4. Локализация данных</div>
+      <p class="content-text">• Данные граждан РФ хранятся на серверах в РФ (ст. 18 152-ФЗ)</p>
+      <p class="content-text">• Данные граждан РБ хранятся на серверах в РБ</p>
+      <p class="content-text">• Данные граждан КНР хранятся на серверах в КНР</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">5. Права пользователя</div>
+      <p class="content-text">• <strong>Доступ:</strong> Запросить копию данных</p>
+      <p class="content-text">• <strong>Удаление:</strong> Удалить аккаунт и все данные</p>
+      <p class="content-text">• <strong>Исправление:</strong> Коррекция неточных данных</p>
+      <p class="content-text">• <strong>Ограничение:</strong> Временно приостановить обработку</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">6. Безопасность</div>
+      <p class="content-text">• AES-256 для данных в покое</p>
+      <p class="content-text">• TLS 1.3 для передачи</p>
+      <p class="content-text">• E2EE для приватных чатов</p>
+      <p class="content-text">• Argon2id для паролей</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">Контакты DPO</div>
+      <p class="content-text">Email: dpo@balloo.app<br>
+      Срок ответа: 30 дней</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="footer-logo">LOGO</div>
+      <div class="footer-company">
+        <div class="footer-company-name">NBS — web-tech</div>
+        <div class="footer-company-info">Екатеринбург</div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="terms.html" class="footer-link">terms</a>
+      <a href="support.html" class="footer-link">support</a>
+    </div>
+    <div class="footer-version">v1.0.0</div>
+  </footer>
+</body>
+</html>

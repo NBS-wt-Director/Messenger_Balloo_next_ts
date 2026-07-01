@@ -1,0 +1,242 @@
+{
+  "title": "📨 Message System — Полная документация",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Часть 1: Архитектура, типы чатов, типы сообщений, вложения, интерактив, E2E шифрование",
+  "status": "complete",
+  "part": 1,
+  "total_parts": 2,
+
+  "architecture": {
+    "nodes": [
+      {"name": "api.balloo.su", "port": 3001, "role": "API Gateway", "technology": "Express.js"},
+      {"name": "messenger.balloo.su", "port": 3002, "role": "WebSocket Server", "technology": "Socket.IO"},
+      {"name": "db.balloo.su", "port": 3006, "role": "PostgreSQL 16", "technology": "Drizzle ORM"},
+      {"name": "cache.balloo.su", "port": 3007, "role": "Redis 7", "technology": "BullMQ"},
+      {"name": "storage.balloo.su", "port": 3008, "role": "Yandex Disk", "technology": "FFmpeg, Sharp"}
+    ],
+    "message_flow": [
+      "client → WebSocket → messenger.balloo.su",
+      "messenger → validate → api.balloo.su",
+      "api → store → db.balloo.su",
+      "api → cache → cache.balloo.su",
+      "api → attachments → storage.balloo.su"
+    ],
+    "performance_targets": {
+      "message_delivery_ms": 100,
+      "max_concurrent_users": 100000,
+      "max_messages_per_second": 10000
+    }
+  },
+
+  "chat_types": [
+    {
+      "id": "direct",
+      "name": "Личный чат",
+      "name_en": "Direct Message",
+      "users": 2,
+      "e2e": true,
+      "features": ["По умолчанию шифрование", "Секретные чаты", "Исчезающие сообщения"],
+      "premium_required": false
+    },
+    {
+      "id": "group",
+      "name": "Группа",
+      "name_en": "Group Chat",
+      "users_min": 3,
+      "users_max_free": 200,
+      "users_max_premium": 5000,
+      "e2e": false,
+      "features": ["Роли: creator/moderator/member", "Управление участниками", "Закреплённые сообщения"],
+      "premium_required": false
+    },
+    {
+      "id": "channel",
+      "name": "Канал",
+      "name_en": "Channel",
+      "users_max": 100000,
+      "e2e": false,
+      "features": ["Только админы пишут", "Просмотры", "Комментарии (опционально)"],
+      "premium_required": true
+    },
+    {
+      "id": "secret",
+      "name": "Секретный чат",
+      "name_en": "Secret Chat",
+      "users": 2,
+      "e2e": true,
+      "features": ["Signal Protocol V2", "Self-destruct", "Нет пересылки", "Нет облака"],
+      "premium_required": true
+    },
+    {
+      "id": "ephemeral",
+      "name": "Исчезающий чат",
+      "name_en": "Ephemeral Chat",
+      "users": "2+",
+      "e2e": true,
+      "features": ["Автоудаление: 1ч/24ч/7д", "E2E шифрование"],
+      "premium_required": false
+    }
+  ],
+
+  "message_types": [
+    {"id": "text", "name": "Текстовое", "e2e": true, "premium": false},
+    {"id": "voice", "name": "Голосовое", "e2e": true, "premium": false, "processing": "FFmpeg + waveform"},
+    {"id": "video_circle", "name": "Видеокружочек", "e2e": true, "premium": false, "processing": "FFmpeg"},
+    {"id": "audio_call", "name": "Аудиозвонок", "e2e": true, "premium": false, "protocol": "WebRTC"},
+    {"id": "video_call", "name": "Видеозвонок", "e2e": true, "premium": false, "protocol": "WebRTC"},
+    {"id": "system", "name": "Системное", "e2e": false, "premium": false},
+    {"id": "attachment", "name": "Вложение", "e2e": true, "premium": false},
+    {"id": "poll", "name": "Опрос", "e2e": false, "premium": false},
+    {"id": "quiz", "name": "Викторина", "e2e": false, "premium": false},
+    {"id": "checklist", "name": "Список", "e2e": false, "premium": false},
+    {"id": "forwarded", "name": "Пересланное", "e2e": true, "premium": false},
+    {"id": "reply", "name": "Ответ", "e2e": true, "premium": false},
+    {"id": "edited", "name": "Изменённое", "e2e": true, "premium": false},
+    {"id": "deleted", "name": "Удалённое", "e2e": true, "premium": false},
+    {"id": "with_reactions", "name": "С реакциями", "e2e": true, "premium": false}
+  ],
+
+  "attachment_types": [
+    {
+      "type": "image",
+      "name": "Изображение",
+      "free_limit_mb": 20,
+      "premium_limit_mb": 1024,
+      "formats": ["jpg", "png", "gif", "webp"],
+      "processing": "Sharp (thumbnail, optimize)"
+    },
+    {
+      "type": "video",
+      "name": "Видео",
+      "free_limit_mb": 100,
+      "premium_limit_mb": 1024,
+      "formats": ["mp4", "mov", "avi"],
+      "processing": "FFmpeg (transcode, thumbnail)"
+    },
+    {
+      "type": "audio",
+      "name": "Аудио",
+      "free_limit_mb": 20,
+      "premium_limit_mb": 1024,
+      "formats": ["mp3", "wav", "ogg", "flac"],
+      "processing": "FFmpeg (waveform)"
+    },
+    {
+      "type": "document",
+      "name": "Документ",
+      "free_limit_mb": 50,
+      "premium_limit_mb": 1024,
+      "formats": ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"],
+      "processing": "Direct storage"
+    },
+    {
+      "type": "voice",
+      "name": "Голосовое",
+      "free_limit_mb": 10,
+      "premium_limit_mb": 1024,
+      "formats": ["ogg", "mp3"],
+      "processing": "FFmpeg + transcript (AI)"
+    },
+    {
+      "type": "sticker",
+      "name": "Стикер",
+      "free_limit_mb": 0.5,
+      "premium_limit_mb": 0.5,
+      "formats": ["webp", "png"],
+      "processing": "Sharp (optimize)"
+    }
+  ],
+
+  "database_tables": [
+    "users",
+    "sessions",
+    "chats",
+    "chat_members",
+    "messages",
+    "attachments",
+    "reactions",
+    "read_receipts",
+    "calls",
+    "polls",
+    "poll_options",
+    "poll_responses",
+    "notifications",
+    "audit_log",
+    "settings"
+  ],
+
+  "api_endpoints_count": {
+    "messages": 6,
+    "attachments": 4,
+    "chats": 8,
+    "calls": 4,
+    "reactions": 3,
+    "polls": 4,
+    "total": 30
+  },
+
+  "websocket_events": {
+    "client_to_server": [
+      "message:send",
+      "message:read",
+      "typing:start",
+      "typing:stop",
+      "reaction:add",
+      "call:start",
+      "call:answer"
+    ],
+    "server_to_client": [
+      "message:new",
+      "message:read-receipt",
+      "user:online",
+      "user:offline",
+      "typing:update",
+      "reaction:update",
+      "call:incoming"
+    ]
+  },
+
+  "security": {
+    "e2e_protocol": "Signal Protocol V2",
+    "e2e_components": ["X3DH key agreement", "Double Ratchet algorithm"],
+    "transport": "TLS 1.3",
+    "audit": "All critical actions logged",
+    "compliance": ["152-ФЗ (Russia)", "150-ФЗ (Russia)"]
+  },
+
+  "premium_features": [
+    "Secret Chats (E2E)",
+    "Запись звонков",
+    "AI-транскрипция голосовых",
+    "Кастомные реакции",
+    "Premium темы",
+    "Эксклюзивные стикеры",
+    "Приоритетная поддержка",
+    "Без рекламы",
+    "1GB файлы",
+    "5000 участников в группе",
+    "Каналы до 100k",
+    "Отложенные сообщения (безлимит)",
+    "Шаблоны сообщений (100)",
+    "История версий сообщений"
+  ],
+
+  "v2_deferred_features": [
+    "Балунишка (AI-ассистент)",
+    "Маркетплейс тем",
+    "Кошелёк (P2P платежи)",
+    "White Label для бизнеса",
+    "Developer API",
+    "Совместные вложения (Collaborative)"
+  ],
+
+  "metrics": {
+    "total_chat_types": 5,
+    "total_message_types": 15,
+    "total_attachment_types": 6,
+    "total_database_tables": 15,
+    "total_api_endpoints": 30,
+    "total_websocket_events": 14
+  }
+}

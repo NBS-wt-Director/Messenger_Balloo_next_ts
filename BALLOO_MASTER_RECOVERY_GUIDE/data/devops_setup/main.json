@@ -1,0 +1,9 @@
+{
+  "title": "⚙️ DevOps Setup — CI/CD",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Настройки CI/CD и деплоя",
+  "ci_cd": {"platform": "GitHub Actions", "workflows": ["test", "build", "deploy"]},
+  "docker": {"services": ["api", "messenger", "db", "cache"]},
+  "status": "complete"
+}

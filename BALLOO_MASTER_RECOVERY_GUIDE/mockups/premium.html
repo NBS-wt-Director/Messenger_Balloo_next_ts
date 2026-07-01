@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Premium</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --gold: #F59E0B;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .hero {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .hero-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .hero-subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      position: relative;
+    }
+    .pricing-card.popular {
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+    }
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: black;
+      padding: 4px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .plan-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .plan-price {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .plan-price span {
+      font-size: 16px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+    .plan-period {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .plan-features {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+    .plan-features li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .check { color: var(--gold); }
+    .plan-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .plan-btn.outline {
+      background: transparent;
+      border: 1px solid var(--border);
+    }
+    .plan-btn:hover { opacity: 0.9; }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+    }
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .feature-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    
+    .faq {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+    }
+    .faq-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .faq-item {
+      margin-bottom: 20px;
+    }
+    .faq-question {
+      font-weight: 600;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .faq-answer {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Premium</h1>
+  </header>
+
+  <div class="hero">
+    <div class="hero-icon">⭐</div>
+    <h1 class="hero-title">Balloo Premium</h1>
+    <p class="hero-subtitle">Разблокируйте все возможности платформы</p>
+  </div>
+
+  <div class="container">
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">0 ₽<span>/мес</span></div>
+        <div class="plan-period">Базовые функции</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Чаты и сообщения</li>
+          <li><span class="check">✓</span> Голосовые и видеозвонки</li>
+          <li><span class="check">✓</span> Файлы до 100 МБ</li>
+          <li><span class="check">✓</span> Статусы (Stories)</li>
+          <li><span class="check">✓</span> Группы до 500 участников</li>
+          <li>✕ Файлы до 1 ГБ</li>
+          <li>✕ Secret Chats с AI-фильтром</li>
+          <li>✕ Автоперевод сообщений</li>
+        </ul>
+        <button class="plan-btn outline">Текущий план</button>
+      </div>
+
+      <div class="pricing-card popular">
+        <div class="popular-badge">Популярный</div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">299 ₽<span>/мес</span></div>
+        <div class="plan-period">или 2490 ₽/год (экономия 30%)</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Всё из Free</li>
+          <li><span class="check">✓</span> Файлы до 1 ГБ</li>
+          <li><span class="check">✓</span> Cloud storage 50 ГБ</li>
+          <li><span class="check">✓</span> Secret Chats с AI-фильтром</li>
+          <li><span class="check">✓</span> Автоперевод (50 языков)</li>
+          <li><span class="check">✓</span> Запись звонков</li>
+          <li><span class="check">✓</span> Запланированные сообщения</li>
+          <li><span class="check">✓</span> Приоритетная поддержка</li>
+        </ul>
+        <button class="plan-btn" onclick="alert('Оформление Premium...')">Оформить Premium</button>
+      </div>
+
+      <div class="pricing-card">
+        <div class="plan-name">Lifetime</div>
+        <div class="plan-price">9900 ₽<span>/единоразово</span></div>
+        <div class="plan-period">Навсегда</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Все Premium функции</li>
+          <li><span class="check">✓</span> Пожизненный доступ</li>
+          <li><span class="check">✓</span> Ранний доступ к фичам</li>
+          <li><span class="check">✓</span> VIP бейдж</li>
+          <li><span class="check">✓</span> Эксклюзивные темы</li>
+        </ul>
+        <button class="plan-btn" onclick="alert('Оформление Lifetime...')">Купить навсегда</button>
+      </div>
+    </div>
+
+    <h2 style="margin-bottom: 24px; font-size: 24px;">Premium возможности</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📁</div>
+        <div class="feature-title">Файлы до 1 ГБ</div>
+        <div class="feature-desc">Загружайте большие файлы и видео в высоком качестве</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Secret Chats</div>
+        <div class="feature-desc">E2E шифрование Signal Protocol с AI-фильтром контента</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title">Автоперевод</div>
+        <div class="feature-desc">Автоматический перевод чатов на 50 языках мира</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📹</div>
+        <div class="feature-title">Запись звонков</div>
+        <div class="feature-desc">Записывайте видеозвонки с автоматической транскрипцией</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏰</div>
+        <div class="feature-title">Отложенные сообщения</div>
+        <div class="feature-desc">Планируйте отправку сообщений на нужное время</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">Эксклюзивные темы</div>
+        <div class="feature-desc">Доступ к премиум темам и кастомизации профиля</div>
+      </div>
+    </div>
+
+    <div class="faq">
+      <h2 class="faq-title">Частые вопросы</h2>
+      <div class="faq-item">
+        <div class="faq-question">💳 Как оформить подписку?</div>
+        <div class="faq-answer">Нажмите "Оформить Premium" и выберите удобный способ оплаты: банковская карта, ЮMoney, или СБП.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">🔄 Можно ли отменить подписку?</div>
+        <div class="faq-answer">Да, вы можете отменить автопродление в любой момент в настройках аккаунта. Доступ сохранится до конца оплаченного периода.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">👨‍👩‍👧‍👦 Есть ли семейный тариф?</div>
+        <div class="faq-answer">Да, Premium Family стоит 499 ₽/мес и позволяет подключить до 6 человек.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">🎓 Есть ли скидки для студентов?</div>
+        <div class="faq-answer">Да, студенты получают 50% скидку по предъявлению студенческого билета.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

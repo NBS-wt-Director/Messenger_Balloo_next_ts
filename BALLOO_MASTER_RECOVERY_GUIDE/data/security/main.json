@@ -1,0 +1,9 @@
+{
+  "title": "🛡️ Security — Безопасность",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Меры безопасности и compliance",
+  "compliance": {"152_fz": "compliant", "150_fz": "partial"},
+  "security_measures": ["TLS 1.3", "Argon2", "2FA", "Аудит"],
+  "status": "complete"
+}

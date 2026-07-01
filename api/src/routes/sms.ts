@@ -6,7 +6,7 @@
 import express, { Request, Response } from 'express';
 import { authenticate } from '../middleware/auth';
 import { SmsService } from '../services/sms.service';
-import { logger } from '../utils/logger';
+import logger from '../config/logger';
 
 const router = express.Router();
 const smsService = new SmsService();
@@ -180,8 +180,7 @@ router.post('/otp/verify', async (req: Request, res: Response) => {
  */
 router.get('/status/:messageId', authenticate, async (req: Request, res: Response) => {
   try {
-    const { messageId } = req.params;
-
+    const messageId = Array.isArray(req.params.messageId) ? req.params.messageId[0] : req.params.messageId;
     const status = await smsService.getMessageStatus(messageId);
 
     res.json({
@@ -208,10 +207,9 @@ router.get('/history', authenticate, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
     const { limit = 50, offset = 0 } = req.query;
-
     const history = await smsService.getUserHistory(userId, {
-      limit: Number(limit),
-      offset: Number(offset),
+      limit: Number(Number(limit)),
+      offset: Number(Number(offset)),
     });
 
     res.json({

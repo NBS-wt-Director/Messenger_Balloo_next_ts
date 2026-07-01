@@ -1,0 +1,112 @@
+{
+  "title": "🏷️ White Label — Брендированная версия (V2)",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "White Label решение для организаций",
+  "status": "deferred",
+  "source_file": "trash/V2_ENHANCEMENTS/documents/v2_features.md",
+  
+  "features": {
+    "branding": {
+      "name": "Брендинг",
+      "description": "Настройка визуального стиля",
+      "elements": [
+        "Логотип организации",
+        "Цветовая схема (primary, secondary, accent)",
+        "Иконка приложения",
+        "Сплеш-скрин"
+      ]
+    },
+    "custom_domain": {
+      "name": "Кастомный домен",
+      "description": "Свой домен для веб-версии",
+      "example": "chat.company.ru",
+      "ssl": "Автоматический SSL (Let's Encrypt)"
+    },
+    "sso": {
+      "name": "Single Sign-On",
+      "description": "Корпоративная аутентификация",
+      "protocols": ["SAML 2.0", "OAuth 2.0", "OIDC"],
+      "providers": ["Active Directory", "Google Workspace", "Okta"]
+    },
+    "admin_panel": {
+      "name": "Панель администратора",
+      "description": "Управление пользователями и настройками",
+      "features": [
+        "Добавление/удаление пользователей",
+        "Группы и роли",
+        "Политики безопасности",
+        "Аудит логов",
+        "Статистика использования"
+      ]
+    },
+    "data_residency": {
+      "name": "Локализация данных",
+      "description": "Хранение данных в нужной юрисдикции",
+      "options": ["Россия", "Беларусь", "Казахстан", "ЕС"],
+      "compliance": ["152-ФЗ", "GDPR"]
+    },
+    "support": {
+      "name": "Выделенная поддержка",
+      "description": "Приоритетная поддержка для White Label клиентов",
+      "sla": {
+        "response_time": "4 часа",
+        "resolution_time": "24 часа",
+        "channels": ["Email", "Phone", "Telegram"]
+      }
+    }
+  },
+  
+  "pricing": {
+    "setup_fee": "500 000 ₽ (единовременно)",
+    "monthly_fee": "от 100 000 ₽/мес",
+    "per_user": "от 500 ₽/пользователь/мес",
+    "min_users": 100,
+    "custom_pricing": "Для enterprise (> 10 000 пользователей)"
+  },
+  
+  "technical": {
+    "deployment": ["Cloud (наш сервер)", "On-premise (сервер клиента)", "Hybrid"],
+    "scalability": "До 100 000 пользователей на инсталляцию",
+    "updates": "Автоматические или ручные (по выбору клиента)",
+    "api_access": "Полный доступ к API",
+    "webhooks": "Настройка webhook событий"
+  },
+  
+  "use_cases": [
+    {
+      "industry": "Банки",
+      "needs": ["Безопасность", "Compliance", "Интеграция с CRM"]
+    },
+    {
+      "industry": "Образование",
+      "needs": ["Группы", "Каналы", "Файлы до 1GB"]
+    },
+    {
+      "industry": "Госсектор",
+      "needs": ["152-ФЗ", "On-premise", "Audit logs"]
+    },
+    {
+      "industry": "Корпорации",
+      "needs": ["SSO", "Брендинг", "Admin panel"]
+    }
+  ],
+  
+  "api": {
+    "endpoints": [
+      { "method": "GET", "path": "/api/v2/whitelabel/config", "description": "Конфигурация White Label" },
+      { "method": "PUT", "path": "/api/v2/whitelabel/config", "description": "Обновить конфигурацию" },
+      { "method": "GET", "path": "/api/v2/whitelabel/users", "description": "Пользователи организации" },
+      { "method": "POST", "path": "/api/v2/whitelabel/users", "description": "Добавить пользователя" },
+      { "method": "GET", "path": "/api/v2/whitelabel/analytics", "description": "Аналитика использования" }
+    ]
+  },
+  
+  "target_customers": [
+    "Банки и финтех",
+    "Образовательные учреждения",
+    "Государственные организации",
+    "Крупный бизнес (500+ сотрудников)",
+    "Медицинские учреждения"
+  ]
+}

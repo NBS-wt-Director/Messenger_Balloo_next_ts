@@ -1,0 +1,203 @@
+{
+  "title": "⭐ Premium — Premium-подписка (V2)",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "Premium-функции и подписка",
+  "status": "deferred",
+  "source_file": "trash/premium_policies.md + контекст",
+  
+  "pricing": {
+    "monthly": "299 ₽/мес",
+    "yearly": "2490 ₽/год (экономия 30%)",
+    "lifetime": "9900 ₽ (единовременно)",
+    "trial": "14 дней бесплатно",
+    "student_discount": "50% (по студенческому)",
+    "family": "499 ₽/мес (до 6 человек)"
+  },
+  
+  "features": [
+    {
+      "id": "PF-01",
+      "name": "Файлы до 1GB",
+      "description": "Загрузка файлов до 1GB (вместо 100MB)",
+      "category": "utility",
+      "v1_equivalent": "100MB"
+    },
+    {
+      "id": "PF-02",
+      "name": "Secret Chats P2P",
+      "description": "E2E шифрование Signal Protocol + AI-фильтр",
+      "category": "security",
+      "ai_filter": true
+    },
+    {
+      "id": "PF-03",
+      "name": "Group Secret Chats",
+      "description": "Групповые секретные чаты с AI-модерацией",
+      "category": "security",
+      "max_members": 50
+    },
+    {
+      "id": "PF-04",
+      "name": "Call Recording",
+      "description": "Запись видеозвонков с транскрипцией",
+      "category": "media",
+      "storage": "90 дней"
+    },
+    {
+      "id": "PF-05",
+      "name": "AI Smart Reply",
+      "description": "Умные ответы в чатах",
+      "category": "ai",
+      "languages": 6
+    },
+    {
+      "id": "PF-06",
+      "name": "Auto-translate",
+      "description": "Автоперевод сообщений на лету",
+      "category": "ai",
+      "languages": 50
+    },
+    {
+      "id": "PF-07",
+      "name": "Message Scheduling",
+      "description": "Запланированные сообщения",
+      "category": "utility",
+      "max_scheduled": 100
+    },
+    {
+      "id": "PF-08",
+      "name": "Custom Emoji Packs",
+      "description": "Кастомные наборы эмодзи",
+      "category": "social",
+      "price": "49 ₽/пакет"
+    },
+    {
+      "id": "PF-09",
+      "name": "Profile Customization",
+      "description": "Расширенная кастомизация профиля",
+      "category": "social",
+      "features": ["Темы", "Фон", "Анимированные аватары"]
+    },
+    {
+      "id": "PF-10",
+      "name": "No Ads",
+      "description": "Отсутствие рекламы",
+      "category": "utility"
+    },
+    {
+      "id": "PF-11",
+      "name": "Priority Support",
+      "description": "Приоритетная поддержка",
+      "category": "support",
+      "sla": "24 часа"
+    },
+    {
+      "id": "PF-12",
+      "name": "Data Analytics",
+      "description": "Расширенная статистика использования",
+      "category": "analytics",
+      "metrics": ["Время в приложении", "Сообщения/день", "Контакты"]
+    },
+    {
+      "id": "PF-13",
+      "name": "Theme Store",
+      "description": "Магазин тем оформления",
+      "category": "social",
+      "price": "49-299 ₽/тема"
+    },
+    {
+      "id": "PF-14",
+      "name": "Advanced Group Controls",
+      "description": "Расширенное управление группами",
+      "category": "chat",
+      "features": ["Медленный режим", "Одобрение сообщений", "Роли"]
+    },
+    {
+      "id": "PF-15",
+      "name": "Screen Sharing",
+      "description": "Демонстрация экрана в звонках",
+      "category": "media",
+      "resolution": "1080p"
+    },
+    {
+      "id": "PF-16",
+      "name": "Cloud Storage 50GB",
+      "description": "Облачное хранилище 50GB",
+      "category": "storage",
+      "included": true
+    },
+    {
+      "id": "PF-17",
+      "name": "Multi-device Sync",
+      "description": "Синхронизация безлимитного числа устройств",
+      "category": "sync",
+      "v1_equivalent": "5 устройств"
+    },
+    {
+      "id": "PF-18",
+      "name": "Extended Edit History",
+      "description": "Расширенная история редактирования",
+      "category": "utility",
+      "retention": "Бессрочно"
+    },
+    {
+      "id": "PF-19",
+      "name": "Anti-spam / Message Requests",
+      "description": "Защита от спама и запросы сообщений",
+      "category": "security"
+    },
+    {
+      "id": "PF-20",
+      "name": "Call Transcription",
+      "description": "Транскрипция звонков (AI)",
+      "category": "ai",
+      "languages": 6
+    },
+    {
+      "id": "PF-21",
+      "name": "VIP Badge",
+      "description": "Значок Premium профиля",
+      "category": "social"
+    },
+    {
+      "id": "PF-22",
+      "name": "Early Access",
+      "description": "Ранний доступ к новым функциям",
+      "category": "utility"
+    }
+  ],
+  
+  "categories": {
+    "utility": 7,
+    "security": 3,
+    "ai": 4,
+    "social": 5,
+    "media": 3,
+    "support": 1,
+    "analytics": 1,
+    "storage": 1,
+    "sync": 1,
+    "chat": 1
+  },
+  
+  "comparison": {
+    "telegram_premium": {
+      "price": "299 ₽/мес",
+      "features": 20,
+      "balloo_advantage": "E2E Secret Chats, AI-фильтр, Compliance"
+    },
+    "whatsapp_business": {
+      "price": "От $5/мес",
+      "features": "Business API",
+      "balloo_advantage": "Маркетплейс, Кошелёк, Малые языки"
+    }
+  },
+  
+  "metrics": {
+    "target_conversion": "5% пользователей",
+    "target_retention": "80% через 3 месяца",
+    "avg_revenue_per_user": "299 ₽/мес",
+    "break_even": "10 000 Premium пользователей"
+  }
+}

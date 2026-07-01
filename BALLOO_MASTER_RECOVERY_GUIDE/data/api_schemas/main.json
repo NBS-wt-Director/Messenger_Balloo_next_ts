@@ -1,0 +1,123 @@
+{
+  "title": "📡 API Schemas — REST API Endpoints",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "REST API endpoints v1",
+  
+  "versioning": {
+    "strategy": "URL + Header",
+    "url_pattern": "/api/v1/*",
+    "header": "X-API-Version: 1",
+    "deprecation_period": "12 месяцев"
+  },
+  
+  "auth": {
+    "prefix": "/api/v1/auth",
+    "endpoints": [
+      { "method": "POST", "path": "/register", "description": "Регистрация" },
+      { "method": "POST", "path": "/login", "description": "Вход" },
+      { "method": "POST", "path": "/logout", "description": "Выход" },
+      { "method": "POST", "path": "/verify-code", "description": "Верификация кода" },
+      { "method": "POST", "path": "/forgot-password", "description": "Запрос сброса пароля" },
+      { "method": "POST", "path": "/reset-password", "description": "Сброс пароля" },
+      { "method": "PUT", "path": "/change-password", "description": "Смена пароля" },
+      { "method": "GET", "path": "/me", "description": "Текущий пользователь" },
+      { "method": "PUT", "path": "/me", "description": "Обновление профиля" },
+      { "method": "DELETE", "path": "/me/account", "description": "Удаление аккаунта" },
+      { "method": "GET", "path": "/sessions", "description": "Список сессий" },
+      { "method": "DELETE", "path": "/sessions/:id", "description": "Завершение сессии" },
+      { "method": "POST", "path": "/2fa/enable", "description": "Включение 2FA" },
+      { "method": "POST", "path": "/2fa/verify", "description": "Верификация 2FA" },
+      { "method": "POST", "path": "/2fa/disable", "description": "Отключение 2FA" },
+      { "method": "GET", "path": "/yandex/authorize", "description": "Yandex OAuth" },
+      { "method": "GET", "path": "/yandex/callback", "description": "Yandex OAuth callback" }
+    ]
+  },
+  
+  "chats": {
+    "prefix": "/api/v1/chats",
+    "endpoints": [
+      { "method": "GET", "path": "/", "description": "Список чатов" },
+      { "method": "POST", "path": "/", "description": "Создание чата" },
+      { "method": "GET", "path": "/:id", "description": "Детали чата" },
+      { "method": "PUT", "path": "/:id", "description": "Обновление чата" },
+      { "method": "DELETE", "path": "/:id", "description": "Удаление чата" },
+      { "method": "GET", "path": "/:id/members", "description": "Участники чата" },
+      { "method": "POST", "path": "/:id/members", "description": "Добавить участника" },
+      { "method": "DELETE", "path": "/:id/members/:userId", "description": "Удалить участника" },
+      { "method": "GET", "path": "/:id/attachments", "description": "Вложения чата" }
+    ]
+  },
+  
+  "messages": {
+    "prefix": "/api/v1/messages",
+    "endpoints": [
+      { "method": "GET", "path": "/chats/:chatId", "description": "Сообщения чата" },
+      { "method": "POST", "path": "/chats/:chatId", "description": "Отправка сообщения" },
+      { "method": "PUT", "path": "/:id", "description": "Редактирование сообщения" },
+      { "method": "DELETE", "path": "/:id", "description": "Удаление сообщения" },
+      { "method": "POST", "path": "/:id/reactions", "description": "Добавить реакцию" },
+      { "method": "DELETE", "path": "/:id/reactions/:emoji", "description": "Удалить реакцию" },
+      { "method": "POST", "path": "/:id/read", "description": "Отметить как прочитанное" }
+    ]
+  },
+  
+  "users": {
+    "prefix": "/api/v1/users",
+    "endpoints": [
+      { "method": "GET", "path": "/search", "description": "Поиск пользователей" },
+      { "method": "GET", "path": "/:id", "description": "Профиль пользователя" },
+      { "method": "GET", "path": "/:id/avatar", "description": "Аватар пользователя" }
+    ]
+  },
+  
+  "contacts": {
+    "prefix": "/api/v1/contacts",
+    "endpoints": [
+      { "method": "GET", "path": "/", "description": "Список контактов" },
+      { "method": "POST", "path": "/", "description": "Добавить контакт" },
+      { "method": "DELETE", "path": "/:userId", "description": "Удалить контакт" },
+      { "method": "PUT", "path": "/:userId/favorite", "description": "В избранное" },
+      { "method": "PUT", "path": "/:userId/block", "description": "В блок-лист" }
+    ]
+  },
+  
+  "statuses": {
+    "prefix": "/api/v1/statuses",
+    "endpoints": [
+      { "method": "GET", "path": "/", "description": "Список статусов" },
+      { "method": "POST", "path": "/", "description": "Создать статус" },
+      { "method": "DELETE", "path": "/:id", "description": "Удалить статус" },
+      { "method": "POST", "path": "/:id/view", "description": "Отметить просмотр" }
+    ]
+  },
+  
+  "calls": {
+    "prefix": "/api/v1/calls",
+    "endpoints": [
+      { "method": "POST", "path": "/", "description": "Инициация звонка" },
+      { "method": "GET", "path": "/:id", "description": "Детали звонка" },
+      { "method": "POST", "path": "/:id/end", "description": "Завершение звонка" },
+      { "method": "GET", "path": "/:id/recording", "description": "Запись звонка" }
+    ]
+  },
+  
+  "notifications": {
+    "prefix": "/api/v1/notifications",
+    "endpoints": [
+      { "method": "GET", "path": "/", "description": "Список уведомлений" },
+      { "method": "POST", "path": "/subscribe", "description": "Подписка на push" },
+      { "method": "PUT", "path": "/:id/read", "description": "Отметить прочитанным" },
+      { "method": "DELETE", "path": "/:id", "description": "Удалить уведомление" }
+    ]
+  },
+  
+  "media": {
+    "prefix": "/api/v1/media",
+    "endpoints": [
+      { "method": "POST", "path": "/upload", "description": "Загрузка файла" },
+      { "method": "GET", "path": "/:id", "description": "Скачивание файла" },
+      { "method": "DELETE", "path": "/:id", "description": "Удаление файла" }
+    ]
+  }
+}

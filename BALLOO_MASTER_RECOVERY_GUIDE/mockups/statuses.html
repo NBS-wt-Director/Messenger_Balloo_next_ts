@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Статусы (Stories)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .my-status {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .add-status-btn {
+      width: 80px;
+      height: 80px;
+      background: var(--bg);
+      border: 2px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      cursor: pointer;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+      transition: all 0.2s;
+    }
+    .add-status-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .add-status-text {
+      flex: 1;
+    }
+    .add-status-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .add-status-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+    
+    .statuses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .status-item {
+      cursor: pointer;
+      position: relative;
+    }
+    .status-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+      padding: 3px;
+      position: relative;
+    }
+    .status-avatar.unwatched::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 3px solid var(--primary);
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+    .status-avatar.watched {
+      background: var(--border);
+    }
+    .status-name {
+      text-align: center;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .status-time {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    
+    .status-viewer {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 100;
+      display: none;
+    }
+    .status-viewer.active {
+      display: flex;
+      flex-direction: column;
+    }
+    .status-viewer-header {
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    .progress-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .progress-segment {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.3);
+    }
+    .progress-segment.active {
+      background: white;
+      animation: progress 5s linear;
+    }
+    .progress-segment.watched {
+      background: white;
+    }
+    @keyframes progress {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+    .status-viewer-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-viewer-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+    .status-viewer-name { font-weight: 600; }
+    .status-viewer-time { font-size: 12px; color: var(--text-secondary); }
+    .status-viewer-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+    .status-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: var(--text-secondary);
+    }
+    .status-viewer-actions {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 20px;
+    }
+    .viewer-action-btn {
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: white;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='chat_list.html'">←</button>
+    <h1 class="page-title">Статусы</h1>
+  </header>
+
+  <div class="container">
+    <div class="my-status">
+      <div class="add-status-btn" onclick="alert('Добавление статуса')">+</div>
+      <div class="add-status-text">
+        <div class="add-status-title">Добавить статус</div>
+        <div class="add-status-subtitle">Нажмите, чтобы поделиться моментом</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Недавние</h2>
+    <div class="statuses-grid">
+      <div class="status-item" onclick="openStatusViewer()">
+        <div class="status-avatar unwatched">АИ</div>
+        <div class="status-name">Алексей</div>
+        <div class="status-time">2 ч назад</div>
+      </div>
+      <div class="status-item" onclick="openStatusViewer()">
+        <div class="status-avatar unwatched" style="background: linear-gradient(135deg, #10B981, #059669);">МП</div>
+        <div class="status-name">Мария П.</div>
+        <div class="status-time">5 ч назад</div>
+      </div>
+      <div class="status-item">
+        <div class="status-avatar watched">ДС</div>
+        <div class="status-name">Дмитрий С.</div>
+        <div class="status-time">Вчера</div>
+      </div>
+      <div class="status-item" onclick="openStatusViewer()">
+        <div class="status-avatar unwatched" style="background: linear-gradient(135deg, #F59E0B, #EF4444);">ЕК</div>
+        <div class="status-name">Елена К.</div>
+        <div class="status-time">Вчера</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Более старые</h2>
+    <div class="statuses-grid">
+      <div class="status-item">
+        <div class="status-avatar watched">ИП</div>
+        <div class="status-name">Иван П.</div>
+        <div class="status-time">2 дня назад</div>
+      </div>
+      <div class="status-item">
+        <div class="status-avatar watched">ОМ</div>
+        <div class="status-name">Ольга М.</div>
+        <div class="status-time">3 дня назад</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-viewer" id="statusViewer">
+    <button class="status-viewer-close" onclick="closeStatusViewer()">×</button>
+    <div class="status-viewer-header">
+      <div class="progress-bar">
+        <div class="progress-segment watched"></div>
+        <div class="progress-segment active"></div>
+        <div class="progress-segment"></div>
+      </div>
+      <div class="status-viewer-info">
+        <div class="status-viewer-avatar">АИ</div>
+        <div>
+          <div class="status-viewer-name">Алексей Иванов</div>
+          <div class="status-viewer-time">Сегодня, 14:30</div>
+        </div>
+      </div>
+    </div>
+    <div class="status-content">📷 Фото статуса</div>
+    <div class="status-viewer-actions">
+      <button class="viewer-action-btn" onclick="alert('Ответить')">💬</button>
+      <button class="viewer-action-btn" onclick="alert('Поделиться')">↗️</button>
+      <button class="viewer-action-btn" onclick="alert('Нравится')">❤️</button>
+    </div>
+  </div>
+
+  <script>
+    function openStatusViewer() {
+      document.getElementById('statusViewer').classList.add('active');
+    }
+    function closeStatusViewer() {
+      document.getElementById('statusViewer').classList.remove('active');
+    }
+  </script>
+</body>
+</html>

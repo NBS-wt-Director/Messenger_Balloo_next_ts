@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal — Дашборд</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981; --warning: #F59E0B; --error: #EF4444;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      flex-shrink: 0;
+    }
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-title { font-size: 18px; font-weight: 700; }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.03); color: var(--text-primary); }
+    .sidebar-link.active { background: rgba(37, 99, 235, 0.1); border-left-color: var(--primary); color: var(--text-primary); }
+    .main-content { flex: 1; padding: 40px; }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .page-title { font-size: 28px; font-weight: 700; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+    }
+    .stat-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+    .stat-value { font-size: 32px; font-weight: 700; }
+    .stat-change { font-size: 12px; margin-top: 8px; }
+    .stat-change.positive { color: var(--success); }
+    .stat-change.negative { color: var(--error); }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+    }
+    .chart-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+    .chart-placeholder {
+      height: 200px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+    }
+    .recent-activity {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+    }
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .activity-info { flex: 1; }
+    .activity-text { font-size: 14px; margin-bottom: 2px; }
+    .activity-time { font-size: 12px; color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">🛡️ Balloo Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="admin_dashboard.html" class="sidebar-link active">📊 Дашборд</a>
+      <a href="#" class="sidebar-link">👥 Пользователи</a>
+      <a href="#" class="sidebar-link">📋 Модерация</a>
+      <a href="#" class="sidebar-link">📈 Аналитика</a>
+      <a href="#" class="sidebar-link">⚙️ Настройки</a>
+      <a href="#" class="sidebar-link">🎫 Поддержка</a>
+      <a href="#" class="sidebar-link">🗳️ Голосования</a>
+      <a href="auth_screen.html" class="sidebar-link" style="color: var(--error);">🚪 Выйти</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Дашборд</h1>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn" style="background: var(--bg); border: 1px solid var(--border); color: var(--text-secondary); padding: 10px 20px; cursor: pointer;">📥 Экспорт</button>
+        <button class="btn" style="background: var(--primary); border: none; color: white; padding: 10px 20px; cursor: pointer;">⚡ Действия</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Всего пользователей</div>
+        <div class="stat-value">12,847</div>
+        <div class="stat-change positive">↑ +1,234 за неделю</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Активные за 24ч</div>
+        <div class="stat-value">3,421</div>
+        <div class="stat-change positive">↑ +5.2% к вчера</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Новых регистраций</div>
+        <div class="stat-value">847</div>
+        <div class="stat-change positive">↑ +12% за неделю</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Жалобы на модерации</div>
+        <div class="stat-value">23</div>
+        <div class="stat-change negative">↓ -8 к вчера</div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Активность пользователей (7 дней)</div>
+        <div class="chart-placeholder">📈 График активности</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Распределение по платформам</div>
+        <div class="chart-placeholder">🥧 Pie chart</div>
+      </div>
+    </div>
+
+    <div class="recent-activity">
+      <h2 style="font-size: 18px; margin-bottom: 16px;">Последняя активность</h2>
+      <div class="activity-item">
+        <div class="activity-icon">👤</div>
+        <div class="activity-info">
+          <div class="activity-text">Новый пользователь: <strong>@newuser123</strong></div>
+          <div class="activity-time">2 минуты назад</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">⚠️</div>
+        <div class="activity-info">
+          <div class="activity-text">Жалоба на контент от <strong>@moderator_alex</strong></div>
+          <div class="activity-time">15 минут назад</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">🎫</div>
+        <div class="activity-info">
+          <div class="activity-text">Тикет поддержки #4521 создан</div>
+          <div class="activity-time">1 час назад</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">🔒</div>
+        <div class="activity-info">
+          <div class="activity-text">Пользователь <strong>@spammer</strong> заблокирован</div>
+          <div class="activity-time">2 часа назад</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

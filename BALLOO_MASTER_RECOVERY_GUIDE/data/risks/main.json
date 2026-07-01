@@ -1,0 +1,8 @@
+{
+  "title": "⚠️ Risks — Оценка рисков",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Матрица рисков проекта",
+  "items": [{"risk": "Yandex Disk SPOF", "probability": "medium", "impact": "critical", "mitigation": "Резервное хранилище"}, {"risk": "Compliance 150-ФЗ", "probability": "high", "impact": "high", "mitigation": "СОРМ оборудование"}, {"risk": "Мобильные клиенты V2", "probability": "high", "impact": "medium", "mitigation": "Веб-версия PWA"}],
+  "status": "complete"
+}

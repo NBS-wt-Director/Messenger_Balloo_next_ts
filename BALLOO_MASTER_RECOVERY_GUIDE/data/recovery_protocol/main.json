@@ -1,0 +1,9 @@
+{
+  "title": "🔄 Recovery Protocol — Protocol восстановления",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Protocol восстановления после сбоев",
+  "contacts": {"on_call": "Telegram: @balloo-oncall", "escalation": "Техдир → CEO"},
+  "backups": {"database": "Ежедневно + WAL", "files": "Yandex Disk + локально", "retention": "30 дней"},
+  "status": "complete"
+}

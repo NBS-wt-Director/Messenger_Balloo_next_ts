@@ -1,0 +1,260 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/message_features_v1.json",
+  "title": "Interactive Message Features V1 Schema",
+  "description": "JSON Schema для валидации спецификации интерактивных функций сообщений Balloo V1",
+  "version": "5.0",
+  "date": "2026-06-29",
+
+  "type": "object",
+  "required": ["title", "version", "date", "description", "status", "features", "questions_to_10", "recommendations_summary"],
+
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Заголовок спецификации"
+    },
+
+    "version": {
+      "type": "string",
+      "pattern": "^v\\d+\\.\\d+$",
+      "description": "Версия спецификации (например, v5.0)"
+    },
+
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Дата создания/обновления"
+    },
+
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Описание спецификации"
+    },
+
+    "status": {
+      "type": "string",
+      "enum": ["draft", "in_review", "ready_for_implementation", "implemented", "deprecated"],
+      "description": "Статус спецификации"
+    },
+
+    "author": {
+      "type": "string",
+      "default": "NLP-Core-Team",
+      "description": "Автор спецификации"
+    },
+
+    "location": {
+      "type": "string",
+      "default": "Ekaterinburg, Russia",
+      "description": "Локация команды"
+    },
+
+    "source_files": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Исходные файлы для спецификации"
+    },
+
+    "metrics_target": {
+      "type": "object",
+      "required": ["baseline_score", "target_score", "definitions"],
+      "properties": {
+        "baseline_score": {"type": "number", "minimum": 0, "maximum": 10},
+        "target_score": {"type": "number", "minimum": 0, "maximum": 10},
+        "definitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "description", "weight"],
+            "properties": {
+              "id": {"type": "string"},
+              "name": {"type": "string"},
+              "description": {"type": "string"},
+              "weight": {"type": "number", "minimum": 0, "maximum": 1}
+            }
+          }
+        }
+      }
+    },
+
+    "features": {
+      "type": "object",
+      "required": ["forward", "edit", "delete", "scheduled", "templates", "quick_replies", "polls", "quizzes", "checklists"],
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "name", "name_en", "type", "class", "premium", "priority", "status"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^MESG-\\d+|SUGG-\\d+"},
+          "name": {"type": "string", "minLength": 3},
+          "name_en": {"type": "string", "minLength": 3},
+          "type": {
+            "oneOf": [
+              {"type": "string"},
+              {"type": "array", "items": {"type": "string"}}
+            ]
+          },
+          "class": {"type": "string", "enum": ["core", "feature", "utility", "admin", "plugin"]},
+          "premium": {"type": "boolean"},
+          "priority": {"type": "string", "enum": ["P0", "P1", "P2", "P3"]},
+          "status": {"type": "string"},
+          "limits": {"type": "object"},
+          "variables": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^\\{\\{.*\\}\\}$"}
+          },
+          "collaborative": {"type": "boolean"}
+        }
+      }
+    },
+
+    "questions_to_10": {
+      "type": "object",
+      "required": ["total_questions", "questions"],
+      "properties": {
+        "total_questions": {"type": "integer", "minimum": 1, "maximum": 100},
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "title_en", "metrics_affected", "recommended_option", "decision"],
+            "properties": {
+              "id": {"type": "integer", "minimum": 1, "maximum": 100},
+              "title": {"type": "string", "minLength": 10},
+              "title_en": {"type": "string", "minLength": 10},
+              "metrics_affected": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "weight"],
+                  "properties": {
+                    "id": {"type": "string"},
+                    "weight": {"type": "number", "minimum": 0, "maximum": 1}
+                  }
+                }
+              },
+              "recommended_option": {"type": "string"},
+              "decision": {"type": "string", "minLength": 5}
+            }
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      }
+    },
+
+    "recommendations_summary": {
+      "type": "object",
+      "required": ["decisions", "final_scores"],
+      "properties": {
+        "decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["question_id", "recommended_option", "decision", "metric_impact"],
+            "properties": {
+              "question_id": {"type": "integer"},
+              "recommended_option": {"type": "string"},
+              "decision": {"type": "string"},
+              "metric_impact": {"type": "string"}
+            }
+          }
+        },
+        "final_scores": {
+          "type": "object",
+          "required": ["baseline", "with_recommendations"],
+          "properties": {
+            "baseline": {
+              "type": "object",
+              "required": ["ux", "performance", "security", "completeness", "scalability", "maintainability", "total"],
+              "properties": {
+                "ux": {"type": "number", "minimum": 0, "maximum": 10},
+                "performance": {"type": "number", "minimum": 0, "maximum": 10},
+                "security": {"type": "number", "minimum": 0, "maximum": 10},
+                "completeness": {"type": "number", "minimum": 0, "maximum": 10},
+                "scalability": {"type": "number", "minimum": 0, "maximum": 10},
+                "maintainability": {"type": "number", "minimum": 0, "maximum": 10},
+                "total": {"type": "number", "minimum": 0, "maximum": 10}
+              }
+            },
+            "with_recommendations": {
+              "type": "object",
+              "required": ["ux", "performance", "security", "completeness", "scalability", "maintainability", "total"],
+              "properties": {
+                "ux": {"type": "number", "minimum": 0, "maximum": 10},
+                "performance": {"type": "number", "minimum": 0, "maximum": 10},
+                "security": {"type": "number", "minimum": 0, "maximum": 10},
+                "completeness": {"type": "number", "minimum": 0, "maximum": 10},
+                "scalability": {"type": "number", "minimum": 0, "maximum": 10},
+                "maintainability": {"type": "number", "minimum": 0, "maximum": 10},
+                "total": {"type": "number", "minimum": 0, "maximum": 10}
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "implementation_timeline": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["weeks", "features", "priority"],
+        "properties": {
+          "weeks": {"type": "string"},
+          "features": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "priority": {"type": "string", "enum": ["P0", "P1", "P2", "P3"]}
+        }
+      }
+    },
+
+    "api_endpoints_summary": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^(GET|POST|PUT|DELETE|PATCH|WS) /api/v1/"
+        }
+      }
+    },
+
+    "competitive_analysis": {
+      "type": "object",
+      "properties": {
+        "unique_advantages": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+
+    "database_tables": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "indexes": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "tables": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    }
+  },
+
+  "additionalProperties": true
+}

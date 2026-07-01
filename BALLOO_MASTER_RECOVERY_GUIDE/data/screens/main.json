@@ -1,0 +1,221 @@
+{
+  "title": "📱 Полный реестр экранов Balloo Platform",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Все экраны платформы (50+). Восстановлено из экраны.md",
+  "note": "⚠️ Это сокращённая версия. Полный реестр с layout-схемами находится в trash/экраны.md",
+  
+  "categories": {
+    "messenger": {
+      "name": "Messenger (messenger/)",
+      "screens": [
+        {
+          "id": "SCR-M-001",
+          "name": "Регистрация",
+          "path": "/register",
+          "node": "messenger",
+          "description": "Полноэкранная форма регистрации: email/телефон + пароль + displayName, валидация Zod",
+          "dependencies": ["AuthForm", "GradientButton", "InputField"],
+          "mobile_layout": "390×844 (iPhone 14), 360×800 (Android)",
+          "desktop_layout": "1440×900, 1920×1080"
+        },
+        {
+          "id": "SCR-M-002",
+          "name": "Верификация кода",
+          "path": "/verify-code",
+          "node": "messenger",
+          "description": "Ввод 6-значного кода (email) или 3-значного (SMS) с таймером"
+        },
+        {
+          "id": "SCR-M-003",
+          "name": "Вход (Login)",
+          "path": "/login",
+          "node": "messenger",
+          "description": "Форма входа с OAuth Yandex кнопкой, чекбокс 'Запомнить'"
+        },
+        {
+          "id": "SCR-M-003a",
+          "name": "2FA верификация",
+          "path": "/2fa-verify",
+          "node": "messenger",
+          "description": "Ввод TOTP кода (6 цифр) или SMS кода"
+        },
+        {
+          "id": "SCR-M-004",
+          "name": "Восстановление пароля",
+          "path": "/forgot-password",
+          "node": "messenger",
+          "description": "Пошаговый wizard (3 шага): email → код → новый пароль"
+        },
+        {
+          "id": "SCR-M-005",
+          "name": "Список чатов",
+          "path": "/chats",
+          "node": "messenger",
+          "description": "Главный экран: левая панель со списком чатов, фильтры, поиск, кнопка 'Новый чат'",
+          "is_main": true
+        },
+        {
+          "id": "SCR-M-006",
+          "name": "Чат (Диалог/Группа)",
+          "path": "/chats/[chatId]",
+          "node": "messenger",
+          "description": "Основной экран переписки: шапка, сообщения (bubble), поле ввода, emoji-панель"
+        },
+        {
+          "id": "SCR-M-006a",
+          "name": "Интерфейс звонка",
+          "location": "CallInterface (fullscreen modal)",
+          "node": "messenger",
+          "description": "Полноэкранный звонок: аватар, таймер, кнопки (микрофон, камера, завершение)"
+        },
+        {
+          "id": "SCR-M-006b",
+          "name": "Панель вложений",
+          "location": "AttachmentsPanel (slide-up bottom sheet)",
+          "node": "messenger",
+          "description": "Двухуровневая навигация: категории → список вложений с миниатюрами"
+        },
+        {
+          "id": "SCR-M-006c",
+          "name": "Просмотрер вложений",
+          "location": "AttachmentViewer (fullscreen modal)",
+          "node": "messenger",
+          "description": "Полноэкранный просмотр фото/видео/документов с zoom, swipe"
+        },
+        {
+          "id": "SCR-M-006d",
+          "name": "Поиск по чату",
+          "location": "Модальное окно в чате",
+          "node": "messenger",
+          "description": "Поиск с подсветкой контекста, фильтры по дате/отправителю/типу"
+        },
+        {
+          "id": "SCR-M-007",
+          "name": "Статусы (Stories)",
+          "path": "/statuses",
+          "node": "messenger",
+          "description": "Восьмиугольные аватарки контактов, лента статусов, публикация своего статуса"
+        },
+        {
+          "id": "SCR-M-007a",
+          "name": "Просмотрер статусов",
+          "location": "StatusViewer (fullscreen modal)",
+          "node": "messenger",
+          "description": "Полноэкранный просмотр фото/видео 15 сек с прогресс-баром"
+        },
+        {
+          "id": "SCR-M-008",
+          "name": "Контакты",
+          "location": "/settings (вкладка 'Контакты')",
+          "node": "messenger",
+          "description": "Список контактов с аватарками, запросы в друзья, блок-лист"
+        },
+        {
+          "id": "SCR-M-008a",
+          "name": "Приглашения",
+          "path": "/invitations",
+          "node": "messenger",
+          "description": "Копирование ссылки-приглашения, статистика приглашений"
+        },
+        {
+          "id": "SCR-M-009",
+          "name": "Настройки",
+          "path": "/settings",
+          "node": "messenger",
+          "description": "Боковая навигация: Профиль, Тема, Язык, Уведомления, Конфиденциальность, Хранилище, Аккаунт, 2FA, Контакты, Сессии, Поддержка"
+        },
+        {
+          "id": "SCR-M-009a",
+          "name": "Тема",
+          "location": "/settings (вкладка 'Темы')",
+          "node": "messenger",
+          "description": "Галерея тем с превью, экспорт/импорт тем (JSON)"
+        },
+        {
+          "id": "SCR-M-009b",
+          "name": "Приватность",
+          "location": "/settings (вкладка 'Приватность')",
+          "node": "messenger",
+          "description": "Настройки видимости: lastSeen, онлайн, аватар, блок-лист"
+        },
+        {
+          "id": "SCR-M-009c",
+          "name": "2FA Настройка",
+          "location": "/settings (вкладка 'Безопасность')",
+          "node": "messenger",
+          "description": "QR-код для Google Authenticator, включение SMS 2FA"
+        },
+        {
+          "id": "SCR-M-010",
+          "name": "Профиль",
+          "path": "/profile",
+          "node": "messenger",
+          "description": "Аватар (crop modal), displayName, bio, email, phone, история аватаров"
+        },
+        {
+          "id": "SCR-M-011",
+          "name": "Сессии",
+          "path": "/sessions",
+          "node": "messenger",
+          "description": "Список устройств с кнопкой 'Завершить', 'Завершить все'"
+        },
+        {
+          "id": "SCR-M-011a",
+          "name": "Удаление аккаунта",
+          "path": "/delete-account",
+          "node": "messenger",
+          "description": "Опасная зона, двойное подтверждение: ввод 'удалить' + пароль"
+        },
+        {
+          "id": "SCR-M-012",
+          "name": "Менеджер уведомлений",
+          "location": "Dropdown в Header",
+          "node": "messenger",
+          "description": "Колокольчик с badge, список уведомлений по типам"
+        }
+      ]
+    },
+    "admin_portal": {
+      "name": "Admin Portal (admin-portal/)",
+      "screens": [
+        { "id": "SCR-A-001", "name": "Вход в админ-панель", "path": "/login", "node": "admin-portal", "description": "Admin ID + Password + 2FA, IP whitelist, защита от brute-force" },
+        { "id": "SCR-A-002", "name": "Дашборд", "path": "/dashboard", "node": "admin-portal", "description": "Метрики: Active Users, Server Load, Messages/sec, Revenue, графики Recharts" },
+        { "id": "SCR-A-003", "name": "Управление пользователями", "path": "/admin/users", "node": "admin-portal", "description": "Таблица: ID, Email, Role, Status, бан/разбан, сброс пароля" },
+        { "id": "SCR-A-003a", "name": "Детали пользователя", "location": "UserDetailModal", "node": "admin-portal", "description": "Полная информация: профиль, audit log, бан-история, сообщения" },
+        { "id": "SCR-A-004", "name": "Модерация контента", "path": "/admin/reports", "node": "admin-portal", "description": "Жалобы: скриншот/текст, кнопки 'OK'/'Удалить'/'Бан', AI flagging" },
+        { "id": "SCR-A-005", "name": "Системные настройки", "path": "/admin/settings", "node": "admin-portal", "description": "Key-Value store: REGISTRATION_ENABLED, MAX_FILE_SIZE_MB, MAINTENANCE_MODE" },
+        { "id": "SCR-A-006", "name": "Служба поддержки", "path": "/admin/support", "node": "admin-portal", "description": "Тикеты поддержки: список, детали, internal notes" },
+        { "id": "SCR-A-007", "name": "Голосования за фичи (админка)", "path": "/admin/features", "node": "admin-portal", "description": "Таблица предложений: статус, голоса, admin notes" }
+      ]
+    },
+    "landing": {
+      "name": "Landing (balloo-landing/)",
+      "screens": [
+        { "id": "SCR-L-001", "name": "Главная страница", "path": "/", "node": "balloo-landing", "description": "Hero: 'Переверни общение' + CTA, Stats, Features, Pricing, Footer" }
+      ]
+    },
+    "premium_store": {
+      "name": "Premium & Store",
+      "screens": [
+        { "id": "SCR-P-001", "name": "Premium подписка", "path": "/premium", "node": "messenger", "description": "Сравнение Free vs Premium, 299 ₽/мес, оформление подписки" },
+        { "id": "SCR-S-001", "name": "Магазин", "path": "/store", "node": "messenger", "description": "Каталог: темы (29-99 ₽), стикерпаки (49-149 ₽), корзина, оплата" },
+        { "id": "SCR-F-001", "name": "Голосования за фичи", "path": "/features", "node": "messenger", "description": "Карточки предложений с кнопкой 'Голосовать', фильтры по категории" }
+      ]
+    }
+  },
+  
+  "summary": {
+    "total_screens": 50,
+    "messenger": 34,
+    "admin_portal": 7,
+    "landing": 1,
+    "premium_store": 3,
+    "mobile_adapted": 34,
+    "desktop_adapted": 34,
+    "has_mockup": 9,
+    "mockup_coverage": "19.5%"
+  },
+  
+  "full_registry_location": "trash/экраны.md (50+ экранов с layout-схемами)"
+}

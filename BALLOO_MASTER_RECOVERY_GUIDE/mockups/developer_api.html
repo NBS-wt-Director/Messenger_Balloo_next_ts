@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Developer API</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981; --gold: #F59E0B;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .hero {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.2));
+      padding: 60px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-icon { font-size: 80px; margin-bottom: 16px; }
+    .hero-title { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+    .hero-subtitle { color: var(--text-secondary); font-size: 18px; margin-bottom: 24px; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; }
+    .btn {
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 40px;
+    }
+    
+    .sidebar {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+    .nav-section {
+      margin-bottom: 24px;
+    }
+    .nav-title {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      border-left: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .nav-link:hover {
+      color: var(--text-primary);
+      border-left-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+    .nav-link.active {
+      color: var(--primary);
+      border-left-color: var(--primary);
+    }
+    
+    .content {
+      min-width: 0;
+    }
+    .section {
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    
+    .endpoint {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .method {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .method.get { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .method.post { background: rgba(37, 99, 235, 0.2); color: var(--primary); }
+    .method.put { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+    .method.delete { background: rgba(239, 68, 68, 0.2); color: var(--error); }
+    .endpoint-path {
+      font-family: monospace;
+      font-size: 14px;
+      flex: 1;
+    }
+    .endpoint-body {
+      padding: 20px;
+    }
+    .endpoint-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      font-family: 'Consolas', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    
+    .params-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    .params-table th,
+    .params-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .params-table th {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .params-table td {
+      font-size: 14px;
+    }
+    .param-name {
+      font-family: monospace;
+      color: var(--primary);
+    }
+    .param-type {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .auth-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .auth-title {
+      font-size: 16px;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .auth-list {
+      list-style: none;
+      padding-left: 20px;
+    }
+    .auth-list li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='landing.html'">←</button>
+    <h1 class="page-title">Developer API</h1>
+    <div style="margin-left: auto; display: flex; gap: 12px;">
+      <button class="btn btn-outline" onclick="alert('Документация...')">📚 Документация</button>
+      <button class="btn btn-primary" onclick="alert('Создать API ключ...')">🔑 Создать ключ</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-icon">🔌</div>
+    <h1 class="hero-title">Balloo API</h1>
+    <p class="hero-subtitle">Интегрируйте Balloo в свои приложения</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary">Начать работу</button>
+      <button class="btn btn-outline">Примеры кода</button>
+      <button class="btn btn-outline">SDK</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div class="nav-section">
+        <div class="nav-title">Введение</div>
+        <a href="#" class="nav-link active">Обзор API</a>
+        <a href="#" class="nav-link">Аутентификация</a>
+        <a href="#" class="nav-link">Rate Limits</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-title">Пользователи</div>
+        <a href="#" class="nav-link">Получить пользователя</a>
+        <a href="#" class="nav-link">Создать пользователя</a>
+        <a href="#" class="nav-link">Обновить пользователя</a>
+        <a href="#" class="nav-link">Удалить пользователя</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-title">Сообщения</div>
+        <a href="#" class="nav-link">Получить сообщения</a>
+        <a href="#" class="nav-link">Отправить сообщение</a>
+        <a href="#" class="nav-link">Удалить сообщение</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-title">Webhooks</div>
+        <a href="#" class="nav-link">Создать webhook</a>
+        <a href="#" class="nav-link">Список webhooks</a>
+        <a href="#" class="nav-link">Удалить webhook</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-title">SDK</div>
+        <a href="#" class="nav-link">JavaScript/Node.js</a>
+        <a href="#" class="nav-link">Python</a>
+        <a href="#" class="nav-link">Go</a>
+        <a href="#" class="nav-link">PHP</a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="section">
+        <h2 class="section-title">Обзор API</h2>
+        <p class="section-desc">
+          Balloo API позволяет интегрировать функционал мессенджера в ваши приложения.
+          API использует REST архитектуру и возвращает данные в формате JSON.
+        </p>
+        
+        <div class="auth-box">
+          <div class="auth-title">🔐 Аутентификация</div>
+          <ul class="auth-list">
+            <li>Все запросы требуют API ключ в заголовке <code>X-API-Key</code></li>
+            <li>Ключи создаются в личном кабинете разработчика</li>
+            <li>Храните ключи в секрете, не публикуйте в коде</li>
+            <li>Для продакшена используйте OAuth 2.0</li>
+          </ul>
+        </div>
+        
+        <div class="code-block">Base URL: https://api.balloo.su/v1</div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Пользователи</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-path">/users/{user_id}</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="endpoint-desc">Получение информации о пользователе по ID</p>
+            
+            <h4 style="margin-bottom: 12px; font-size: 14px;">Параметры:</h4>
+            <table class="params-table">
+              <tr>
+                <th>Параметр</th>
+                <th>Тип</th>
+                <th>Описание</th>
+              </tr>
+              <tr>
+                <td><span class="param-name">user_id</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Уникальный ID пользователя</td>
+              </tr>
+            </table>
+            
+            <h4 style="margin: 16px 0 12px; font-size: 14px;">Пример запроса:</h4>
+            <div class="code-block">curl -X GET "https://api.balloo.su/v1/users/12345" \
+  -H "X-API-Key: your_api_key_here"</div>
+            
+            <h4 style="margin: 16px 0 12px; font-size: 14px;">Пример ответа:</h4>
+            <div class="code-block">{
+  "id": "12345",
+  "username": "@alexivanov",
+  "email": "alex@balloo.app",
+  "created_at": "2025-01-15T10:30:00Z",
+  "is_premium": true
+}</div>
+          </div>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method post">POST</span>
+            <span class="endpoint-path">/users</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="endpoint-desc">Создание нового пользователя</p>
+            
+            <h4 style="margin-bottom: 12px; font-size: 14px;">Параметры тела:</h4>
+            <table class="params-table">
+              <tr>
+                <th>Параметр</th>
+                <th>Тип</th>
+                <th>Описание</th>
+              </tr>
+              <tr>
+                <td><span class="param-name">email</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Email пользователя (обязательно)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">username</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Имя пользователя (обязательно)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">password</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Пароль (обязательно)</td>
+              </tr>
+            </table>
+            
+            <h4 style="margin: 16px 0 12px; font-size: 14px;">Пример запроса:</h4>
+            <div class="code-block">curl -X POST "https://api.balloo.su/v1/users" \
+  -H "X-API-Key: your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "new@user.com",
+    "username": "@newuser",
+    "password": "securepassword123"
+  }'</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Сообщения</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method post">POST</span>
+            <span class="endpoint-path">/messages</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="endpoint-desc">Отправка сообщения пользователю или в чат</p>
+            
+            <h4 style="margin-bottom: 12px; font-size: 14px;">Параметры тела:</h4>
+            <table class="params-table">
+              <tr>
+                <th>Параметр</th>
+                <th>Тип</th>
+                <th>Описание</th>
+              </tr>
+              <tr>
+                <td><span class="param-name">chat_id</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>ID чата или пользователя</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">content</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Текст сообщения</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">type</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Тип: text, image, file, voice</td>
+              </tr>
+            </table>
+            
+            <h4 style="margin: 16px 0 12px; font-size: 14px;">Пример:</h4>
+            <div class="code-block">curl -X POST "https://api.balloo.su/v1/messages" \
+  -H "X-API-Key: your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "chat_id": "chat_123",
+    "content": "Привет! Это сообщение через API",
+    "type": "text"
+  }'</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Webhooks</h2>
+        <p class="section-desc">
+          Webhooks позволяют получать уведомления о событиях в реальном времени.
+          Настройте endpoint на своём сервере и получайте POST запросы при событиях.
+        </p>
+        
+        <div class="auth-box">
+          <div class="auth-title">📡 Доступные события</div>
+          <ul class="auth-list">
+            <li><code>message.received</code> — новое сообщение</li>
+            <li><code>user.online</code> — пользователь онлайн</li>
+            <li><code>call.started</code> — начался звонок</li>
+            <li><code>payment.completed</code> — оплата прошла</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

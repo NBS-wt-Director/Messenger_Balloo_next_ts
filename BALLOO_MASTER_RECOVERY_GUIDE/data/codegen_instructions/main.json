@@ -1,0 +1,71 @@
+{
+  "title": "🤖 AI Codegen Instructions",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Инструкции для AI Codegen (cli-kodacode)",
+  
+  "tool": "cli-kodacode",
+  "output_dir": "autogen/",
+  
+  "generators": [
+    {
+      "name": "generate-components",
+      "description": "Генерация React компонентов",
+      "command": "cli-kodacode generate-components --source data/screens/main.json --output autogen/components/",
+      "templates": ["tsx", "css", "test.tsx"]
+    },
+    {
+      "name": "generate-api",
+      "description": "Генерация API клиентов",
+      "command": "cli-kodacode generate-api --source data/api_schemas/main.json --output autogen/api/",
+      "templates": ["ts", "openapi.json"]
+    },
+    {
+      "name": "generate-db",
+      "description": "Генерация схемы БД",
+      "command": "cli-kodacode generate-db --source data/data_schemas/main.json --output autogen/db/",
+      "templates": ["schema.ts", "migrations/"]
+    },
+    {
+      "name": "generate-mockups",
+      "description": "Генерация HTML макетов",
+      "command": "cli-kodacode generate-mockups --screens {list} --output static/mockups/",
+      "templates": ["html", "css"]
+    },
+    {
+      "name": "generate-tests",
+      "description": "Генерация тестов",
+      "command": "cli-kodacode generate-tests --source autogen/ --output *.test.ts",
+      "templates": ["vitest", "testing-library"]
+    }
+  ],
+  
+  "priority_order": [
+    "1. generate-db (схема БД)",
+    "2. generate-api (API клиенты)",
+    "3. generate-components (React компоненты)",
+    "4. generate-mockups (HTML макеты)",
+    "5. generate-tests (тесты)"
+  ],
+  
+  "coding_standards": {
+    "language": "TypeScript 5.x",
+    "framework": "Next.js 14 (App Router)",
+    "styling": "Tailwind CSS + CSS variables",
+    "testing": "Vitest + Testing Library",
+    "linting": "ESLint + Prettier",
+    "type_checking": "tsc --strict"
+  },
+  
+  "design_contract": {
+    "border_radius": "0 (остроугольные компоненты)",
+    "themes": ["dark", "light", "russia"],
+    "avatar_shape": "Восьмиугольник",
+    "header_height": "64px (desktop), 56px (mobile)",
+    "touch_target": "min 44×44px"
+  },
+
+  "total_hours": 216,
+  "ai_model": "Koda-code-v3",
+  "output_format": "TypeScript + Node.js + Next.js"
+}

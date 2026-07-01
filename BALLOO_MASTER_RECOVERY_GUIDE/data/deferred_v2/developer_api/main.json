@@ -1,0 +1,134 @@
+{
+  "title": "🔌 Developer API — API для разработчиков (V2)",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "REST API и Webhooks для интеграции",
+  "status": "deferred",
+  "source_file": "trash/V2_ENHANCEMENTS/documents/v2_features.md",
+  
+  "api": {
+    "versioning": {
+      "strategy": "URL versioning",
+      "current": "v2",
+      "format": "/api/v2/*",
+      "deprecation_policy": "12 месяцев уведомления"
+    },
+    "authentication": {
+      "methods": ["API Key", "OAuth 2.0", "JWT"],
+      "api_key": {
+        "location": "Header: X-API-Key",
+        "rate_limit": "1000 запросов/час",
+        "scopes": ["read", "write", "admin"]
+      },
+      "oauth": {
+        "flows": ["Authorization Code", "Client Credentials"],
+        "token_expiry": "1 час",
+        "refresh_token": "30 дней"
+      }
+    },
+    "rate_limiting": {
+      "default": "1000 запросов/час",
+      "premium": "10 000 запросов/час",
+      "enterprise": "Безлимитно",
+      "headers": ["X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"]
+    }
+  },
+  
+  "endpoints": {
+    "users": [
+      { "method": "GET", "path": "/api/v2/users/:id", "description": "Получить пользователя" },
+      { "method": "PUT", "path": "/api/v2/users/:id", "description": "Обновить пользователя" },
+      { "method": "GET", "path": "/api/v2/users/:id/avatar", "description": "Аватар пользователя" }
+    ],
+    "chats": [
+      { "method": "GET", "path": "/api/v2/chats", "description": "Список чатов" },
+      { "method": "POST", "path": "/api/v2/chats", "description": "Создать чат" },
+      { "method": "GET", "path": "/api/v2/chats/:id/messages", "description": "Сообщения чата" },
+      { "method": "POST", "path": "/api/v2/chats/:id/messages", "description": "Отправить сообщение" }
+    ],
+    "messages": [
+      { "method": "POST", "path": "/api/v2/messages", "description": "Отправить сообщение" },
+      { "method": "GET", "path": "/api/v2/messages/:id", "description": "Получить сообщение" },
+      { "method": "DELETE", "path": "/api/v2/messages/:id", "description": "Удалить сообщение" }
+    ],
+    "files": [
+      { "method": "POST", "path": "/api/v2/files/upload", "description": "Загрузить файл" },
+      { "method": "GET", "path": "/api/v2/files/:id", "description": "Скачать файл" },
+      { "method": "DELETE", "path": "/api/v2/files/:id", "description": "Удалить файл" }
+    ],
+    "marketplace": [
+      { "method": "GET", "path": "/api/v2/marketplace/items", "description": "Товары" },
+      { "method": "POST", "path": "/api/v2/marketplace/items", "description": "Создать товар" },
+      { "method": "POST", "path": "/api/v2/marketplace/orders", "description": "Создать заказ" }
+    ],
+    "wallet": [
+      { "method": "GET", "path": "/api/v2/wallet/balance", "description": "Баланс" },
+      { "method": "POST", "path": "/api/v2/wallet/transfer", "description": "Перевод" },
+      { "method": "GET", "path": "/api/v2/wallet/history", "description": "История" }
+    ]
+  },
+  
+  "webhooks": {
+    "description": "События для интеграции",
+    "events": [
+      { "name": "user.created", "description": "Новый пользователь" },
+      { "name": "user.deleted", "description": "Пользователь удалён" },
+      { "name": "message.sent", "description": "Сообщение отправлено" },
+      { "name": "chat.created", "description": "Чат создан" },
+      { "name": "payment.completed", "description": "Платёж завершён" },
+      { "name": "marketplace.order.created", "description": "Заказ создан" },
+      { "name": "marketplace.order.completed", "description": "Заказ завершён" }
+    ],
+    "configuration": {
+      "url": "HTTPS endpoint",
+      "secret": "HMAC-SHA256 signature",
+      "retry": "3 попытки с экспоненциальной задержкой",
+      "timeout": "30 секунд"
+    }
+  },
+  
+  "sdks": {
+    "languages": [
+      { "name": "JavaScript/TypeScript", "package": "@balloo/sdk-js", "status": "planned" },
+      { "name": "Python", "package": "balloo-sdk", "status": "planned" },
+      { "name": "Go", "package": "github.com/balloo/sdk-go", "status": "planned" },
+      { "name": "PHP", "package": "balloo/sdk-php", "status": "planned" }
+    ],
+    "features": ["Аутентификация", "Rate limiting", "Retry logic", "Type safety"]
+  },
+  
+  "documentation": {
+    "format": "OpenAPI 3.0 (Swagger)",
+    "hosted": "https://api.balloo.su/docs",
+    "interactive": "Swagger UI + Postman collection",
+    "examples": "Code snippets для всех SDK",
+    "changelog": "Версионирование и история изменений"
+  },
+  
+  "sandbox": {
+    "enabled": true,
+    "url": "https://sandbox.balloo.su",
+    "features": ["Полный доступ к API", "Тестовые данные", "Без ограничений"],
+    "credentials": "Auto-generated при регистрации"
+  },
+  
+  "pricing": {
+    "free_tier": {
+      "requests": "1000/час",
+      "webhooks": "1000/месяц",
+      "support": "Community"
+    },
+    "premium": {
+      "requests": "10 000/час",
+      "webhooks": "50 000/месяц",
+      "support": "Email",
+      "price": "5 000 ₽/мес"
+    },
+    "enterprise": {
+      "requests": "Безлимитно",
+      "webhooks": "Безлимитно",
+      "support": "Priority",
+      "price": "Индивидуально"
+    }
+  }
+}

@@ -5,8 +5,7 @@
 
 import axios from 'axios';
 import { randomUUID } from 'crypto';
-import { logger } from '../utils/logger';
-import { config } from '../config';
+import logger from '../config/logger';
 
 interface SendSMSParams {
   phone: string;
@@ -300,7 +299,7 @@ export class SmsService {
     const now = new Date();
     let cleaned = 0;
 
-    for (const [otpId, otp] of this.otpStore.entries()) {
+    for (const [otpId, otp] of Array.from(this.otpStore.entries())) {
       if (now > otp.expiresAt) {
         this.otpStore.delete(otpId);
         cleaned++;

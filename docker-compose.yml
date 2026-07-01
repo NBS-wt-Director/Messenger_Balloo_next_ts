@@ -81,7 +81,7 @@ services:
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - DATABASE_URL=postgresql://balloo:${DB_PASSWORD:-balloo_secret_password_change_in_production}@pgbouncer:6432/balloo_production
+      - DATABASE_URL=postgresql://balloo:${DB_PASSWORD:-balloo_secret_password_change_in_production}@postgres:5432/balloo_production
       - DB_POOL_SIZE=20
       - DB_IDLE_TIMEOUT=30000
       - DB_CONNECTION_TIMEOUT=5000
@@ -93,7 +93,6 @@ services:
       - api-uploads:/app/uploads
     depends_on:
       - postgres
-      - pgbouncer
       - redis
       - max-server
     restart: unless-stopped
@@ -116,6 +115,44 @@ services:
     networks:
       - balloo-network
 
+  # Messenger (Next.js Web App)
+  messenger:
+    build: ./messenger
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_WS_URL=ws://api:3001
+      - DATABASE_URL=postgresql://balloo:${DB_PASSWORD:-balloo_secret_password_change_in_production}@pgbouncer:6432/balloo_production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - api
+      - postgres
+      - pgbouncer
+      - redis
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
+  # Admin Portal (Next.js Admin Dashboard)
+  admin-portal:
+    build: ./admin-portal
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - NEXT_PUBLIC_API_URL=http://api:3001
+      - NEXT_PUBLIC_WS_URL=ws://api:3001
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - balloo-network
+
   # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
@@ -127,6 +164,8 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       - api
+      - messenger
+      - admin-portal
     restart: unless-stopped
     networks:
       - balloo-network

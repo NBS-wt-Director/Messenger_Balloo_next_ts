@@ -1,0 +1,102 @@
+{
+  "title": "🐻 Balonishka — Маскот Борис (V2)",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "Анимированный маскот-помощник Балунишка Борис",
+  "status": "deferred",
+  "source_file": "trash/V2_ENHANCEMENTS/documents/v2_features.md",
+  
+  "character": {
+    "name": "Балунишка Борис",
+    "species": "Медвежонок",
+    "personality": "Дружелюбный, helpful, игривый",
+    "colors": {
+      "primary": "#8B4513",
+      "secondary": "#D2691E",
+      "accent": "#FFD700"
+    },
+    "accessories": ["Шарф", "Рюкзак"],
+    "animations": ["idle", "happy", "thinking", "working", "sleeping", "wave", "clap"]
+  },
+  
+  "features": {
+    "greeting": {
+      "name": "Приветствие",
+      "description": "Борис приветствует пользователя при открытии приложения",
+      "variants": [
+        "Доброе утро! ☀️",
+        "Добрый день! 🌞",
+        "Добрый вечер! 🌙",
+        "Привет! Как дела? 👋"
+      ],
+      "trigger": "Приложение открыто"
+    },
+    "suggestions": {
+      "name": "Подсказки",
+      "description": "Борис подсказывает функции и разделы",
+      "contexts": [
+        "Первый запуск → Туториал",
+        "Бездействие 5 мин → Предложить активности",
+        "Новая функция → Краткий гайд"
+      ]
+    },
+    "reactions": {
+      "name": "Реакции",
+      "description": "Борис реагирует на действия пользователя",
+      "examples": [
+        "Отправка сообщения → Довольная улыбка",
+        "Получение лайка → Радость",
+        "Ошибка → Озадаченность",
+        "Долгая загрузка → Нетерпение"
+      ]
+    },
+    "easter_eggs": {
+      "name": "Пасхалки",
+      "description": "Скрытые интерактивные элементы",
+      "examples": [
+        "Клик 10 раз → Танец",
+        "Ночной режим → Борис в пижаме",
+        "День рождения → Праздничный колпак",
+        "Новый год → Шапка Деда Мороза"
+      ]
+    },
+    "help": {
+      "name": "Помощь",
+      "description": "Борис помогает найти функции",
+      "commands": [
+        "Как изменить аватар?",
+        "Где настройки?",
+        "Как создать группу?",
+        "Как отправить файл?"
+      ]
+    }
+  },
+  
+  "technical": {
+    "rendering": "Lottie animations (JSON)",
+    "size": "< 500KB (все анимации)",
+    "performance": "60 FPS, hardware acceleration",
+    "fallback": "Static PNG для слабых устройств",
+    "accessibility": "ARIA labels, screen reader support"
+  },
+  
+  "states": [
+    { "id": "idle", "description": "Спокойное состояние", "animation": "breathing" },
+    { "id": "happy", "description": "Радость", "animation": "jump" },
+    { "id": "thinking", "description": "Задумчивость", "animation": "head_scratch" },
+    { "id": "working", "description": "Работа", "animation": "typing" },
+    { "id": "sleeping", "description": "Сон", "animation": "zzz" },
+    { "id": "wave", "description": "Приветствие", "animation": "hand_wave" },
+    { "id": "clap", "description": "Аплодисменты", "animation": "clapping" }
+  ],
+  
+  "api": {
+    "endpoints": [
+      { "method": "GET", "path": "/api/v2/mascot/state", "description": "Текущее состояние Бориса" },
+      { "method": "POST", "path": "/api/v2/mascot/interact", "description": "Взаимодействие с Борисом" },
+      { "method": "GET", "path": "/api/v2/mascot/animations", "description": "Список анимаций" }
+    ]
+  },
+  
+  "mockup": "trash/V2_ENHANCEMENTS/mockups/balonishka.html"
+}

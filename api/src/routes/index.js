@@ -487,7 +487,7 @@ router.use('/attachments', attachmentsRouter);
 // ============================================
 // FUNCTIONS ROUTES (Project Functions Management)
 // ============================================
-const functionsRouter = require('./functions.routes.ts').default;
+const functionsRouter = require('./functions.routes').default;
 router.use('/functions', functionsRouter);
 
 module.exports = router;

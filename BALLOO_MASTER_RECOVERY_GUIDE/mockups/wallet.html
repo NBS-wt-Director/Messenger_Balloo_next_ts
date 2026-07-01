@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Wallet</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981; --gold: #F59E0B;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .balance-card {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 40px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .balance-card::before {
+      content: '💳';
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      font-size: 120px;
+      opacity: 0.2;
+    }
+    .balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
+    .balance-amount { font-size: 48px; font-weight: 700; margin-bottom: 24px; }
+    .balance-actions { display: flex; gap: 12px; }
+    .btn {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-light { background: white; color: var(--primary); }
+    .btn-outline { background: transparent; border: 1px solid white; color: white; }
+    
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .transactions {
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .transaction-item:last-child { border-bottom: none; }
+    .transaction-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .transaction-info { flex: 1; }
+    .transaction-title { font-weight: 600; margin-bottom: 4px; }
+    .transaction-meta { font-size: 12px; color: var(--text-secondary); }
+    .transaction-amount { font-weight: 700; font-size: 16px; }
+    .transaction-amount.positive { color: var(--success); }
+    .transaction-amount.negative { color: var(--text-primary); }
+    
+    .cards-section {
+      margin-top: 40px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .section-title { font-size: 20px; font-weight: 600; }
+    .add-card-btn {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .add-card-btn:hover { border-color: var(--primary); color: var(--primary); }
+    
+    .card-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-info h3 { font-size: 16px; margin-bottom: 8px; }
+    .card-number { font-family: monospace; font-size: 18px; letter-spacing: 2px; color: var(--text-secondary); }
+    .card-actions { display: flex; gap: 8px; }
+    .card-action-btn {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .card-action-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Кошелёк</h1>
+  </header>
+
+  <div class="container">
+    <div class="balance-card">
+      <div class="balance-label">Общий баланс</div>
+      <div class="balance-amount">24 590 ₽</div>
+      <div class="balance-actions">
+        <button class="btn btn-light" onclick="alert('Пополнение...')">💳 Пополнить</button>
+        <button class="btn btn-outline" onclick="alert('Вывод...')">↗️ Вывести</button>
+        <button class="btn btn-outline" onclick="alert('Перевод...')">📤 Перевести</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Все операции</button>
+      <button class="tab">Пополнения</button>
+      <button class="tab">Покупки</button>
+      <button class="tab">Переводы</button>
+    </div>
+
+    <div class="transactions">
+      <div class="transaction-item">
+        <div class="transaction-icon">💰</div>
+        <div class="transaction-info">
+          <div class="transaction-title">Пополнение с карты</div>
+          <div class="transaction-meta">Сбербанк **** 4582 • 15.01.2025</div>
+        </div>
+        <div class="transaction-amount positive">+5 000 ₽</div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon">🛒</div>
+        <div class="transaction-info">
+          <div class="transaction-title">Покупка в Marketplace</div>
+          <div class="transaction-meta">Логотип для стартапа • 14.01.2025</div>
+        </div>
+        <div class="transaction-amount negative">-5 000 ₽</div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon">⭐</div>
+        <div class="transaction-info">
+          <div class="transaction-title">Premium подписка</div>
+          <div class="transaction-meta">Ежемесячный платёж • 10.01.2025</div>
+        </div>
+        <div class="transaction-amount negative">-299 ₽</div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon">📤</div>
+        <div class="transaction-info">
+          <div class="transaction-title">Перевод пользователю</div>
+          <div class="transaction-meta">@maria_petrova • 08.01.2025</div>
+        </div>
+        <div class="transaction-amount negative">-1 500 ₽</div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon">💰</div>
+        <div class="transaction-info">
+          <div class="transaction-title">Пополнение через СБП</div>
+          <div class="transaction-meta">Система быстрых платежей • 05.01.2025</div>
+        </div>
+        <div class="transaction-amount positive">10 000 ₽</div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon">🎁</div>
+        <div class="transaction-info">
+          <div class="transaction-title">Подарок от друга</div>
+          <div class="transaction-meta">От @alex_friend • 01.01.2025</div>
+        </div>
+        <div class="transaction-amount positive">+3 000 ₽</div>
+      </div>
+    </div>
+
+    <div class="cards-section">
+      <div class="section-header">
+        <h2 class="section-title">Привязанные карты</h2>
+        <button class="add-card-btn" onclick="alert('Добавить карту...')">+ Добавить карту</button>
+      </div>
+
+      <div class="card-item">
+        <div class="card-info">
+          <h3>Сбербанк</h3>
+          <div class="card-number">•••• •••• •••• 4582</div>
+        </div>
+        <div class="card-actions">
+          <button class="card-action-btn" onclick="alert('Редактировать...')">✏️</button>
+          <button class="card-action-btn" onclick="alert('Удалить...')">🗑️</button>
+        </div>
+      </div>
+
+      <div class="card-item">
+        <div class="card-info">
+          <h3>Тинькофф</h3>
+          <div class="card-number">•••• •••• •••• 7890</div>
+        </div>
+        <div class="card-actions">
+          <button class="card-action-btn" onclick="alert('Редактировать...')">✏️</button>
+          <button class="card-action-btn" onclick="alert('Удалить...')">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

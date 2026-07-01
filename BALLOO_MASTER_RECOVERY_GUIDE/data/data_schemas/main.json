@@ -1,0 +1,9 @@
+{
+  "title": "🗄️ Data Schemas — Схемы БД",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Таблицы PostgreSQL",
+  "tables": ["users", "sessions", "chats", "messages", "attachments", "reactions"],
+  "orm": "Drizzle ORM",
+  "status": "complete"
+}

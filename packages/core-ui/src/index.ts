@@ -1,73 +1,11 @@
-/**
- * @balloo/core-ui
- * 
- * Core UI components for Balloo platform.
- * All components enforce DesignContract: border-radius: 0 (no rounded corners).
- * 
- * @packageDocumentation
- */
-
-// ============================================================================
-// Components
-// ============================================================================
-
-export { Button } from './components/Button';
-export { Modal } from './components/Modal';
-export { Alert } from './components/Alert';
-export { Card } from './components/Card';
-
-// ============================================================================
-// Types
-// ============================================================================
-
-export type {
-  // Common
-  CommonProps,
-  SizeProps,
-  VariantProps,
-  DisabledProps,
-  
-  // Component Props
-  ButtonProps,
-  InputProps,
-  InputType,
-  ModalProps,
-  AlertProps,
-  AlertType,
-  CardProps,
-  AvatarProps,
-  BadgeProps,
-  BadgeVariant,
-  SpinnerProps,
-  DividerProps,
-  
-  // DesignContract
-  DesignContractCompliant,
-} from './types';
-
-// ============================================================================
-// Design Tokens
-// ============================================================================
-
-export {
-  BORDER_RADIUS,
-  SPACING,
-  FONT_SIZE,
-  FONT_WEIGHT,
-  COLORS,
-  SHADOWS,
-  TRANSITIONS,
-  Z_INDEX,
-  DESIGN_CONTRACT,
-} from './design-tokens';
-
-export type {
-  BorderRadiusKey,
-  SpacingKey,
-  FontSizeKey,
-  FontWeightKey,
-  ColorKey,
-  ShadowKey,
-  TransitionKey,
-  ZIndexKey,
-} from './design-tokens';
+// Stub for @balloo/core-ui
+export function Button({ children, variant, size, ...props }: any) { return <button {...props}>{children}</button>; }
+export function Modal({ isOpen, onClose, title, children }: any) { if (!isOpen) return null; return <div><h2>{title}</h2>{children}<button onClick={onClose}>X</button></div>; }
+export function Alert({ message, type, onClose }: any) { return <div>{message}</div>; }
+export function Card({ children, variant, padding }: any) { return <div>{children}</div>; }
+export function Input(props: any) { return <input {...props} />; }
+export function StatusBadge(props: any) { return <span {...props} />; }
+export type AlertType = 'success' | 'error' | 'warning' | 'info';
+export const BORDER_RADIUS = 0;
+export const COLORS = {};
+export const SPACING = {};

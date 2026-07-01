@@ -1,0 +1,9 @@
+{
+  "title": "📊 Functions Analysis — Анализ функций",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Анализ покрытия функций",
+  "summary": {"total_functions": 74, "v1_spec_ready": 53, "v2_deferred": 21},
+  "categories": {"auth": {"total": 22}, "chat": {"total": 15}, "media": {"total": 8}, "admin": {"total": 4}, "social": {"total": 4}},
+  "status": "complete"
+}

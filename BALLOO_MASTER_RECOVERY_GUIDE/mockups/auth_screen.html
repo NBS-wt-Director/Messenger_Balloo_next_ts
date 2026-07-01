@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Вход</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2563EB;
+      --secondary: #7C3AED;
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --border: #334155;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === HEADER (Единый для всех экранов) === */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-logo-img {
+      width: 40px;
+      height: 40px;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .header-mascot {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 8px;
+      margin-left: 24px;
+    }
+
+    .header-nav-item {
+      padding: 8px 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .header-nav-item:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+
+    /* === MAIN CONTENT === */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* === MAIN CONTAINER === */
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    /* === HEADER === */
+    .auth-header {
+      padding: 32px 32px 24px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .auth-logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      /* OCTAGON SHAPE */
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+
+    .auth-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .auth-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* === FORM === */
+    .auth-form {
+      padding: 32px;
+    }
+
+    .form-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: var(--bg);
+      padding: 4px;
+    }
+
+    .form-tab {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .form-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .form-input-icon {
+      position: relative;
+    }
+
+    .form-input-icon input {
+      padding-left: 40px;
+    }
+
+    .form-input-icon .icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .form-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .form-checkbox input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+    }
+
+    .form-checkbox label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .form-link {
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .form-link:hover {
+      text-decoration: underline;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .social-btn {
+      flex: 1;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .social-btn:hover {
+      background: var(--border);
+    }
+
+    .social-btn.yandex {
+      border-color: #FF0000;
+      color: #FF0000;
+    }
+
+    .social-btn.yandex:hover {
+      background: rgba(255, 0, 0, 0.1);
+    }
+
+    /* === FOOTER === */
+    .auth-footer {
+      padding: 20px 32px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .auth-footer-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* === FOOTER (Единый для всех экранов) === */
+    .footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .footer-logo {
+      width: 40px;
+      height: 40px;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .footer-company {
+      flex: 1;
+      margin-left: 16px;
+    }
+
+    .footer-company-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .footer-company-info {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-link {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .footer-link:hover {
+      color: var(--primary);
+    }
+
+    .footer-version {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* === BRUTALISM === */
+    /* border-radius: 0 everywhere */
+
+  </style>
+</head>
+<body>
+  <!-- HEADER (Единый для всех экранов) -->
+  <header class="header">
+    <div class="header-logo">
+      <!-- ЛОГО ПРОДУКТА (PNG) -->
+      <div class="header-logo-img">
+        <img src="/assets/logo-product.png" alt="Balloo" style="display:none;">
+        <span>LOGO</span>
+      </div>
+      <!-- МАСКОТ "БАЛУНИШКА БОРИС" (PNG) -->
+      <div class="header-mascot">
+        <img src="/assets/mascot-boris.png" alt="Борис" style="display:none;">
+        🐻
+      </div>
+    </div>
+    <div class="header-title">Balloo</div>
+    <nav class="header-nav">
+      <button class="header-nav-item">Главная</button>
+      <button class="header-nav-item">Загрузки</button>
+      <button class="header-nav-item">О нас</button>
+    </nav>
+    <div class="header-right">
+      <div class="header-avatar">?</div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <div class="auth-container">
+      <div class="auth-header">
+        <div class="auth-logo">B</div>
+        <div class="auth-title">Balloo Platform</div>
+        <div class="auth-subtitle">Переверни общение</div>
+      </div>
+
+      <div class="auth-form">
+        <div class="form-tabs">
+          <button class="form-tab active" onclick="switchTab('login')">Вход</button>
+          <button class="form-tab" onclick="switchTab('register')">Регистрация</button>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label class="form-label">Email или телефон</label>
+            <div class="form-input-icon">
+              <span class="icon">📧</span>
+              <input type="text" class="form-input" placeholder="user@example.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Пароль</label>
+            <div class="form-input-icon">
+              <span class="icon">🔒</span>
+              <input type="password" class="form-input" placeholder="••••••••">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-checkbox">
+              <input type="checkbox" id="remember" checked>
+              <label for="remember">Запомнить меня</label>
+            </div>
+            <a href="#" class="form-link">Забыли пароль?</a>
+          </div>
+
+          <button type="submit" class="submit-btn">Войти</button>
+        </form>
+
+        <form id="registerForm" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="form-input-icon">
+              <span class="icon">📧</span>
+              <input type="email" class="form-input" placeholder="user@example.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Телефон (опционально)</label>
+            <div class="form-input-icon">
+              <span class="icon">📱</span>
+              <input type="tel" class="form-input" placeholder="+7 (999) 000-00-00">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Имя пользователя</label>
+            <div class="form-input-icon">
+              <span class="icon">👤</span>
+              <input type="text" class="form-input" placeholder="Иван Иванов">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Пароль (мин. 8 символов)</label>
+            <div class="form-input-icon">
+              <span class="icon">🔒</span>
+              <input type="password" class="form-input" placeholder="••••••••">
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Зарегистрироваться</button>
+        </form>
+
+        <div class="divider">
+          <div class="divider-line"></div>
+          <div class="divider-text">или</div>
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="social-buttons">
+          <button class="social-btn yandex">
+            <span>Y</span>
+            Войти через Yandex
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-footer">
+        <div class="auth-footer-text">
+          Продолжая, вы соглашаетесь с <a href="#" class="form-link">условиями</a> и <a href="#" class="form-link">политикой конфиденциальности</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER (Единый для всех экранов) -->
+  <footer class="footer">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <!-- ЛОГО КОМПАНИИ (PNG) -->
+      <div class="footer-logo">
+        <img src="/assets/logo-company.png" alt="Компания" style="display:none;">
+        <span>LOGO</span>
+      </div>
+      <div class="footer-company">
+        <div class="footer-company-name">NBS — web-tech</div>
+        <div class="footer-company-info">Системы для Ваших Новых Начинаний. Екатеринбург</div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="#" class="footer-link">downloads</a>
+      <a href="#" class="footer-link">aboutBalloo</a>
+      <a href="#" class="footer-link">aboutCompany</a>
+      <a href="#" class="footer-link">features</a>
+      <a href="#" class="footer-link">support</a>
+      <a href="#" class="footer-link">terms</a>
+      <a href="#" class="footer-link">privacy</a>
+    </div>
+    <div class="footer-version">v1.0.0</div>
+  </footer>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('registerForm').style.display = 'none';
+
+      if (tab === 'login') {
+        document.querySelectorAll('.form-tab')[0].classList.add('active');
+        document.getElementById('loginForm').style.display = 'block';
+      } else {
+        document.querySelectorAll('.form-tab')[1].classList.add('active');
+        document.getElementById('registerForm').style.display = 'block';
+      }
+    }
+
+    // Form submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Вход выполнен (демо)');
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Регистрация успешна (демо)');
+    });
+  </script>
+</body>
+</html>

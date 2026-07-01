@@ -1,0 +1,10 @@
+{
+  "title": "🧩 Common Components — Общие компоненты",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "8 общих компонентов платформы",
+  "components": ["Header", "Sidebar", "Footer", "Button", "Card", "Modal", "Alert", "Avatar"],
+  "design_tokens": {"border_radius": "0", "themes": ["dark", "light", "russia"]},
+  "summary": {"total_components": 8, "layout_components": 3, "ui_components": 5},
+  "status": "complete"
+}

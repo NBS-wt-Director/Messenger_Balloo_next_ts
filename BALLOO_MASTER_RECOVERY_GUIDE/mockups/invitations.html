@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Приглашения</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .invite-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .invite-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .invite-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .invite-text {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .invite-link-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .invite-link {
+      flex: 1;
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--primary);
+      user-select: all;
+    }
+    .btn {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .btn-outline:hover { background: var(--bg); color: var(--text-primary); }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .referrals-list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .referral-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .referral-item:last-child { border-bottom: none; }
+    .referral-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+    .referral-info { flex: 1; }
+    .referral-name { font-weight: 600; margin-bottom: 4px; }
+    .referral-date { font-size: 12px; color: var(--text-secondary); }
+    .referral-status {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 0;
+    }
+    .referral-status.joined {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+    .referral-status.pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #F59E0B;
+    }
+    
+    .share-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+    .share-btn {
+      padding: 12px 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .share-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Приглашения</h1>
+  </header>
+
+  <div class="container">
+    <div class="invite-card">
+      <div class="invite-icon">🎁</div>
+      <h1 class="invite-title">Пригласи друзей в Balloo</h1>
+      <p class="invite-text">
+        Делитесь ссылкой-приглашением и получайте бонусы за каждого друга,<br>
+        который присоединится к платформе.
+      </p>
+      
+      <div class="invite-link-box">
+        <div class="invite-link" id="inviteLink">https://balloo.su/invite/alex123</div>
+        <button class="btn btn-primary" onclick="copyLink()">📋 Копировать</button>
+      </div>
+      
+      <div class="share-buttons">
+        <button class="share-btn" onclick="alert('Поделиться в Telegram')">✈️ Telegram</button>
+        <button class="share-btn" onclick="alert('Поделиться в VK')">💙 VK</button>
+        <button class="share-btn" onclick="alert('Поделиться в WhatsApp')">💬 WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">24</div>
+        <div class="stat-label">Всего приглашено</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">18</div>
+        <div class="stat-label">Присоединились</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Ожидают</div>
+      </div>
+    </div>
+
+    <h2 style="margin-bottom: 16px; font-size: 18px;">Приглашённые пользователи</h2>
+    <div class="referrals-list">
+      <div class="referral-item">
+        <div class="referral-avatar">МП</div>
+        <div class="referral-info">
+          <div class="referral-name">Мария Петрова</div>
+          <div class="referral-date">Присоединилась 2 дня назад</div>
+        </div>
+        <div class="referral-status joined">✓ В сети</div>
+      </div>
+      
+      <div class="referral-item">
+        <div class="referral-avatar" style="background: linear-gradient(135deg, #10B981, #059669);">ДС</div>
+        <div class="referral-info">
+          <div class="referral-name">Дмитрий Соколов</div>
+          <div class="referral-date">Присоединился 5 дней назад</div>
+        </div>
+        <div class="referral-status joined">✓ В сети</div>
+      </div>
+      
+      <div class="referral-item">
+        <div class="referral-avatar" style="background: linear-gradient(135deg, #F59E0B, #EF4444);">ЕК</div>
+        <div class="referral-info">
+          <div class="referral-name">Елена Козлова</div>
+          <div class="referral-date">Приглашена 1 день назад</div>
+        </div>
+        <div class="referral-status pending">⏳ Ожидает</div>
+      </div>
+      
+      <div class="referral-item">
+        <div class="referral-avatar" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">ИМ</div>
+        <div class="referral-info">
+          <div class="referral-name">Иван Морозов</div>
+          <div class="referral-date">Приглашён 3 дня назад</div>
+        </div>
+        <div class="referral-status pending">⏳ Ожидает</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyLink() {
+      const link = document.getElementById('inviteLink').textContent;
+      navigator.clipboard.writeText(link);
+      alert('Ссылка скопирована в буфер обмена!');
+    }
+  </script>
+</body>
+</html>

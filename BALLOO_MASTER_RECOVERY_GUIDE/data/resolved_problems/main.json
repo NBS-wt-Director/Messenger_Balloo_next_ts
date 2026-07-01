@@ -1,0 +1,90 @@
+{
+  "title": "✅ Решённые проблемы",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Проблемы которые были решены в процессе разработки архитектуры.",
+  
+  "items": [
+    {
+      "id": "PROB-01",
+      "title": "Отсутствие спецификации функций",
+      "description": "Полный список функций не был документирован",
+      "severity": "critical",
+      "resolved": true,
+      "solution": "Создан functions/data.json с 74 функциями (53 V1 + 21 V2)",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-02",
+      "title": "Неопределённая архитектура узлов",
+      "description": "Не было ясно какие узлы нужны и как они взаимодействуют",
+      "severity": "critical",
+      "resolved": true,
+      "solution": "Создан nodes/data.json с 16 узлами (клиентские + технические)",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-03",
+      "title": "UI-конфликты между экранами",
+      "description": "Противоречия в навигации и расположении элементов",
+      "severity": "warning",
+      "resolved": true,
+      "solution": "Создан ui_conflicts/data.json с 12 конфликтами и решениями",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-04",
+      "title": "Отсутствие compliance анализа",
+      "description": "Не было анализа соответствия 152-ФЗ и 150-ФЗ",
+      "severity": "critical",
+      "resolved": true,
+      "solution": "Создан legal_analysis/data.json с анализом по РФ и РБ",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-05",
+      "title": "Неясная стратегия восстановления",
+      "description": "Отсутствовал план восстановления после сбоев",
+      "severity": "critical",
+      "resolved": true,
+      "solution": "Создан recovery_protocol/data.json с пошаговым планом",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-06",
+      "title": "Отсутствие дизайн-системы",
+      "description": "Не было единого визуального языка",
+      "severity": "warning",
+      "resolved": true,
+      "solution": "Создан design_system/data.json с токенами и компонентами",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-07",
+      "title": "Неопределённая инфраструктура",
+      "description": "Не было ясности по серверам и развёртыванию",
+      "severity": "critical",
+      "resolved": true,
+      "solution": "Создан infrastructure/data.json с физическим сервером в Екатеринбурге",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-08",
+      "title": "Отсутствие roadmap",
+      "description": "Не было плана разработки по фазам",
+      "severity": "warning",
+      "resolved": true,
+      "solution": "Создан roadmap/data.json с 5 фазами и оценкой 1920 часов",
+      "resolution_date": "2026-06-28"
+    },
+    {
+      "id": "PROB-09",
+      "title": "Неясные рекомендуемые действия",
+      "description": "Не было приоритезированного плана действий",
+      "severity": "warning",
+      "resolved": true,
+      "solution": "Создан recommended_actions/data.json с V1 и BAP приоритетами",
+      "resolution_date": "2026-06-28"
+    }
+  ]
+}

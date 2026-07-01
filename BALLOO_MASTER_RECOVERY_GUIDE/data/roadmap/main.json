@@ -1,0 +1,10 @@
+{
+  "title": "🗺️ Roadmap — Дорожная карта",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "5 фаз разработки V1",
+  "phases": [{"phase": 1, "name": "Auth & Core", "duration": "4 недели", "tasks": ["Auth API", "Users", "Chats"]}, {"phase": 2, "name": "Messaging", "duration": "6 недель", "tasks": ["Messages", "Attachments", "Reactions"]}, {"phase": 3, "name": "UI Polish", "duration": "4 недели", "tasks": ["Components", "Themes", "Mockups"]}, {"phase": 4, "name": "Testing", "duration": "3 недели", "tasks": ["Unit tests", "E2E", "Bug fixes"]}, {"phase": 5, "name": "Launch", "duration": "2 недели", "tasks": ["Deploy", "Monitoring", "Support"]}],
+  "total_hours": 1920,
+  "v2_trigger": "≥1.5M пользователей ИЛИ ≥6M ₽/мес",
+  "status": "complete"
+}

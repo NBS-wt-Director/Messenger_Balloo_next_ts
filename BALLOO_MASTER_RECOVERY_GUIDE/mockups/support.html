@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Служба поддержки</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A; --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8; --border: #334155; --success: #10B981; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .header-logo { display: flex; align-items: center; gap: 12px; }
+    .header-logo-img { width: 40px; height: 40px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); }
+    .header-mascot { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 14px; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+    .header-title { font-size: 18px; font-weight: 700; }
+    .header-nav { display: flex; gap: 8px; margin-left: 24px; }
+    .header-nav-item { padding: 8px 12px; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); font-size: 13px; cursor: pointer; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .header-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+    .main-content { flex: 1; padding: 40px 20px; max-width: 800px; margin: 0 auto; width: 100%; }
+    .section-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .section-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+    .content-section { background: var(--surface); border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+    .content-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+    .content-text { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 12px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+    .form-input, .form-textarea, .form-select { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); color: var(--text-primary); font-size: 14px; outline: none; }
+    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--primary); }
+    .form-textarea { min-height: 120px; resize: vertical; font-family: inherit; }
+    .form-select { appearance: none; cursor: pointer; }
+    .submit-btn { padding: 14px 24px; background: var(--primary); border: none; color: white; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
+    .ticket-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--surface); border: 1px solid var(--border); margin-bottom: 8px; }
+    .ticket-id { font-size: 13px; color: var(--primary); font-weight: 600; }
+    .ticket-status { font-size: 12px; padding: 4px 8px; }
+    .status-open { background: var(--success); color: white; }
+    .status-closed { background: var(--text-secondary); color: white; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 16px 0; }
+    .faq-question { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .faq-answer { font-size: 14px; color: var(--text-secondary); }
+    .footer { background: var(--surface); border-top: 1px solid var(--border); padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .footer-logo { width: 40px; height: 40px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--text-secondary); }
+    .footer-company { flex: 1; margin-left: 16px; }
+    .footer-company-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .footer-company-info { font-size: 11px; color: var(--text-secondary); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-link { font-size: 12px; color: var(--text-secondary); text-decoration: none; cursor: pointer; }
+    .footer-link:hover { color: var(--primary); }
+    .footer-version { font-size: 11px; color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-logo">
+      <div class="header-logo-img">LOGO</div>
+      <div class="header-mascot">🐻</div>
+    </div>
+    <div class="header-title">Balloo</div>
+    <nav class="header-nav">
+      <a href="home_screen.html" class="header-nav-item">Главная</a>
+    </nav>
+    <div class="header-right">
+      <div class="header-avatar">АИ</div>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="section-title">🎧 Служба поддержки</div>
+    <div class="section-sub">Мы поможем решить любой вопрос</div>
+
+    <div class="content-section">
+      <div class="content-title">Контакты</div>
+      <p class="content-text">📧 Email: support@balloo.app</p>
+      <p class="content-text">⏰ Время ответа: до 24 часов</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">Создать обращение</div>
+      <form>
+        <div class="form-group">
+          <label class="form-label">Категория</label>
+          <select class="form-select">
+            <option>Техническая проблема</option>
+            <option>Вопрос по аккаунту</option>
+            <option>Финансы и подписка</option>
+            <option>Жалоба на контент</option>
+            <option>Предложение</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Описание проблемы</label>
+          <textarea class="form-textarea" placeholder="Опишите вашу проблему..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Отправить обращение</button>
+      </form>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">Мои обращения</div>
+      <div class="ticket-item">
+        <div>
+          <div class="ticket-id">#1234 — Техническая проблема</div>
+          <div class="content-text" style="margin: 0;">Не могу войти в аккаунт</div>
+        </div>
+        <span class="ticket-status status-open">Открыто</span>
+      </div>
+      <div class="ticket-item">
+        <div>
+          <div class="ticket-id">#1198 — Вопрос по аккаунту</div>
+          <div class="content-text" style="margin: 0;">Смена email</div>
+        </div>
+        <span class="ticket-status status-closed">Закрыто</span>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="content-title">Частые вопросы (FAQ)</div>
+      <div class="faq-item">
+        <div class="faq-question">Как восстановить пароль?</div>
+        <div class="faq-answer">Нажмите "Забыли пароль?" на экране входа и следуйте инструкциям.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Как удалить аккаунт?</div>
+        <div class="faq-answer">Настройки → Аккаунт → Удалить аккаунт.</div>
+      </div>
+      <div class="faq-item" style="border-bottom: none;">
+        <div class="faq-question">Как включить E2EE?</div>
+        <div class="faq-answer">E2EE включено по умолчанию для всех приватных чатов.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="footer-logo">LOGO</div>
+      <div class="footer-company">
+        <div class="footer-company-name">NBS — web-tech</div>
+        <div class="footer-company-info">Екатеринбург</div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="about_balloo.html" class="footer-link">aboutBalloo</a>
+      <a href="about_company.html" class="footer-link">aboutCompany</a>
+      <a href="terms.html" class="footer-link">terms</a>
+      <a href="privacy.html" class="footer-link">privacy</a>
+    </div>
+    <div class="footer-version">v1.0.0</div>
+  </footer>
+</body>
+</html>

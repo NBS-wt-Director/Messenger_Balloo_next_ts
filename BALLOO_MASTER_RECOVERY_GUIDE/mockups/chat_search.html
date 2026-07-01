@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Поиск по чату</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --highlight: #F59E0B;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .search-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+    }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+    }
+    .search-bar:focus-within {
+      border-color: var(--primary);
+    }
+    .search-icon {
+      color: var(--text-secondary);
+      font-size: 18px;
+    }
+    .search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+    .search-clear {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px 8px;
+    }
+    .search-filters {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .filter-btn {
+      padding: 6px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-btn:hover { background: rgba(255,255,255,0.05); }
+    .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    
+    .results-info {
+      padding: 12px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .message {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .message:hover {
+      border-color: var(--primary);
+    }
+    .message.highlighted {
+      border-color: var(--highlight);
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    }
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+      flex-shrink: 0;
+    }
+    .message-content { flex: 1; min-width: 0; }
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .message-sender { font-weight: 600; font-size: 14px; }
+    .message-date { font-size: 12px; color: var(--text-secondary); }
+    .message-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .message-text mark {
+      background: var(--highlight);
+      color: black;
+      padding: 1px 4px;
+    }
+    .message-image {
+      max-width: 200px;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    .no-results-icon { font-size: 64px; margin-bottom: 16px; }
+    .no-results-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="search-header">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="Поиск по сообщениям..." value="проект" autofocus>
+      <button class="search-clear" onclick="document.querySelector('.search-input').value='';">×</button>
+    </div>
+    <div class="search-filters">
+      <button class="filter-btn active">Все</button>
+      <button class="filter-btn">Текст</button>
+      <button class="filter-btn">Файлы</button>
+      <button class="filter-btn">Ссылки</button>
+      <button class="filter-btn">Фото</button>
+    </div>
+  </div>
+
+  <div class="results-info">
+    <span>Найдено <strong>12</strong> сообщений</span>
+    <div class="nav-buttons">
+      <button class="nav-btn" title="Предыдущее">↑</button>
+      <button class="nav-btn" title="Следующее">↓</button>
+    </div>
+  </div>
+
+  <div class="messages-container">
+    <div class="message highlighted" onclick="alert('Переход к сообщению в чате')">
+      <div class="message-avatar">АИ</div>
+      <div class="message-content">
+        <div class="message-header">
+          <span class="message-sender">Алексей Иванов</span>
+          <span class="message-date">15 января 2025, 14:30</span>
+        </div>
+        <div class="message-text">
+          Привет! Как дела с <mark>проектом</mark> Balloo? Нужно закончить макеты до конца недели.
+        </div>
+      </div>
+    </div>
+
+    <div class="message" onclick="alert('Переход к сообщению в чате')">
+      <div class="message-avatar" style="background: linear-gradient(135deg, #10B981, #059669);">Я</div>
+      <div class="message-content">
+        <div class="message-header">
+          <span class="message-sender">Вы</span>
+          <span class="message-date">15 января 2025, 14:32</span>
+        </div>
+        <div class="message-text">
+          Всё отлично! Уже сделал 20 макетов. <mark>Проект</mark> движется по плану 🚀
+        </div>
+      </div>
+    </div>
+
+    <div class="message" onclick="alert('Переход к сообщению в чате')">
+      <div class="message-avatar">АИ</div>
+      <div class="message-content">
+        <div class="message-header">
+          <span class="message-sender">Алексей Иванов</span>
+          <span class="message-date">14 января 2025, 10:15</span>
+        </div>
+        <div class="message-text">
+          Не забудь про документацию по API для <mark>проекта</mark>. Нужно описать все эндпоинты.
+        </div>
+      </div>
+    </div>
+
+    <div class="message" onclick="alert('Переход к сообщению в чате')">
+      <div class="message-avatar">МП</div>
+      <div class="message-content">
+        <div class="message-header">
+          <span class="message-sender">Мария Петрова</span>
+          <span class="message-date">13 января 2025, 16:45</span>
+        </div>
+        <div class="message-text">
+          Я подготовила дизайн-макеты для нового функционала. Посмотрите в файлах!
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='120' fill='%23334155'%3E%3Crect width='200' height='120'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2394A3B8' font-family='sans-serif' font-size='14'%3EПревью файла%3C/text%3E%3C/svg%3E" class="message-image" alt="Превью">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

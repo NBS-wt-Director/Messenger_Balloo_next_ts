@@ -36,8 +36,9 @@ import winston from 'winston';
 import http from 'http';
 
 // Инициализация базы данных
-import { initDatabase } from './config/database';
+import { dbAsync } from './config/database';
 import { validateConfig } from './config/yandex';
+import { checkHealth as dbHealthCheck } from './config/database-pg';
 
 // Инициализация Express app
 const app = express();
@@ -83,12 +84,22 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 });
 
 // Health check
-app.get('/health', (_req: Request, res: Response) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    database: 'connected'
-  });
+app.get('/health', async (_req: Request, res: Response) => {
+  try {
+    const dbStatus = await dbHealthCheck();
+    res.json({ 
+      status: dbStatus.status === 'healthy' ? 'ok' : 'degraded', 
+      timestamp: new Date().toISOString(),
+      database: dbStatus.status
+    });
+  } catch (error) {
+    res.status(503).json({ 
+      status: 'degraded', 
+      timestamp: new Date().toISOString(),
+      database: 'error',
+      error: error.message
+    });
+  }
 });
 
 // Root route
@@ -171,18 +182,34 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Инициализация БД и запуск сервера
-initDatabase();
-
 // Проверка конфигурации
 const configWarnings = validateConfig();
 configWarnings.forEach(warning => logger.warn(warning));
 
 const PORT = process.env.PORT || 3001;
 
-server.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
-  logger.info(`WebSocket server ready at ws://localhost:${PORT}/ws?token=<jwt_token>`);
-});
+// Запуск сервера с проверкой БД
+async function startServer() {
+  try {
+    // Проверяем подключение к PostgreSQL
+    const dbStatus = await dbHealthCheck();
+    if (dbStatus.status === 'healthy') {
+      logger.info('PostgreSQL connection verified');
+    } else {
+      logger.warn(`Database health check: ${dbStatus.status} - ${dbStatus.error || ''}`);
+    }
+    
+    server.listen(PORT, () => {
+      logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+      logger.info(`WebSocket server ready at ws://localhost:${PORT}/ws?token=<jwt_token>`);
+      logger.info(`Database: PostgreSQL (via PgBouncer)`);
+    });
+  } catch (error) {
+    logger.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
 
 export { app, server, logger };

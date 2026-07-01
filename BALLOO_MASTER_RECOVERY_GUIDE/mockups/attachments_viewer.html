@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Вложения</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .storage-card {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.2));
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      padding: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .storage-info h2 { font-size: 20px; margin-bottom: 8px; }
+    .storage-bar {
+      width: 300px;
+      height: 8px;
+      background: var(--bg);
+      margin: 12px 0;
+    }
+    .storage-fill {
+      height: 100%;
+      width: 65%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+    .storage-text { font-size: 13px; color: var(--text-secondary); }
+    .upgrade-btn {
+      padding: 12px 24px;
+      background: var(--primary);
+      border: none;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .files-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .file-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .file-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .file-icon {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .file-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .file-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .file-action-btn {
+      flex: 1;
+      padding: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .file-action-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='chat_list.html'">←</button>
+    <h1 class="page-title">Вложения</h1>
+  </header>
+
+  <div class="container">
+    <div class="storage-card">
+      <div class="storage-info">
+        <h2>💾 Облачное хранилище</h2>
+        <div class="storage-bar">
+          <div class="storage-fill"></div>
+        </div>
+        <div class="storage-text">Использовано 6.5 ГБ из 10 ГБ</div>
+      </div>
+      <button class="upgrade-btn" onclick="alert('Переход на Premium...')">🚀 Расширить до 50 ГБ</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Все файлы</button>
+      <button class="tab">📷 Фото</button>
+      <button class="tab">🎥 Видео</button>
+      <button class="tab">📄 Документы</button>
+      <button class="tab">🎵 Аудио</button>
+    </div>
+
+    <div class="files-grid">
+      <div class="file-card">
+        <div class="file-icon">📄</div>
+        <div class="file-name">Презентация_v2.pptx</div>
+        <div class="file-meta">2.4 MB • 15 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn" onclick="alert('Скачать...')">⬇️</button>
+          <button class="file-action-btn" onclick="alert('Поделиться...')">↗️</button>
+          <button class="file-action-btn" onclick="alert('Удалить...')">🗑️</button>
+        </div>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon">📊</div>
+        <div class="file-name">Отчет_2024.xlsx</div>
+        <div class="file-meta">1.8 MB • 14 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn">⬇️</button>
+          <button class="file-action-btn">↗️</button>
+          <button class="file-action-btn">🗑️</button>
+        </div>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon">📷</div>
+        <div class="file-name">IMG_20250115.jpg</div>
+        <div class="file-meta">4.2 MB • 15 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn">⬇️</button>
+          <button class="file-action-btn">↗️</button>
+          <button class="file-action-btn">🗑️</button>
+        </div>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon">🎥</div>
+        <div class="file-name">Video_20250114.mp4</div>
+        <div class="file-meta">45.6 MB • 14 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn">⬇️</button>
+          <button class="file-action-btn">↗️</button>
+          <button class="file-action-btn">🗑️</button>
+        </div>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon">📁</div>
+        <div class="file-name">Документы.zip</div>
+        <div class="file-meta">12.3 MB • 13 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn">⬇️</button>
+          <button class="file-action-btn">↗️</button>
+          <button class="file-action-btn">🗑️</button>
+        </div>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon">🎵</div>
+        <div class="file-name">Voice_Message.ogg</div>
+        <div class="file-meta">1.2 MB • 12 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn">⬇️</button>
+          <button class="file-action-btn">↗️</button>
+          <button class="file-action-btn">🗑️</button>
+        </div>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon">📄</div>
+        <div class="file-name">Договор.pdf</div>
+        <div class="file-meta">890 KB • 10 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn">⬇️</button>
+          <button class="file-action-btn">↗️</button>
+          <button class="file-action-btn">🗑️</button>
+        </div>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon">📷</div>
+        <div class="file-name">Screenshot_2025.png</div>
+        <div class="file-meta">2.1 MB • 08 янв</div>
+        <div class="file-actions">
+          <button class="file-action-btn">⬇️</button>
+          <button class="file-action-btn">↗️</button>
+          <button class="file-action-btn">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

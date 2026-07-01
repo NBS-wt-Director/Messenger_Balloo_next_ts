@@ -1,0 +1,260 @@
+{
+  "title": "📋 Полный реестр функций Balloo Platform",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Все функции платформы (215+). Документ восстановлен из функции.md",
+  "note": "⚠️ Это сокращённая версия. Полный реестр из 215+ функций находится в trash/функции.md",
+  
+  "categories": {
+    "auth": {
+      "name": "Аутентификация и регистрация",
+      "functions": [
+        {
+          "id": "MESG-001",
+          "name": "Регистрация по Email/Телефону",
+          "description": "Полноэкранная форма регистрации с выбором канала (email/телефон), валидация Zod, 6-значный код подтверждения",
+          "type": "auth",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "100%",
+          "status": "✅ Spec готов",
+          "details": {
+            "flow": "email/phone → password → displayName → code verification → redirect to /chats",
+            "integrations": ["nodemailer", "Twilio/SMS"],
+            "tables": ["users", "verification_codes", "sessions"]
+          }
+        },
+        {
+          "id": "MESG-002",
+          "name": "Вход в систему (Login)",
+          "description": "Вход по email/паролю с поддержкой 2FA (TOTP/SMS), чекбокс запоминания (30 дней)",
+          "type": "auth",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "100%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-003",
+          "name": "OAuth Yandex вход",
+          "description": "Вход через Yandex OAuth API с автоматической регистрацией новых пользователей",
+          "type": "auth/integration",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "25% (РФ)",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-004",
+          "name": "Выход (Logout)",
+          "description": "Выход с текущего устройства или со всех устройств одновременно",
+          "type": "auth",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "30%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-005",
+          "name": "Восстановление пароля",
+          "description": "Пошаговый wizard (3 шага): email → код → новый пароль, код истекает через 10 минут",
+          "type": "auth/security",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "5%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-006",
+          "name": "Смена пароля",
+          "description": "Изменение пароля в настройках профиля с проверкой старого пароля",
+          "type": "auth/security",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "15%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-007",
+          "name": "E2E Шифрование",
+          "description": "End-to-End шифрование на базе tweetnacl (libsodium). Ключи генерируются при регистрации, secretKey хранится в localStorage",
+          "type": "security",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "100%",
+          "status": "✅ Spec готов",
+          "competitive_advantage": true
+        },
+        {
+          "id": "MESG-008",
+          "name": "Push-уведомления (Web Push)",
+          "description": "Web Push API с VAPID keys, ServiceWorker для офлайн-уведомлений",
+          "type": "utility",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "85%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-009",
+          "name": "Верификация Email",
+          "description": "Подтверждение email 6-значным кодом после регистрации",
+          "type": "auth/security",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "80%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-010",
+          "name": "Управление сессиями",
+          "description": "Просмотр активных сессий с возможностью завершения конкретных устройств",
+          "type": "security",
+          "class": "feature",
+          "premium": false,
+          "user_coverage": "20%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-011",
+          "name": "Удаление аккаунта",
+          "description": "Полное удаление аккаунта с CASCADE delete всех связанных данных, grace period 30 дней",
+          "type": "security",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "0.5%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-012",
+          "name": "2FA TOTP",
+          "description": "Двухфакторная аутентификация через Google Authenticator / Authy с QR-кодом",
+          "type": "security",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "10%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-013",
+          "name": "2FA SMS",
+          "description": "SMS 2FA с 3-значным кодом, альтернатива или дополнение к TOTP",
+          "type": "security",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "5%",
+          "status": "✅ Spec готов"
+        }
+      ]
+    },
+    "chat": {
+      "name": "Чаты и сообщения",
+      "functions": [
+        {
+          "id": "MESG-014",
+          "name": "Список чатов",
+          "description": "Левая панель со списком чатов, фильтрами (Все/Избранное/Закреплённые/Непрочитанные), поиском",
+          "type": "chat",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "100%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-015",
+          "name": "Создание чата",
+          "description": "Создание личного чата или группы с выбором участников и администраторов",
+          "type": "chat",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "60%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-016",
+          "name": "Отправка сообщений",
+          "description": "Текстовые сообщения с поддержкой Markdown, реакции, reply, forward, статусы доставки (sent/delivered/read)",
+          "type": "chat",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "95%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-017",
+          "name": "Редактирование сообщений",
+          "description": "Редактирование своих сообщений до 3 раз с пометкой 'отредактировано'",
+          "type": "chat",
+          "class": "feature",
+          "premium": false,
+          "user_coverage": "40%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-018",
+          "name": "Удаление сообщений",
+          "description": "Удаление для себя или для всех с пометкой 'Сообщение удалено'",
+          "type": "chat",
+          "class": "feature",
+          "premium": false,
+          "user_coverage": "15%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-019",
+          "name": "Реакции на сообщения",
+          "description": "Эмодзи-реакции (👍❤️🔥😂😢🎉👏🤔😎🤯🥳💯), до 5 реакций на сообщение",
+          "type": "chat/social",
+          "class": "feature",
+          "premium": false,
+          "user_coverage": "60%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-020",
+          "name": "Вложения (файлы, фото)",
+          "description": "Отправка фото (20MB), документов (50MB), аудио (20MB), видео (100MB) с preview",
+          "type": "chat/media",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "70%",
+          "status": "✅ Spec готов",
+          "premium_limit": "1GB для Premium"
+        },
+        {
+          "id": "MESG-020a",
+          "name": "Панель вложений",
+          "description": "Двухуровневая навигация: категории (Фото/Документы/Аудио/Видео) → список вложений с миниатюрами",
+          "type": "chat/utility",
+          "class": "feature",
+          "premium": false,
+          "user_coverage": "60%",
+          "status": "✅ Spec готов"
+        },
+        {
+          "id": "MESG-021",
+          "name": "Группы",
+          "description": "Групповые чаты до 200 участников (Free), до 5000 (Premium) с ролями (creator/moderator/reader)",
+          "type": "chat/social",
+          "class": "core",
+          "premium": false,
+          "user_coverage": "30%",
+          "status": "✅ Spec готов",
+          "premium_limit": "5000 участников + каналы"
+        }
+      ]
+    }
+  },
+  
+  "summary": {
+    "total_functions": 215,
+    "v1_ready": 53,
+    "v2_deferred": 21,
+    "categories_count": 10,
+    "core_functions": 45,
+    "feature_functions": 89,
+    "utility_functions": 81
+  },
+  
+  "full_registry_location": "trash/функции.md (215+ функций с полным описанием)"
+}

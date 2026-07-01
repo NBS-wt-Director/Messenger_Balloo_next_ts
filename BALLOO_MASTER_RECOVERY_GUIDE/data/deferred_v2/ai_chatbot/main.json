@@ -1,0 +1,109 @@
+{
+  "title": "🤖 AI Chatbot — AI-ассистент (V2)",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "AI-ассистент Balloo: чат, генерация контента, автоперевод, smart reply",
+  "status": "deferred",
+  "source_file": "trash/V2_ENHANCEMENTS/documents/v2_features.md",
+  
+  "features": {
+    "ai_chat": {
+      "name": "AI Чат",
+      "description": "Встроенный чат с AI-ассистентом",
+      "provider": "OpenRouter API (агрегатор моделей)",
+      "models": ["GPT-4", "Claude", "Llama", "Mixtral"],
+      "use_cases": [
+        "Ответы на вопросы",
+        "Генерация текстов",
+        "Помощь в написании кода",
+        "Анализ документов",
+        "Творческое письмо"
+      ],
+      "pricing": "Pay-per-token через OpenRouter",
+      "limits": {
+        "free": "100 запросов/день",
+        "premium": "Безлимитно"
+      }
+    },
+    "smart_reply": {
+      "name": "Умные ответы",
+      "description": "AI предлагает варианты ответов в чатах",
+      "context": "Анализ последних 5 сообщений",
+      "suggestions_count": 3,
+      "languages": ["ru", "en", "be", "tt", "ba", "cv"],
+      "privacy": "Обработка на устройстве (on-device ML)"
+    },
+    "auto_translate": {
+      "name": "Автоперевод сообщений",
+      "description": "Автоматический перевод чатов на язык пользователя",
+      "supported_languages": 50,
+      "detection": "Автоматическое определение языка",
+      "quality": "Neural MT (NMT)",
+      "pricing": "Premium функция"
+    },
+    "content_generation": {
+      "name": "Генерация контента",
+      "description": "Создание текстов по запросу",
+      "types": [
+        "Описания товаров",
+        "Посты для каналов",
+        "Email шаблоны",
+        "Документы",
+        "Код"
+      ],
+      "max_length": "4000 токенов",
+      "pricing": "Premium функция"
+    },
+    "chat_summary": {
+      "name": "Саммари чатов",
+      "description": "Краткое содержание длинных чатов",
+      "trigger": "По запросу или после 100+ сообщений",
+      "output": "5-10 ключевых пунктов",
+      "privacy": "E2E для Premium Secret Chats"
+    },
+    "ai_moderation": {
+      "name": "AI-модерация контента",
+      "description": "Автоматическая модерация сообщений и файлов",
+      "categories": [
+        "Спам",
+        "Оскорбления",
+        "Незаконный контент",
+        "Дезинформация"
+      ],
+      "action": "Предупреждение + скрытие контента",
+      "appeal": "Human review в течение 24 часов"
+    }
+  },
+  
+  "technical": {
+    "architecture": "Hybrid (cloud + on-device)",
+    "cloud_processing": "Сложные запросы через OpenRouter API",
+    "on_device": "Smart reply, базовые функции",
+    "caching": "Redis для частых запросов",
+    "rate_limiting": "Sliding window (Redis)"
+  },
+  
+  "privacy": {
+    "data_retention": "30 дней для истории чатов",
+    "training": "Не используется для обучения моделей",
+    "e2e": "Premium Secret Chats не обрабатываются AI",
+    "compliance": "152-ФЗ (серверы в РФ)"
+  },
+  
+  "api": {
+    "endpoints": [
+      { "method": "POST", "path": "/api/v2/ai/chat", "description": "Отправить сообщение AI" },
+      { "method": "GET", "path": "/api/v2/ai/history", "description": "История чатов с AI" },
+      { "method": "DELETE", "path": "/api/v2/ai/history/:id", "description": "Удалить чат с AI" },
+      { "method": "POST", "path": "/api/v2/ai/translate", "description": "Перевести текст" },
+      { "method": "POST", "path": "/api/v2/ai/summarize", "description": "Саммари чата" }
+    ]
+  },
+  
+  "metrics": {
+    "target_adoption": "30% пользователей",
+    "target_satisfaction": "NPS > 50",
+    "avg_response_time": "< 2 секунды",
+    "accuracy": "> 90%"
+  }
+}

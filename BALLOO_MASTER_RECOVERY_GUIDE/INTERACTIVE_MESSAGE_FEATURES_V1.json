@@ -1,0 +1,1456 @@
+{
+  "$schema": "https://balloo.su/schemas/message-features-v1.json",
+  "metadata": {
+    "id": "INTERACTIVE_MESSAGE_FEATURES_V1",
+    "version": "5.0",
+    "date": "2026-06-29",
+    "status": "ready_for_implementation",
+    "author": "NLP-Core-Team",
+    "location": "Ekaterinburg, Russia",
+    "description": "Полная спецификация интерактивных функций сообщений V1",
+    "source_files": [
+      "trash/функции.md",
+      "data/functions/main.json",
+      "trash/features_sql.sql",
+      "trash/экраны.md",
+      "mockups/premium.html"
+    ]
+  },
+
+  "metrics": {
+    "definitions": [
+      {
+        "id": "ux",
+        "name": "UX",
+        "description": "Удобство использования",
+        "weight": 0.25
+      },
+      {
+        "id": "performance",
+        "name": "Performance",
+        "description": "Скорость работы",
+        "weight": 0.20
+      },
+      {
+        "id": "security",
+        "name": "Security",
+        "description": "Безопасность",
+        "weight": 0.20
+      },
+      {
+        "id": "completeness",
+        "name": "Completeness",
+        "description": "Полнота функций",
+        "weight": 0.15
+      },
+      {
+        "id": "scalability",
+        "name": "Scalability",
+        "description": "Масштабируемость",
+        "weight": 0.10
+      },
+      {
+        "id": "maintainability",
+        "name": "Maintainability",
+        "description": "Поддерживаемость",
+        "weight": 0.10
+      }
+    ],
+    "target_score": 8.3,
+    "baseline_score": 7.5
+  },
+
+  "features": {
+    "forward": {
+      "id": "MESG-019",
+      "name": "Пересылка сообщений",
+      "name_en": "Message Forward",
+      "type": "chat",
+      "class": "feature",
+      "premium": false,
+      "priority": "P0",
+      "status": "v1_included",
+      "limits": {
+        "max_chats": 5,
+        "secret_chats_allowed": false,
+        "preserve_sender": true,
+        "edit_before_send": true
+      },
+      "api": {
+        "endpoint": "POST /api/v1/messages/:id/forward",
+        "payload": {
+          "chat_ids": "uuid[]",
+          "comment": "string?",
+          "hide_sender": "boolean?"
+        }
+      },
+      "database": {
+        "table": "messages",
+        "fields": [
+          "forward_from_id UUID",
+          "forward_from_sender UUID",
+          "forward_from_chat UUID",
+          "forward_count INTEGER DEFAULT 0",
+          "forwarded_at TIMESTAMP"
+        ]
+      }
+    },
+
+    "edit": {
+      "id": "MESG-017",
+      "name": "Редактирование сообщений",
+      "name_en": "Message Edit",
+      "type": "chat",
+      "class": "feature",
+      "premium": false,
+      "priority": "P0",
+      "status": "v1_included",
+      "limits": {
+        "free": {
+          "max_edits": 3,
+          "time_limit": null,
+          "history": false
+        },
+        "premium": {
+          "max_edits": null,
+          "time_limit": null,
+          "history": true,
+          "history_versions": 10
+        }
+      },
+      "api": {
+        "edit": "PUT /api/v1/messages/:id",
+        "history": "GET /api/v1/messages/:id/history"
+      },
+      "database": {
+        "table": "messages",
+        "fields": [
+          "is_edited BOOLEAN DEFAULT FALSE",
+          "edited_at TIMESTAMP",
+          "edit_count INTEGER DEFAULT 0",
+          "edit_history JSONB"
+        ]
+      }
+    },
+
+    "delete": {
+      "id": "MESG-018",
+      "name": "Удаление сообщений",
+      "name_en": "Message Delete",
+      "type": "chat",
+      "class": "feature",
+      "premium": false,
+      "priority": "P0",
+      "status": "v1_included",
+      "limits": {
+        "for_self": {
+          "time_limit": null,
+          "description": "Удаление только у себя"
+        },
+        "for_all": {
+          "time_limit_hours": 48,
+          "description": "Удаление у всех участников"
+        }
+      },
+      "api": {
+        "endpoint": "DELETE /api/v1/messages/:id",
+        "payload": {
+          "for": "self | all"
+        }
+      },
+      "database": {
+        "table": "messages",
+        "fields": [
+          "is_deleted BOOLEAN DEFAULT FALSE",
+          "deleted_at TIMESTAMP",
+          "deleted_by UUID",
+          "delete_for VARCHAR(10)"
+        ]
+      }
+    },
+
+    "scheduled": {
+      "id": "MESG-058",
+      "name": "Отложенные сообщения",
+      "name_en": "Scheduled Messages",
+      "type": ["chat", "utility"],
+      "class": "feature",
+      "premium": false,
+      "priority": "P1",
+      "status": "v1_included",
+      "limits": {
+        "free": {
+          "max_scheduled": 5,
+          "min_delay_minutes": 1,
+          "max_delay_days": 30
+        },
+        "premium": {
+          "max_scheduled": null,
+          "min_delay_minutes": 1,
+          "max_delay_days": 365
+        }
+      },
+      "api": {
+        "schedule": "POST /api/v1/messages/schedule",
+        "list": "GET /api/v1/messages/scheduled",
+        "update": "PUT /api/v1/messages/scheduled/:id",
+        "cancel": "DELETE /api/v1/messages/scheduled/:id"
+      },
+      "database": {
+        "table": "scheduled_messages",
+        "fields": [
+          "id UUID PRIMARY KEY",
+          "chat_id UUID NOT NULL",
+          "sender_id UUID NOT NULL",
+          "content TEXT NOT NULL",
+          "type VARCHAR(50) DEFAULT 'text'",
+          "attachment_id UUID",
+          "scheduled_at TIMESTAMP NOT NULL",
+          "status VARCHAR(20) DEFAULT 'pending'",
+          "sent_at TIMESTAMP",
+          "error_message TEXT",
+          "created_at TIMESTAMP",
+          "updated_at TIMESTAMP"
+        ],
+        "indexes": [
+          "idx_scheduled_at",
+          "idx_scheduled_status"
+        ]
+      },
+      "cron": {
+        "frequency": "every_minute",
+        "query": "SELECT * FROM scheduled_messages WHERE status = 'pending' AND scheduled_at <= NOW()"
+      }
+    },
+
+    "templates": {
+      "id": "SUGG-008",
+      "name": "Шаблоны сообщений",
+      "name_en": "Message Templates",
+      "type": ["utility", "admin"],
+      "class": "feature",
+      "premium": false,
+      "priority": "P1",
+      "status": "v1_included",
+      "limits": {
+        "personal": {
+          "free": 10,
+          "premium": 100
+        },
+        "group": {
+          "free": 5,
+          "premium": 50
+        },
+        "system": {
+          "free": false,
+          "premium": true
+        }
+      },
+      "variables": [
+        "{{name}}",
+        "{{username}}",
+        "{{date}}",
+        "{{time}}",
+        "{{group}}",
+        "{{rule1}}",
+        "{{rule2}}",
+        "{{rule3}}",
+        "{{violation}}",
+        "{{announcement}}"
+      ],
+      "api": {
+        "create": "POST /api/v1/templates",
+        "list": "GET /api/v1/templates",
+        "use": "POST /api/v1/templates/:id/use",
+        "update": "PUT /api/v1/templates/:id",
+        "delete": "DELETE /api/v1/templates/:id"
+      },
+      "database": {
+        "table": "message_templates",
+        "fields": [
+          "id UUID PRIMARY KEY",
+          "user_id UUID NOT NULL",
+          "chat_id UUID",
+          "name VARCHAR(255) NOT NULL",
+          "content TEXT NOT NULL",
+          "variables JSONB DEFAULT '[]'",
+          "category VARCHAR(50) DEFAULT 'personal'",
+          "usage_count INTEGER DEFAULT 0",
+          "created_at TIMESTAMP",
+          "updated_at TIMESTAMP"
+        ]
+      }
+    },
+
+    "quick_replies": {
+      "id": "SUGG-008-QR",
+      "name": "Быстрые ответы",
+      "name_en": "Quick Replies",
+      "type": "utility",
+      "class": "feature",
+      "premium": false,
+      "priority": "P2",
+      "status": "v1_included",
+      "limits": {
+        "free": 20,
+        "premium": 100,
+        "max_length": 500,
+        "hotkey_prefix": "/"
+      },
+      "api": {
+        "create": "POST /api/v1/quick-replies",
+        "list": "GET /api/v1/quick-replies",
+        "use": "POST /api/v1/quick-replies/:id/use",
+        "update": "PUT /api/v1/quick-replies/:id",
+        "delete": "DELETE /api/v1/quick-replies/:id"
+      },
+      "database": {
+        "table": "quick_replies",
+        "fields": [
+          "id UUID PRIMARY KEY",
+          "user_id UUID NOT NULL",
+          "text TEXT NOT NULL",
+          "shortcut VARCHAR(50)",
+          "usage_count INTEGER DEFAULT 0",
+          "last_used_at TIMESTAMP",
+          "created_at TIMESTAMP"
+        ]
+      }
+    },
+
+    "polls": {
+      "id": "MESG-POLL",
+      "name": "Опросы",
+      "name_en": "Polls",
+      "type": ["chat", "media"],
+      "class": "feature",
+      "premium": false,
+      "priority": "P2",
+      "status": "v1_included",
+      "limits": {
+        "min_options": 2,
+        "max_options": 10,
+        "multiple_choice": true,
+        "anonymous": true,
+        "close_date": true
+      },
+      "api": {
+        "create": "POST /api/v1/polls",
+        "get": "GET /api/v1/polls/:id",
+        "vote": "POST /api/v1/polls/:id/vote",
+        "results": "GET /api/v1/polls/:id/results"
+      },
+      "database": {
+        "tables": ["polls", "poll_options", "poll_responses"]
+      }
+    },
+
+    "quizzes": {
+      "id": "MESG-QUIZ",
+      "name": "Викторины",
+      "name_en": "Quizzes",
+      "type": ["chat", "media"],
+      "class": "feature",
+      "premium": false,
+      "priority": "P2",
+      "status": "v1_included",
+      "limits": {
+        "min_options": 2,
+        "max_options": 10,
+        "has_correct_answer": true,
+        "explanation": true
+      },
+      "api": {
+        "create": "POST /api/v1/quizzes",
+        "get": "GET /api/v1/quizzes/:id",
+        "answer": "POST /api/v1/quizzes/:id/answer"
+      },
+      "database": {
+        "tables": ["quizzes", "quiz_options", "quiz_attempts"]
+      }
+    },
+
+    "checklists": {
+      "id": "MESG-LIST",
+      "name": "Списки (Checklist)",
+      "name_en": "Checklists",
+      "type": ["chat", "media"],
+      "class": "feature",
+      "premium": false,
+      "priority": "P2",
+      "status": "v1_included",
+      "collaborative": true,
+      "limits": {
+        "min_items": 1,
+        "max_items": 100,
+        "multiple_checkers": true
+      },
+      "api": {
+        "create": "POST /api/v1/checklists",
+        "get": "GET /api/v1/checklists/:id",
+        "check_item": "PUT /api/v1/checklists/:id/items/:item_id"
+      },
+      "database": {
+        "tables": ["checklists", "checklist_items"]
+      }
+    }
+  },
+
+  "questions_to_10": {
+    "description": "Критические вопросы для достижения оценки 10/10 по всем метрикам",
+    "total_questions": 10,
+
+    "questions": [
+      {
+        "id": 1,
+        "title": "Отложенные сообщения — Push-уведомление об отправке?",
+        "title_en": "Scheduled Messages — Push notification on send?",
+        "metrics_affected": [
+          {"id": "ux", "weight": 0.15},
+          {"id": "performance", "weight": 0.05}
+        ],
+        "context": "Когда отложенное сообщение фактически отправляется (в заданное время), нужно ли отправлять push-уведомление отправителю?",
+        "options": [
+          {
+            "id": "1.1",
+            "title": "Отправлять всегда",
+            "recommended_for": ["premium"],
+            "pros": [
+              "Пользователь уверен что сообщение ушло",
+              "Удобно для важных сообщений (поздравления, напоминания)",
+              "Снижает тревожность 'а вдруг не отправилось?'"
+            ],
+            "cons": [
+              "Дополнительная нагрузка на push-сервис (до 5 сообщений/день на пользователя)",
+              "Может раздражать при частом использовании",
+              "Дополнительный API call к Firebase/Yandex Push"
+            ],
+            "recommendation": "Рекомендуется для Premium пользователей, опционально для Free",
+            "impact_score": 8
+          },
+          {
+            "id": "1.2",
+            "title": "Не отправлять никогда",
+            "recommended_for": ["mvp"],
+            "pros": [
+              "Нет дополнительной нагрузки",
+              "Нет риска spam-уведомлений",
+              "Проще реализация"
+            ],
+            "cons": [
+              "Пользователь не уверен в отправке",
+              "Нужно заходить в приложение чтобы проверить",
+              "Может снизить доверие к функции"
+            ],
+            "recommendation": "Подходит для MVP чтобы упростить запуск",
+            "impact_score": 6
+          },
+          {
+            "id": "1.3",
+            "title": "Только если пользователь офлайн в момент отправки",
+            "recommended_for": ["v1_optimal"],
+            "pros": [
+              "Баланс между информированием и спамом",
+              "Логично: если онлайн — увидит сам",
+              "Экономия ресурсов"
+            ],
+            "cons": [
+              "Сложнее реализация (нужно проверять online статус)",
+              "Требует WebSocket интеграции"
+            ],
+            "recommendation": "Оптимальный выбор для V1",
+            "impact_score": 9
+          },
+          {
+            "id": "1.4",
+            "title": "Настройка в настройках",
+            "recommended_for": ["v2"],
+            "pros": [
+              "Полный контроль у пользователя",
+              "Гибкость",
+              "Снижает негатив от нежелательных уведомлений"
+            ],
+            "cons": [
+              "Сложнее UI (ещё одна настройка)",
+              "Пользователи могут не найти",
+              "Нужно хранить состояние в БД"
+            ],
+            "recommendation": "Рекомендуется для V2, не для V1",
+            "impact_score": 7
+          }
+        ],
+        "recommended_option": "1.3",
+        "v1_decision": null
+      },
+
+      {
+        "id": 2,
+        "title": "Отложенные сообщения — Отдельный виджет в главном меню?",
+        "title_en": "Scheduled Messages — Separate widget in main menu?",
+        "metrics_affected": [
+          {"id": "ux", "weight": 0.20},
+          {"id": "completeness", "weight": 0.10}
+        ],
+        "context": "Где отображать список запланированных сообщений?",
+        "options": [
+          {
+            "id": "2.1",
+            "title": "Только в настройках чата",
+            "recommended_for": ["mvp"],
+            "pros": [
+              "Простая реализация",
+              "Логичная группировка по чатам",
+              "Не загромождает интерфейс"
+            ],
+            "cons": [
+              "Нужно заходить в каждый чат",
+              "Не видно общую картину",
+              "Сложно управлять всеми запланированными"
+            ],
+            "recommendation": "Подходит для MVP",
+            "impact_score": 6
+          },
+          {
+            "id": "2.2",
+            "title": "Отдельная страница в меню",
+            "recommended_for": ["v1_recommended"],
+            "pros": [
+              "Все запланированные в одном месте",
+              "Удобно управлять",
+              "Видно общую статистику"
+            ],
+            "cons": [
+              "Дополнительная страница",
+              "Усложнение навигации",
+              "Требует отдельного роутинга"
+            ],
+            "recommendation": "Рекомендуется для V1 — важно для UX",
+            "impact_score": 9
+          },
+          {
+            "id": "2.3",
+            "title": "Выпадающий список в поле ввода",
+            "recommended_for": ["v1_additional"],
+            "pros": [
+              "Быстрый доступ из любого чата",
+              "Контекстно (видно в каком чате отправится)",
+              "Компактно"
+            ],
+            "cons": [
+              "Может перекрывать поле ввода",
+              "Сложно при большом количестве",
+              "Не видно все запланированные сразу"
+            ],
+            "recommendation": "Хорошее дополнение к Варианту 2.2",
+            "impact_score": 7
+          },
+          {
+            "id": "2.4",
+            "title": "Уведомление в списке чатов",
+            "recommended_for": ["v1.5"],
+            "pros": [
+              "Видно сразу в списке чатов",
+              "Не требует дополнительных страниц",
+              "Интуитивно понятно"
+            ],
+            "cons": [
+              "Загромождает список чатов",
+              "Нужно менять компонент ChatList",
+              "Может конфликтовать с другими бейджами"
+            ],
+            "recommendation": "Дополнительная фича для V1.5",
+            "impact_score": 8
+          }
+        ],
+        "recommended_option": "2.2",
+        "v1_decision": null
+      },
+
+      {
+        "id": 3,
+        "title": "Шаблоны — Общие или привязанные к группам?",
+        "title_en": "Templates — Global or group-specific?",
+        "metrics_affected": [
+          {"id": "ux", "weight": 0.15},
+          {"id": "scalability", "weight": 0.10}
+        ],
+        "context": "Должны ли шаблоны быть глобальными для пользователя или привязанными к конкретным группам?",
+        "options": [
+          {
+            "id": "3.1",
+            "title": "Только глобальные (личные)",
+            "recommended_for": ["basic"],
+            "pros": [
+              "Простая реализация (одна таблица)",
+              "Удобно для личных шаблонов",
+              "Меньше данных в БД"
+            ],
+            "cons": [
+              "Не подходит для групповых шаблонов",
+              "Админы не могут создать шаблон для конкретной группы",
+              "Ограничивает сценарии использования"
+            ],
+            "recommendation": "Подходит для базовой версии",
+            "impact_score": 6
+          },
+          {
+            "id": "3.2",
+            "title": "Гибридные (личные + групповые)",
+            "recommended_for": ["v1_recommended"],
+            "pros": [
+              "Максимальная гибкость",
+              "Админы могут создавать шаблоны для своей группы",
+              "Разделение прав доступа"
+            ],
+            "cons": [
+              "Сложнее БД (нужно chat_id)",
+              "Нужно проверять права доступа",
+              "Может запутать пользователей"
+            ],
+            "recommendation": "Рекомендуется для V1 — критично для админов групп",
+            "impact_score": 9
+          },
+          {
+            "id": "3.3",
+            "title": "Только групповые",
+            "recommended_for": [],
+            "pros": [
+              "Логично для групповых чатов",
+              "Админы контролируют контент"
+            ],
+            "cons": [
+              "Бесполезно для личных чатов",
+              "Ограничивает сценарии",
+              "Не подходит для поддержки"
+            ],
+            "recommendation": "Не рекомендуется",
+            "impact_score": 4
+          },
+          {
+            "id": "3.4",
+            "title": "Системные шаблоны (платформа)",
+            "recommended_for": ["v2"],
+            "pros": [
+              "Админы платформы могут создать шаблоны для всех",
+              "Полезно для правил, приветствий",
+              "Централизованное управление"
+            ],
+            "cons": [
+              "Требует роль 'system_admin'",
+              "Риск злоупотреблений",
+              "Сложнее права доступа"
+            ],
+            "recommendation": "V2 функция, не для MVP",
+            "impact_score": 7
+          }
+        ],
+        "recommended_option": "3.2",
+        "v1_decision": null
+      },
+
+      {
+        "id": 4,
+        "title": "Шаблоны — Импорт/экспорт (JSON)?",
+        "title_en": "Templates — Import/Export (JSON)?",
+        "metrics_affected": [
+          {"id": "ux", "weight": 0.10},
+          {"id": "maintainability", "weight": 0.15}
+        ],
+        "context": "Нужна ли возможность экспортировать шаблоны в JSON и импортировать обратно?",
+        "options": [
+          {
+            "id": "4.1",
+            "title": "Да, полный импорт/экспорт",
+            "recommended_for": ["premium"],
+            "pros": [
+              "Удобно для бэкапа",
+              "Можно делиться шаблонами",
+              "Перенос между аккаунтами"
+            ],
+            "cons": [
+              "Сложнее реализация",
+              "Риск импорта вредоносных шаблонов",
+              "Нужно валидировать JSON"
+            ],
+            "recommendation": "Рекомендуется для Premium",
+            "impact_score": 8
+          },
+          {
+            "id": "4.2",
+            "title": "Только экспорт",
+            "recommended_for": ["v1_compromise"],
+            "pros": [
+              "Проще реализация",
+              "Нет риска вредоносного импорта",
+              "Пользователи могут делать бэкап"
+            ],
+            "cons": [
+              "Неполноценная функция",
+              "Нельзя восстановить из бэкапа",
+              "Разочарование пользователей"
+            ],
+            "recommendation": "Компромисс для V1",
+            "impact_score": 7
+          },
+          {
+            "id": "4.3",
+            "title": "Нет импорта/экспорта",
+            "recommended_for": [],
+            "pros": [
+              "Максимально простая реализация",
+              "Нет дополнительных endpoints",
+              "Нет валидации"
+            ],
+            "cons": [
+              "Нельзя сделать бэкап",
+              "Нельзя поделиться",
+              "При удалении аккаунта шаблоны теряются"
+            ],
+            "recommendation": "Не рекомендуется для V1",
+            "impact_score": 4
+          },
+          {
+            "id": "4.4",
+            "title": "Библиотека шаблонов (маркетплейс)",
+            "recommended_for": ["v2-v3"],
+            "pros": [
+              "Готовые шаблоны от сообщества",
+              "Удобно для новичков",
+              "Потенциал монетизации"
+            ],
+            "cons": [
+              "Сложная реализация",
+              "Нужна модерация",
+              "Требует отдельного UI"
+            ],
+            "recommendation": "V2-V3 функция",
+            "impact_score": 8
+          }
+        ],
+        "recommended_option": "4.2",
+        "v1_decision": null
+      },
+
+      {
+        "id": 5,
+        "title": "Треды (Threads) — Включить в V1 или отложить до V2?",
+        "title_en": "Threads — Include in V1 or defer to V2?",
+        "metrics_affected": [
+          {"id": "completeness", "weight": 0.20},
+          {"id": "scalability", "weight": 0.15},
+          {"id": "performance", "weight": 0.10}
+        ],
+        "context": "Треды позволяют создавать ветвящиеся обсуждения внутри групповых чатов.",
+        "options": [
+          {
+            "id": "5.1",
+            "title": "Включить в V1",
+            "recommended_for": [],
+            "pros": [
+              "Полноценная функция для групп",
+              "Снижает шум в основном чате",
+              "Конкурентное преимущество vs Telegram"
+            ],
+            "cons": [
+              "Сложная реализация (доп. таблица threads)",
+              "Влияет на производительность (доп. запросы)",
+              "Усложняет UI"
+            ],
+            "recommendation": "Не рекомендуется для V1 — слишком сложно",
+            "impact_score": 5
+          },
+          {
+            "id": "5.2",
+            "title": "Отложить до V2",
+            "recommended_for": ["v1_recommended"],
+            "pros": [
+              "Фокус на базовых функциях",
+              "Быстрее запуск V1",
+              "Проще тестирование"
+            ],
+            "cons": [
+              "Неполноценные группы",
+              "Пользователи могут разочароваться",
+              "Конкуренты имеют треды"
+            ],
+            "recommendation": "Рекомендуется для V1",
+            "impact_score": 8
+          },
+          {
+            "id": "5.3",
+            "title": "Упрощённые треды (Reply-цепочки)",
+            "recommended_for": ["compromise"],
+            "pros": [
+              "Проще полноценных тредов",
+              "Даёт базовую функциональность",
+              "Меньше влияет на производительность"
+            ],
+            "cons": [
+              "Ограниченная функциональность",
+              "Может запутать пользователей",
+              "Всё ещё сложно для V1"
+            ],
+            "recommendation": "Компромисс, но всё ещё сложно для V1",
+            "impact_score": 6
+          },
+          {
+            "id": "5.4",
+            "title": "Треды только для Premium",
+            "recommended_for": ["v2"],
+            "pros": [
+              "Premium incentive",
+              "Можно реализовать постепенно",
+              "Снижает нагрузку на Free пользователей"
+            ],
+            "cons": [
+              "Разочарование Free пользователей",
+              "Сложнее реализация (проверка подписки)",
+              "Маркетинговый риск"
+            ],
+            "recommendation": "V2 функция",
+            "impact_score": 7
+          }
+        ],
+        "recommended_option": "5.2",
+        "v1_decision": null
+      },
+
+      {
+        "id": 6,
+        "title": "Совместные списки — Несколько пользователей могут отмечать?",
+        "title_en": "Collaborative Lists — Can multiple users check items?",
+        "metrics_affected": [
+          {"id": "ux", "weight": 0.20},
+          {"id": "performance", "weight": 0.10},
+          {"id": "security", "weight": 0.05}
+        ],
+        "context": "В чеклистах (shopping list, todo) несколько участников чата могут отмечать элементы.",
+        "options": [
+          {
+            "id": "6.1",
+            "title": "Да, все участники чата",
+            "recommended_for": ["v1_recommended"],
+            "pros": [
+              "Полноценное совместное использование",
+              "Удобно для семейных покупок",
+              "Логично для групповых задач"
+            ],
+            "cons": [
+              "Нужна синхронизация в реальном времени (WebSocket)",
+              "Конфликты при одновременном редактировании",
+              "Нужно отслеживать кто отметил (checked_by)"
+            ],
+            "recommendation": "Рекомендуется для V1 — ключевая фича",
+            "impact_score": 9
+          },
+          {
+            "id": "6.2",
+            "title": "Только создатель списка",
+            "recommended_for": [],
+            "pros": [
+              "Простая реализация",
+              "Нет конфликтов",
+              "Нет синхронизации"
+            ],
+            "cons": [
+              "Бесполезно для совместных покупок",
+              "Ограничивает сценарии",
+              "Пользователи разочаруются"
+            ],
+            "recommendation": "Не рекомендуется",
+            "impact_score": 3
+          },
+          {
+            "id": "6.3",
+            "title": "Создатель назначает исполнителей",
+            "recommended_for": ["v2"],
+            "pros": [
+              "Контроль у создателя",
+              "Гибкость",
+              "Полезно для рабочих задач"
+            ],
+            "cons": [
+              "Сложнее UI (назначение исполнителей)",
+              "Нужно хранить права в БД",
+              "Может запутать"
+            ],
+            "recommendation": "V2 функция",
+            "impact_score": 7
+          },
+          {
+            "id": "6.4",
+            "title": "Реальное время с блокировками",
+            "recommended_for": ["v3"],
+            "pros": [
+              "Нет конфликтов",
+              "Профессиональный уровень",
+              "Как в Google Docs"
+            ],
+            "cons": [
+              "Очень сложная реализация",
+              "Требует WebSocket + CRDT/OT",
+              "Избыточно для V1"
+            ],
+            "recommendation": "V3 функция",
+            "impact_score": 9
+          }
+        ],
+        "recommended_option": "6.1",
+        "v1_decision": null
+      },
+
+      {
+        "id": 7,
+        "title": "Редактирование — Хранить историю версий (Premium)?",
+        "title_en": "Edit — Store version history (Premium)?",
+        "metrics_affected": [
+          {"id": "security", "weight": 0.15},
+          {"id": "maintainability", "weight": 0.10},
+          {"id": "performance", "weight": 0.05}
+        ],
+        "context": "Должны ли Premium пользователи видеть историю изменений сообщения?",
+        "options": [
+          {
+            "id": "7.1",
+            "title": "Да, до 10 версий",
+            "recommended_for": ["premium_v1"],
+            "pros": [
+              "Прозрачность изменений",
+              "Защита от манипуляций",
+              "Premium incentive"
+            ],
+            "cons": [
+              "Дополнительное хранение (JSONB до 10 версий)",
+              "Усложняет БД",
+              "Нужно решать сколько хранить"
+            ],
+            "recommendation": "Рекомендуется для Premium V1",
+            "impact_score": 8
+          },
+          {
+            "id": "7.2",
+            "title": "Нет, только последняя версия",
+            "recommended_for": [],
+            "pros": [
+              "Простая реализация",
+              "Минимальное хранение",
+              "Нет доп. endpoints"
+            ],
+            "cons": [
+              "Нельзя отследить изменения",
+              "Риск манипуляций",
+              "Нет Premium incentive"
+            ],
+            "recommendation": "Не рекомендуется",
+            "impact_score": 4
+          },
+          {
+            "id": "7.3",
+            "title": "Только время последнего изменения",
+            "recommended_for": ["v1_minimum"],
+            "pros": [
+              "Базовая прозрачность",
+              "Простая реализация (одно поле edited_at)",
+              "Минимальное хранение"
+            ],
+            "cons": [
+              "Не видно что изменилось",
+              "Ограниченная информация",
+              "Нет Premium incentive"
+            ],
+            "recommendation": "Минимум для V1",
+            "impact_score": 6
+          },
+          {
+            "id": "7.4",
+            "title": "Полный audit log (админы)",
+            "recommended_for": ["v2_enterprise"],
+            "pros": [
+              "Максимальная прозрачность",
+              "Полезно для модерации",
+              "Audit compliance"
+            ],
+            "cons": [
+              "Огромный объём данных",
+              "Сложные права доступа",
+              "Privacy concerns"
+            ],
+            "recommendation": "V2 для Enterprise",
+            "impact_score": 8
+          }
+        ],
+        "recommended_option": "7.1",
+        "v1_decision": null
+      },
+
+      {
+        "id": 8,
+        "title": "Удаление — 48 часов или безлимит?",
+        "title_en": "Delete — 48 hours or unlimited?",
+        "metrics_affected": [
+          {"id": "ux", "weight": 0.15},
+          {"id": "security", "weight": 0.10}
+        ],
+        "context": "Сколько времени пользователь может удалить сообщение 'для всех'?",
+        "options": [
+          {
+            "id": "8.1",
+            "title": "48 часов (как Telegram)",
+            "recommended_for": ["v1_recommended"],
+            "pros": [
+              "Баланс между удобством и безопасностью",
+              "Защита от злоупотреблений",
+              "Как у конкурентов"
+            ],
+            "cons": [
+              "Пользователи могут забыть",
+              "Ограничивает сценарии",
+              "Нужно хранить sent_at"
+            ],
+            "recommendation": "Рекомендуется для V1",
+            "impact_score": 8
+          },
+          {
+            "id": "8.2",
+            "title": "Безлимит (свои сообщения)",
+            "recommended_for": [],
+            "pros": [
+              "Максимальный контроль у пользователя",
+              "Удобно",
+              "GDPR compliance (право на удаление)"
+            ],
+            "cons": [
+              "Риск злоупотреблений (удаление улик)",
+              "Может навредить доверию в чате",
+              "Сложнее для модерации"
+            ],
+            "recommendation": "Рискованно для V1",
+            "impact_score": 6
+          },
+          {
+            "id": "8.3",
+            "title": "1 час (как WhatsApp)",
+            "recommended_for": [],
+            "pros": [
+              "Минимальный риск злоупотреблений",
+              "Простая политика",
+              "Как у WhatsApp"
+            ],
+            "cons": [
+              "Очень ограниченно",
+              "Пользователи разочаруются",
+              "Хуже Telegram (48ч)"
+            ],
+            "recommendation": "Не рекомендуется",
+            "impact_score": 4
+          },
+          {
+            "id": "8.4",
+            "title": "Premium: безлимит, Free: 48 часов",
+            "recommended_for": ["v2"],
+            "pros": [
+              "Premium incentive",
+              "Гибкость",
+              "Монетизация"
+            ],
+            "cons": [
+              "Разочарование Free пользователей",
+              "Сложнее реализация (проверка подписки)",
+              "Может восприниматься как жадность"
+            ],
+            "recommendation": "V2 функция",
+            "impact_score": 7
+          }
+        ],
+        "recommended_option": "8.1",
+        "v1_decision": null
+      },
+
+      {
+        "id": 9,
+        "title": "Пересылка — Скрывать отправителя (для админов)?",
+        "title_en": "Forward — Hide sender (for admins)?",
+        "metrics_affected": [
+          {"id": "security", "weight": 0.15},
+          {"id": "ux", "weight": 0.10}
+        ],
+        "context": "Должны ли админы групп иметь возможность скрывать автора при пересылке?",
+        "options": [
+          {
+            "id": "9.1",
+            "title": "Нет, всегда показывать автора",
+            "recommended_for": ["v1_safer"],
+            "pros": [
+              "Прозрачность",
+              "Нет злоупотреблений",
+              "Простая реализация"
+            ],
+            "cons": [
+              "Админы не могут анонимно делиться",
+              "Ограничивает сценарии",
+              "Меньше приватности"
+            ],
+            "recommendation": "Безопаснее для V1",
+            "impact_score": 8
+          },
+          {
+            "id": "9.2",
+            "title": "Да, опция для админов",
+            "recommended_for": ["v1_with_caution"],
+            "pros": [
+              "Гибкость для админов",
+              "Анонимные объявления",
+              "Premium incentive"
+            ],
+            "cons": [
+              "Риск злоупотреблений",
+              "Сложнее права доступа",
+              "Может снизить доверие"
+            ],
+            "recommendation": "Рекомендуется с осторожностью",
+            "impact_score": 7
+          },
+          {
+            "id": "9.3",
+            "title": "Только для системных шаблонов",
+            "recommended_for": ["v1.5"],
+            "pros": [
+              "Баланс",
+              "Системные сообщения без автора логичны",
+              "Контроль у платформы"
+            ],
+            "cons": [
+              "Сложнее реализация",
+              "Нужно различать типы",
+              "Ограниченно"
+            ],
+            "recommendation": "Компромисс для V1.5",
+            "impact_score": 7
+          }
+        ],
+        "recommended_option": "9.1",
+        "v1_decision": null
+      },
+
+      {
+        "id": 10,
+        "title": "Опросы — Анонимные или с именами?",
+        "title_en": "Polls — Anonymous or with names?",
+        "metrics_affected": [
+          {"id": "security", "weight": 0.10},
+          {"id": "ux", "weight": 0.15}
+        ],
+        "context": "Должны ли участники видеть кто как проголосовал в опросе?",
+        "options": [
+          {
+            "id": "10.1",
+            "title": "Анонимные по умолчанию",
+            "recommended_for": ["v1_default"],
+            "pros": [
+              "Честные ответы",
+              "Нет давления",
+              "Приватность"
+            ],
+            "cons": [
+              "Нельзя проверить кто голосовал",
+              "Риск накруток",
+              "Меньше прозрачности"
+            ],
+            "recommendation": "Рекомендуется для V1",
+            "impact_score": 8
+          },
+          {
+            "id": "10.2",
+            "title": "Настройка при создании",
+            "recommended_for": ["v1_recommended"],
+            "pros": [
+              "Гибкость",
+              "Создатель выбирает",
+              "Подходит для разных сценариев"
+            ],
+            "cons": [
+              "Сложнее UI",
+              "Нужно хранить настройку",
+              "Может запутать"
+            ],
+            "recommendation": "Рекомендуется для V1",
+            "impact_score": 9
+          },
+          {
+            "id": "10.3",
+            "title": "Всегда с именами",
+            "recommended_for": [],
+            "pros": [
+              "Полная прозрачность",
+              "Нет накруток",
+              "Можно обсудить выбор"
+            ],
+            "cons": [
+              "Давление на участников",
+              "Нечестные ответы",
+              "Privacy concerns"
+            ],
+            "recommendation": "Не рекомендуется",
+            "impact_score": 4
+          },
+          {
+            "id": "10.4",
+            "title": "Только создатель видит",
+            "recommended_for": ["v2"],
+            "pros": [
+              "Баланс приватности и контроля",
+              "Полезно для рабочих опросов",
+              "Защита от накруток"
+            ],
+            "cons": [
+              "Сложнее реализация",
+              "Нужно проверять права",
+              "Может вызвать недоверие"
+            ],
+            "recommendation": "V2 функция",
+            "impact_score": 7
+          }
+        ],
+        "recommended_option": "10.2",
+        "v1_decision": null
+      }
+    ]
+  },
+
+  "recommendations_summary": {
+    "description": "Сводная таблица рекомендаций для V1",
+    "decisions": [
+      {
+        "question_id": 1,
+        "recommended_option": "1.3",
+        "decision": "Только если пользователь офлайн",
+        "metric_impact": "+10% UX"
+      },
+      {
+        "question_id": 2,
+        "recommended_option": "2.2",
+        "decision": "Отдельная страница + бейджи",
+        "metric_impact": "+15% UX"
+      },
+      {
+        "question_id": 3,
+        "recommended_option": "3.2",
+        "decision": "Гибридные (личные + групповые)",
+        "metric_impact": "+12% UX"
+      },
+      {
+        "question_id": 4,
+        "recommended_option": "4.2",
+        "decision": "Только экспорт",
+        "metric_impact": "+8% Maintainability"
+      },
+      {
+        "question_id": 5,
+        "recommended_option": "5.2",
+        "decision": "Отложить до V2",
+        "metric_impact": "-5% Completeness (но проще V1)"
+      },
+      {
+        "question_id": 6,
+        "recommended_option": "6.1",
+        "decision": "Все участники чата",
+        "metric_impact": "+18% UX"
+      },
+      {
+        "question_id": 7,
+        "recommended_option": "7.1",
+        "decision": "До 10 версий (Premium)",
+        "metric_impact": "+10% Security"
+      },
+      {
+        "question_id": 8,
+        "recommended_option": "8.1",
+        "decision": "48 часов",
+        "metric_impact": "+12% UX"
+      },
+      {
+        "question_id": 9,
+        "recommended_option": "9.1",
+        "decision": "Нет (безопаснее)",
+        "metric_impact": "+8% Security"
+      },
+      {
+        "question_id": 10,
+        "recommended_option": "10.2",
+        "decision": "Настройка при создании",
+        "metric_impact": "+10% UX"
+      }
+    ],
+
+    "final_scores": {
+      "baseline": {
+        "ux": 7.0,
+        "performance": 8.0,
+        "security": 8.0,
+        "completeness": 7.0,
+        "scalability": 8.0,
+        "maintainability": 7.0,
+        "total": 7.5
+      },
+      "with_recommendations": {
+        "ux": 9.0,
+        "performance": 8.0,
+        "security": 9.0,
+        "completeness": 8.0,
+        "scalability": 8.0,
+        "maintainability": 8.0,
+        "total": 8.3
+      }
+    }
+  },
+
+  "implementation_timeline": {
+    "phase_1": {
+      "weeks": "1-2",
+      "features": ["Пересылка", "Редактирование", "Удаление"],
+      "priority": "P0"
+    },
+    "phase_2": {
+      "weeks": "3-4",
+      "features": ["Отложенные сообщения", "Cron job"],
+      "priority": "P1"
+    },
+    "phase_3": {
+      "weeks": "5",
+      "features": ["Шаблоны сообщений"],
+      "priority": "P1"
+    },
+    "phase_4": {
+      "weeks": "6",
+      "features": ["Быстрые ответы"],
+      "priority": "P2"
+    },
+    "phase_5": {
+      "weeks": "7-8",
+      "features": ["Опросы", "Викторины", "Списки"],
+      "priority": "P2"
+    },
+    "phase_6": {
+      "weeks": "9",
+      "features": ["Тестирование и полировка"],
+      "priority": "P0"
+    }
+  },
+
+  "api_endpoints_summary": {
+    "forward": ["POST /api/v1/messages/:id/forward"],
+    "edit": ["PUT /api/v1/messages/:id", "GET /api/v1/messages/:id/history"],
+    "delete": ["DELETE /api/v1/messages/:id?for=self|all"],
+    "scheduled": [
+      "POST /api/v1/messages/schedule",
+      "GET /api/v1/messages/scheduled",
+      "PUT /api/v1/messages/scheduled/:id",
+      "DELETE /api/v1/messages/scheduled/:id"
+    ],
+    "templates": [
+      "POST /api/v1/templates",
+      "GET /api/v1/templates",
+      "PUT /api/v1/templates/:id",
+      "DELETE /api/v1/templates/:id",
+      "POST /api/v1/templates/:id/use"
+    ],
+    "quick_replies": [
+      "POST /api/v1/quick-replies",
+      "GET /api/v1/quick-replies",
+      "PUT /api/v1/quick-replies/:id",
+      "DELETE /api/v1/quick-replies/:id",
+      "POST /api/v1/quick-replies/:id/use"
+    ],
+    "polls": [
+      "POST /api/v1/polls",
+      "GET /api/v1/polls/:id",
+      "POST /api/v1/polls/:id/vote",
+      "GET /api/v1/polls/:id/results"
+    ],
+    "quizzes": [
+      "POST /api/v1/quizzes",
+      "GET /api/v1/quizzes/:id",
+      "POST /api/v1/quizzes/:id/answer"
+    ],
+    "checklists": [
+      "POST /api/v1/checklists",
+      "GET /api/v1/checklists/:id",
+      "PUT /api/v1/checklists/:id/items/:item_id"
+    ]
+  },
+
+  "competitive_analysis": {
+    "features_comparison": [
+      {
+        "feature": "Пересылка",
+        "balloo_v1": "5 чатов",
+        "telegram": "Безлимит",
+        "whatsapp": "5 чатов",
+        "signal": "5 чатов"
+      },
+      {
+        "feature": "Редактирование",
+        "balloo_v1": "3 раза",
+        "telegram": "Безлимит",
+        "whatsapp": "15 мин",
+        "signal": "❌"
+      },
+      {
+        "feature": "Удаление (for all)",
+        "balloo_v1": "48ч",
+        "telegram": "Безлимит",
+        "whatsapp": "1ч",
+        "signal": "❌"
+      },
+      {
+        "feature": "Отложенные",
+        "balloo_v1": "✅ 5/безлимит",
+        "telegram": "❌",
+        "whatsapp": "❌",
+        "signal": "❌"
+      },
+      {
+        "feature": "Шаблоны",
+        "balloo_v1": "✅ 10/100",
+        "telegram": "❌",
+        "whatsapp": "❌",
+        "signal": "❌"
+      },
+      {
+        "feature": "Быстрые ответы",
+        "balloo_v1": "✅ 20/100",
+        "telegram": "❌",
+        "whatsapp": "❌",
+        "signal": "❌"
+      },
+      {
+        "feature": "Опросы",
+        "balloo_v1": "✅",
+        "telegram": "✅",
+        "whatsapp": "❌",
+        "signal": "❌"
+      },
+      {
+        "feature": "Викторины",
+        "balloo_v1": "✅",
+        "telegram": "❌",
+        "whatsapp": "❌",
+        "signal": "❌"
+      },
+      {
+        "feature": "Списки",
+        "balloo_v1": "✅",
+        "telegram": "❌",
+        "whatsapp": "❌",
+        "signal": "❌"
+      }
+    ],
+    "unique_advantages": [
+      "Отложенные сообщения — есть только у нас в V1",
+      "Шаблоны для админов — уникальная фича",
+      "Викторины (Quiz) — нет у конкурентов",
+      "Списки (Checklist) — нет у конкурентов",
+      "Быстрые ответы — есть только в бизнес-мессенджерах"
+    ]
+  }
+}

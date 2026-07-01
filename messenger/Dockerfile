@@ -11,6 +11,9 @@ RUN apk add --no-cache python3 make g++
 # Copy package files
 COPY package*.json ./
 
+# Copy shared packages
+COPY ../packages ./packages
+
 # Install all dependencies
 RUN npm ci
 
@@ -34,6 +37,9 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+
+# Copy shared packages
+COPY ../packages ./packages
 
 # Install production dependencies only
 RUN npm ci --only=production && npm cache clean --force

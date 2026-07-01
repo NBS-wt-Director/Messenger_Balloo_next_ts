@@ -1,0 +1,72 @@
+{
+  "title": "⏳ Отложено до V2 — Индекс",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Центральный индекс всех отложенных V2 функций. Данные хранятся в подразделах.",
+  
+  "subsections": [
+    {
+      "id": "premium",
+      "title": "Premium V2",
+      "path": "premium/main.json",
+      "description": "Premium-функции: Secret Chats, запись звонков, 20 Premium-фич"
+    },
+    {
+      "id": "features",
+      "title": "Features V2",
+      "path": "features/main.json",
+      "description": "Основные функции V2: Балунишка, Маркетплейс, Кошелёк, AI, Каналы, Треды"
+    },
+    {
+      "id": "auth_platform",
+      "title": "Balloo Auth Platform V2",
+      "path": "auth_platform/main.json",
+      "description": "Платформа авторизации для сторонних разработчиков"
+    },
+    {
+      "id": "international",
+      "title": "International V2",
+      "path": "international/main.json",
+      "description": "Международный выход: Китай, Индия, Беларусь"
+    },
+    {
+      "id": "ai_premium",
+      "title": "AI & Premium-фичи V2",
+      "path": "ai_premium/main.json",
+      "description": "AI-функции и Premium-фичи: темы, стикеры, транскрипция"
+    },
+    {
+      "id": "payments",
+      "title": "Payments V2",
+      "path": "payments/main.json",
+      "description": "Платёжная система и маркетплейс"
+    },
+    {
+      "id": "e2e_premium",
+      "title": "E2E & Premium Policies V2",
+      "path": "e2e_premium/main.json",
+      "description": "E2E шифрование (Signal Protocol) и Premium-политики"
+    }
+  ],
+  
+  "totals": {
+    "premium_items": 22,
+    "features_items": 15,
+    "auth_platform_items": 1,
+    "international_items": 13,
+    "ai_premium_items": 10,
+    "payments_items": 3,
+    "e2e_premium_items": 1,
+    "total_items": 65
+  },
+  
+  "roadmap_triggers": {
+    "users": "≥1.5 млн активных пользователей",
+    "revenue": "≥6 млн рублей/мес через донаты/пожертвования",
+    "actions": [
+      "Найм команды разработчиков",
+      "Увеличение лимита Koda Base до 5000/день",
+      "Миграция на V2 (Signal Protocol, Premium, AI, Marketplace)"
+    ]
+  }
+}

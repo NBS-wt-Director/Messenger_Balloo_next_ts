@@ -1,0 +1,132 @@
+{
+  "title": "🏪 Marketplace — Рынок (V2)",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "Маркетплейс товаров и услуг внутри платформы",
+  "status": "deferred",
+  "source_file": "trash/V2_ENHANCEMENTS/documents/v2_features.md",
+  
+  "features": {
+    "catalog": {
+      "name": "Каталог товаров",
+      "description": "Просмотр и поиск товаров/услуг",
+      "categories": [
+        "Электроника",
+        "Одежда",
+        "Услуги",
+        "Цифровые товары",
+        "Хендмейд",
+        "Коллекционные items"
+      ],
+      "filters": ["Цена", "Рейтинг", "Локация", "Состояние"],
+      "sorting": ["По популярности", "По цене", "По рейтингу", "По дате"]
+    },
+    "seller_profile": {
+      "name": "Профиль продавца",
+      "description": "Информация о продавце",
+      "fields": [
+        "Рейтинг (1-5 звёзд)",
+        "Отзывы",
+        "Количество продаж",
+        "Дата регистрации",
+        "Верификация"
+      ]
+    },
+    "item_card": {
+      "name": "Карточка товара",
+      "description": "Детальная информация о товаре",
+      "fields": [
+        "Название",
+        "Описание",
+        "Цена",
+        "Фото (до 10)",
+        "Состояние (новое/б/у)",
+        "Доставка",
+        "Гарантия"
+      ]
+    },
+    "cart": {
+      "name": "Корзина",
+      "description": "Добавление товаров для покупки",
+      "features": [
+        "Множественные товары",
+        "Сохранение на потом",
+        "Промокоды",
+        "Расчёт доставки"
+      ]
+    },
+    "checkout": {
+      "name": "Оформление заказа",
+      "description": "Процесс покупки",
+      "steps": [
+        "1. Адрес доставки",
+        "2. Способ доставки",
+        "3. Оплата",
+        "4. Подтверждение"
+      ],
+      "payment_methods": ["Карта", "Кошелёк Balloo", "СБП"]
+    },
+    "escrow": {
+      "name": "Эскроу-сделки",
+      "description": "Безопасные платежи через гаранта",
+      "flow": [
+        "1. Покупатель оплачивает → деньги в эскроу",
+        "2. Продавец отправляет товар",
+        "3. Покупатель получает → подтверждение",
+        "4. Деньги переводятся продавцу"
+      ],
+      "fee": "2% от суммы (min 50 ₽)",
+      "dispute": "Арбитраж при конфликте"
+    },
+    "reviews": {
+      "name": "Отзывы и рейтинги",
+      "description": "Оценка продавцов и товаров",
+      "rating_scale": "1-5 звёзд",
+      "verification": "Только купившие могут оставлять отзывы",
+      "moderation": "AI + human review"
+    }
+  },
+  
+  "database": {
+    "tables": [
+      {
+        "name": "marketplace_items",
+        "columns": ["id", "seller_id", "title", "description", "price", "currency", "category", "images", "is_available", "created_at", "updated_at"]
+      },
+      {
+        "name": "marketplace_transactions",
+        "columns": ["id", "buyer_id", "seller_id", "item_id", "amount", "status", "escrow_id", "created_at"]
+      },
+      {
+        "name": "marketplace_reviews",
+        "columns": ["id", "item_id", "buyer_id", "rating", "comment", "created_at"]
+      },
+      {
+        "name": "marketplace_orders",
+        "columns": ["id", "buyer_id", "items", "total", "status", "shipping_address", "created_at"]
+      }
+    ]
+  },
+  
+  "api": {
+    "endpoints": [
+      { "method": "GET", "path": "/api/v2/marketplace/items", "description": "Список товаров" },
+      { "method": "GET", "path": "/api/v2/marketplace/items/:id", "description": "Детали товара" },
+      { "method": "POST", "path": "/api/v2/marketplace/items", "description": "Создать товар" },
+      { "method": "PUT", "path": "/api/v2/marketplace/items/:id", "description": "Обновить товар" },
+      { "method": "DELETE", "path": "/api/v2/marketplace/items/:id", "description": "Удалить товар" },
+      { "method": "POST", "path": "/api/v2/marketplace/cart", "description": "Добавить в корзину" },
+      { "method": "POST", "path": "/api/v2/marketplace/checkout", "description": "Оформить заказ" },
+      { "method": "POST", "path": "/api/v2/marketplace/reviews", "description": "Оставить отзыв" }
+    ]
+  },
+  
+  "metrics": {
+    "target_gmv": "10 млн ₽/мес к концу года 1",
+    "avg_order_value": "1 500 ₽",
+    "target_sellers": "10 000+",
+    "target_items": "100 000+"
+  },
+  
+  "mockup": "trash/V2_ENHANCEMENTS/mockups/marketplace.html"
+}

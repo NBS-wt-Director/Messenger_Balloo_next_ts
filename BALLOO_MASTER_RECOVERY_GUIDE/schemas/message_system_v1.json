@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://balloo.su/schemas/message_system_v1.json",
+  "title": "Message System V1 Schema",
+  "description": "JSON Schema для валидации документации системы сообщений Balloo",
+  "version": "5.0",
+  "date": "2026-06-29",
+
+  "type": "object",
+  "required": ["title", "version", "date", "description", "status", "architecture", "chat_types", "message_types", "attachment_types"],
+
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 5
+    },
+
+    "version": {
+      "type": "string",
+      "pattern": "^v\\d+\\.\\d+$"
+    },
+
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+
+    "status": {
+      "type": "string",
+      "enum": ["draft", "in_review", "complete", "deprecated"]
+    },
+
+    "part": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+
+    "total_parts": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+
+    "architecture": {
+      "type": "object",
+      "required": ["nodes", "message_flow", "performance_targets"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "port", "role", "technology"],
+            "properties": {
+              "name": {"type": "string"},
+              "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+              "role": {"type": "string"},
+              "technology": {"type": "string"}
+            }
+          }
+        },
+        "message_flow": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "performance_targets": {
+          "type": "object",
+          "properties": {
+            "message_delivery_ms": {"type": "integer", "minimum": 1},
+            "max_concurrent_users": {"type": "integer", "minimum": 1},
+            "max_messages_per_second": {"type": "integer", "minimum": 1}
+          }
+        }
+      }
+    },
+
+    "chat_types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "name_en", "e2e"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "name_en": {"type": "string"},
+          "users": {"type": ["integer", "string"]},
+          "users_min": {"type": "integer"},
+          "users_max_free": {"type": "integer"},
+          "users_max_premium": {"type": "integer"},
+          "users_max": {"type": "integer"},
+          "e2e": {"type": "boolean"},
+          "features": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "premium_required": {"type": "boolean"}
+        }
+      },
+      "minItems": 1,
+      "maxItems": 20
+    },
+
+    "message_types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "e2e", "premium"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "e2e": {"type": "boolean"},
+          "premium": {"type": "boolean"},
+          "processing": {"type": "string"},
+          "protocol": {"type": "string"}
+        }
+      },
+      "minItems": 1,
+      "maxItems": 50
+    },
+
+    "attachment_types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "name", "free_limit_mb", "premium_limit_mb", "formats", "processing"],
+        "properties": {
+          "type": {"type": "string"},
+          "name": {"type": "string"},
+          "free_limit_mb": {"type": "integer", "minimum": 1},
+          "premium_limit_mb": {"type": "integer", "minimum": 1},
+          "formats": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "processing": {"type": "string"}
+        }
+      },
+      "minItems": 1,
+      "maxItems": 20
+    },
+
+    "database_tables": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+
+    "api_endpoints_count": {
+      "type": "object",
+      "properties": {
+        "messages": {"type": "integer"},
+        "attachments": {"type": "integer"},
+        "chats": {"type": "integer"},
+        "calls": {"type": "integer"},
+        "reactions": {"type": "integer"},
+        "polls": {"type": "integer"},
+        "total": {"type": "integer"}
+      }
+    },
+
+    "websocket_events": {
+      "type": "object",
+      "properties": {
+        "client_to_server": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "server_to_client": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+
+    "security": {
+      "type": "object",
+      "properties": {
+        "e2e_protocol": {"type": "string"},
+        "e2e_components": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "transport": {"type": "string"},
+        "audit": {"type": "string"},
+        "compliance": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+
+    "premium_features": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+
+    "v2_deferred_features": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "total_chat_types": {"type": "integer"},
+        "total_message_types": {"type": "integer"},
+        "total_attachment_types": {"type": "integer"},
+        "total_database_tables": {"type": "integer"},
+        "total_api_endpoints": {"type": "integer"},
+        "total_websocket_events": {"type": "integer"}
+      }
+    }
+  },
+
+  "additionalProperties": true
+}

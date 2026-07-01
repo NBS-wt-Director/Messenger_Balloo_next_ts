@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Тема</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .theme-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .theme-card:hover {
+      border-color: var(--text-secondary);
+    }
+    .theme-card.active {
+      border-color: var(--primary);
+    }
+    .theme-card.active::after {
+      content: '✓';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .theme-preview {
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+    }
+    .theme-preview-header {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+    .theme-preview-content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      gap: 8px;
+    }
+    .theme-preview-bubble {
+      height: 32px;
+      border-radius: 0;
+      flex: 1;
+    }
+    .theme-info {
+      padding: 16px;
+    }
+    .theme-name { font-weight: 600; margin-bottom: 4px; }
+    .theme-desc { font-size: 13px; color: var(--text-secondary); }
+    
+    /* Тема: Dark */
+    .theme-dark .theme-preview-header { background: #1E293B; }
+    .theme-dark .theme-preview-content { background: #0F172A; }
+    .theme-dark .theme-preview-bubble { background: #1E293B; }
+    
+    /* Тема: Light */
+    .theme-light .theme-preview-header { background: #FFFFFF; border-bottom: 1px solid #E2E8F0; }
+    .theme-light .theme-preview-content { background: #F8FAFC; }
+    .theme-light .theme-preview-bubble { background: #FFFFFF; border: 1px solid #E2E8F0; }
+    
+    /* Тема: Russia */
+    .theme-russia .theme-preview-header { background: linear-gradient(180deg, #fff 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%); }
+    .theme-russia .theme-preview-content { background: #0F172A; }
+    .theme-russia .theme-preview-bubble { background: #1E293B; }
+    
+    /* Тема: Emerald */
+    .theme-emerald .theme-preview-header { background: #064E3B; }
+    .theme-emerald .theme-preview-content { background: #022C22; }
+    .theme-emerald .theme-preview-bubble { background: #064E3B; }
+    
+    /* Тема: Sunset */
+    .theme-sunset .theme-preview-header { background: linear-gradient(135deg, #F59E0B, #EF4444); }
+    .theme-sunset .theme-preview-content { background: #0F172A; }
+    .theme-sunset .theme-preview-bubble { background: #1E293B; }
+    
+    /* Тема: Ocean */
+    .theme-ocean .theme-preview-header { background: #1E3A8A; }
+    .theme-ocean .theme-preview-content { background: #0F172A; }
+    .theme-ocean .theme-preview-bubble { background: #1E40AF; }
+    
+    .accent-section {
+      margin-top: 40px;
+    }
+    .accent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 12px;
+    }
+    .accent-color {
+      height: 60px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .accent-color:hover {
+      transform: scale(1.05);
+    }
+    .accent-color.active {
+      border-color: white;
+      box-shadow: 0 0 0 3px var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Тема оформления</h1>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title">Светлая / Тёмная</h2>
+    <div class="themes-grid">
+      <div class="theme-card theme-dark active" onclick="selectTheme(this)">
+        <div class="theme-preview">
+          <div class="theme-preview-header"></div>
+          <div class="theme-preview-content">
+            <div class="theme-preview-bubble"></div>
+            <div class="theme-preview-bubble" style="opacity: 0.5;"></div>
+          </div>
+        </div>
+        <div class="theme-info">
+          <div class="theme-name">Тёмная</div>
+          <div class="theme-desc">Классическая тёмная тема</div>
+        </div>
+      </div>
+
+      <div class="theme-card theme-light" onclick="selectTheme(this)">
+        <div class="theme-preview">
+          <div class="theme-preview-header"></div>
+          <div class="theme-preview-content">
+            <div class="theme-preview-bubble"></div>
+            <div class="theme-preview-bubble" style="opacity: 0.5;"></div>
+          </div>
+        </div>
+        <div class="theme-info">
+          <div class="theme-name">Светлая</div>
+          <div class="theme-desc">Светлая тема для дня</div>
+        </div>
+      </div>
+
+      <div class="theme-card theme-russia" onclick="selectTheme(this)">
+        <div class="theme-preview">
+          <div class="theme-preview-header"></div>
+          <div class="theme-preview-content">
+            <div class="theme-preview-bubble"></div>
+            <div class="theme-preview-bubble" style="opacity: 0.5;"></div>
+          </div>
+        </div>
+        <div class="theme-info">
+          <div class="theme-name">Россия</div>
+          <div class="theme-desc">Патриотическая тема</div>
+        </div>
+      </div>
+
+      <div class="theme-card theme-emerald" onclick="selectTheme(this)">
+        <div class="theme-preview">
+          <div class="theme-preview-header"></div>
+          <div class="theme-preview-content">
+            <div class="theme-preview-bubble"></div>
+            <div class="theme-preview-bubble" style="opacity: 0.5;"></div>
+          </div>
+        </div>
+        <div class="theme-info">
+          <div class="theme-name">Изумруд</div>
+          <div class="theme-desc">Premium тема</div>
+        </div>
+      </div>
+
+      <div class="theme-card theme-sunset" onclick="selectTheme(this)">
+        <div class="theme-preview">
+          <div class="theme-preview-header"></div>
+          <div class="theme-preview-content">
+            <div class="theme-preview-bubble"></div>
+            <div class="theme-preview-bubble" style="opacity: 0.5;"></div>
+          </div>
+        </div>
+        <div class="theme-info">
+          <div class="theme-name">Закат</div>
+          <div class="theme-desc">Premium тема</div>
+        </div>
+      </div>
+
+      <div class="theme-card theme-ocean" onclick="selectTheme(this)">
+        <div class="theme-preview">
+          <div class="theme-preview-header"></div>
+          <div class="theme-preview-content">
+            <div class="theme-preview-bubble"></div>
+            <div class="theme-preview-bubble" style="opacity: 0.5;"></div>
+          </div>
+        </div>
+        <div class="theme-info">
+          <div class="theme-name">Океан</div>
+          <div class="theme-desc">Premium тема</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accent-section">
+      <h2 class="section-title">Акцентный цвет</h2>
+      <div class="accent-grid">
+        <div class="accent-color active" style="background: #2563EB;" onclick="selectAccent(this)"></div>
+        <div class="accent-color" style="background: #7C3AED;" onclick="selectAccent(this)"></div>
+        <div class="accent-color" style="background: #10B981;" onclick="selectAccent(this)"></div>
+        <div class="accent-color" style="background: #F59E0B;" onclick="selectAccent(this)"></div>
+        <div class="accent-color" style="background: #EF4444;" onclick="selectAccent(this)"></div>
+        <div class="accent-color" style="background: #EC4899;" onclick="selectAccent(this)"></div>
+        <div class="accent-color" style="background: #06B6D4;" onclick="selectAccent(this)"></div>
+        <div class="accent-color" style="background: #84CC16;" onclick="selectAccent(this)"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectTheme(card) {
+      document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+    }
+    
+    function selectAccent(color) {
+      document.querySelectorAll('.accent-color').forEach(c => c.classList.remove('active'));
+      color.classList.add('active');
+      document.documentElement.style.setProperty('--primary', color.style.background);
+    }
+  </script>
+</body>
+</html>

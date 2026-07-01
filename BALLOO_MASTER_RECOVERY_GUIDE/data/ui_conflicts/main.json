@@ -1,0 +1,8 @@
+{
+  "title": "🎨 UI Conflicts — UI конфликты",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "UI конфликты и решения",
+  "items": [{"id": "UI-001", "title": "Header height", "description": "64px desktop / 56px mobile", "resolved": true, "solutions": [{"name": "Standard heights", "detail": "Использовать стандартные значения"}]}, {"id": "UI-002", "title": "Avatar shape", "description": "Восьмиугольник для всех аватаров", "resolved": true, "solutions": [{"name": "clip-path", "detail": "CSS clip-path для формы"}]}],
+  "status": "complete"
+}

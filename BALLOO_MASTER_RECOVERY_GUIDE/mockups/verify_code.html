@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Верификация кода</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --error: #EF4444;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .verify-container {
+      width: 100%;
+      max-width: 400px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 40px;
+      text-align: center;
+    }
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    .email-display {
+      background: var(--bg);
+      padding: 12px;
+      border-radius: 0;
+      border: 1px solid var(--border);
+      display: inline-block;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    .code-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .code-input {
+      width: 56px;
+      height: 64px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      color: var(--text-primary);
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .code-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+    .code-input.filled {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.1);
+    }
+    .resend {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .resend a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .resend a:hover {
+      text-decoration: underline;
+    }
+    .resend a.disabled {
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    .timer {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+    .verify-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .verify-btn:hover {
+      opacity: 0.9;
+    }
+    .verify-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      color: var(--text-primary);
+    }
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="verify-container">
+    <div class="logo-icon">🐻</div>
+    <h1 class="title">Подтверждение</h1>
+    <p class="subtitle">Мы отправили 6-значный код на<br>your@email.com</p>
+    
+    <div class="email-display">your@email.com</div>
+
+    <form id="verifyForm">
+      <div class="code-inputs">
+        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+      </div>
+
+      <div class="timer" id="timer">02:00</div>
+
+      <div class="resend">
+        Не получили код? <a href="#" id="resendLink" class="disabled">Отправить повторно</a>
+      </div>
+
+      <button type="submit" class="verify-btn" disabled>Подтвердить</button>
+    </form>
+
+    <div class="error-message" id="errorMessage">Неверный код. Попробуйте ещё раз.</div>
+
+    <a href="auth_screen.html" class="back-link">← Вернуться ко входу</a>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll('.code-input');
+    const verifyBtn = document.querySelector('.verify-btn');
+    const timerDisplay = document.getElementById('timer');
+    const resendLink = document.getElementById('resendLink');
+    const errorMessage = document.getElementById('errorMessage');
+
+    let timeLeft = 120;
+
+    const timer = setInterval(() => {
+      timeLeft--;
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        resendLink.classList.remove('disabled');
+        timerDisplay.textContent = '00:00';
+      }
+    }, 1000);
+
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        const value = e.target.value;
+        
+        if (value && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+        
+        input.classList.toggle('filled', value.length > 0);
+        
+        const allFilled = Array.from(inputs).every(inp => inp.value.length > 0);
+        verifyBtn.disabled = !allFilled;
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = e.clipboardData.getData('text').slice(0, 6);
+        paste.split('').forEach((char, i) => {
+          if (inputs[i]) {
+            inputs[i].value = char;
+            inputs[i].classList.add('filled');
+          }
+        });
+        const allFilled = Array.from(inputs).every(inp => inp.value.length > 0);
+        verifyBtn.disabled = !allFilled;
+      });
+    });
+
+    document.getElementById('verifyForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = Array.from(inputs).map(inp => inp.value).join('');
+      
+      if (code === '123456') {
+        alert('Код подтверждён! Переход к созданию профиля...');
+        window.location.href = 'home_screen.html';
+      } else {
+        errorMessage.style.display = 'block';
+        inputs.forEach(inp => {
+          inp.value = '';
+          inp.classList.remove('filled');
+        });
+        inputs[0].focus();
+        verifyBtn.disabled = true;
+      }
+    });
+
+    resendLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!resendLink.classList.contains('disabled')) {
+        alert('Код отправлен повторно!');
+        timeLeft = 120;
+        resendLink.classList.add('disabled');
+      }
+    });
+  </script>
+</body>
+</html>

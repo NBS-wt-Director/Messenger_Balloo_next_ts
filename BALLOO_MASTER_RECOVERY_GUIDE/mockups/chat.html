@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Чат</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981; --outgoing: #2563EB;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .back-btn:hover { color: var(--text-primary); }
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+    .chat-info { flex: 1; }
+    .chat-name { font-weight: 600; font-size: 15px; }
+    .chat-status { font-size: 12px; color: var(--text-secondary); }
+    .header-actions { display: flex; gap: 8px; }
+    .header-btn {
+      width: 36px;
+      height: 36px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .header-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 70%;
+    }
+    .message.incoming { align-self: flex-start; }
+    .message.outgoing { align-self: flex-end; flex-direction: row-reverse; }
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      flex-shrink: 0;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+    .message-bubble {
+      background: var(--surface);
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+    }
+    .message.outgoing .message-bubble {
+      background: var(--outgoing);
+      border-color: var(--outgoing);
+    }
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .message-sender { font-weight: 600; font-size: 13px; }
+    .message-time { font-size: 11px; color: var(--text-secondary); }
+    .message-content { font-size: 14px; line-height: 1.5; }
+    .message-content img {
+      max-width: 300px;
+      border-radius: 0;
+      margin-top: 8px;
+    }
+    .message-reactions {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .reaction {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .message-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .message:hover .message-actions { opacity: 1; }
+    .message-action {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .message-action:hover { color: var(--text-primary); }
+    
+    .input-area {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 16px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    .attach-btn {
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .attach-btn:hover { background: var(--bg); color: var(--text-primary); }
+    .message-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      font-size: 14px;
+      outline: none;
+      resize: none;
+      max-height: 120px;
+      min-height: 44px;
+    }
+    .message-input:focus { border-color: var(--primary); }
+    .input-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .emoji-btn, .send-btn {
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .emoji-btn:hover { background: var(--bg); }
+    .send-btn {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    .send-btn:hover { background: #1d4ed8; }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='chat_list.html'">←</button>
+    <div class="chat-avatar">АИ</div>
+    <div class="chat-info">
+      <div class="chat-name">Алексей Иванов</div>
+      <div class="chat-status">в сети</div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" title="Поиск">🔍</button>
+      <button class="header-btn" title="Звонок">📞</button>
+      <button class="header-btn" title="Видеозвонок">📹</button>
+      <button class="header-btn" title="Инфо">ℹ️</button>
+    </div>
+  </header>
+
+  <div class="messages-container" id="messagesContainer">
+    <div class="message incoming">
+      <div class="message-avatar">АИ</div>
+      <div>
+        <div class="message-bubble">
+          <div class="message-header">
+            <span class="message-sender">Алексей Иванов</span>
+            <span class="message-time">14:30</span>
+          </div>
+          <div class="message-content">Привет! Как дела с проектом Balloo?</div>
+          <div class="message-reactions">
+            <span class="reaction">👍</span>
+          </div>
+          <div class="message-actions">
+            <button class="message-action">Ответить</button>
+            <button class="message-action">Реакция</button>
+            <button class="message-action">Переслать</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="message outgoing">
+      <div class="message-avatar" style="background: linear-gradient(135deg, #10B981, #059669);">Я</div>
+      <div>
+        <div class="message-bubble">
+          <div class="message-header">
+            <span class="message-sender">Вы</span>
+            <span class="message-time">14:31</span>
+          </div>
+          <div class="message-content">Привет! Всё отлично, заканчиваю макеты для экранов. 🎨</div>
+          <div class="message-reactions">
+            <span class="reaction">❤️</span>
+            <span class="reaction">🔥</span>
+          </div>
+          <div class="message-actions">
+            <button class="message-action">Редактировать</button>
+            <button class="message-action">Удалить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="message incoming">
+      <div class="message-avatar">АИ</div>
+      <div>
+        <div class="message-bubble">
+          <div class="message-header">
+            <span class="message-sender">Алексей Иванов</span>
+            <span class="message-time">14:32</span>
+          </div>
+          <div class="message-content">
+            Круто! Сколько уже сделал?
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' fill='%23334155'%3E%3Crect width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2394A3B8' font-family='sans-serif' font-size='16'%3EПревью изображения%3C/text%3E%3C/svg%3E" alt="Превью">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <button class="attach-btn" title="Прикрепить файл">📎</button>
+    <textarea class="message-input" placeholder="Написать сообщение..." rows="1"></textarea>
+    <div class="input-actions">
+      <button class="emoji-btn">😊</button>
+      <button class="send-btn" disabled>➤</button>
+    </div>
+  </div>
+
+  <script>
+    const messageInput = document.querySelector('.message-input');
+    const sendBtn = document.querySelector('.send-btn');
+    const messagesContainer = document.getElementById('messagesContainer');
+
+    messageInput.addEventListener('input', () => {
+      sendBtn.disabled = !messageInput.value.trim();
+      messageInput.style.height = 'auto';
+      messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
+    });
+
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      const messageHTML = `
+        <div class="message outgoing">
+          <div class="message-avatar" style="background: linear-gradient(135deg, #10B981, #059669);">Я</div>
+          <div>
+            <div class="message-bubble">
+              <div class="message-header">
+                <span class="message-sender">Вы</span>
+                <span class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+              </div>
+              <div class="message-content">${text}</div>
+              <div class="message-actions">
+                <button class="message-action">Редактировать</button>
+                <button class="message-action">Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+      messageInput.value = '';
+      sendBtn.disabled = true;
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  </script>
+</body>
+</html>

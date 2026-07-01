@@ -18,7 +18,7 @@ const redisConfig = {
     return delay;
   },
   maxRetriesPerRequest: 3,
-  enableOfflineQueue: false,
+  enableOfflineQueue: true,
   lazyConnect: true
 };
 

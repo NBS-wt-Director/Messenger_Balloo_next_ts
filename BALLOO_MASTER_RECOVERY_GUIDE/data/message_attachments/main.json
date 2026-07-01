@@ -1,0 +1,82 @@
+{
+  "title": "📎 Message Attachments — Вложения и реакции",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Система вложений и реакций",
+  
+  "attachment_types": [
+    {
+      "type": "image",
+      "formats": ["JPEG", "PNG", "WebP", "GIF"],
+      "max_size": "20MB",
+      "processing": "Sharp (thumbnail, optimization)",
+      "storage": "Yandex Disk"
+    },
+    {
+      "type": "video",
+      "formats": ["MP4", "WebM", "MOV"],
+      "max_size": "100MB",
+      "processing": "FFmpeg (transcode, thumbnail)",
+      "storage": "Yandex Disk"
+    },
+    {
+      "type": "audio",
+      "formats": ["MP3", "OGG", "WAV", "M4A"],
+      "max_size": "20MB",
+      "processing": "FFmpeg (transcode, waveform)",
+      "storage": "Yandex Disk"
+    },
+    {
+      "type": "document",
+      "formats": ["PDF", "DOC", "DOCX", "XLS", "XLSX", "TXT", "ZIP"],
+      "max_size": "50MB (Free), 1GB (Premium)",
+      "processing": "None (direct storage)",
+      "storage": "Yandex Disk"
+    },
+    {
+      "type": "voice",
+      "formats": ["WebM Audio", "OGG Opus"],
+      "max_size": "10MB",
+      "max_duration": "5 минут",
+      "processing": "FFmpeg (transcode, waveform)",
+      "storage": "Yandex Disk"
+    },
+    {
+      "type": "sticker",
+      "formats": ["WebP", "PNG"],
+      "max_size": "512KB",
+      "dimensions": "512×512px",
+      "processing": "Sharp (optimization)",
+      "storage": "Yandex Disk"
+    }
+  ],
+  
+  "reactions": {
+    "default_emojis": ["👍", "❤️", "🔥", "😂", "😢", "🎉", "👏", "🤔", "😎", "🤯", "🥳", "💯"],
+    "max_per_message": 5,
+    "premium_reactions": ["Анимированные эмодзи", "Кастомные стикеры"],
+    "api": {
+      "add": "POST /api/v1/messages/:id/reactions",
+      "remove": "DELETE /api/v1/messages/:id/reactions/:emoji",
+      "list": "GET /api/v1/messages/:id/reactions"
+    }
+  },
+  
+  "attachment_panel": {
+    "description": "Двухуровневая навигация по вложениям чата",
+    "level_1": "Категории (📷 Фото / 📄 Документы / 🎵 Аудио / 🎬 Видео)",
+    "level_2": "Список вложений с миниатюрами",
+    "features": ["Поиск по имени", "Сортировка", "Множественный выбор", "Пакетное скачивание (ZIP)"],
+    "api": "GET /api/v1/chats/:id/attachments?type=&limit=&offset=&sortBy="
+  },
+  
+  "attachment_viewer": {
+    "description": "Полноэкранный просмотрер вложений",
+    "features": [
+      "Image: zoom, pan, swipe между медиа",
+      "Video: плеер с controls, fullscreen",
+      "Document: превью + кнопка скачать",
+      "Audio: плеер с waveform"
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "_comment": "Справочник локальных портов и доменов для разработки на Ksysha-PC",
+  "_note": "Локально != продакшен/дев на сервере. Только для localhost-разработки.",
+  "_last_updated": "2026-06-28",
+  "domains": {
+    "balloo_platform_analysis": {
+      "host": "127.0.0.1",
+      "domain": "BALLOO_PLATFORM_ANALYSIS.ksysha",
+      "port": 3030,
+      "url": "http://BALLOO_PLATFORM_ANALYSIS.ksysha:3030",
+      "project": "BALLOO_MASTER_RECOVERY_GUIDE/steps",
+      "file": "20260626-1402.html",
+      "description": "Анализ и Рецензия BALLOO платформы",
+      "server_script": "server-3030.js",
+      "auto_start": true
+    },
+    "balloo_api": {
+      "host": "127.0.0.1",
+      "domain": "api.balloo.ksysha",
+      "port": 3031,
+      "url": "http://api.balloo.ksysha:3031",
+      "project": "BALLOO_MASTER_RECOVERY_GUIDE",
+      "description": "API Gateway (заглушка для разработки)"
+    },
+    "balloo_admin": {
+      "host": "127.0.0.1",
+      "domain": "admin.balloo.ksysha",
+      "port": 3032,
+      "url": "http://admin.balloo.ksysha:3032",
+      "project": "BALLOO_MASTER_RECOVERY_GUIDE",
+      "description": "Admin Panel (заглушка для разработки)"
+    }
+  },
+  "hosts_entries": [
+    "127.0.0.1 BALLOO_PLATFORM_ANALYSIS.ksysha",
+    "127.0.0.1 api.balloo.ksysha",
+    "127.0.0.1 admin.balloo.ksysha"
+  ],
+  "instructions": {
+    "add_hosts": "Запустить add-hosts.ps1 от имени Администратора",
+    "remove_hosts": "Запустить remove-hosts.ps1 от имени Администратора",
+    "start_server": "cd BALLOO_MASTER_RECOVERY_GUIDE\\steps && node server-3030.js",
+    "auto_start": "Скрипт автозапуска создаётся в Taskschd.msc"
+  }
+}

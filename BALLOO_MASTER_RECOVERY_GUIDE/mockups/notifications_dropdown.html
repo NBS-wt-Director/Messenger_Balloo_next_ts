@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Менеджер уведомлений</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      position: relative;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    .notification-icon {
+      position: relative;
+      margin-left: auto;
+      margin-right: 16px;
+    }
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .icon-btn:hover { color: var(--text-primary); }
+    .badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      min-width: 18px;
+      text-align: center;
+    }
+    
+    .dropdown {
+      position: absolute;
+      top: 64px;
+      right: 60px;
+      width: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      z-index: 100;
+      display: none;
+    }
+    .dropdown.open { display: block; }
+    
+    .dropdown-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dropdown-title { font-size: 16px; font-weight: 600; }
+    .mark-read {
+      color: var(--primary);
+      font-size: 13px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .mark-read:hover { text-decoration: underline; }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .notifications-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .notification-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .notification-item:hover { background: rgba(255,255,255,0.03); }
+    .notification-item.unread { background: rgba(37, 99, 235, 0.05); }
+    .notification-item.new {
+      border-left: 3px solid var(--primary);
+    }
+    
+    .notification-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .notification-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+      flex-shrink: 0;
+    }
+    .notification-avatar.system { background: var(--border); }
+    .notification-avatar.success { background: #10B981; }
+    
+    .notification-content { flex: 1; min-width: 0; }
+    .notification-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .notification-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .notification-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+    
+    .notification-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .notif-action-btn {
+      padding: 6px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .notif-action-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .footer {
+      padding: 16px 20px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    .footer-link {
+      color: var(--primary);
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .footer-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='chat_list.html'">←</button>
+    <h1 class="page-title">Чаты</h1>
+    <div class="notification-icon">
+      <button class="icon-btn" onclick="toggleDropdown()">🔔</button>
+      <span class="badge">5</span>
+    </div>
+    
+    <div class="dropdown" id="notifDropdown">
+      <div class="dropdown-header">
+        <span class="dropdown-title">Уведомления</span>
+        <button class="mark-read" onclick="markAllRead()">Все прочитаны</button>
+      </div>
+      
+      <div class="tabs">
+        <button class="tab active">Все</button>
+        <button class="tab">Непрочитанные</button>
+        <button class="tab">Упоминания</button>
+      </div>
+      
+      <div class="notifications-list">
+        <div class="notification-item new unread" onclick="alert('Переход к чату...')">
+          <div class="notification-header">
+            <div class="notification-avatar">АИ</div>
+            <div class="notification-content">
+              <div class="notification-title">Алексей Иванов</div>
+              <div class="notification-text">Привет! Как дела с проектом?</div>
+            </div>
+          </div>
+          <div class="notification-time">2 мин назад</div>
+        </div>
+        
+        <div class="notification-item unread" onclick="alert('Переход к чату...')">
+          <div class="notification-header">
+            <div class="notification-avatar" style="background: linear-gradient(135deg, #10B981, #059669);">МП</div>
+            <div class="notification-content">
+              <div class="notification-title">Мария Петрова</div>
+              <div class="notification-text">Отправила тебе файлы, посмотри</div>
+            </div>
+          </div>
+          <div class="notification-time">15 мин назад</div>
+          <div class="notification-actions">
+            <button class="notif-action-btn" onclick="event.stopPropagation(); alert('Ответить...')">Ответить</button>
+            <button class="notif-action-btn" onclick="event.stopPropagation(); alert('Скрыть...')">Скрыть</button>
+          </div>
+        </div>
+        
+        <div class="notification-item unread" onclick="alert('Переход к упоминанию...')">
+          <div class="notification-header">
+            <div class="notification-avatar success">@</div>
+            <div class="notification-content">
+              <div class="notification-title">Упоминание в "Рабочая группа"</div>
+              <div class="notification-text">Дмитрий упомянул вас: @alex посмотри это</div>
+            </div>
+          </div>
+          <div class="notification-time">1 час назад</div>
+        </div>
+        
+        <div class="notification-item" onclick="alert('Открыть тикет...')">
+          <div class="notification-header">
+            <div class="notification-avatar system">🎫</div>
+            <div class="notification-content">
+              <div class="notification-title">Поддержка Balloo</div>
+              <div class="notification-text">Ваш тикет #4521 обработан</div>
+            </div>
+          </div>
+          <div class="notification-time">3 часа назад</div>
+        </div>
+        
+        <div class="notification-item" onclick="alert('Открыть настройки...')">
+          <div class="notification-header">
+            <div class="notification-avatar system">🔐</div>
+            <div class="notification-content">
+              <div class="notification-title">Новое устройство</div>
+              <div class="notification-text">Вход выполнен с iPhone 14 Pro</div>
+            </div>
+          </div>
+          <div class="notification-time">Вчера</div>
+        </div>
+      </div>
+      
+      <div class="footer">
+        <span class="footer-link" onclick="window.location.href='notifications.html'">Все уведомления →</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Основной контент страницы чатов -->
+  <div style="padding: 40px 20px; text-align: center; color: var(--text-secondary);">
+    <p>💬 Список чатов</p>
+    <p style="font-size: 13px; margin-top: 10px;">Нажмите на 🔔 для просмотра уведомлений</p>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      document.getElementById('notifDropdown').classList.toggle('open');
+    }
+    
+    function markAllRead() {
+      document.querySelectorAll('.notification-item').forEach(item => {
+        item.classList.remove('unread', 'new');
+      });
+      document.querySelector('.badge').style.display = 'none';
+    }
+    
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+    
+    // Закрытие при клике вне
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.notification-icon') && !e.target.closest('.dropdown')) {
+        document.getElementById('notifDropdown').classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>

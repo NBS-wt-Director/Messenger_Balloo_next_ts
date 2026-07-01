@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Голосования за фичи</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981; --gold: #F59E0B;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .intro-card {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.2));
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .intro-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+    .intro-text { color: var(--text-secondary); line-height: 1.6; }
+    .votes-info {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .vote-stat { font-size: 14px; }
+    .vote-stat strong { color: var(--gold); font-size: 18px; }
+    
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .feature-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .feature-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .feature-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .feature-badge {
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .feature-badge.planned { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .feature-badge.voting { background: rgba(37, 99, 235, 0.2); color: var(--primary); }
+    .feature-badge.review { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--bg);
+      margin: 16px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: width 0.3s;
+    }
+    .votes-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+    .votes-count {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .votes-count strong {
+      color: var(--text-primary);
+      font-size: 18px;
+    }
+    .vote-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      border: none;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vote-btn:hover { opacity: 0.9; }
+    .vote-btn.voted {
+      background: var(--success);
+    }
+    .vote-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .suggest-card {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      padding: 32px;
+      text-align: center;
+      margin-top: 32px;
+    }
+    .suggest-icon { font-size: 48px; margin-bottom: 16px; }
+    .suggest-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .suggest-text { color: var(--text-secondary); margin-bottom: 20px; }
+    .suggest-btn {
+      padding: 12px 24px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .suggest-btn:hover { background: var(--bg); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Голосования за фичи</h1>
+  </header>
+
+  <div class="container">
+    <div class="intro-card">
+      <h1 class="intro-title">🗳️ Решайте развитие Balloo</h1>
+      <p class="intro-text">
+        Голосуйте за новые функции и помогайте нам определять приоритеты разработки.<br>
+        Фичи с наибольшим количеством голосов будут реализованы в первую очередь.
+      </p>
+      <div class="votes-info">
+        <div class="vote-stat">Ваш голосов: <strong>5</strong></div>
+        <div class="vote-stat">Всего участников: <strong>1,847</strong></div>
+        <div class="vote-stat">Фич в работе: <strong>3</strong></div>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-header">
+        <div>
+          <h3 class="feature-title">📝 Редактирование отправленных сообщений</h3>
+          <p class="feature-desc">
+            Возможность редактировать свои сообщения в течение 24 часов после отправки.
+            Получатели увидят пометку "изменено".
+          </p>
+        </div>
+        <span class="feature-badge planned">В работе</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 100%;"></div>
+      </div>
+      <div class="votes-row">
+        <div class="votes-count"><strong>2,451</strong> голосов</div>
+        <button class="vote-btn voted" disabled>✓ Вы проголосовали</button>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-header">
+        <div>
+          <h3 class="feature-title">📋 Закладки сообщений</h3>
+          <p class="feature-desc">
+            Сохраняйте важные сообщения в закладки для быстрого доступа.
+            Организация по папкам и тегам.
+          </p>
+        </div>
+        <span class="feature-badge voting">Голосование</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 75%;"></div>
+      </div>
+      <div class="votes-row">
+        <div class="votes-count"><strong>1,823</strong> голосов</div>
+        <button class="vote-btn" onclick="vote(this)">👍 Голосовать</button>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-header">
+        <div>
+          <h3 class="feature-title">🎭 Анонимный режим</h3>
+          <p class="feature-desc">
+            Временная маскировка вашего онлайн-статуса и времени последнего посещения.
+            Включается на 1-24 часа.
+          </p>
+        </div>
+        <span class="feature-badge voting">Голосование</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 60%;"></div>
+      </div>
+      <div class="votes-row">
+        <div class="votes-count"><strong>1,456</strong> голосов</div>
+        <button class="vote-btn" onclick="vote(this)">👍 Голосовать</button>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-header">
+        <div>
+          <h3 class="feature-title">🤖 AI-саммари чатов</h3>
+          <p class="feature-desc">
+            Автоматическое резюме длинных переписок. AI выделит ключевые моменты,
+            договорённости и важные сообщения.
+          </p>
+        </div>
+        <span class="feature-badge review">На рассмотрении</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 45%;"></div>
+      </div>
+      <div class="votes-row">
+        <div class="votes-count"><strong>1,102</strong> голосов</div>
+        <button class="vote-btn" onclick="vote(this)">👍 Голосовать</button>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-header">
+        <div>
+          <h3 class="feature-title">📊 Опросы в чатах</h3>
+          <p class="feature-desc">
+            Создавайте опросы с несколькими вариантами ответов.
+            Анонимное или открытое голосование.
+          </p>
+        </div>
+        <span class="feature-badge voting">Голосование</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 35%;"></div>
+      </div>
+      <div class="votes-row">
+        <div class="votes-count"><strong>847</strong> голосов</div>
+        <button class="vote-btn" onclick="vote(this)">👍 Голосовать</button>
+      </div>
+    </div>
+
+    <div class="suggest-card">
+      <div class="suggest-icon">💡</div>
+      <h3 class="suggest-title">Есть идея?</h3>
+      <p class="suggest-text">
+        Предложите свою функцию для развития Balloo
+      </p>
+      <button class="suggest-btn" onclick="alert('Предложение отправлено!')">✍️ Предложить фичу</button>
+    </div>
+  </div>
+
+  <script>
+    function vote(btn) {
+      if (btn.disabled) return;
+      
+      const votesCount = btn.parentElement.querySelector('strong');
+      const currentVotes = parseInt(votesCount.textContent.replace(/,/g, ''));
+      votesCount.textContent = (currentVotes + 1).toLocaleString();
+      
+      btn.textContent = '✓ Вы проголосовали';
+      btn.classList.add('voted');
+      btn.disabled = true;
+      
+      const progressBar = btn.closest('.feature-card').querySelector('.progress-fill');
+      const currentWidth = parseFloat(progressBar.style.width);
+      progressBar.style.width = Math.min(currentWidth + 5, 100) + '%';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "title": "🏆 Competitive Analysis — Анализ конкурентов",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "7 основных конкурентов",
+  "items": [{"competitor": "Telegram", "market_share_ru": "~40%", "market_share_by": "~50%", "strengths": ["Функциональность", "Аудитория"], "weaknesses": ["Нет 152-ФЗ", "Нет СОРМ"]}, {"competitor": "WhatsApp", "market_share_ru": "~30%", "market_share_by": "~30%", "strengths": ["Простота", "E2E"], "weaknesses": ["Meta", "Нет десктопа"]}],
+  "marketing_recommendations": ["Акцент на 152-ФЗ и 150-ФЗ", "Premium дешевле Telegram", "Сервер в Екб"],
+  "status": "complete"
+}

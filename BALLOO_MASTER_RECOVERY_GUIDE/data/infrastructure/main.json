@@ -1,0 +1,9 @@
+{
+  "title": "🏢 Infrastructure — Инфраструктура",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Физическая инфраструктура",
+  "server": {"location": "Екатеринбург, РФ", "type": "Dedicated", "compliance": ["152-ФЗ", "150-ФЗ"]},
+  "storage": {"primary": "Yandex Disk", "database": "PostgreSQL 16", "cache": "Redis 7"},
+  "status": "complete"
+}

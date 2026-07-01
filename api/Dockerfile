@@ -43,8 +43,8 @@ COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /app/scripts ./scripts
 
 # Create data directories
-RUN mkdir -p /app/data /app/logs /app/uploads && \
-    chown -R nodejs:nodejs /app/data /app/logs /app/uploads
+RUN mkdir -p /app/data /app/logs /app/uploads /app/recordings /app/exports /app/backups && \
+    chown -R nodejs:nodejs /app/data /app/logs /app/uploads /app/recordings /app/exports /app/backups
 
 # Switch to non-root user
 USER nodejs

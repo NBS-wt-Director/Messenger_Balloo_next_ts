@@ -1,0 +1,9 @@
+{
+  "title": "⚠️ Illegitimate MD — Файлы без JSON",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Markdown файлы без JSON спецификации",
+  "files": [{"path": "trash/функции.md", "status": "migrated", "note": "Перенесено в data/functions"}, {"path": "trash/экраны.md", "status": "migrated", "note": "Перенесено в data/screens"}],
+  "action_required": "Все MD перенесены в JSON",
+  "status": "complete"
+}

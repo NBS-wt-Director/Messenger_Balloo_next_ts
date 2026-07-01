@@ -1,0 +1,166 @@
+{
+  "title": "⛔ Нерешённые проблемы V1",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Проблемы которые требуют решения. Наличие нерешённых проблем — корректное состояние архитектуры. Восстановлено из trash/problems.md",
+  "source_file": "trash/problems.md",
+  
+  "items": [
+    {
+      "id": "PROB-01",
+      "title": "Документация — не исходный код",
+      "description": "BALLOO_MASTER_RECOVERY_GUIDE — это документация, описывающая архитектуру платформы V1 и V2. Не recovery-гайд, а blueprint-документ.",
+      "severity": "critical",
+      "resolved": true,
+      "resolved_in": "v5.0",
+      "solution": "Чёткое позиционирование — документ как архитектурное описание V1 и V2"
+    },
+    {
+      "id": "PROB-02",
+      "title": "Monorepo — архитектура узлов",
+      "description": "Monorepo из нескольких узлов, каждый узел — отдельный сервис, может подниматься на одном или более контейнерах",
+      "severity": "critical",
+      "resolved": true,
+      "resolved_in": "v5.0",
+      "solution": "Monorepo + контейнеризация. Каждый узел — отдельный сервис в monorepo"
+    },
+    {
+      "id": "PROB-03",
+      "title": "Порты узлов",
+      "description": "У каждого узла свой порт 30**. API Gateway — 3001, Messenger — 3002, Admin Portal — 3003, Web App — 3004, Mobile API — 3005, Database — 3006, Cache — 3007, File Storage — 3008",
+      "severity": "warning",
+      "resolved": true,
+      "resolved_in": "v5.0",
+      "solution": "Единая таблица портов"
+    },
+    {
+      "id": "PROB-04",
+      "title": "E2E шифрование — архитектурный риск",
+      "description": "Решение ФИНАЛИЗИРОВАНО. V1: Web Crypto + PBKDF2 + PIN. V2: Signal Protocol + Premium Secret Chats с AI-фильтром",
+      "severity": "critical",
+      "resolved": true,
+      "resolved_in": "v5.0",
+      "solution": "Signal Protocol (libsignal) — industry standard. V1: Web Crypto API + PBKDF2. V2: Premium Secret Chats с AI-фильтром + human review + эскалация"
+    },
+    {
+      "id": "PROB-05",
+      "title": "Миграция БД",
+      "description": "15+ таблиц описаны, но нет migration файлов, версионирования схемы, стратегии миграции, seed данных, индексов",
+      "severity": "warning",
+      "resolved": true,
+      "resolved_in": "v5.0",
+      "solution": "Drizzle ORM — TypeScript-native, light-weight, генерирует миграции из schema"
+    },
+    {
+      "id": "PROB-06",
+      "title": "Тесты",
+      "description": "Ни слова о тестировании. Нет unit/integration/E2E тестов, test-coverage goals, CI/CD pipeline",
+      "severity": "warning",
+      "resolved": false,
+      "deferred_to": "v2",
+      "solution": "Vitest + Testing Library. Backend 70%+, frontend 60%+"
+    },
+    {
+      "id": "PROB-07",
+      "title": "Платёжная система V2",
+      "description": "V2 включает кошелёк, маркетплейс с escrow, платежи. Требует PCI DSS, платёжный провайдер, escrow-логика, chargeback, налоговая отчётность, AML/KYC",
+      "severity": "critical",
+      "resolved": false,
+      "deferred_to": "v2",
+      "solution": "White-label payment SDK (ЮKassa, CloudPayments) / Отложить V2 Monetization / MVP Wallet (только баланс)"
+    },
+    {
+      "id": "PROB-08",
+      "title": "AI-чат V2",
+      "description": "Неясно: какая модель, кто платит за токены, где хостинг, какой latency, как обрабатывать prompt-injection, где модерация",
+      "severity": "warning",
+      "resolved": false,
+      "deferred_to": "v2",
+      "solution": "OpenRouter API / Self-hosted LLM (Ollama + Llama 3/Mistral) / Tiered AI (Free: Mistral 7B, Premium: GPT-4/Claude)"
+    },
+    {
+      "id": "PROB-09",
+      "title": "API Versioning",
+      "description": "Все endpoints на /api/v1/, но нет стратегии версионирования",
+      "severity": "warning",
+      "resolved": false,
+      "deferred_to": "v2",
+      "solution": "URL + Header versioning. Старые версии 12 месяцев"
+    },
+    {
+      "id": "PROB-10",
+      "title": "Yandex Disk — единая точка отказа (SPOF)",
+      "description": "Хранение файлов через Yandex Disk — единая точка отказа. Блокировка аккаунта = потеря всех файлов пользователей. Нет fallback хранилища.",
+      "severity": "warning",
+      "resolved": false,
+      "deferred_to": "v2",
+      "solutions": [
+        { "name": "Storage Abstraction Layer + Multi-storage", "detail": "Абстракция над хранилищами: Yandex Disk (основное) + MinIO/R2 (fallback). Автоматический failover при недоступности." },
+        { "name": "S3-compatible хранилище (MinIO self-hosted)", "detail": "Полный контроль над данными. Self-hosted MinIO на своих серверах. Нет зависимости от облачных провайдеров." },
+        { "name": "Hybrid: base64-in-db для малых файлов, Yandex для больших", "detail": "Файлы < 1MB — base64 в PostgreSQL. Файлы > 1MB — Yandex Disk. Снижает нагрузку на облако." }
+      ]
+    },
+    {
+      "id": "PROB-11",
+      "title": "Мобильные клиенты (React Native) — V2",
+      "description": "React Native (Expo) для Android/iOS — ключевая функция, отложенная до V2. Без мобильных клиентов платформа неполноценна. V1 использует PWA как временное решение.",
+      "severity": "warning",
+      "resolved": false,
+      "deferred_to": "v2",
+      "solutions": [
+        { "name": "React Native (Expo) — кроссплатформенное решение", "detail": "Expo + TypeScript. Один кодовый баз для Android и iOS. Fast Refresh, Over-the-Air обновления." },
+        { "name": "Flutter — нативная производительность", "detail": "Dart язык. Native compilation для максимальной производительности. Один кодовый баз для всех платформ." },
+        { "name": "PWA + Capacitor — гибридный подход (V1)", "detail": "Next.js PWA + Capacitor для обёртки в нативные приложения. Быстрый старт, но ограниченный доступ к нативным API." }
+      ]
+    },
+    {
+      "id": "PROB-12",
+      "title": "Offline-first стратегия для WebSocket",
+      "description": "WebSocket Socket.IO не работает offline. Нужна стратегия offline-first с кэшированием и синхронизацией при восстановлении связи.",
+      "severity": "warning",
+      "resolved": false,
+      "deferred_to": "v2",
+      "solutions": [
+        { "name": "RxDB + Socket.IO — реактивная синхронизация", "detail": "RxDB для локального кэша (IndexedDB). Socket.IO для real-time. Автоматическая синхронизация при reconnect." },
+        { "name": "CRDT-подход (Yjs/Automerge) — conflict-free", "detail": "CRDT для согласованности данных без центрального сервера. Сообщения кэшируются локально, синхронизируются при connect." },
+        { "name": "IndexedDB + Queue + Retry", "detail": "IndexedDB для кэша сообщений. Очередь отправки (outbox pattern). Retry с exponential backoff при reconnect." }
+      ]
+    },
+    {
+      "id": "PROB-13",
+      "title": "Недостаточное покрытие макетами (19.5%)",
+      "description": "Только 9 из 46 экранов (19.5%) имеют HTML-макеты. Критично для визуализации платформы и тестирования UX.",
+      "severity": "warning",
+      "resolved": false,
+      "solutions": [
+        { "name": "Создать макеты для всех 37 экранов без mockup", "detail": "HTML-макеты в static/mockups/ с именованием screen-{node}-{slug}.html" },
+        { "name": "Приоритизация: сначала V1 экраны (34), потом V2 (12)", "detail": "Сначала покрыть макетами все V1 экраны, затем V2 Premium экраны" },
+        { "name": "Использовать AI Codegen для генерации макетов", "detail": "cli-kodacode generate-mockups --screens {list} на основе screens/data.json" }
+      ]
+    },
+    {
+      "id": "PROB-14",
+      "title": "Отсутствуют макеты общих компонентов",
+      "description": "COMP-L-001 (Header), COMP-L-002 (Sidebar), COMP-L-003 (Footer) не имеют макетов. Критично для визуального единства платформы.",
+      "severity": "warning",
+      "resolved": false,
+      "solutions": [
+        { "name": "Создать макеты в static/mockups/components/", "detail": "header.html, sidebar.html, footer.html с кросс-платформенными вариантами" },
+        { "name": "Интегрировать в каждый экран как shared components", "detail": "Все 46 экранов используют одинаковые Header, Sidebar, Footer" },
+        { "name": "Создать variant-макеты для разных разрешений", "detail": "mobile (375px), tablet (768px), desktop (1920px) для каждого компонента" }
+      ]
+    }
+  ],
+  
+  "summary": {
+    "total": 14,
+    "resolved": 5,
+    "unresolved": 9,
+    "resolution_rate": "35.7%",
+    "by_severity": {
+      "critical": 4,
+      "warning": 10
+    },
+    "deferred_to_v2": 6
+  }
+}

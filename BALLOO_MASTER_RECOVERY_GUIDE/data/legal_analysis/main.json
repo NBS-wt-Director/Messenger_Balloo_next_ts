@@ -1,0 +1,8 @@
+{
+  "title": "⚖️ Legal Analysis — Правовой анализ",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Анализ законодательства РФ и РБ",
+  "countries": [{"country": "Россия", "code": "RU", "key_laws": [{"name": "152-ФЗ", "title": "Персональные данные"}, {"name": "150-ФЗ", "title": "ОРМ"}]}, {"country": "Беларусь", "code": "BY", "key_laws": [{"name": "Закон о персданных", "title": "Аналог 152-ФЗ"}]}],
+  "status": "complete"
+}

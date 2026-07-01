@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Приватность</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    }
+    .setting-item:last-child { border-bottom: none; }
+    .setting-info { flex: 1; }
+    .setting-label { font-weight: 600; margin-bottom: 4px; }
+    .setting-desc { font-size: 13px; color: var(--text-secondary); }
+    
+    .toggle {
+      width: 52px;
+      height: 28px;
+      background: var(--border);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle.active {
+      background: var(--primary);
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle.active::after {
+      transform: translateX(24px);
+    }
+    
+    select.setting-select {
+      padding: 10px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .blocked-list {
+      margin-top: 16px;
+    }
+    .blocked-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .blocked-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    }
+    .blocked-name { flex: 1; font-weight: 600; }
+    .unblock-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .unblock-btn:hover { background: var(--error); border-color: var(--error); color: white; }
+    
+    .add-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px dashed var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .add-btn:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Приватность</h1>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2 class="section-title">👀 Видимость</h2>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Последний раз в сети</div>
+          <div class="setting-desc">Кто видит время вашего последнего посещения</div>
+        </div>
+        <select class="setting-select">
+          <option>Все</option>
+          <option>Контакты</option>
+          <option>Никто</option>
+        </select>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Статус онлайн</div>
+          <div class="setting-desc">Кто видит, когда вы онлайн</div>
+        </div>
+        <select class="setting-select">
+          <option>Все</option>
+          <option>Контакты</option>
+          <option>Никто</option>
+        </select>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Фото профиля</div>
+          <div class="setting-desc">Кто видит ваш аватар</div>
+        </div>
+        <select class="setting-select">
+          <option>Все</option>
+          <option>Контакты</option>
+          <option>Никто</option>
+        </select>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Статус (Stories)</div>
+          <div class="setting-desc">Кто видит ваши истории</div>
+        </div>
+        <select class="setting-select">
+          <option>Все</option>
+          <option>Контакты</option>
+          <option>Никто</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">🔒 Безопасность</h2>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Двухфакторная аутентификация</div>
+          <div class="setting-desc">Дополнительная защита аккаунта</div>
+        </div>
+        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Secret Chats</div>
+          <div class="setting-desc">E2E шифрование для выбранных чатов</div>
+        </div>
+        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Блокировка скриншотов</div>
+          <div class="setting-desc">Запрет на скриншоты в Secret Chats</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('active')"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">📞 Звонки</h2>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Кто может звонить</div>
+          <div class="setting-desc">Ограничение входящих звонков</div>
+        </div>
+        <select class="setting-select">
+          <option>Все</option>
+          <option>Контакты</option>
+          <option>Никто</option>
+        </select>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-label">Запись звонков</div>
+          <div class="setting-desc">Автоматическая запись всех звонков</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('active')"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">🚫 Заблокированные</h2>
+      <div class="blocked-list">
+        <div class="blocked-item">
+          <div class="blocked-avatar">СП</div>
+          <div class="blocked-name">Спам Бот</div>
+          <button class="unblock-btn" onclick="this.closest('.blocked-item').remove()">Разблокировать</button>
+        </div>
+        <div class="blocked-item">
+          <div class="blocked-avatar" style="background: linear-gradient(135deg, #EF4444, #DC2626);">НМ</div>
+          <div class="blocked-name">Надоедливый Маркетолог</div>
+          <button class="unblock-btn" onclick="this.closest('.blocked-item').remove()">Разблокировать</button>
+        </div>
+      </div>
+      <button class="add-btn" onclick="alert('Добавить в чёрный список...')">+ Заблокировать контакт</button>
+    </div>
+  </div>
+</body>
+</html>

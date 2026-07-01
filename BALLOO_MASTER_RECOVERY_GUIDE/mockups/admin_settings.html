@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Системные настройки</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981; --warning: #F59E0B; --error: #EF4444;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-title { font-size: 18px; font-weight: 700; }
+    .sidebar-nav { padding: 16px 0; }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.03); }
+    .sidebar-link.active { background: rgba(37, 99, 235, 0.1); border-left-color: var(--primary); color: var(--text-primary); }
+    
+    .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .page-title { font-size: 28px; font-weight: 700; }
+    .btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+    
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .settings-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .setting-row {
+      display: grid;
+      grid-template-columns: 1fr 2fr auto;
+      gap: 20px;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-weight: 600; }
+    .setting-desc { font-size: 13px; color: var(--text-secondary); }
+    
+    .toggle {
+      width: 52px;
+      height: 28px;
+      background: var(--border);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+    }
+    .toggle.active { background: var(--success); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle.active::after { transform: translateX(24px); }
+    
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 260px;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">🛡️ Balloo Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="admin_dashboard.html" class="sidebar-link">📊 Дашборд</a>
+      <a href="admin_users.html" class="sidebar-link">👥 Пользователи</a>
+      <a href="admin_moderation.html" class="sidebar-link">📋 Модерация</a>
+      <a href="admin_settings.html" class="sidebar-link active">⚙️ Настройки</a>
+      <a href="#" class="sidebar-link">📈 Аналитика</a>
+      <a href="#" class="sidebar-link">🎫 Поддержка</a>
+      <a href="auth_screen.html" class="sidebar-link" style="color: var(--error);">🚪 Выйти</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Системные настройки</h1>
+      <button class="btn btn-outline" onclick="alert('Экспорт настроек...')">📥 Экспорт</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Общие</button>
+      <button class="tab">Безопасность</button>
+      <button class="tab">Модерация</button>
+      <button class="tab">Уведомления</button>
+      <button class="tab">API</button>
+    </div>
+
+    <div class="settings-section">
+      <h2 class="section-title">🌐 Основные</h2>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Название платформы</div>
+          <div class="setting-desc">Отображается в заголовке и логотипе</div>
+        </div>
+        <input type="text" value="Balloo">
+        <div></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Язык по умолчанию</div>
+          <div class="setting-desc">Для новых пользователей</div>
+        </div>
+        <select>
+          <option>Русский</option>
+          <option>English</option>
+          <option>Deutsch</option>
+          <option>中文</option>
+        </select>
+        <div></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Режим обслуживания</div>
+          <div class="setting-desc">Все пользователи увидят заглушку</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('active')"></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h2 class="section-title">👥 Регистрация</h2>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Открытая регистрация</div>
+          <div class="setting-desc">Разрешить новым пользователям</div>
+        </div>
+        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Подтверждение email</div>
+          <div class="setting-desc">Требовать верификацию почты</div>
+        </div>
+        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Минимальный возраст</div>
+          <div class="setting-desc">Лет</div>
+        </div>
+        <input type="number" value="13" style="width: 100px;">
+        <div></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Приглашения</div>
+          <div class="setting-desc">Только по инвайтам</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('active')"></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h2 class="section-title">📁 Файлы</h2>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Макс. размер файла (Free)</div>
+          <div class="setting-desc">В мегабайтах</div>
+        </div>
+        <input type="number" value="100" style="width: 100px;">
+        <div></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Макс. размер файла (Premium)</div>
+          <div class="setting-desc">В мегабайтах</div>
+        </div>
+        <input type="number" value="1024" style="width: 100px;">
+        <div></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Хранение файлов</div>
+          <div class="setting-desc">Дней для бесплатных аккаунтов</div>
+        </div>
+        <input type="number" value="30" style="width: 100px;">
+        <div></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h2 class="section-title">🔒 Безопасность</h2>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">2FA обязательна</div>
+          <div class="setting-desc">Для всех пользователей</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('active')"></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Сложность пароля</div>
+          <div class="setting-desc">Минимальные требования</div>
+        </div>
+        <select>
+          <option>Низкая (6+ символов)</option>
+          <option>Средняя (8+ символов, цифры)</option>
+          <option>Высокая (10+ символов, спецсимволы)</option>
+        </select>
+        <div></div>
+      </div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Блокировка после попыток</div>
+          <div class="setting-desc">Неудачных входов</div>
+        </div>
+        <input type="number" value="5" style="width: 100px;">
+        <div></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="save-bar">
+    <button class="btn btn-outline" onclick="alert('Сбросить изменения')">↩️ Сбросить</button>
+    <button class="btn btn-primary" onclick="alert('Настройки сохранены!')">💾 Сохранить</button>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+{
+  "title": "E2E & Premium Policies — Отложено до V2",
+  "version": "v2",
+  "date": "2026-06-29",
+  "description": "E2E шифрование (Signal Protocol) и Premium-политики. Отложено до запуска платформы V2.",
+  
+  "e2e_strategy": {
+    "v1": {
+      "encryption": "AES-256 на сервере",
+      "key_storage": "На сервере (владельцы платформы)",
+      "privacy": "Сотрудники имеют техническую возможность читать сообщения",
+      "compliance": "Полное соответствие 150-ФЗ (передача ключей по запросу)"
+    },
+    "v2": {
+      "encryption": "Signal Protocol (Double Ratchet + X3DH)",
+      "key_storage": "Только на устройствах пользователей (E2E)",
+      "privacy": "Даже сотрудники не могут читать сообщения",
+      "availability": "Только для Premium пользователей",
+      "compliance": "Метаданные сохраняются, контент — нет"
+    }
+  },
+  
+  "premium_policies": {
+    "premium_secret_chats": {
+      "access": "Только для Premium пользователей",
+      "levels": [
+        {
+          "level": "P2P",
+          "description": "Альтернативный ключ, не передаётся на сервер",
+          "ai_filter": {
+            "triggers": [
+              "Терроризм",
+              "Хищения в особо крупных размерах",
+              "Незаконная торговля",
+              "Сильно аморальный контент",
+              "Направлено против сообщества/группы пользователей"
+            ],
+            "action": "Предупреждение с уведомлением и пояснением",
+            "appeal": {
+              "type": "Приоритетный тикет в ТП",
+              "sla": "24 часа на рассмотрение",
+              "reviewer": "Агенты ТП (люди компании)",
+              "learning": "ИИ учится на результатах review (отдельный агент)"
+            }
+          }
+        },
+        {
+          "level": "Групповые",
+          "description": "Фильтр срабатывает на нарушение хотя бы половины группы",
+          "group_rule": "Если по одному нарушению от хотя бы половины участников = всем нарушителям 1 предупреждение",
+          "anonymous_complaint": "Участники могут !анонимно! пожаловаться на одиночное нарушение → награда если не аппелирована"
+        }
+      ],
+      "escalation_matrix": [
+        { "count": 6, "period": "месяц", "action": "Отметка аккаунта как подозрительный" },
+        { "count": 7, "action": "Снятие премиума на 24 часа" },
+        { "count": 8, "action": "Снятие премиума на 24 часа + штраф 50% счёта в пользу компании" },
+        { "count": 9, "action": "Пожизненный бан премиума + передача данных в полицию" }
+      ],
+      "priority_order": {
+        "1": "Удобство (UX/Speed/Reliability)",
+        "2": "Безопасность (Compliance/Security/Trust)",
+        "3": "Приватность (E2E/Privacy/DataProtection)"
+      }
+    },
+    
+    "call_recording": {
+      "policy": "Все звонки сохраняются",
+      "notice_to_users": "Все звонки сохраняются для обучения системы транскрипции (версия 3), будет дополнительным контекстом для балунишки, лёгкого доступа для скачивания и увеличения Вашей и Общественной безопасности.",
+      "user_access": "Клиенты получают историю звонков и реальную возможность просмотреть/скачать",
+      "data_sharing": "Не передаём данные без оформленных по закону в судебном порядке запросов"
+    },
+    
+    "law_enforcement": {
+      "policy": "Силовики получают данные только в рамках закона",
+      "channel": "Через техподдержку",
+      "validation": "Минимум 4 сотрудника ТП валидируют обращение",
+      "compliance_150": "Полное соответствие 150-ФЗ (Яровая)"
+    },
+    
+    "auth_policy_note": {
+      "high_trust_roles_require_gosuslugi": true,
+      "roles": ["channel_owner", "channel_creator", "high_trust_actor"],
+      "verification_method": "gosuslugi_binding_required",
+      "note": "Для high-trust ролей (владельцы/создатели каналов) требуется верификация через привязанные Госуслуги. Обычные пользователи могут использовать Yandex ID, VK ID или Email allowlist."
+    }
+  },
+  
+  "premium_features_v2": [
+    { "id": "KF-V2P-01", "name": "Макс. размер файла 1GB", "price": "299 ₽/мес или 2490 ₽/год", "category": "utility" },
+    { "id": "KF-V2P-02", "name": "Cloud storage 50GB", "price": "включено в Premium", "category": "storage" },
+    { "id": "KF-V2P-03", "name": "AI Smart Reply", "price": "включено в Premium", "category": "ai" },
+    { "id": "KF-V2P-04", "name": "Auto-translate messages", "price": "включено в Premium", "category": "ai" },
+    { "id": "KF-V2P-05", "name": "Custom emoji packs", "price": "49 ₽/пакет", "category": "social" },
+    { "id": "KF-V2P-06", "name": "Call recording", "price": "включено в Premium", "category": "media" },
+    { "id": "KF-V2P-07", "name": "Screen sharing (video calls)", "price": "включено в Premium", "category": "media" },
+    { "id": "KF-V2P-08", "name": "Advanced group controls", "price": "включено в Premium", "category": "chat" },
+    { "id": "KF-V2P-09", "name": "Profile customization", "price": "99 ₽/мес", "category": "social" },
+    { "id": "KF-V2P-10", "name": "No ads / priority support", "price": "включено в Premium", "category": "utility" },
+    { "id": "KF-V2P-11", "name": "Data analytics (profile)", "price": "включено в Premium", "category": "analytics" },
+    { "id": "KF-V2P-12", "name": "Theme store", "price": "49-299 ₽/тема", "category": "social" },
+    { "id": "KF-V2P-13", "name": "Extended message edit history", "price": "включено в Premium", "category": "utility" },
+    { "id": "KF-V2P-14", "name": "Anti-spam / message requests", "price": "включено в Premium", "category": "security" },
+    { "id": "KF-V2P-15", "name": "Multi-device sync (unlimited)", "price": "включено в Premium", "category": "sync" },
+    { "id": "KF-V2P-16", "name": "Secret Chats P2P (AI Filter)", "price": "Premium Only", "category": "premium", "ai_filter": true },
+    { "id": "KF-V2P-17", "name": "Group Secret Chats", "price": "Premium Only", "category": "premium", "ai_filter": true },
+    { "id": "KF-V2P-18", "name": "Priority Support Appeals", "price": "Premium Only", "category": "support", "sla": "24 часа" },
+    { "id": "KF-V2P-19", "name": "Call Transcription (AI)", "price": "включено в Premium", "category": "media" },
+    { "id": "KF-V2P-20", "name": "Message Scheduling", "price": "включено в Premium", "category": "utility" }
+  ]
+}

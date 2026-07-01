@@ -1,0 +1,9 @@
+{
+  "title": "🎯 Recommended Actions — Рекомендуемые действия",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Приоритеты разработки",
+  "v1_priority": [{"priority": 1, "action": "Auth API", "estimated_hours": 40, "category": "backend"}, {"priority": 2, "action": "Chat Core", "estimated_hours": 80, "category": "backend"}, {"priority": 3, "action": "UI Components", "estimated_hours": 60, "category": "frontend"}],
+  "bap_priority": [{"priority": 1, "action": "Макеты для 37 экранов", "estimated_hours": 74, "category": "design"}, {"priority": 2, "action": "Storage Layer", "estimated_hours": 40, "category": "backend"}],
+  "status": "complete"
+}

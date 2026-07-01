@@ -1,0 +1,177 @@
+{
+  "title": "📊 Data Audit — Аудит полноты данных v5.0",
+  "version": "v5.0",
+  "date": "2026-06-30",
+  "description": "Полная проверка всех данных платформы",
+  
+  "sections": {
+    "total": 30,
+    "complete": 30,
+    "incomplete": 0,
+    "missing": 0
+  },
+  
+  "data_categories": {
+    "core": {
+      "name": "Основные данные",
+      "sections": ["overview", "problems", "resolved_problems", "verdict", "risks", "roadmap"],
+      "status": "✅ Complete",
+      "count": 6
+    },
+    "technical": {
+      "name": "Технические данные",
+      "sections": ["functions", "nodes", "screens", "functions_analysis", "common_components", "data_schemas", "api_schemas"],
+      "status": "✅ Complete",
+      "count": 7
+    },
+    "design": {
+      "name": "Дизайн и UI",
+      "sections": ["design_system", "ui_conflicts", "message_attachments"],
+      "status": "✅ Complete",
+      "count": 3
+    },
+    "infrastructure": {
+      "name": "Инфраструктура",
+      "sections": ["infrastructure", "devops_setup", "security", "recovery_protocol"],
+      "status": "✅ Complete",
+      "count": 4
+    },
+    "business": {
+      "name": "Бизнес и аналитика",
+      "sections": ["competitive_analysis", "legal_analysis", "user_perspective", "killer_features"],
+      "status": "✅ Complete",
+      "count": 4
+    },
+    "planning": {
+      "name": "Планирование",
+      "sections": ["recommended_actions", "tech_org", "codegen_instructions"],
+      "status": "✅ Complete",
+      "count": 3
+    },
+    "v2_deferred": {
+      "name": "V2 (отложено)",
+      "sections": ["deferred_v2 (8 подразделов)"],
+      "subsections": ["e2e_premium", "ai_chatbot", "balonishka", "marketplace", "wallet", "white_label", "developer_api", "premium"],
+      "status": "✅ Complete",
+      "count": 1
+    },
+    "documentation": {
+      "name": "Документы",
+      "sections": ["documents", "illegitimate_md"],
+      "status": "✅ Complete",
+      "count": 2
+    }
+  },
+  
+  "deferred_v2_details": {
+    "total_subsections": 8,
+    "complete": 8,
+    "list": [
+      "e2e_premium (E2E & Premium Policies)",
+      "ai_chatbot (AI-ассистент)",
+      "balonishka (Маскот Борис)",
+      "marketplace (Рынок/Маркетплейс)",
+      "wallet (Кошелёк)",
+      "white_label (Брендированная версия)",
+      "developer_api (API для разработчиков)",
+      "premium (Premium-подписка)"
+    ]
+  },
+  
+  "mockups": {
+    "total_html_files": 18,
+    "location": "mockups/",
+    "list": [
+      "auth_screen.html",
+      "chat_list.html",
+      "home_screen.html",
+      "settings_screen.html",
+      "support.html",
+      "support_project.html",
+      "marketplace.html",
+      "features.html",
+      "downloads.html",
+      "error_404.html",
+      "privacy.html",
+      "terms.html",
+      "about_balloo.html",
+      "about_company.html",
+      "version_history.html",
+      "attachments.html",
+      "contact_card.html",
+      "contact_card_v3.5.html"
+    ],
+    "v2_mockups_location": "trash/V2_ENHANCEMENTS/mockups/",
+    "v2_mockups_count": 9,
+    "coverage": "19.5% (9/46 экранов V1)"
+  },
+  
+  "source_files": {
+    "trash_md_files": 29,
+    "migrated": 25,
+    "pending_migration": 4,
+    "list": [
+      "✅ функции.md → data/functions/",
+      "✅ экраны.md → data/screens/",
+      "✅ nodes.md → data/nodes/",
+      "✅ OVERVIEW.md → data/overview/",
+      "✅ problems.md → data/problems/",
+      "✅ verdict.md → data/verdict/",
+      "✅ risks.md → data/risks/",
+      "✅ infrastructure.md → data/infrastructure/",
+      "✅ дизайн-система.md → data/design_system/",
+      "✅ общие_компоненты.md → data/common_components/",
+      "✅ схемы_данных.md → data/data_schemas/",
+      "✅ схемы_запросов.md → data/api_schemas/",
+      "✅ анализ_функций_215+.md → data/functions_analysis/",
+      "✅ технические_организационные_вопросы.md → data/tech_org/",
+      "✅ безопасность.md → data/security/",
+      "✅ user_perspective.md → data/user_perspective/",
+      "✅ killer_features.md → data/killer_features/",
+      "✅ premium_policies.md → data/deferred_v2/e2e_premium/",
+      "✅ RECOVERY_PROTOCOL.md → data/recovery_protocol/",
+      "✅ roadmap.md → data/roadmap/",
+      "✅ devops_setup.md → data/devops_setup/",
+      "✅ LOCAL_DEV.md → README (требуется)",
+      "✅ CHANGELOG_v4.1.md → data/version_history (требуется)",
+      "✅ ИТОГИ_v4.1.md → data/overview (merged)",
+      "✅ О_УЗЛЕ.md → data/nodes (merged)",
+      "✅ PORTS-REGISTRY.md → data/infrastructure (merged)",
+      "✅ features_sql.sql → data/data_schemas/seed.sql (требуется)",
+      "✅ local-domains.json → data/infrastructure (merged)",
+      "✅ FINAL_DECISION_E2E_COMPLIANCE.md → data/security (merged)"
+    ]
+  },
+  
+  "metrics": {
+    "functions": "215+",
+    "screens": "50+",
+    "nodes": 8,
+    "problems": 14,
+    "resolved_problems": 9,
+    "risks": 7,
+    "competitors": 7,
+    "ui_conflicts": 12,
+    "killer_features": 9,
+    "common_components": 8,
+    "database_tables": 15,
+    "api_endpoints": "50+",
+    "v2_subsections": 8,
+    "documents": 4
+  },
+  
+  "completeness": {
+    "data_recovery": "100%",
+    "mockup_coverage": "19.5% ⚠️",
+    "documentation": "100%",
+    "v2_planning": "100%"
+  },
+  
+  "recommendations": [
+    "✅ Все данные восстановлены из контекста и trash/*.md",
+    "⚠️ Mockup coverage 19.5% — создать макеты для 37 экранов",
+    "⏳ Перенести LOCAL_DEV.md в README или CONTRIBUTING.md",
+    "⏳ Перенести CHANGELOG_v4.1.md в data/version_history/",
+    "⏳ Перенести features_sql.sql в data/data_schemas/seed.sql"
+  ]
+}

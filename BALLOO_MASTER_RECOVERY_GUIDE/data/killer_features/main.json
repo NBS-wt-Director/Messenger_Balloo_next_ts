@@ -1,0 +1,88 @@
+{
+  "title": "🔪 Killer Features — Уникальные преимущества",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Killer-фичи платформы",
+  
+  "features": [
+    {
+      "id": "KF-01",
+      "name": "E2E шифрование по умолчанию",
+      "description": "Все сообщения зашифрованы Signal Protocol. Даже сервер не может прочитать.",
+      "competitive_advantage": true,
+      "implemented_in": "V1 (Web Crypto) → V2 (Signal Protocol)",
+      "user_value": "Полная приватность переписки"
+    },
+    {
+      "id": "KF-02",
+      "name": "Compliance с 152-ФЗ и 150-ФЗ",
+      "description": "Серверы в Екатеринбурге, хранение трафика 6 мес, Premium Secret Chats с AI-фильтром",
+      "competitive_advantage": true,
+      "implemented_in": "V1 + V2",
+      "user_value": "Легальность, защита от блокировок"
+    },
+    {
+      "id": "KF-03",
+      "name": "Поддержка малых языков",
+      "description": "Интерфейс и поддержка языков народов РФ",
+      "competitive_advantage": true,
+      "implemented_in": "V1",
+      "user_value": "Родной язык для национальных меньшинств"
+    },
+    {
+      "id": "KF-04",
+      "name": "Premium Secret Chats с AI-фильтром",
+      "description": "AI-фильтр контента (терроризм, хищения, незаконная торговля) + human review + эскалация",
+      "competitive_advantage": true,
+      "implemented_in": "V2",
+      "user_value": "Безопасность от незаконного контента"
+    },
+    {
+      "id": "KF-05",
+      "name": "Физический сервер вместо облака",
+      "description": "Полный контроль над железом в Екатеринбурге, независимость от облачных провайдеров",
+      "competitive_advantage": false,
+      "implemented_in": "V1",
+      "user_value": "Стабильность, контроль данных"
+    },
+    {
+      "id": "KF-06",
+      "name": "Бесплатный базовый функционал",
+      "description": "Все основные функции бесплатны, монетизация через донаты и Premium",
+      "competitive_advantage": false,
+      "implemented_in": "V1",
+      "user_value": "Не нужно платить за общение"
+    },
+    {
+      "id": "KF-07",
+      "name": "Маскот Балунишка Борис",
+      "description": "Анимированный маскот с greeting, suggestions, easter eggs",
+      "competitive_advantage": true,
+      "implemented_in": "V2",
+      "user_value": "Эмоциональная связь с платформой"
+    },
+    {
+      "id": "KF-08",
+      "name": "Маркетплейс с Escrow",
+      "description": "Продажа товаров с гарантией (escrow), рейтинги, отзывы",
+      "competitive_advantage": true,
+      "implemented_in": "V2",
+      "user_value": "Безопасные сделки внутри мессенджера"
+    },
+    {
+      "id": "KF-09",
+      "name": "AI-ассистент",
+      "description": "Smart reply, автоперевод, транскрипция, генерация контента, саммари чатов",
+      "competitive_advantage": true,
+      "implemented_in": "V2",
+      "user_value": "Экономия времени, умные подсказки"
+    }
+  ],
+  
+  "summary": {
+    "total_features": 9,
+    "v1_features": 3,
+    "v2_features": 6,
+    "competitive_advantages": 7
+  }
+}

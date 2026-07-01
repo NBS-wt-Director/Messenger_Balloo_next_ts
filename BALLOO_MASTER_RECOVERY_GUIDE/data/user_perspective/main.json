@@ -1,0 +1,8 @@
+{
+  "title": "👤 User Perspective — Пользовательская перспектива",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Сильные и слабые стороны с точки зрения пользователя",
+  "items": [{"category": "Strengths", "items": [{"name": "Compliance 152-ФЗ", "impact": "high", "user_benefit": "Защита данных в РФ"}, {"name": "Сервер в Екб", "impact": "medium", "user_benefit": "Контроль данных"}]}, {"category": "Weaknesses", "items": [{"name": "Нет мобильных клиентов V1", "impact": "critical", "user_friction": "Только веб"}, {"name": "E2E только в V2", "impact": "high", "user_friction": "Нет шифрования в V1"}]}],
+  "status": "complete"
+}

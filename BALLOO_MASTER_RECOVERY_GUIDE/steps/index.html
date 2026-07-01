@@ -1,0 +1,267 @@
+ <!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>BALLOO — Анализ и Рецензия v3.6</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!--  HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1>🎈 BALLOO_PLATFORM_ANALYSIS v2.0</h1>
+      <div class="meta">Дата: 26.06.2026 | Автор: Koda AI (NLP-Core-Team) | JSON-driven architecture</div>
+    </div>
+  </div>
+</div>
+ 
+<!-- SECTION NAVIGATION -->
+<div class="section-nav" id="sectionNav">
+  <button class="section-btn active" data-section="overview">📊 Обзор</button>
+  <button class="section-btn" data-section="problems">⛔ Проблемы V1</button>
+  <button class="section-btn" data-section="resolved_problems">✅ Решённые</button>
+  <button class="section-btn" data-section="deferred">⏳ Отложено V2</button>
+  <button class="section-btn" data-section="functions">📋 Функции</button>
+  <button class="section-btn" data-section="ui_conflicts">🎨 UI Конфликты</button>
+  <button class="section-btn" data-section="killer_features">⚡ Killer-фичи</button>
+  <button class="section-btn" data-section="legal_analysis">⚖️ Правовой</button>
+  <button class="section-btn" data-section="user_perspective">👤 Пользователь</button>
+  <button class="section-btn" data-section="competitive_analysis">🏆 Конкуренты</button>
+  <button class="section-btn" data-section="roadmap">🗺️ Roadmap</button>
+  <button class="section-btn" data-section="risks">⚠️ Риски</button>
+  <button class="section-btn" data-section="verdict">✅ Вердикт</button>
+  <button class="section-btn" data-section="nodes">🖥 Узлы</button>
+  <button class="section-btn" data-section="screens">📱 Экраны</button>
+  <button class="section-btn" data-section="infrastructure">🏢 Инфра</button>
+  <button class="section-btn" data-section="devops_setup">⚙️ DevOps</button>
+  <button class="section-btn" data-section="recovery_protocol">🛠 Recovery</button>
+  <button class="section-btn" data-section="security">🛡️ Безопасность</button>
+  <button class="section-btn" data-section="design_system">🎨 Дизайн-система</button>
+  <button class="section-btn" data-section="common_components">🧩 Компоненты</button>
+  <button class="section-btn" data-section="functions_analysis">📊 Анализ Функций</button>
+  <button class="section-btn" data-section="data_schemas">🗄️ Схемы Данных</button>
+  <button class="section-btn" data-section="api_schemas">📡 Схемы Запросов</button>
+  <button class="section-btn" data-section="tech_org">⚙️ Тех-Орг Вопросы</button>
+  <button class="section-btn" data-section="recommended_actions">🎯 Рекомендуемые Действия</button>
+  <button class="section-btn" data-section="codegen_instructions">🤖 AI Codegen Plan</button>
+  <button class="section-btn" data-section="illegitimate_md" title="MD файлы без JSON">⚠️ Nongit MD</button>
+  <button class="section-btn" data-section="mockups">📸 Макеты</button>
+  <button class="section-btn" data-section="message_attachments">💬 Вложения и Реакции</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main" id="mainContent">
+
+  <!-- OVERVIEW -->
+  <div class="section-content active" id="section-overview">
+    <h2 class="section-title">📊 Общая Оценка Проекта</h2>
+    <div class="score-card" id="overviewScores"></div>
+    <div class="summary-box" id="overviewSummary"></div>
+    <h3 class="sub-title">Сильные стороны</h3>
+    <ul id="overviewStrengths"></ul>
+    <h3 class="sub-title">Слабые стороны</h3>
+    <ul id="overviewWeaknesses"></ul>
+  </div>
+
+  <!-- PROBLEMS -->
+  <div class="section-content" id="section-problems">
+    <h2 class="section-title">⛔ Нерешённые Проблемы V1</h2>
+    <div id="problemsList"></div>
+  </div>
+
+  <!-- RESOLVED PROBLEMS -->
+  <div class="section-content" id="section-resolved_problems">
+    <h2 class="section-title">✅ Решённые Проблемы V1</h2>
+    <div id="resolvedProblemsList"></div>
+  </div>
+
+  <!-- DEFERRED TO V2 -->
+  <div class="section-content" id="section-deferred">
+    <h2 class="section-title">⏳ Отложено до V2</h2>
+    <div id="deferredList"></div>
+  </div>
+
+  <!-- FUNCTIONS -->
+  <div class="section-content" id="section-functions">
+    <h2 class="section-title">📋 Реестр Функций</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Функция</th><th>Описание</th><th>Версия</th><th>Платность</th></tr></thead>
+      <tbody id="functionsTable"></tbody>
+    </table>
+  </div>
+
+  <!-- UI CONFLICTS -->
+  <div class="section-content" id="section-ui_conflicts">
+    <h2 class="section-title">🎨 UI Конфликты</h2>
+    <div id="uiConflictsList"></div>
+  </div>
+
+  <!-- KILLER FEATURES -->
+  <div class="section-content" id="section-killer_features">
+    <h2 class="section-title">⚡ Killer-фичи</h2>
+    <div id="killerFeaturesList"></div>
+  </div>
+
+  <!-- LEGAL ANALYSIS -->
+  <div class="section-content" id="section-legal_analysis">
+    <h2 class="section-title">⚖️ Правовой Анализ</h2>
+    <div id="legalAnalysisList"></div>
+  </div>
+
+  <!-- USER PERSPECTIVE -->
+  <div class="section-content" id="section-user_perspective">
+    <h2 class="section-title">👤 Сильные и слабые стороны (конечный пользователь)</h2>
+    <h3 class="sub-title" style="color:var(--green)">✅ Сильные стороны</h3>
+    <div id="userStrengths"></div>
+    <h3 class="sub-title" style="color:var(--red)">❌ Слабые стороны</h3>
+    <div id="userWeaknesses"></div>
+  </div>
+
+  <!-- COMPETITIVE ANALYSIS -->
+  <div class="section-content" id="section-competitive_analysis">
+    <h2 class="section-title">🏆 Конкурентный Анализ</h2>
+    <div id="competitiveList"></div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="section-content" id="section-roadmap">
+    <h2 class="section-title">🗺️ Roadmap</h2>
+    <div class="timeline" id="roadmapTimeline"></div>
+  </div>
+
+  <!-- RISKS -->
+  <div class="section-content" id="section-risks">
+    <h2 class="section-title">⚠️ Матрица Рисков</h2>
+    <table>
+      <thead><tr><th>Риск</th><th>Вероятность</th><th>Влияние</th><th>Митигация</th></tr></thead>
+      <tbody id="risksTable"></tbody>
+    </table>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="section-content" id="section-verdict">
+    <h2 class="section-title">✅ Финальный Вердикт</h2>
+    <div class="summary-box" id="verdictContent"></div>
+  </div>
+
+  <!-- NODES -->
+  <div class="section-content" id="section-nodes">
+    <h2 class="section-title">🖥 Узлы Монорепо</h2>
+    <div id="nodesList"></div>
+  </div>
+
+  <!-- SCREENS -->
+  <div class="section-content" id="section-screens">
+    <h2 class="section-title">📱 Экраны и API Запросы</h2>
+    <div id="screensList"></div>
+  </div>
+
+  <!-- INFRASTRUCTURE -->
+  <div class="section-content" id="section-infrastructure">
+    <h2 class="section-title">🏢 Физическая Инфраструктура</h2>
+    <div id="infraList"></div>
+  </div>
+
+  <!-- DEVOPS SETUP -->
+  <div class="section-content" id="section-devops_setup">
+    <h2 class="section-title">⚙️ DEVOPS & SETUP — Настройка Окружения</h2>
+    <div id="devopsSetupList"></div>
+  </div>
+
+  <!-- RECOVERY PROTOCOL -->
+  <div class="section-content" id="section-recovery_protocol">
+    <h2 class="section-title">🛠 RECOVERY PROTOCOL — Инструкция по восстановлению</h2>
+    <div id="recoveryProtocolList"></div>
+  </div>
+
+  <!-- SECURITY -->
+  <div class="section-content" id="section-security">
+    <h2 class="section-title">🛡️ БЕЗОПАСНОСТЬ (SECURITY)</h2>
+    <div id="securityList"></div>
+  </div>
+
+  <!-- DESIGN SYSTEM -->
+  <div class="section-content" id="section-design_system">
+    <h2 class="section-title">🎨 BALLOO — Дизайн-Система Платформы</h2>
+    <div id="designSystemList"></div>
+  </div>
+
+  <!-- COMMON COMPONENTS -->
+  <div class="section-content" id="section-common_components">
+    <h2 class="section-title">🧩 BALLOO PLATFORM — Общие Компоненты</h2>
+    <div id="commonComponentsList"></div>
+  </div>
+
+  <!-- FUNCTIONS ANALYSIS -->
+  <div class="section-content" id="section-functions_analysis">
+    <h2 class="section-title">📊 Анализ Функций 215+</h2>
+    <div id="functionsAnalysisList"></div>
+  </div>
+
+  <!-- DATA SCHEMAS -->
+  <div class="section-content" id="section-data_schemas">
+    <h2 class="section-title">🗄️ Схемы Данных</h2>
+    <div id="dataSchemasList"></div>
+  </div>
+
+  <!-- API SCHEMAS -->
+  <div class="section-content" id="section-api_schemas">
+    <h2 class="section-title">📡 Схемы Запросов</h2>
+    <div id="apiSchemasList"></div>
+  </div>
+
+  <!-- TECH-ORG QUESTIONS -->
+  <div class="section-content" id="section-tech_org">
+    <h2 class="section-title">⚙️ Технические и Организационные Вопросы</h2>
+    <div id="techOrgList"></div>
+  </div>
+
+  <!-- RECOMMENDED ACTIONS -->
+  <div class="section-content" id="section-recommended_actions">
+    <h2 class="section-title">🎯 Рекомендуемые Действия — Доведение метрик до 10</h2>
+    <div id="recommendedActionsV1"></div>
+    <div id="recommendedActionsV2"></div>
+    <div id="recommendedActionsBAP"></div>
+  </div>
+
+  <!-- CODEGEN INSTRUCTIONS -->
+  <div class="section-content" id="section-codegen_instructions">
+    <h2 class="section-title">🤖 AI Codegen Plan — Инструкция для автономной генерации</h2>
+    <div id="codegenEnvironment"></div>
+    <div id="codegenV2Roadmap"></div>
+    <div id="codegenTicketSystem"></div>
+    <div id="codegenPhases"></div>
+    <div id="codegenInstructions"></div>
+  </div>
+
+  <!-- ILLEGITIMATE MD (MD без JSON) -->
+  <div class="section-content" id="section-illegitimate_md">
+    <h2 class="section-title">⚠️ MD Файлы без JSON (Нелегитимные)</h2>
+    <div class="summary-box" id="illegitimateList"></div>
+  </div>
+
+  <!-- MOCKUPS LINKS -->
+  <div class="section-content" id="section-mockups">
+    <h2 class="section-title">📸 Ссылки на Макеты</h2>
+    <div id="mockupsList"></div>
+  </div>
+
+  <!-- MESSAGE ATTACHMENTS -->
+  <div class="section-content" id="section-message_attachments">
+    <h2 class="section-title">💬 Планируемые вложения в чатах и интерактив сообщений</h2>
+    <div id="messageAttachmentsList"></div>
+  </div>
+
+</div>
+
+<script src="app.js?v=4.0"></script>
+<script src="app_embedded.js?v=4.0"></script>
+
+</body>
+</html>

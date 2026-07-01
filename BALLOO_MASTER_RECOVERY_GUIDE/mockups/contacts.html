@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Контакты</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A;
+      --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8;
+      --border: #334155; --success: #10B981;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    .header {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .page-title { font-size: 18px; font-weight: 700; }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .sync-card {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.2));
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sync-info h3 { font-size: 16px; margin-bottom: 4px; }
+    .sync-info p { font-size: 13px; color: var(--text-secondary); }
+    .sync-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      border: none;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .search-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .contact-list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .contact-item:last-child { border-bottom: none; }
+    .contact-item:hover { background: rgba(255,255,255,0.02); }
+    .contact-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+      flex-shrink: 0;
+    }
+    .contact-avatar.on-balloo {
+      background: linear-gradient(135deg, #10B981, #059669);
+    }
+    .contact-info { flex: 1; min-width: 0; }
+    .contact-name { font-weight: 600; margin-bottom: 4px; }
+    .contact-phone { font-size: 13px; color: var(--text-secondary); }
+    .contact-status {
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+    .contact-status.on-balloo {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+    .contact-status.invite {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .contact-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .action-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .section-header {
+      padding: 16px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='settings_screen.html'">←</button>
+    <h1 class="page-title">Контакты</h1>
+  </header>
+
+  <div class="container">
+    <div class="sync-card">
+      <div class="sync-info">
+        <h3>📱 Синхронизация контактов</h3>
+        <p>Найдите друзей из телефонной книги в Balloo</p>
+      </div>
+      <button class="sync-btn" onclick="alert('Синхронизация...')">Синхронизировать</button>
+    </div>
+
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" class="search-input" placeholder="Поиск контактов...">
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Все</button>
+      <button class="tab">В Balloo</button>
+      <button class="tab">Пригласить</button>
+    </div>
+
+    <div class="section-header">A</div>
+    <div class="contact-list">
+      <div class="contact-item">
+        <div class="contact-avatar on-balloo">АИ</div>
+        <div class="contact-info">
+          <div class="contact-name">Алексей Иванов</div>
+          <div class="contact-phone">+7 (999) 000-00-00</div>
+        </div>
+        <div class="contact-status on-balloo">В Balloo</div>
+        <div class="contact-actions">
+          <button class="action-btn" onclick="alert('Написать...')">💬</button>
+          <button class="action-btn" onclick="alert('Позвонить...')">📞</button>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-avatar">АП</div>
+        <div class="contact-info">
+          <div class="contact-name">Анна Петрова</div>
+          <div class="contact-phone">+7 (999) 111-11-11</div>
+        </div>
+        <button class="contact-status invite" onclick="alert('Приглашение отправлено!')">📤 Пригласить</button>
+      </div>
+    </div>
+
+    <div class="section-header">Д</div>
+    <div class="contact-list">
+      <div class="contact-item">
+        <div class="contact-avatar on-balloo" style="background: linear-gradient(135deg, #10B981, #059669);">ДМ</div>
+        <div class="contact-info">
+          <div class="contact-name">Дмитрий Медведев</div>
+          <div class="contact-phone">+7 (999) 222-22-22</div>
+        </div>
+        <div class="contact-status on-balloo">В Balloo</div>
+        <div class="contact-actions">
+          <button class="action-btn" onclick="alert('Написать...')">💬</button>
+          <button class="action-btn" onclick="alert('Позвонить...')">📞</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">М</div>
+    <div class="contact-list">
+      <div class="contact-item">
+        <div class="contact-avatar on-balloo" style="background: linear-gradient(135deg, #F59E0B, #EF4444);">МП</div>
+        <div class="contact-info">
+          <div class="contact-name">Мария Петрова</div>
+          <div class="contact-phone">+7 (999) 333-33-33</div>
+        </div>
+        <div class="contact-status on-balloo">В Balloo</div>
+        <div class="contact-actions">
+          <button class="action-btn" onclick="alert('Написать...')">💬</button>
+          <button class="action-btn" onclick="alert('Позвонить...')">📞</button>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-avatar">МС</div>
+        <div class="contact-info">
+          <div class="contact-name">Максим Смирнов</div>
+          <div class="contact-phone">+7 (999) 444-44-44</div>
+        </div>
+        <button class="contact-status invite" onclick="alert('Приглашение отправлено!')">📤 Пригласить</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

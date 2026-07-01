@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balloo — Функции</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #2563EB; --secondary: #7C3AED; --bg: #0F172A; --surface: #1E293B; --text-primary: #F8FAFC; --text-secondary: #94A3B8; --border: #334155; --success: #10B981; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .header-logo { display: flex; align-items: center; gap: 12px; }
+    .header-logo-img { width: 40px; height: 40px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); }
+    .header-mascot { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 14px; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+    .header-title { font-size: 18px; font-weight: 700; }
+    .header-nav { display: flex; gap: 8px; margin-left: 24px; }
+    .header-nav-item { padding: 8px 12px; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); font-size: 13px; cursor: pointer; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .header-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+    .main-content { flex: 1; padding: 40px 20px; max-width: 800px; margin: 0 auto; width: 100%; }
+    .section-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .section-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+    .category-block { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 16px; }
+    .category-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .feature-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(51, 65, 85, 0.5); }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-name { font-size: 14px; }
+    .feature-badge { font-size: 11px; padding: 2px 8px; }
+    .badge-free { background: var(--success); color: white; }
+    .badge-premium { background: var(--primary); color: white; }
+    .footer { background: var(--surface); border-top: 1px solid var(--border); padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .footer-logo { width: 40px; height: 40px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--text-secondary); }
+    .footer-company { flex: 1; margin-left: 16px; }
+    .footer-company-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .footer-company-info { font-size: 11px; color: var(--text-secondary); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-link { font-size: 12px; color: var(--text-secondary); text-decoration: none; cursor: pointer; }
+    .footer-link:hover { color: var(--primary); }
+    .footer-version { font-size: 11px; color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-logo">
+      <div class="header-logo-img">LOGO</div>
+      <div class="header-mascot">🐻</div>
+    </div>
+    <div class="header-title">Balloo</div>
+    <nav class="header-nav">
+      <a href="home_screen.html" class="header-nav-item">Главная</a>
+      <a href="about_balloo.html" class="header-nav-item">О Balloo</a>
+    </nav>
+    <div class="header-right">
+      <div class="header-avatar">АИ</div>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="section-title">⚡ Функции</div>
+    <div class="section-sub">Все возможности платформы Balloo</div>
+
+    <div class="category-block">
+      <div class="category-title">💬 Мессенджер</div>
+      <div class="feature-item"><div class="feature-name">Приватные чаты с E2EE</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Групповые чаты (до 200К)</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Каналы (до 1М подписчиков)</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Голосовые и видеозвонки</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Стикеры и эмодзи</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Пересылка сообщений</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Реакции на сообщения</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Автоперевод (V2)</div><span class="feature-badge badge-premium">Premium</span></div>
+    </div>
+
+    <div class="category-block">
+      <div class="category-title">📁 Файлы</div>
+      <div class="feature-item"><div class="feature-name">Файлы до 100 МБ</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Фото и видео</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Геолокация и контакты</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Файлы до 1 ГБ (V2)</div><span class="feature-badge badge-premium">Premium</span></div>
+    </div>
+
+    <div class="category-block">
+      <div class="category-title">🔒 Безопасность</div>
+      <div class="feature-item"><div class="feature-name">E2EE шифрование</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Самоуничтожение сообщений</div><span class="feature-badge badge-free">Free</span></div>
+      <div class="feature-item"><div class="feature-name">Блокировка PIN/биометрия</div><span class="feature-badge badge-free">Free</span></div>
+    </div>
+
+    <div class="category-block">
+      <div class="category-title">🤖 AI (V2)</div>
+      <div class="feature-item"><div class="feature-name">AI-ассистент</div><span class="feature-badge badge-premium">Premium</span></div>
+      <div class="feature-item"><div class="feature-name">Умные ответы</div><span class="feature-badge badge-premium">Premium</span></div>
+      <div class="feature-item"><div class="feature-name">AI-модерация</div><span class="feature-badge badge-premium">Premium</span></div>
+    </div>
+
+    <div class="category-block">
+      <div class="category-title">🏪 Рынок (V2)</div>
+      <div class="feature-item"><div class="feature-name">Товары и услуги</div><span class="feature-badge badge-premium">Premium</span></div>
+      <div class="feature-item"><div class="feature-name">Встроенный кошелёк</div><span class="feature-badge badge-premium">Premium</span></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="footer-logo">LOGO</div>
+      <div class="footer-company">
+        <div class="footer-company-name">NBS — web-tech</div>
+        <div class="footer-company-info">Екатеринбург</div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="about_balloo.html" class="footer-link">aboutBalloo</a>
+      <a href="about_company.html" class="footer-link">aboutCompany</a>
+      <a href="support.html" class="footer-link">support</a>
+      <a href="terms.html" class="footer-link">terms</a>
+      <a href="privacy.html" class="footer-link">privacy</a>
+    </div>
+    <div class="footer-version">v1.0.0</div>
+  </footer>
+</body>
+</html>

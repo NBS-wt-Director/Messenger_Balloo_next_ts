@@ -1,0 +1,130 @@
+ 
+  "title": "📄 Документы — Правовые документы платформы",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Политика конфиденциальности, Пользовательское соглашение, V2 дополнения",
+  
+  "privacy_policy": {
+    "title": "Политика обработки персональных данных",
+    "version": "1.0",
+    "effective_date": "2026-06-24",
+    "source_file": "trash/RULES/privacy_policy.md",
+    "key_points": [
+      "Сбор: email, телефон, имя, аватар, технические данные",
+      "Цели: регистрация, предоставление услуг, безопасность, поддержка",
+      "152-ФЗ (РФ), 76-З (РБ), DPDP Act (Индия), PIPL (Китай)",
+      "Локализация: серверы в РФ/РБ/КНР",
+      "E2EE-сообщения не хранятся на сервере",
+      "Сроки хранения: до удаления аккаунта + 30 дней",
+      "Права: доступ, исправление, удаление, ограничение обработки",
+      "Безопасность: AES-256, TLS 1.3, Argon2id",
+      "Cookies: session_id, csrf_token, theme, lang, analytics",
+      "Контакты: privacy@balloo.app, dpo@balloo.app"
+    ],
+    "compliance": {
+      "rf": "152-ФЗ (ст. 6, 14, 18, 21)",
+      "rb": "Закон №76-З",
+      "in": "DPDP Act 2023",
+      "cn": "PIPL (ст. 13, 14, 23, 39, 40)"
+    }
+  },
+  
+  "terms_of_service": {
+    "title": "Пользовательское соглашение (Terms of Service)",
+    "version": "1.0",
+    "effective_date": "2026-06-24",
+    "source_file": "trash/RULES/terms_of_service.md",
+    "key_points": [
+      "Предмет: регулирование отношений Пользователь-Администрация",
+      "Регистрация: достоверные данные, один аккаунт",
+      "Запрещено: незаконный контент, спам, вирусы, reverse-engineering",
+      "Интеллектуальная собственность: права Администрации на дизайн/код",
+      "Ответственность: Администрация не отвечает за контент пользователей",
+      "Финансовые условия: Free + Premium (V2)",
+      "Разрешение споров: досудебный порядок, суд в Екатеринбурге",
+      "Модерация: удаление контента, блокировка аккаунтов",
+      "Изменения: уведомление за 30 дней",
+      "Контакты: support@balloo.app, legal@balloo.app"
+    ],
+    "prohibited_content": [
+      "Терроризм, экстремизм",
+      "Насилие, жестокость",
+      "Детская порнография",
+      "Разжигание ненависти",
+      "Спам, реклама, пирамиды",
+      "Вирусы, вредоносное ПО"
+    ],
+    "jurisdiction": {
+      "rf": "Законодательство РФ",
+      "rb": "Законодательство РБ",
+      "in": "DPDP Act, IT Act",
+      "cn": "PIPL"
+    }
+  },
+  
+  "v2_addendums": {
+    "privacy_addendum": {
+      "title": "Дополнение к Политике ПДн (V2)",
+      "source_file": "trash/V2_ENHANCEMENTS/documents/v2_privacy_addendum.md",
+      "new_features": [
+        "AI-ассистент: обработка запросов через OpenRouter API",
+        "Маркетплейс: данные продавцов и покупателей",
+        "Кошелёк: финансовые транзакции (115-ФЗ, AML)",
+        "Балунишка: история взаимодействий",
+        "White Label: корпоративные данные"
+      ],
+      "additional_consent": "Требуется для AI-функций и финансовых операций"
+    },
+    "terms_addendum": {
+      "title": "Дополнение к Пользовательскому соглашению (V2)",
+      "source_file": "trash/V2_ENHANCEMENTS/documents/v2_terms_addendum.md",
+      "new_sections": [
+        "Маркетплейс: правила продажи, эскроу-сделки",
+        "AI-контент: маркировка ИИ-генерации",
+        "Кошелёк: финансовые операции, комиссии",
+        "Premium-подписка: условия, возвраты",
+        "Developer API: rate limiting, SLA"
+      ]
+    }
+  },
+  
+  "other_documents": {
+    "cookie_policy": {
+      "title": "Cookie Policy",
+      "status": "included_in_privacy_policy",
+      "cookies": [
+        {"name": "session_id", "purpose": "Идентификация сессии", "expiry": "Session"},
+        {"name": "csrf_token", "purpose": "CSRF-защита", "expiry": "Session"},
+        {"name": "theme", "purpose": "Тема оформления", "expiry": "365 дней"},
+        {"name": "lang", "purpose": "Язык интерфейса", "expiry": "365 дней"},
+        {"name": "analytics", "purpose": "Аналитика", "expiry": "365 дней"}
+      ]
+    },
+    "dpa": {
+      "title": "Data Processing Addendum",
+      "status": "for_enterprise_customers",
+      "description": "Договор обработки данных для White Label клиентов"
+    },
+    "sla": {
+      "title": "Service Level Agreement",
+      "status": "for_premium_enterprise",
+      "uptime": "99.9%",
+      "support_response": "4 часа (Premium), 24 часа (Free)"
+    }
+  },
+  
+  "contacts": {
+    "general": "support@balloo.app",
+    "privacy": "privacy@balloo.app",
+    "dpo": "dpo@balloo.app",
+    "legal": "legal@balloo.app",
+    "address": "Екатеринбург, Российская Федерация"
+  },
+  
+  "response_times": {
+    "rf": "30 дней (152-ФЗ)",
+    "rb": "30 дней (76-З)",
+    "in": "Через встроенный механизм",
+    "cn": "Через email privacy@balloo.app"
+  }
+}

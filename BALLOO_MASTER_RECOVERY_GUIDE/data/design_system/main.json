@@ -1,0 +1,9 @@
+{
+  "title": "🎨 Design System — Дизайн-система",
+  "version": "v5.0",
+  "date": "2026-06-29",
+  "description": "Токены и компоненты",
+  "tokens": {"colors": {"primary": "#0039A6"}, "border_radius": "0", "themes": ["dark", "light", "russia"]},
+  "components": ["Button", "Input", "Modal", "Card", "Avatar"],
+  "status": "complete"
+}
