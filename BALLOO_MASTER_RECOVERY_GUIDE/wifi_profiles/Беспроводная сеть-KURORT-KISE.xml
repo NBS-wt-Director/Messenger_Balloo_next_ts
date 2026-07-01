@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<WLANProfile xmlns="http://www.microsoft.com/networking/WLAN/profile/v1">
+	<name>KURORT-KISEGACH WI-FI REE</name>
+	<SSIDConfig>
+		<SSID>
+			<hex>4B55524F52542D4B495345474143482057492D464920524545</hex>
+			<name>KURORT-KISEGACH WI-FI REE</name>
+		</SSID>
+	</SSIDConfig>
+	<connectionType>ESS</connectionType>
+	<connectionMode>manual</connectionMode>
+	<MSM>
+		<security>
+			<authEncryption>
+				<authentication>open</authentication>
+				<encryption>none</encryption>
+				<useOneX>false</useOneX>
+			</authEncryption>
+		</security>
+	</MSM>
+	<MacRandomization xmlns="http://www.microsoft.com/networking/WLAN/profile/v3">
+		<enableRandomization>false</enableRandomization>
+		<randomizationSeed>1960527702</randomizationSeed>
+	</MacRandomization>
+</WLANProfile>
